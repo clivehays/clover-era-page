@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Engagement London | Data-Driven Workplace Solutions | Clover Era</title>
+    <meta name="description" content="Cut London workplace attrition by 67%. Science-backed employee engagement platform. See ROI in 7 days. Start free pilot.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Clover Era exact palette */
+            --black-primary: #000000;
+            --black-secondary: #1a1a1a;
+            --yellow-primary: #FFCC00;
+            --yellow-accent: #FFD700;
+            --dark-gray: #2d2d2d;
+            --medium-gray: #3d3d3d;
+            --light-gray: #666666;
+            --white: #FFFFFF;
+            --text-light: #CCCCCC;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--white);
+            background: var(--black-primary);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--black-primary);
+            z-index: 1000;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--yellow-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--yellow-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--yellow-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: transparent;
+            color: var(--yellow-primary);
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--yellow-primary);
+            border-radius: 4px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            background: var(--yellow-primary);
+            color: var(--black-primary);
+        }
+
+        /* Hero Section - Calculator Style */
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 2rem;
+            background: var(--black-primary);
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            background-image: 
+                radial-gradient(circle at 20% 50%, var(--yellow-primary) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--yellow-primary) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            background: var(--yellow-primary);
+            color: var(--black-primary);
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .calculator-section {
+            background: var(--black-secondary);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            border-radius: 8px;
+            padding: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .calculator-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .calculator-header h1 span {
+            color: var(--yellow-primary);
+        }
+
+        .cost-display {
+            font-size: 4rem;
+            color: var(--yellow-primary);
+            font-weight: 700;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            background: var(--black-primary);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            color: var(--white);
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--yellow-primary);
+        }
+
+        .savings-display {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid var(--yellow-primary);
+            padding: 1.5rem;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .savings-display h3 {
+            color: var(--yellow-primary);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .savings-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--yellow-primary);
+        }
+
+        .cta-button {
+            background: var(--yellow-primary);
+            color: var(--black-primary);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 2rem auto 0;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3);
+        }
+
+        /* Value Props Section */
+        .value-props {
+            background: var(--black-primary);
+            padding: 5rem 2rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .value-header {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+        }
+
+        .value-header h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-header h2 .highlight {
+            color: var(--yellow-primary);
+        }
+
+        .value-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .value-card {
+            padding: 2rem;
+            background: var(--black-secondary);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .value-card:hover {
+            border-color: var(--yellow-primary);
+            transform: translateY(-5px);
+        }
+
+        .value-number {
+            color: var(--yellow-primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .value-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Neuroscience Section */
+        .neuroscience-section {
+            background: linear-gradient(180deg, var(--black-primary) 0%, var(--black-secondary) 100%);
+            padding: 5rem 2rem;
+        }
+
+        .science-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .science-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .science-tagline {
+            color: var(--text-light);
+            font-size: 1.25rem;
+        }
+
+        .science-tagline strong {
+            color: var(--yellow-primary);
+        }
+
+        .metrics-table {
+            max-width: 1200px;
+            margin: 3rem auto;
+            background: var(--black-secondary);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: rgba(255, 204, 0, 0.1);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .table-header div {
+            color: var(--yellow-primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.9rem;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.3s;
+        }
+
+        .table-row:hover {
+            background: rgba(255, 204, 0, 0.05);
+        }
+
+        .metric-name {
+            color: var(--yellow-primary);
+            font-weight: 500;
+        }
+
+        .metric-brain, .metric-cfo {
+            color: var(--text-light);
+        }
+
+        /* Bottom CTA Section */
+        .bottom-cta {
+            background: var(--yellow-primary);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .bottom-cta h2 {
+            color: var(--black-primary);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .bottom-cta p {
+            color: var(--black-primary);
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .bottom-cta .cta-button {
+            background: var(--black-primary);
+            color: var(--yellow-primary);
+        }
+
+        .bottom-cta .cta-button:hover {
+            background: var(--black-secondary);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--black-secondary);
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--yellow-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--black-primary);
+            padding: 3rem 2rem 2rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--yellow-primary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 0.35rem 0;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--yellow-primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .cost-display {
+                font-size: 3rem;
+            }
+            
+            .value-header h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">CLOVER ERA</div>
+            <div class="nav-links">
+                <a href="#home">HOME</a>
+                <a href="#about">ABOUT</a>
+                <a href="#how-it-works">HOW IT WORKS</a>
+                <a href="#pricing">PRICING</a>
+                <a href="#contact">CONTACT</a>
+                <a href="#" class="nav-cta">START FREE PILOT</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Calculator -->
+    <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-badge">Active Management of Employee Engagement</div>
+            
+            <div class="calculator-section">
+                <div class="calculator-header">
+                    <h1>Each Month of Excess Attrition in <span>London</span> is Costing You:</h1>
+                </div>
+                
+                <div class="cost-display">£125k</div>
+                
+                <div class="calculator-grid">
+                    <div class="input-group">
+                        <label>Enter Number of Employees</label>
+                        <input type="number" value="250" id="employees">
+                    </div>
+                    <div class="input-group">
+                        <label>Enter Avg. Salary (GBP)</label>
+                        <input type="number" value="65000" id="salary">
+                    </div>
+                    <div class="input-group">
+                        <label>Current Voluntary Attrition (%)</label>
+                        <input type="number" value="15" id="attrition">
+                    </div>
+                    <div class="input-group">
+                        <label>Attrition Drop Goal (%)</label>
+                        <input type="number" value="5" id="goal">
+                    </div>
+                </div>
+                
+                <div class="savings-display">
+                    <h3>Potential Annual Savings:</h3>
+                    <div class="savings-amount">£1,500,000</div>
+                </div>
+                
+                <a href="#roi" class="cta-button">Show me the full ROI</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-value">73%</span>
+                <span class="stat-label">London Burnout Rate</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">£42B</span>
+                <span class="stat-label">UK Productivity Loss</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">200+</span>
+                <span class="stat-label">London Companies</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">7 Days</span>
+                <span class="stat-label">To See ROI</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Props Section -->
+    <section class="value-props">
+        <div class="value-header">
+            <h2>WE'VE GOT <span class="highlight">WHAT YOU NEED.</span></h2>
+        </div>
+        <div class="value-grid">
+            <div class="value-card">
+                <div class="value-number">1.</div>
+                <div class="value-title">Immediate pounds:</div>
+                <div class="value-description">Cut just 1% attrition—save significant £ per year. London companies see average savings of £2.1M annually.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-number">2.</div>
+                <div class="value-title">Fast proof:</div>
+                <div class="value-description">Mobile app live in 15 min, dashboards and insights within 7 days, full ROI report in 30 days. Perfect for London's fast-paced market.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-number">3.</div>
+                <div class="value-title">Science-backed:</div>
+                <div class="value-description">Neuroscience-based nudges boost manager performance and employee focus. Proven with UK's top companies.</div>
+            </div>
+            <div class="value-card">
+                <div class="value-number">4.</div>
+                <div class="value-title">Zero risk:</div>
+                <div class="value-description">30-day, 20-seat pilot—if ROI is < 2× license cost, you walk away. No London company has walked away yet.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Neuroscience Section -->
+    <section class="neuroscience-section">
+        <div class="science-header">
+            <h2>Neuroscience Meets Finance</h2>
+            <p class="science-tagline">Forget check-the-box surveys. <strong>Employee engagement lives between your ears</strong>, where 86 billion neurons decide whether to lean in or log out.</p>
+        </div>
+        
+        <div class="metrics-table">
+            <div class="table-header">
+                <div>What We Track</div>
+                <div>Brain Lens</div>
+                <div>CFO Lens</div>
+            </div>
+            <div class="table-row">
+                <div class="metric-name">Communication clarity</div>
+                <div class="metric-brain">Dopamine (expectation)</div>
+                <div class="metric-cfo">% time lost to rework</div>
+            </div>
+            <div class="table-row">
+                <div class="metric-name">Learning stretch</div>
+                <div class="metric-brain">Growth-mindset circuits</div>
+                <div class="metric-cfo">Up-skilling cost vs. hiring</div>
+            </div>
+            <div class="table-row">
+                <div class="metric-name">Opportunity fairness</div>
+                <div class="metric-brain">Oxytocin (belonging)</div>
+                <div class="metric-cfo">Attrition risk index</div>
+            </div>
+            <div class="table-row">
+                <div class="metric-name">Vulnerability & trust</div>
+                <div class="metric-brain">Amygdala calm</div>
+                <div class="metric-cfo">Innovation velocity</div>
+            </div>
+            <div class="table-row">
+                <div class="metric-name">Enablement tools</div>
+                <div class="metric-brain">Cognitive load</div>
+                <div class="metric-cfo">Tech ROI realised</div>
+            </div>
+            <div class="table-row">
+                <div class="metric-name">Reflection rituals</div>
+                <div class="metric-brain">Memory consolidation</div>
+                <div class="metric-cfo">Continuous-improvement rate</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem;">
+            <p style="color: var(--text-light); max-width: 800px; margin: 0 auto 2rem; font-size: 1.1rem;">
+                The result? <span style="color: var(--yellow-primary); font-weight: 600;">Predictive engagement scores</span> that correlate with EBITDA, not vanity metrics—<em>the employee engagement platform</em> London's finance teams crave.
+            </p>
+            <a href="#pilot" class="cta-button">LEARN MORE HERE</a>
+        </div>
+    </section>
+
+    <!-- Bottom CTA Section -->
+    <section class="bottom-cta">
+        <h2>ENGAGEMENT - a brain thing, not an HR thing</h2>
+        <p>Transform your London workplace with neuroscience-backed solutions that deliver measurable ROI.</p>
+        <a href="#" class="cta-button">START FREE PILOT</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>London Solutions</h4>
+                <ul>
+                    <li><a href="/london/burnout/">Burnout Prevention</a></li>
+                    <li><a href="/london/retention/">Retention Strategies</a></li>
+                    <li><a href="/london/hybrid/">Hybrid Working</a></li>
+                    <li><a href="/london/stress/">Stress Management</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="/how-it-works/">How It Works</a></li>
+                    <li><a href="/neuroscience/">The Science</a></li>
+                    <li><a href="/roi-calculator/">ROI Calculator</a></li>
+                    <li><a href="/case-studies/">Success Stories</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="/london-report/">London Workplace Report</a></li>
+                    <li><a href="/research/">Research Papers</a></li>
+                    <li><a href="/blog/">Insights Blog</a></li>
+                    <li><a href="/events/">London Events</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Locations</h4>
+                <ul>
+                    <li><a href="/london/">London</a></li>
+                    <li><a href="/manchester/">Manchester</a></li>
+                    <li><a href="/birmingham/">Birmingham</a></li>
+                    <li><a href="/new-york/">New York</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© CLOVER ERA INC. 2025 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple calculator functionality
+        const calculateROI = () => {
+            const employees = document.getElementById('employees').value || 250;
+            const salary = document.getElementById('salary').value || 65000;
+            const attrition = document.getElementById('attrition').value || 15;
+            const goal = document.getElementById('goal').value || 5;
+            
+            const attritionDrop = attrition - goal;
+            const employeesSaved = (employees * attritionDrop) / 100;
+            const monthlySavings = (employeesSaved * salary * 1.5) / 12; // 1.5x for replacement costs
+            const annualSavings = monthlySavings * 12;
+            
+            document.querySelector('.cost-display').textContent = `£${Math.round(monthlySavings/1000)}k`;
+            document.querySelector('.savings-amount').textContent = `£${annualSavings.toLocaleString()}`;
+        };
+        
+        // Add event listeners to inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculateROI);
+        });
+    </script>
+</body>
+</html>
