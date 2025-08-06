@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en-gb">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Engagement Solutions London | Transform Your Workplace Culture</title>
-    <meta name="description" content="London's leading employee engagement consultancy. Solve burnout, improve retention, and build thriving workplace cultures. Get immediate support.">
+    <title>Clover Era | Neuroscience-Powered Employee Engagement Platform</title>
+    <meta name="description" content="Cut attrition by 67%. Boost engagement with neuroscience. See ROI in 7 days. Serving London, NYC, SF and 200+ global companies.">
     
     <style>
         * {
@@ -14,24 +14,22 @@
         }
 
         :root {
-            --primary-dark: #1a1a2e;
-            --primary-blue: #0f3460;
-            --accent-purple: #7c3aed;
-            --accent-pink: #ec4899;
-            --accent-orange: #f97316;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --bg-light: #fafafa;
-            --white: #ffffff;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --black-primary: #000000;
+            --black-secondary: #1a1a1a;
+            --yellow-primary: #FFCC00;
+            --yellow-accent: #FFD700;
+            --dark-gray: #2d2d2d;
+            --medium-gray: #3d3d3d;
+            --light-gray: #666666;
+            --white: #FFFFFF;
+            --text-light: #CCCCCC;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            color: var(--text-dark);
+            color: var(--white);
+            background: var(--black-primary);
             overflow-x: hidden;
         }
 
@@ -40,15 +38,14 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--black-primary);
             z-index: 1000;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem;
             display: flex;
@@ -57,202 +54,293 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--yellow-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 3rem;
             align-items: center;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
+            color: var(--white);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: color 0.3s;
+            position: relative;
         }
 
         .nav-links a:hover {
-            color: var(--accent-purple);
+            color: var(--yellow-primary);
+        }
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--black-secondary);
+            min-width: 200px;
+            top: 100%;
+            margin-top: 1rem;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .nav-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-transform: none;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
         }
 
         .nav-cta {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            color: white;
+            background: transparent;
+            color: var(--yellow-primary);
             padding: 0.75rem 1.5rem;
-            border-radius: 50px;
+            border: 2px solid var(--yellow-primary);
+            border-radius: 4px;
             text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
         }
 
         .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+            background: var(--yellow-primary);
+            color: var(--black-primary);
         }
 
         /* Hero Section */
         .hero {
             margin-top: 80px;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 6rem 2rem 4rem;
+            background: var(--black-primary);
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
             position: relative;
-            overflow: hidden;
         }
 
-        .hero::before {
-            content: '';
+        .hero-background {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></svg>');
-            background-size: 100px 100px;
-            animation: float 20s infinite linear;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100px, -100px); }
+            opacity: 0.15;
+            background-image: 
+                radial-gradient(circle at 10% 20%, var(--yellow-primary) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, var(--yellow-primary) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, var(--yellow-accent) 0%, transparent 60%);
         }
 
         .hero-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            width: 100%;
             position: relative;
             z-index: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
+            text-align: center;
         }
 
-        .hero-text h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-        }
-
-        .hero-text p {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
+        .hero-badge {
+            background: var(--yellow-primary);
+            color: var(--black-primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
             margin-bottom: 2rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .hero-buttons {
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero h1 .highlight {
+            color: var(--yellow-primary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta-group {
             display: flex;
             gap: 1rem;
-            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 4rem;
         }
 
         .btn-primary {
-            background: white;
-            color: var(--accent-purple);
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
+            background: var(--yellow-primary);
+            color: var(--black-primary);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
             font-weight: 600;
-            font-size: 1.1rem;
-            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
             display: inline-block;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3);
         }
 
         .btn-secondary {
             background: transparent;
-            color: white;
-            padding: 1rem 2rem;
-            border: 2px solid white;
-            border-radius: 50px;
-            text-decoration: none;
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--white);
+            border-radius: 4px;
+            font-size: 1rem;
             font-weight: 600;
-            font-size: 1.1rem;
-            transition: background 0.3s, transform 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
             display: inline-block;
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--white);
+            color: var(--black-primary);
+        }
+
+        /* Location Selector */
+        .location-selector {
+            background: var(--black-secondary);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .location-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .location-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .location-header p {
+            color: var(--text-light);
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .location-card {
+            background: var(--black-primary);
+            border: 1px solid rgba(255, 204, 0, 0.1);
+            border-radius: 4px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .location-card:hover {
+            border-color: var(--yellow-primary);
             transform: translateY(-3px);
         }
 
-        .hero-stats {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+        .location-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--yellow-primary);
+            transform: translateX(-100%);
+            transition: transform 0.3s;
         }
 
-        .stat-card {
-            text-align: center;
-            color: white;
+        .location-card:hover::before {
+            transform: translateX(0);
         }
 
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            display: block;
+        .location-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        /* Crisis Alert Bar */
-        .crisis-bar {
-            background: linear-gradient(90deg, var(--danger), var(--accent-orange));
-            color: white;
-            padding: 1rem;
-            text-align: center;
+        .location-name {
             font-weight: 600;
+            margin-bottom: 0.25rem;
         }
 
-        .crisis-bar a {
-            color: white;
-            text-decoration: underline;
-            margin-left: 0.5rem;
+        .location-stat {
+            font-size: 0.85rem;
+            color: var(--text-light);
         }
 
-        /* Problem Cards Section */
-        .problems-section {
+        /* Global Stats Section */
+        .global-stats {
+            background: linear-gradient(180deg, var(--black-primary) 0%, var(--black-secondary) 100%);
             padding: 5rem 2rem;
-            background: var(--bg-light);
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
         }
 
-        .section-header {
+        .stats-header {
             text-align: center;
-            max-width: 800px;
-            margin: 0 auto 3rem;
+            margin-bottom: 3rem;
         }
 
-        .section-header h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
+        .stats-header h2 {
+            font-size: 3rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        .problems-grid {
+        .stats-grid {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
@@ -260,72 +348,151 @@
             gap: 2rem;
         }
 
-        .problem-card {
-            background: white;
-            border-radius: 15px;
+        .stat-card {
+            background: var(--black-primary);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 4px;
             padding: 2rem;
-            text-decoration: none;
-            color: var(--text-dark);
-            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .problem-card::before {
+        .stat-card::after {
             content: '';
             position: absolute;
-            top: 0;
+            bottom: 0;
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+            background: linear-gradient(90deg, var(--yellow-primary), var(--yellow-accent));
         }
 
-        .problem-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .problem-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .problem-card h3 {
-            font-size: 1.25rem;
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--yellow-primary);
+            display: block;
             margin-bottom: 0.5rem;
         }
 
-        .problem-card p {
+        .stat-label {
             color: var(--text-light);
-            font-size: 0.95rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
         }
 
-        .urgency-badge {
-            display: inline-block;
-            background: var(--danger);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 1rem;
-        }
-
-        /* Solutions Section */
-        .solutions-section {
+        /* Industry Sectors */
+        .sectors-section {
+            background: var(--black-primary);
             padding: 5rem 2rem;
-            background: white;
         }
 
-        .solutions-grid {
+        .sectors-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .sectors-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .sectors-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .sector-card {
+            background: var(--black-secondary);
+            border: 1px solid rgba(255, 204, 0, 0.1);
+            border-radius: 4px;
+            padding: 2rem;
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .sector-card:hover {
+            border-color: var(--yellow-primary);
+            transform: translateY(-5px);
+        }
+
+        .sector-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 204, 0, 0.1);
+            border: 2px solid var(--yellow-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .sector-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--yellow-primary);
+        }
+
+        .sector-description {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .sector-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sector-stat {
+            text-align: center;
+        }
+
+        .sector-stat-value {
+            color: var(--yellow-primary);
+            font-weight: 600;
+            display: block;
+        }
+
+        .sector-stat-label {
+            color: var(--text-light);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        /* Platform Features */
+        .platform-section {
+            background: var(--black-secondary);
+            padding: 5rem 2rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .platform-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .platform-header h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-header h2 .highlight {
+            color: var(--yellow-primary);
+        }
+
+        .platform-features {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
@@ -333,112 +500,121 @@
             gap: 2rem;
         }
 
-        .solution-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 2.5rem;
-            color: white;
-            position: relative;
-            overflow: hidden;
+        .feature-card {
+            padding: 2rem;
+            background: var(--black-primary);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 4px;
         }
 
-        .solution-card h3 {
-            font-size: 1.75rem;
+        .feature-number {
+            color: var(--yellow-primary);
+            font-size: 3rem;
+            font-weight: 700;
             margin-bottom: 1rem;
         }
 
-        .solution-features {
-            list-style: none;
-            margin: 1.5rem 0;
+        .feature-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
         }
 
-        .solution-features li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
+        .feature-description {
+            color: var(--text-light);
+            line-height: 1.6;
         }
 
-        .solution-features li::before {
-            content: '✓';
-            margin-right: 0.75rem;
-            background: rgba(255, 255, 255, 0.2);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+        /* ROI Calculator CTA */
+        .calculator-cta {
+            background: var(--yellow-primary);
+            padding: 4rem 2rem;
+            text-align: center;
         }
 
-        /* Stats Section */
-        .stats-section {
-            padding: 5rem 2rem;
-            background: var(--primary-dark);
-            color: white;
+        .calculator-cta h2 {
+            color: var(--black-primary);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
         }
 
-        .stats-container {
+        .calculator-cta p {
+            color: var(--black-primary);
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .calculator-cta .btn-primary {
+            background: var(--black-primary);
+            color: var(--yellow-primary);
+        }
+
+        .calculator-cta .btn-primary:hover {
+            background: var(--black-secondary);
+        }
+
+        /* Client Logos */
+        .clients-section {
+            background: var(--black-primary);
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .clients-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .clients-header h3 {
+            color: var(--text-light);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .clients-grid {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .client-logo {
             text-align: center;
+            opacity: 0.5;
+            transition: opacity 0.3s;
         }
 
-        .stat-item h3 {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-item p {
-            margin-top: 0.5rem;
-            opacity: 0.8;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 5rem 2rem;
-            background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));
-            text-align: center;
-            color: white;
-        }
-
-        .cta-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
+        .client-logo:hover {
+            opacity: 1;
         }
 
         /* Footer */
         footer {
-            background: var(--primary-dark);
-            color: white;
-            padding: 3rem 2rem 1rem;
+            background: var(--black-primary);
+            padding: 4rem 2rem 2rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
         }
 
         .footer-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
         .footer-section h4 {
+            color: var(--yellow-primary);
             margin-bottom: 1rem;
-            color: var(--accent-purple);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
         }
 
         .footer-section ul {
@@ -446,40 +622,43 @@
         }
 
         .footer-section a {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-light);
             text-decoration: none;
             display: block;
-            padding: 0.25rem 0;
+            padding: 0.35rem 0;
             transition: color 0.3s;
+            font-size: 0.9rem;
         }
 
         .footer-section a:hover {
-            color: white;
+            color: var(--yellow-primary);
         }
 
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            opacity: 0.7;
+            color: var(--text-light);
+            font-size: 0.85rem;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-text h1 {
-                font-size: 2.5rem;
+            .hero h1 {
+                font-size: 3rem;
             }
             
             .nav-links {
                 display: none;
             }
             
-            .hero-stats {
-                grid-template-columns: 1fr;
+            .hero-cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .location-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             }
         }
     </style>
@@ -488,173 +667,335 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo">EngageLDN</div>
+            <div class="logo">CLOVER ERA</div>
             <div class="nav-links">
-                <a href="#crisis">Crisis Support</a>
-                <a href="#solutions">Solutions</a>
-                <a href="#diagnostics">Free Assessment</a>
-                <a href="#research">Research</a>
-                <a href="#about">About</a>
-                <a href="#" class="nav-cta">Get Emergency Help</a>
+                <a href="#home">HOME</a>
+                <div class="nav-dropdown">
+                    <a href="#locations">LOCATIONS ▼</a>
+                    <div class="dropdown-content">
+                        <a href="/london/">London</a>
+                        <a href="/new-york/">New York</a>
+                        <a href="/san-francisco/">San Francisco</a>
+                        <a href="/manchester/">Manchester</a>
+                        <a href="/singapore/">Singapore</a>
+                        <a href="/sydney/">Sydney</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <a href="#industries">INDUSTRIES ▼</a>
+                    <div class="dropdown-content">
+                        <a href="/technology/">Technology</a>
+                        <a href="/finance/">Finance</a>
+                        <a href="/healthcare/">Healthcare</a>
+                        <a href="/retail/">Retail</a>
+                        <a href="/manufacturing/">Manufacturing</a>
+                    </div>
+                </div>
+                <a href="#platform">PLATFORM</a>
+                <a href="#pricing">PRICING</a>
+                <a href="#resources">RESOURCES</a>
+                <a href="#" class="nav-cta">START FREE PILOT</a>
             </div>
         </div>
     </nav>
 
-    <!-- Crisis Alert Bar -->
-    <div class="crisis-bar">
-        🚨 Experiencing workplace crisis? 73% of London employees report burnout symptoms. <a href="#crisis">Get immediate support →</a>
-    </div>
-
     <!-- Hero Section -->
     <section class="hero">
+        <div class="hero-background"></div>
         <div class="hero-content">
-            <div class="hero-text">
-                <h1>London's Workplace Culture is in Crisis</h1>
-                <p>Transform employee burnout into engagement. Build resilient teams. Create thriving workplace cultures that attract and retain top talent.</p>
-                <div class="hero-buttons">
-                    <a href="#assessment" class="btn-primary">Free Crisis Assessment</a>
-                    <a href="#solutions" class="btn-secondary">View Solutions</a>
-                </div>
+            <div class="hero-badge">Global Leader in Neuroscience-Based Engagement</div>
+            
+            <h1>ENGAGEMENT IS A <span class="highlight">BRAIN THING</span>,<br>NOT AN HR THING</h1>
+            
+            <p class="hero-subtitle">
+                Cut attrition by 67%. Boost productivity by 31%. 
+                See measurable ROI in 7 days with our neuroscience-powered platform.
+            </p>
+            
+            <div class="hero-cta-group">
+                <a href="#calculator" class="btn-primary">CALCULATE YOUR ROI</a>
+                <a href="#demo" class="btn-secondary">WATCH 2-MIN DEMO</a>
             </div>
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <span class="stat-number">73%</span>
-                    <span class="stat-label">London employees experiencing burnout</span>
+            
+            <!-- Location Selector -->
+            <div class="location-selector">
+                <div class="location-header">
+                    <h3>Select Your Location</h3>
+                    <p>Localized insights and solutions for your market</p>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-number">£42B</span>
-                    <span class="stat-label">Annual UK productivity loss</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">47%</span>
-                    <span class="stat-label">Considering leaving their job</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">24hr</span>
-                    <span class="stat-label">Crisis response time</span>
+                <div class="location-grid">
+                    <a href="/london/" class="location-card">
+                        <div class="location-icon">🇬🇧</div>
+                        <div class="location-name">London</div>
+                        <div class="location-stat">73% burnout rate</div>
+                    </a>
+                    <a href="/new-york/" class="location-card">
+                        <div class="location-icon">🇺🇸</div>
+                        <div class="location-name">New York</div>
+                        <div class="location-stat">68% turnover risk</div>
+                    </a>
+                    <a href="/san-francisco/" class="location-card">
+                        <div class="location-icon">🌉</div>
+                        <div class="location-name">San Francisco</div>
+                        <div class="location-stat">$180k avg cost</div>
+                    </a>
+                    <a href="/manchester/" class="location-card">
+                        <div class="location-icon">🏭</div>
+                        <div class="location-name">Manchester</div>
+                        <div class="location-stat">65% disengaged</div>
+                    </a>
+                    <a href="/singapore/" class="location-card">
+                        <div class="location-icon">🇸🇬</div>
+                        <div class="location-name">Singapore</div>
+                        <div class="location-stat">71% stressed</div>
+                    </a>
+                    <a href="/sydney/" class="location-card">
+                        <div class="location-icon">🇦🇺</div>
+                        <div class="location-name">Sydney</div>
+                        <div class="location-stat">$2.1M saved avg</div>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Problems Section -->
-    <section class="problems-section" id="crisis">
-        <div class="section-header">
-            <h2>Recognise These Warning Signs?</h2>
-            <p>Click any issue for immediate resources and support</p>
+    <!-- Global Stats Section -->
+    <section class="global-stats">
+        <div class="stats-header">
+            <h2>GLOBAL IMPACT AT SCALE</h2>
         </div>
-        <div class="problems-grid">
-            <a href="/london/crisis/burnout/" class="problem-card">
-                <div class="problem-icon">🔥</div>
-                <h3>Employee Burnout</h3>
-                <p>Exhaustion, cynicism, and reduced performance spreading through teams</p>
-                <span class="urgency-badge">URGENT</span>
-            </a>
-            <a href="/london/crisis/stress/" class="problem-card">
-                <div class="problem-icon">😰</div>
-                <h3>Workplace Stress</h3>
-                <p>Overwhelming workloads and constant pressure affecting wellbeing</p>
-                <span class="urgency-badge">HIGH PRIORITY</span>
-            </a>
-            <a href="/london/crisis/retention/" class="problem-card">
-                <div class="problem-icon">🚪</div>
-                <h3>Mass Resignations</h3>
-                <p>Top talent leaving, knowledge drain, recruitment costs spiraling</p>
-            </a>
-            <a href="/london/diagnostics/hybrid/" class="problem-card">
-                <div class="problem-icon">💻</div>
-                <h3>Hybrid Working Failures</h3>
-                <p>Disconnected teams, collaboration breakdown, culture erosion</p>
-            </a>
-            <a href="/london/crisis/conflict/" class="problem-card">
-                <div class="problem-icon">⚔️</div>
-                <h3>Toxic Management</h3>
-                <p>Poor leadership creating hostile environments and team conflicts</p>
-            </a>
-            <a href="/london/diagnostics/productivity/" class="problem-card">
-                <div class="problem-icon">📉</div>
-                <h3>Productivity Collapse</h3>
-                <p>Disengagement leading to missed deadlines and poor performance</p>
-            </a>
-        </div>
-    </section>
-
-    <!-- Solutions Section -->
-    <section class="solutions-section" id="solutions">
-        <div class="section-header">
-            <h2>Evidence-Based Solutions That Work</h2>
-            <p>Proven frameworks deployed across 200+ London organisations</p>
-        </div>
-        <div class="solutions-grid">
-            <div class="solution-card">
-                <h3>Crisis Intervention</h3>
-                <p>Immediate support for teams in distress</p>
-                <ul class="solution-features">
-                    <li>24-hour emergency response</li>
-                    <li>On-site stress management workshops</li>
-                    <li>Mental health first aid training</li>
-                    <li>Burnout recovery programmes</li>
-                </ul>
-                <a href="/london/solutions/crisis/" class="btn-primary">Learn More</a>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Enterprise Clients</span>
             </div>
-            <div class="solution-card">
-                <h3>Culture Transformation</h3>
-                <p>Build resilient, high-performing cultures</p>
-                <ul class="solution-features">
-                    <li>Culture assessment & diagnosis</li>
-                    <li>Values alignment workshops</li>
-                    <li>Psychological safety training</li>
-                    <li>Change management support</li>
-                </ul>
-                <a href="/london/solutions/culture/" class="btn-primary">Learn More</a>
+            <div class="stat-card">
+                <span class="stat-number">2.1M</span>
+                <span class="stat-label">Employees Engaged</span>
             </div>
-            <div class="solution-card">
-                <h3>Leadership Development</h3>
-                <p>Equip leaders to inspire and engage</p>
-                <ul class="solution-features">
-                    <li>Executive coaching programmes</li>
-                    <li>Inclusive leadership training</li>
-                    <li>Emotional intelligence workshops</li>
-                    <li>360-degree feedback systems</li>
-                </ul>
-                <a href="/london/solutions/leadership/" class="btn-primary">Learn More</a>
+            <div class="stat-card">
+                <span class="stat-number">$847M</span>
+                <span class="stat-label">Saved Annually</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">67%</span>
+                <span class="stat-label">Avg Attrition Drop</span>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="section-header" style="color: white;">
-            <h2 style="color: white;">Proven Impact Across London</h2>
-            <p style="opacity: 0.9;">Real results from real organisations</p>
+    <!-- Industry Sectors -->
+    <section class="sectors-section">
+        <div class="sectors-header">
+            <h2>INDUSTRY-SPECIFIC SOLUTIONS</h2>
+            <p style="color: var(--text-light);">Tailored engagement strategies for your sector's unique challenges</p>
         </div>
-        <div class="stats-container">
-            <div class="stat-item">
-                <h3>87%</h3>
-                <p>Reduction in burnout symptoms</p>
+        <div class="sectors-grid">
+            <a href="/technology/" class="sector-card">
+                <div class="sector-icon">💻</div>
+                <div class="sector-title">Technology</div>
+                <div class="sector-description">Combat burnout in high-pressure tech environments. Retain top engineering talent.</div>
+                <div class="sector-stats">
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">$280k</span>
+                        <span class="sector-stat-label">Avg Save/Emp</span>
+                    </div>
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">47%</span>
+                        <span class="sector-stat-label">Burnout Drop</span>
+                    </div>
+                </div>
+            </a>
+            <a href="/finance/" class="sector-card">
+                <div class="sector-icon">📊</div>
+                <div class="sector-title">Finance</div>
+                <div class="sector-description">Reduce costly turnover in banking and financial services. Boost trader performance.</div>
+                <div class="sector-stats">
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">3.8x</span>
+                        <span class="sector-stat-label">ROI</span>
+                    </div>
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">62%</span>
+                        <span class="sector-stat-label">Retention Up</span>
+                    </div>
+                </div>
+            </a>
+            <a href="/healthcare/" class="sector-card">
+                <div class="sector-icon">🏥</div>
+                <div class="sector-title">Healthcare</div>
+                <div class="sector-description">Prevent clinician burnout. Improve patient outcomes through engaged staff.</div>
+                <div class="sector-stats">
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">71%</span>
+                        <span class="sector-stat-label">Burnout Drop</span>
+                    </div>
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">28%</span>
+                        <span class="sector-stat-label">Turnover Drop</span>
+                    </div>
+                </div>
+            </a>
+            <a href="/retail/" class="sector-card">
+                <div class="sector-icon">🛍️</div>
+                <div class="sector-title">Retail</div>
+                <div class="sector-description">Engage frontline workers. Reduce high-volume turnover costs.</div>
+                <div class="sector-stats">
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">$45k</span>
+                        <span class="sector-stat-label">Saved/Store</span>
+                    </div>
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">41%</span>
+                        <span class="sector-stat-label">Turnover Drop</span>
+                    </div>
+                </div>
+            </a>
+            <a href="/manufacturing/" class="sector-card">
+                <div class="sector-icon">🏭</div>
+                <div class="sector-title">Manufacturing</div>
+                <div class="sector-description">Boost safety through engagement. Reduce costly operational errors.</div>
+                <div class="sector-stats">
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">52%</span>
+                        <span class="sector-stat-label">Safety Up</span>
+                    </div>
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">31%</span>
+                        <span class="sector-stat-label">Productivity Up</span>
+                    </div>
+                </div>
+            </a>
+            <a href="/professional-services/" class="sector-card">
+                <div class="sector-icon">💼</div>
+                <div class="sector-title">Professional Services</div>
+                <div class="sector-description">Retain top consultants. Improve client satisfaction through team engagement.</div>
+                <div class="sector-stats">
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">$195k</span>
+                        <span class="sector-stat-label">Avg Save/Emp</span>
+                    </div>
+                    <div class="sector-stat">
+                        <span class="sector-stat-value">38%</span>
+                        <span class="sector-stat-label">Utilization Up</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Platform Features -->
+    <section class="platform-section">
+        <div class="platform-header">
+            <h2>THE <span class="highlight">SCIENCE</span> BEHIND THE SAVINGS</h2>
+        </div>
+        <div class="platform-features">
+            <div class="feature-card">
+                <div class="feature-number">1.</div>
+                <div class="feature-title">Neuroscience-Based Nudges</div>
+                <div class="feature-description">86 billion neurons decide whether your employees lean in or log out. We measure what matters: dopamine response, cognitive load, amygdala activation.</div>
             </div>
-            <div class="stat-item">
-                <h3>3.2x</h3>
-                <p>ROI on engagement investment</p>
+            <div class="feature-card">
+                <div class="feature-number">2.</div>
+                <div class="feature-title">Real-Time Analytics</div>
+                <div class="feature-description">Dashboard live in 15 minutes. See engagement scores that correlate with EBITDA, not vanity metrics. Track ROI daily.</div>
             </div>
-            <div class="stat-item">
-                <h3>65%</h3>
-                <p>Improvement in retention</p>
+            <div class="feature-card">
+                <div class="feature-number">3.</div>
+                <div class="feature-title">Manager Enablement</div>
+                <div class="feature-description">Transform managers into engagement champions with AI-powered coaching. Reduce manager-driven turnover by 71%.</div>
             </div>
-            <div class="stat-item">
-                <h3>200+</h3>
-                <p>London companies transformed</p>
+            <div class="feature-card">
+                <div class="feature-number">4.</div>
+                <div class="feature-title">Predictive Attrition</div>
+                <div class="feature-description">Know who's leaving 6 months before they do. Our ML models predict flight risk with 89% accuracy.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-number">5.</div>
+                <div class="feature-title">Culture Mapping</div>
+                <div class="feature-description">Visualize your actual culture, not the one in your employee handbook. Track culture evolution in real-time.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-number">6.</div>
+                <div class="feature-title">Zero-Risk Pilot</div>
+                <div class="feature-description">30-day, 20-seat pilot. If ROI < 2x license cost, you walk away. No one has walked away yet.</div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <h2>Your Team Deserves Better</h2>
-        <p>Take the first step toward a thriving workplace culture</p>
-        <div class="hero-buttons" style="justify-content: center;">
-            <a href="#assessment" class="btn-primary">Start Free Assessment</a>
-            <a href="#consultation" class="btn-secondary">Book Emergency Consultation</a>
+    <!-- Client Logos -->
+    <section class="clients-section">
+        <div class="clients-header">
+            <h3>TRUSTED BY GLOBAL LEADERS</h3>
+        </div>
+        <div class="clients-grid">
+            <div class="client-logo" style="color: var(--text-light); font-size: 1.5rem;">FORTUNE 500</div>
+            <div class="client-logo" style="color: var(--text-light); font-size: 1.5rem;">TECH GIANTS</div>
+            <div class="client-logo" style="color: var(--text-light); font-size: 1.5rem;">BIG FOUR</div>
+            <div class="client-logo" style="color: var(--text-light); font-size: 1.5rem;">GLOBAL BANKS</div>
+            <div class="client-logo" style="color: var(--text-light); font-size: 1.5rem;">FTSE 100</div>
+            <div class="client-logo" style="color: var(--text-light); font-size: 1.5rem;">UNICORNS</div>
+        </div>
+    </section>
+
+    <!-- ROI Calculator CTA -->
+    <section class="calculator-cta">
+        <h2>YOUR ATTRITION IS COSTING YOU MILLIONS</h2>
+        <p>Calculate your exact losses and potential savings in 60 seconds</p>
+        <a href="/calculator/" class="btn-primary">CALCULATE ROI NOW</a>
+    </section>
+
+    <!-- Quick Links Grid -->
+    <section class="platform-section">
+        <div class="platform-header">
+            <h2>EXPLORE OUR SOLUTIONS</h2>
+        </div>
+        <div class="sectors-grid">
+            <a href="/burnout-solutions/" class="sector-card">
+                <div class="sector-icon">🔥</div>
+                <div class="sector-title">Burnout Prevention</div>
+                <div class="sector-description">Science-backed strategies to prevent and reverse employee burnout</div>
+            </a>
+            <a href="/hybrid-working/" class="sector-card">
+                <div class="sector-icon">🏠</div>
+                <div class="sector-title">Hybrid Excellence</div>
+                <div class="sector-description">Build connected, productive teams across any working arrangement</div>
+            </a>
+            <a href="/retention-strategies/" class="sector-card">
+                <div class="sector-icon">🎯</div>
+                <div class="sector-title">Retention Mastery</div>
+                <div class="sector-description">Keep your top talent with predictive analytics and targeted interventions</div>
+            </a>
+            <a href="/leadership-development/" class="sector-card">
+                <div class="sector-icon">👥</div>
+                <div class="sector-title">Leadership Impact</div>
+                <div class="sector-description">Transform managers into engagement multipliers with neuroscience-based training</div>
+            </a>
+            <a href="/culture-transformation/" class="sector-card">
+                <div class="sector-icon">🌟</div>
+                <div class="sector-title">Culture Evolution</div>
+                <div class="sector-description">Build and measure cultures that attract and retain top performers</div>
+            </a>
+            <a href="/dei-engagement/" class="sector-card">
+                <div class="sector-icon">🤝</div>
+                <div class="sector-title">Inclusive Engagement</div>
+                <div class="sector-description">Create belonging and psychological safety for all employees</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="global-stats" style="background: var(--yellow-primary); color: var(--black-primary);">
+        <div class="stats-header">
+            <h2 style="color: var(--black-primary);">START YOUR FREE PILOT TODAY</h2>
+            <p style="color: var(--black-primary); font-size: 1.25rem; margin-top: 1rem;">
+                Join 500+ companies saving millions through neuroscience-powered engagement
+            </p>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="#pilot" class="btn-primary" style="background: var(--black-primary); color: var(--yellow-primary); font-size: 1.2rem; padding: 1.25rem 3rem;">
+                START 30-DAY PILOT
+            </a>
         </div>
     </section>
 
@@ -662,45 +1003,128 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Crisis Support</h4>
+                <h4>Locations</h4>
                 <ul>
-                    <li><a href="/london/crisis/burnout/">Burnout Emergency Help</a></li>
-                    <li><a href="/london/crisis/stress/">Stress Management</a></li>
-                    <li><a href="/london/crisis/anxiety/">Workplace Anxiety</a></li>
-                    <li><a href="/london/crisis/conflict/">Conflict Resolution</a></li>
+                    <li><a href="/london/">London</a></li>
+                    <li><a href="/new-york/">New York</a></li>
+                    <li><a href="/san-francisco/">San Francisco</a></li>
+                    <li><a href="/manchester/">Manchester</a></li>
+                    <li><a href="/singapore/">Singapore</a></li>
+                    <li><a href="/sydney/">Sydney</a></li>
+                    <li><a href="/locations/">All Locations →</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Industries</h4>
+                <ul>
+                    <li><a href="/technology/">Technology</a></li>
+                    <li><a href="/finance/">Finance & Banking</a></li>
+                    <li><a href="/healthcare/">Healthcare</a></li>
+                    <li><a href="/retail/">Retail</a></li>
+                    <li><a href="/manufacturing/">Manufacturing</a></li>
+                    <li><a href="/professional-services/">Professional Services</a></li>
+                    <li><a href="/industries/">All Industries →</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Solutions</h4>
                 <ul>
-                    <li><a href="/london/solutions/culture/">Culture Transformation</a></li>
-                    <li><a href="/london/solutions/leadership/">Leadership Development</a></li>
-                    <li><a href="/london/solutions/hybrid/">Hybrid Working</a></li>
-                    <li><a href="/london/solutions/retention/">Retention Strategies</a></li>
+                    <li><a href="/burnout-prevention/">Burnout Prevention</a></li>
+                    <li><a href="/retention/">Retention Strategies</a></li>
+                    <li><a href="/hybrid-working/">Hybrid Working</a></li>
+                    <li><a href="/leadership/">Leadership Development</a></li>
+                    <li><a href="/culture/">Culture Transformation</a></li>
+                    <li><a href="/dei/">DEI & Inclusion</a></li>
+                    <li><a href="/solutions/">All Solutions →</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="/how-it-works/">How It Works</a></li>
+                    <li><a href="/neuroscience/">The Science</a></li>
+                    <li><a href="/roi-calculator/">ROI Calculator</a></li>
+                    <li><a href="/case-studies/">Case Studies</a></li>
+                    <li><a href="/demo/">Watch Demo</a></li>
+                    <li><a href="/pricing/">Pricing</a></li>
+                    <li><a href="/pilot/">Start Free Pilot</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Resources</h4>
                 <ul>
-                    <li><a href="/london/research/">London Workplace Report 2025</a></li>
-                    <li><a href="/london/diagnostics/">Free Assessments</a></li>
-                    <li><a href="/london/case-studies/">Success Stories</a></li>
-                    <li><a href="/london/insights/">Industry Insights</a></li>
+                    <li><a href="/research/">Research Papers</a></li>
+                    <li><a href="/reports/">Industry Reports</a></li>
+                    <li><a href="/blog/">Blog & Insights</a></li>
+                    <li><a href="/webinars/">Webinars</a></li>
+                    <li><a href="/events/">Events</a></li>
+                    <li><a href="/newsletter/">Newsletter</a></li>
+                    <li><a href="/contact/">Contact Us</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Locations</h4>
+                <h4>Company</h4>
                 <ul>
-                    <li><a href="/london/">London</a></li>
-                    <li><a href="/manchester/">Manchester</a></li>
-                    <li><a href="/birmingham/">Birmingham</a></li>
-                    <li><a href="/tech/">Tech Industry Focus</a></li>
+                    <li><a href="/about/">About Clover Era</a></li>
+                    <li><a href="/team/">Leadership Team</a></li>
+                    <li><a href="/careers/">Careers</a></li>
+                    <li><a href="/press/">Press & Media</a></li>
+                    <li><a href="/partners/">Partners</a></li>
+                    <li><a href="/privacy/">Privacy Policy</a></li>
+                    <li><a href="/terms/">Terms of Service</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 EngageLDN. Transforming London's workplace culture.</p>
+            <p>© CLOVER ERA INC. 2025 All Rights Reserved | Neuroscience-Powered Employee Engagement Platform</p>
         </div>
     </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animate stats on scroll
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card, .sector-card, .feature-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </body>
 </html>
