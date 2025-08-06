@@ -3,8 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clover Era | Neuroscience-Powered Employee Engagement Platform</title>
-    <meta name="description" content="Cut attrition by 67%. Boost engagement with neuroscience. See ROI in 7 days. Serving London, NYC, SF and 200+ global companies.">
+    <title>Clover Era | Neuroscience-Powered Employee Engagement Platform | Cut Attrition by 67%</title>
+    <meta name="description" content="Stop losing £125k/month to employee turnover. Neuroscience-backed engagement platform serving London, NYC, and 500+ global companies. See ROI in 7 days. Start free pilot.">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Clover Era - Employee Engagement Platform">
+    <meta property="og:description" content="Cut attrition by 67% with neuroscience. Serving London, NYC, SF and 500+ companies globally.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.clover-era.com">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Clover Era",
+      "url": "https://www.clover-era.com",
+      "description": "Neuroscience-powered employee engagement platform",
+      "foundingDate": "2020",
+      "contactPoint": [{
+        "@type": "ContactPoint",
+        "contactType": "sales",
+        "areaServed": ["GB", "US", "SG", "AU"],
+        "availableLanguage": ["English"]
+      }],
+      "sameAs": [
+        "https://linkedin.com/company/clover-era",
+        "https://twitter.com/cloverera"
+      ],
+      "address": [
+        {
+          "@type": "PostalAddress",
+          "addressLocality": "London",
+          "addressCountry": "GB"
+        },
+        {
+          "@type": "PostalAddress",
+          "addressLocality": "New York",
+          "addressRegion": "NY",
+          "addressCountry": "US"
+        }
+      ]
+    }
+    </script>
     
     <style>
         * {
@@ -33,7 +74,7 @@
             overflow-x: hidden;
         }
 
-        /* Navigation */
+        /* Navigation with Dropdowns */
         nav {
             position: fixed;
             top: 0;
@@ -59,15 +100,16 @@
             color: var(--yellow-primary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            text-decoration: none;
         }
 
         .nav-links {
             display: flex;
-            gap: 3rem;
+            gap: 2.5rem;
             align-items: center;
         }
 
-        .nav-links a {
+        .nav-links > a {
             text-decoration: none;
             color: var(--white);
             font-size: 0.9rem;
@@ -77,23 +119,39 @@
             position: relative;
         }
 
-        .nav-links a:hover {
+        .nav-links > a:hover {
             color: var(--yellow-primary);
         }
 
+        /* Dropdown Menus */
         .nav-dropdown {
             position: relative;
+        }
+
+        .nav-dropdown > a {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-dropdown:hover > a {
+            color: var(--yellow-primary);
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
             background: var(--black-secondary);
-            min-width: 200px;
+            min-width: 250px;
             top: 100%;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             border: 1px solid rgba(255, 204, 0, 0.2);
             border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .nav-dropdown:hover .dropdown-content {
@@ -102,13 +160,23 @@
 
         .dropdown-content a {
             display: block;
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 1.25rem;
+            color: var(--white);
+            text-decoration: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             text-transform: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
 
         .dropdown-content a:last-child {
             border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--yellow-primary);
+            padding-left: 1.5rem;
         }
 
         .nav-cta {
@@ -127,6 +195,21 @@
         .nav-cta:hover {
             background: var(--yellow-primary);
             color: var(--black-primary);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--yellow-primary);
+            margin: 3px 0;
+            transition: 0.3s;
         }
 
         /* Hero Section */
@@ -321,6 +404,22 @@
         .location-stat {
             font-size: 0.85rem;
             color: var(--text-light);
+        }
+
+        /* Location Alert Bar */
+        .location-alert {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid var(--yellow-primary);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            text-align: center;
+            display: none;
+        }
+
+        .location-alert.active {
+            display: block;
         }
 
         /* Global Stats Section */
@@ -604,7 +703,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
@@ -634,6 +733,12 @@
             color: var(--yellow-primary);
         }
 
+        .footer-section .sub-link {
+            padding-left: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
@@ -652,6 +757,10 @@
                 display: none;
             }
             
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
             .hero-cta-group {
                 flex-direction: column;
                 align-items: center;
@@ -660,6 +769,10 @@
             .location-grid {
                 grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -667,34 +780,59 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo">CLOVER ERA</div>
+            <a href="/" class="logo">CLOVER ERA</a>
             <div class="nav-links">
-                <a href="#home">HOME</a>
+                <a href="/">HOME</a>
+                
+                <!-- Locations Dropdown -->
                 <div class="nav-dropdown">
-                    <a href="#locations">LOCATIONS ▼</a>
+                    <a href="#">LOCATIONS ▼</a>
                     <div class="dropdown-content">
-                        <a href="/london/">London</a>
-                        <a href="/new-york/">New York</a>
-                        <a href="/san-francisco/">San Francisco</a>
-                        <a href="/manchester/">Manchester</a>
-                        <a href="/singapore/">Singapore</a>
-                        <a href="/sydney/">Sydney</a>
+                        <a href="/london/">🇬🇧 London</a>
+                        <a href="/new-york/">🇺🇸 New York</a>
+                        <a href="/san-francisco/">🌉 San Francisco</a>
+                        <a href="/manchester/">🏭 Manchester</a>
+                        <a href="/singapore/">🇸🇬 Singapore</a>
+                        <a href="/sydney/">🇦🇺 Sydney</a>
                     </div>
                 </div>
+                
+                <!-- Industries Dropdown -->
                 <div class="nav-dropdown">
-                    <a href="#industries">INDUSTRIES ▼</a>
+                    <a href="#">INDUSTRIES ▼</a>
                     <div class="dropdown-content">
-                        <a href="/technology/">Technology</a>
-                        <a href="/finance/">Finance</a>
-                        <a href="/healthcare/">Healthcare</a>
-                        <a href="/retail/">Retail</a>
-                        <a href="/manufacturing/">Manufacturing</a>
+                        <a href="/technology/">💻 Technology</a>
+                        <a href="/finance/">🏦 Finance & Banking</a>
+                        <a href="/healthcare/">🏥 Healthcare</a>
+                        <a href="/retail/">🛍️ Retail</a>
+                        <a href="/manufacturing/">🏭 Manufacturing</a>
+                        <a href="/professional-services/">💼 Professional Services</a>
                     </div>
                 </div>
-                <a href="#platform">PLATFORM</a>
-                <a href="#pricing">PRICING</a>
-                <a href="#resources">RESOURCES</a>
-                <a href="#" class="nav-cta">START FREE PILOT</a>
+                
+                <!-- Solutions Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#">SOLUTIONS ▼</a>
+                    <div class="dropdown-content">
+                        <a href="/solutions/burnout-prevention/">🔥 Burnout Prevention</a>
+                        <a href="/solutions/retention-strategy/">🎯 Retention Strategy</a>
+                        <a href="/solutions/culture-transformation/">🌟 Culture Change</a>
+                        <a href="/solutions/leadership-development/">👥 Leadership</a>
+                        <a href="/solutions/hybrid-excellence/">💻 Hybrid Working</a>
+                        <a href="/solutions/wellbeing-programs/">🌱 Wellbeing</a>
+                    </div>
+                </div>
+                
+                <a href="/calculator/">CALCULATOR</a>
+                <a href="/resources/">RESOURCES</a>
+                <a href="/pilot/" class="nav-cta">START FREE PILOT</a>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
@@ -713,8 +851,14 @@
             </p>
             
             <div class="hero-cta-group">
-                <a href="#calculator" class="btn-primary">CALCULATE YOUR ROI</a>
-                <a href="#demo" class="btn-secondary">WATCH 2-MIN DEMO</a>
+                <a href="/calculator/" class="btn-primary">CALCULATE YOUR ROI</a>
+                <a href="/demo/" class="btn-secondary">WATCH 2-MIN DEMO</a>
+            </div>
+            
+            <!-- Location Alert (Dynamic) -->
+            <div class="location-alert" id="locationAlert">
+                <p>📍 Looks like you're in <span id="detectedCity">London</span>. 
+                <a href="#" id="localLink" style="color: var(--yellow-primary);">View local solutions →</a></p>
             </div>
             
             <!-- Location Selector -->
@@ -945,142 +1089,143 @@
         <a href="/calculator/" class="btn-primary">CALCULATE ROI NOW</a>
     </section>
 
-    <!-- Quick Links Grid -->
-    <section class="platform-section">
-        <div class="platform-header">
-            <h2>EXPLORE OUR SOLUTIONS</h2>
-        </div>
-        <div class="sectors-grid">
-            <a href="/burnout-solutions/" class="sector-card">
-                <div class="sector-icon">🔥</div>
-                <div class="sector-title">Burnout Prevention</div>
-                <div class="sector-description">Science-backed strategies to prevent and reverse employee burnout</div>
-            </a>
-            <a href="/hybrid-working/" class="sector-card">
-                <div class="sector-icon">🏠</div>
-                <div class="sector-title">Hybrid Excellence</div>
-                <div class="sector-description">Build connected, productive teams across any working arrangement</div>
-            </a>
-            <a href="/retention-strategies/" class="sector-card">
-                <div class="sector-icon">🎯</div>
-                <div class="sector-title">Retention Mastery</div>
-                <div class="sector-description">Keep your top talent with predictive analytics and targeted interventions</div>
-            </a>
-            <a href="/leadership-development/" class="sector-card">
-                <div class="sector-icon">👥</div>
-                <div class="sector-title">Leadership Impact</div>
-                <div class="sector-description">Transform managers into engagement multipliers with neuroscience-based training</div>
-            </a>
-            <a href="/culture-transformation/" class="sector-card">
-                <div class="sector-icon">🌟</div>
-                <div class="sector-title">Culture Evolution</div>
-                <div class="sector-description">Build and measure cultures that attract and retain top performers</div>
-            </a>
-            <a href="/dei-engagement/" class="sector-card">
-                <div class="sector-icon">🤝</div>
-                <div class="sector-title">Inclusive Engagement</div>
-                <div class="sector-description">Create belonging and psychological safety for all employees</div>
-            </a>
-        </div>
-    </section>
-
-    <!-- Bottom CTA -->
-    <section class="global-stats" style="background: var(--yellow-primary); color: var(--black-primary);">
-        <div class="stats-header">
-            <h2 style="color: var(--black-primary);">START YOUR FREE PILOT TODAY</h2>
-            <p style="color: var(--black-primary); font-size: 1.25rem; margin-top: 1rem;">
-                Join 500+ companies saving millions through neuroscience-powered engagement
-            </p>
-        </div>
-        <div style="text-align: center; margin-top: 2rem;">
-            <a href="#pilot" class="btn-primary" style="background: var(--black-primary); color: var(--yellow-primary); font-size: 1.2rem; padding: 1.25rem 3rem;">
-                START 30-DAY PILOT
-            </a>
-        </div>
-    </section>
-
-    <!-- Footer -->
+    <!-- Footer with Complete Architecture -->
     <footer>
         <div class="footer-content">
+            <!-- Locations Column -->
             <div class="footer-section">
-                <h4>Locations</h4>
+                <h4>LOCATIONS</h4>
                 <ul>
-                    <li><a href="/london/">London</a></li>
-                    <li><a href="/new-york/">New York</a></li>
-                    <li><a href="/san-francisco/">San Francisco</a></li>
-                    <li><a href="/manchester/">Manchester</a></li>
-                    <li><a href="/singapore/">Singapore</a></li>
-                    <li><a href="/sydney/">Sydney</a></li>
-                    <li><a href="/locations/">All Locations →</a></li>
+                    <li><a href="/london/">London Hub</a></li>
+                    <li><a href="/london/burnout/" class="sub-link">→ Burnout Crisis</a></li>
+                    <li><a href="/london/stress/" class="sub-link">→ Stress Support</a></li>
+                    <li><a href="/new-york/">New York Hub</a></li>
+                    <li><a href="/san-francisco/">San Francisco Hub</a></li>
+                    <li><a href="/manchester/">Manchester Hub</a></li>
+                    <li><a href="/singapore/">Singapore Hub</a></li>
+                    <li><a href="/sydney/">Sydney Hub</a></li>
                 </ul>
             </div>
+            
+            <!-- Crisis Support Column -->
             <div class="footer-section">
-                <h4>Industries</h4>
+                <h4>URGENT SUPPORT</h4>
+                <ul>
+                    <li><a href="/london/burnout/">Burnout Emergency</a></li>
+                    <li><a href="/london/stress/">Stress Management</a></li>
+                    <li><a href="/london/retention/">Retention Crisis</a></li>
+                    <li><a href="/london/anxiety/">Workplace Anxiety</a></li>
+                    <li><a href="/london/toxic-management/">Toxic Management</a></li>
+                    <li><a href="/london/productivity/">Productivity Loss</a></li>
+                    <li><a href="/calculator/" style="color: var(--yellow-primary);">→ Calculate Costs</a></li>
+                </ul>
+            </div>
+            
+            <!-- Solutions Column -->
+            <div class="footer-section">
+                <h4>SOLUTIONS</h4>
+                <ul>
+                    <li><a href="/solutions/crisis-intervention/">Crisis Intervention</a></li>
+                    <li><a href="/solutions/retention-strategy/">Retention Strategy</a></li>
+                    <li><a href="/solutions/culture-transformation/">Culture Transformation</a></li>
+                    <li><a href="/solutions/leadership-development/">Leadership Development</a></li>
+                    <li><a href="/solutions/hybrid-excellence/">Hybrid Excellence</a></li>
+                    <li><a href="/solutions/wellbeing-programs/">Wellbeing Programs</a></li>
+                    <li><a href="/solutions/dei-inclusion/">DEI & Inclusion</a></li>
+                </ul>
+            </div>
+            
+            <!-- Industries Column -->
+            <div class="footer-section">
+                <h4>INDUSTRIES</h4>
                 <ul>
                     <li><a href="/technology/">Technology</a></li>
                     <li><a href="/finance/">Finance & Banking</a></li>
-                    <li><a href="/healthcare/">Healthcare</a></li>
+                    <li><a href="/healthcare/">Healthcare & NHS</a></li>
                     <li><a href="/retail/">Retail</a></li>
                     <li><a href="/manufacturing/">Manufacturing</a></li>
                     <li><a href="/professional-services/">Professional Services</a></li>
-                    <li><a href="/industries/">All Industries →</a></li>
+                    <li><a href="/education/">Education</a></li>
                 </ul>
             </div>
+            
+            <!-- Tools & Resources Column -->
             <div class="footer-section">
-                <h4>Solutions</h4>
+                <h4>TOOLS & RESOURCES</h4>
                 <ul>
-                    <li><a href="/burnout-prevention/">Burnout Prevention</a></li>
-                    <li><a href="/retention/">Retention Strategies</a></li>
-                    <li><a href="/hybrid-working/">Hybrid Working</a></li>
-                    <li><a href="/leadership/">Leadership Development</a></li>
-                    <li><a href="/culture/">Culture Transformation</a></li>
-                    <li><a href="/dei/">DEI & Inclusion</a></li>
-                    <li><a href="/solutions/">All Solutions →</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Platform</h4>
-                <ul>
-                    <li><a href="/how-it-works/">How It Works</a></li>
-                    <li><a href="/neuroscience/">The Science</a></li>
-                    <li><a href="/roi-calculator/">ROI Calculator</a></li>
-                    <li><a href="/case-studies/">Case Studies</a></li>
+                    <li><a href="/calculator/">ROI Calculator</a></li>
+                    <li><a href="/assessment/">Free Assessment</a></li>
                     <li><a href="/demo/">Watch Demo</a></li>
-                    <li><a href="/pricing/">Pricing</a></li>
                     <li><a href="/pilot/">Start Free Pilot</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="/research/">Research Papers</a></li>
-                    <li><a href="/reports/">Industry Reports</a></li>
+                    <li><a href="/case-studies/">Case Studies</a></li>
+                    <li><a href="/research/">Research & Reports</a></li>
                     <li><a href="/blog/">Blog & Insights</a></li>
                     <li><a href="/webinars/">Webinars</a></li>
-                    <li><a href="/events/">Events</a></li>
-                    <li><a href="/newsletter/">Newsletter</a></li>
-                    <li><a href="/contact/">Contact Us</a></li>
                 </ul>
             </div>
+            
+            <!-- Company Column -->
             <div class="footer-section">
-                <h4>Company</h4>
+                <h4>COMPANY</h4>
                 <ul>
                     <li><a href="/about/">About Clover Era</a></li>
                     <li><a href="/team/">Leadership Team</a></li>
                     <li><a href="/careers/">Careers</a></li>
                     <li><a href="/press/">Press & Media</a></li>
                     <li><a href="/partners/">Partners</a></li>
+                    <li><a href="/contact/">Contact Us</a></li>
                     <li><a href="/privacy/">Privacy Policy</a></li>
                     <li><a href="/terms/">Terms of Service</a></li>
                 </ul>
             </div>
         </div>
+        
         <div class="footer-bottom">
             <p>© CLOVER ERA INC. 2025 All Rights Reserved | Neuroscience-Powered Employee Engagement Platform</p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">
+                Serving London, New York, San Francisco, Manchester, Singapore, Sydney and 500+ global enterprises
+            </p>
         </div>
     </footer>
 
     <script>
+        // Location Detection (Optional)
+        function detectUserLocation() {
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => {
+                    const city = data.city ? data.city.toLowerCase() : '';
+                    const locationAlert = document.getElementById('locationAlert');
+                    const detectedCity = document.getElementById('detectedCity');
+                    const localLink = document.getElementById('localLink');
+                    
+                    const cityMap = {
+                        'london': { name: 'London', url: '/london/' },
+                        'new york': { name: 'New York', url: '/new-york/' },
+                        'san francisco': { name: 'San Francisco', url: '/san-francisco/' },
+                        'manchester': { name: 'Manchester', url: '/manchester/' },
+                        'singapore': { name: 'Singapore', url: '/singapore/' },
+                        'sydney': { name: 'Sydney', url: '/sydney/' }
+                    };
+                    
+                    // Check if city is in our supported locations
+                    for (let key in cityMap) {
+                        if (city.includes(key)) {
+                            detectedCity.textContent = cityMap[key].name;
+                            localLink.href = cityMap[key].url;
+                            locationAlert.classList.add('active');
+                            break;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.log('Location detection failed:', error);
+                });
+        }
+        
+        // Run location detection on page load
+        window.addEventListener('load', detectUserLocation);
+        
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1094,13 +1239,24 @@
                 }
             });
         });
-
+        
+        // Mobile menu toggle
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                mobileToggle.classList.toggle('active');
+            });
+        }
+        
         // Animate stats on scroll
         const observerOptions = {
             threshold: 0.5,
             rootMargin: '0px'
         };
-
+        
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1108,12 +1264,12 @@
                 }
             });
         }, observerOptions);
-
+        
         document.querySelectorAll('.stat-card, .sector-card, .feature-card').forEach(el => {
             observer.observe(el);
         });
     </script>
-
+    
     <style>
         @keyframes fadeInUp {
             from {
@@ -1123,6 +1279,35 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+        
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--black-primary);
+                flex-direction: column;
+                padding: 2rem;
+                transition: right 0.3s;
+                overflow-y: auto;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-dropdown .dropdown-content {
+                position: static;
+                display: block;
+                margin-top: 0.5rem;
+                margin-bottom: 1rem;
+                border: none;
+                background: var(--black-secondary);
             }
         }
     </style>
