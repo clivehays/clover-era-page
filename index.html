@@ -627,6 +627,41 @@
             
             .nav-links {
                 display: none;
+                position: fixed;
+                top: 70px;
+                right: 0;
+                width: 100%;
+                background: var(--black-primary);
+                flex-direction: column;
+                padding: 2rem;
+                border-bottom: 2px solid var(--yellow-primary);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.9);
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 204, 0, 0.1);
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links a:last-child {
+                border-bottom: none;
+            }
+            
+            .nav-cta {
+                margin-top: 1rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
             }
             
             .problems-grid {
@@ -636,6 +671,16 @@
             .calc-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .hero-cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -644,11 +689,16 @@
     <nav>
         <div class="nav-container">
             <a href="/" class="logo">CLOVER ERA</a>
-            <div class="nav-links">
+            <div class="nav-links" id="navLinks">
                 <a href="#problems">PROBLEMS</a>
                 <a href="#calculator">CALCULATOR</a>
                 <a href="/assessment/index.html">ASSESSMENT</a>
                 <a href="/pilot/index.html" class="nav-cta">START FREE PILOT</a>
+            </div>
+            <div class="mobile-menu-toggle" id="mobileToggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
