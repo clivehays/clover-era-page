@@ -1,1 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover Era - Site Architecture Map</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border-radius: 10px;
+            border: 2px solid #FFCC00;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #FFCC00;
+            margin-bottom: 1rem;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .priority-1 { background: #FF4444; }
+        .priority-2 { background: #FFCC00; }
+        .priority-3 { background: #44FF44; }
+        .priority-4 { background: #4444FF; }
+
+        .architecture-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid #333;
+        }
+
+        .level {
+            margin-bottom: 3rem;
+        }
+
+        .level-header {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-left: 4px solid #FFCC00;
+            margin-bottom: 1.5rem;
+        }
+
+        .level-title {
+            font-size: 1.5rem;
+            color: #FFCC00;
+            margin-bottom: 0.5rem;
+        }
+
+        .level-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .page-card {
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1.25rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .page-card:hover {
+            transform: translateY(-3px);
+            border-color: #FFCC00;
+            box-shadow: 0 10px 20px rgba(255, 204, 0, 0.2);
+        }
+
+        .page-priority {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #000;
+        }
+
+        .page-url {
+            color: #FFCC00;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .page-keyword {
+            background: #1a1a1a;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #4CAF50;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-metrics {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .metric {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .page-links {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #444;
+        }
+
+        .links-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 0.25rem;
+        }
+
+        .link-tag {
+            display: inline-block;
+            background: #3d3d3d;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            color: #ccc;
+            margin: 0.15rem;
+        }
+
+        .flow-diagram {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid #444;
+        }
+
+        .flow-title {
+            color: #FFCC00;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .flow-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .flow-node {
+            background: #1a1a1a;
+            border: 2px solid #FFCC00;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            min-width: 150px;
+            position: relative;
+        }
+
+        .flow-node::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #FFCC00;
+            font-size: 1.5rem;
+        }
+
+        .flow-node:last-child::after {
+            content: '';
+        }
+
+        .stats-table {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stats-title {
+            color: #FFCC00;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1a1a1a;
+            color: #FFCC00;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #444;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #444;
+        }
+
+        tr:hover {
+            background: #333;
+        }
+
+        .high-priority {
+            color: #FF4444;
+            font-weight: bold;
+        }
+
+        .medium-priority {
+            color: #FFCC00;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .pages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-chart {
+                flex-direction: column;
+            }
+            
+            .flow-node::after {
+                content: '↓';
+                right: 50%;
+                bottom: -25px;
+                top: auto;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CLOVER ERA - Complete Site Architecture Map</h1>
+        <p style="color: #cccccc; margin-bottom: 1rem;">Comprehensive site structure with 60+ pages, internal linking strategy, and keyword targets</p>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box priority-1"></div>
+                <span>Priority 1 (Week 1)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box priority-2"></div>
+                <span>Priority 2 (Week 2)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box priority-3"></div>
+                <span>Priority 3 (Week 3)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box priority-4"></div>
+                <span>Priority 4 (Week 4+)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Journey Flow -->
+    <div class="flow-diagram">
+        <h2 class="flow-title">User Journey & Conversion Flow</h2>
+        <div class="flow-chart">
+            <div class="flow-node">
+                <strong>Awareness</strong><br>
+                <small>Crisis Pages</small><br>
+                <small style="color: #FF4444;">Burnout, Stress</small>
+            </div>
+            <div class="flow-node">
+                <strong>Consideration</strong><br>
+                <small>Solution Pages</small><br>
+                <small style="color: #FFCC00;">Diagnostics</small>
+            </div>
+            <div class="flow-node">
+                <strong>Evaluation</strong><br>
+                <small>ROI Calculator</small><br>
+                <small style="color: #4CAF50;">Case Studies</small>
+            </div>
+            <div class="flow-node">
+                <strong>Decision</strong><br>
+                <small>Free Pilot</small><br>
+                <small style="color: #2196F3;">Consultation</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="architecture-container">
+        <!-- Level 0: Homepage -->
+        <div class="level">
+            <div class="level-header">
+                <h2 class="level-title">LEVEL 0: Global Homepage</h2>
+                <p class="level-description">Main entry point - Routes traffic to all geographic and vertical pages</p>
+            </div>
+            <div class="pages-grid">
+                <div class="page-card">
+                    <div class="page-priority priority-1">✓</div>
+                    <div class="page-url">/</div>
+                    <div class="page-title">Global Homepage</div>
+                    <div class="page-keyword">employee engagement platform</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 246K/mo</span>
+                        <span class="metric">💰 High Intent</span>
+                    </div>
+                    <div class="page-links">
+                        <div class="links-label">Links to:</div>
+                        <span class="link-tag">All Locations</span>
+                        <span class="link-tag">All Industries</span>
+                        <span class="link-tag">Calculator</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 1: Geographic Hubs -->
+        <div class="level">
+            <div class="level-header">
+                <h2 class="level-title">LEVEL 1: Geographic Hub Pages</h2>
+                <p class="level-description">Location-specific landing pages with local statistics and solutions</p>
+            </div>
+            <div class="pages-grid">
+                <div class="page-card">
+                    <div class="page-priority priority-1">1</div>
+                    <div class="page-url">/london/</div>
+                    <div class="page-title">London Hub</div>
+                    <div class="page-keyword">london employee engagement</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 33K/mo</span>
+                        <span class="metric">💰 £42B market</span>
+                    </div>
+                    <div class="page-links">
+                        <div class="links-label">Links to:</div>
+                        <span class="link-tag">15 Crisis Pages</span>
+                        <span class="link-tag">12 Solutions</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">2</div>
+                    <div class="page-url">/new-york/</div>
+                    <div class="page-title">New York Hub</div>
+                    <div class="page-keyword">NYC employee engagement</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 28K/mo</span>
+                        <span class="metric">💰 $67B market</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">3</div>
+                    <div class="page-url">/san-francisco/</div>
+                    <div class="page-title">San Francisco Hub</div>
+                    <div class="page-keyword">SF employee retention</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 19K/mo</span>
+                        <span class="metric">💰 Tech focus</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">4</div>
+                    <div class="page-url">/manchester/</div>
+                    <div class="page-title">Manchester Hub</div>
+                    <div class="page-keyword">manchester workplace culture</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 8K/mo</span>
+                        <span class="metric">💰 £8B market</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">5</div>
+                    <div class="page-url">/singapore/</div>
+                    <div class="page-title">Singapore Hub</div>
+                    <div class="page-keyword">singapore employee engagement</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 12K/mo</span>
+                        <span class="metric">💰 APAC HQ</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">6</div>
+                    <div class="page-url">/sydney/</div>
+                    <div class="page-title">Sydney Hub</div>
+                    <div class="page-keyword">sydney workplace wellbeing</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 9K/mo</span>
+                        <span class="metric">💰 AU market</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 2: Crisis Pages -->
+        <div class="level">
+            <div class="level-header">
+                <h2 class="level-title">LEVEL 2: Crisis & Problem Pages (Highest Intent)</h2>
+                <p class="level-description">Urgent problem-focused pages that capture high-intent searches</p>
+            </div>
+            <div class="pages-grid">
+                <div class="page-card">
+                    <div class="page-priority priority-1">1</div>
+                    <div class="page-url">/london/burnout/</div>
+                    <div class="page-title">London Burnout Crisis</div>
+                    <div class="page-keyword">london burnout symptoms</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 14K/mo</span>
+                        <span class="metric">🔥 Crisis Intent</span>
+                    </div>
+                    <div class="page-links">
+                        <div class="links-label">Links to:</div>
+                        <span class="link-tag">Stress</span>
+                        <span class="link-tag">Solutions</span>
+                        <span class="link-tag">Calculator</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-1">2</div>
+                    <div class="page-url">/london/stress/</div>
+                    <div class="page-title">Employee Stress London</div>
+                    <div class="page-keyword">employee stress management london</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 9.9K/mo</span>
+                        <span class="metric">🔥 Urgent</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-1">3</div>
+                    <div class="page-url">/london/retention/</div>
+                    <div class="page-title">Retention Crisis London</div>
+                    <div class="page-keyword">employee retention problems</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 8.1K/mo</span>
+                        <span class="metric">💰 High Value</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">4</div>
+                    <div class="page-url">/london/anxiety/</div>
+                    <div class="page-title">Workplace Anxiety</div>
+                    <div class="page-keyword">workplace anxiety help</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 6.6K/mo</span>
+                        <span class="metric">🔥 Support Intent</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">5</div>
+                    <div class="page-url">/london/hybrid-working/</div>
+                    <div class="page-title">Hybrid Working Issues</div>
+                    <div class="page-keyword">hybrid working not working</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 5.4K/mo</span>
+                        <span class="metric">📈 Trending</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">6</div>
+                    <div class="page-url">/london/toxic-management/</div>
+                    <div class="page-title">Toxic Management</div>
+                    <div class="page-keyword">dealing with difficult manager</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 12K/mo</span>
+                        <span class="metric">😤 High Emotion</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">7</div>
+                    <div class="page-url">/london/productivity/</div>
+                    <div class="page-title">Productivity Loss</div>
+                    <div class="page-keyword">low productivity causes</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 4.4K/mo</span>
+                        <span class="metric">💼 CFO Appeal</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">8</div>
+                    <div class="page-url">/london/culture/</div>
+                    <div class="page-title">Culture Breakdown</div>
+                    <div class="page-keyword">workplace culture transformation</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 3.6K/mo</span>
+                        <span class="metric">🎯 Strategic</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">9</div>
+                    <div class="page-url">/london/change-fatigue/</div>
+                    <div class="page-title">Change Fatigue</div>
+                    <div class="page-keyword">change management london</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 2.9K/mo</span>
+                        <span class="metric">🔄 Timely</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 3: Solution Pages -->
+        <div class="level">
+            <div class="level-header">
+                <h2 class="level-title">LEVEL 3: Solution Pages</h2>
+                <p class="level-description">Implementation-ready solutions with clear ROI</p>
+            </div>
+            <div class="pages-grid">
+                <div class="page-card">
+                    <div class="page-priority priority-2">1</div>
+                    <div class="page-url">/london/solutions/crisis-intervention/</div>
+                    <div class="page-title">Crisis Intervention</div>
+                    <div class="page-keyword">employee crisis support london</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 2.4K/mo</span>
+                        <span class="metric">🚨 Emergency</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">2</div>
+                    <div class="page-url">/london/solutions/retention-strategy/</div>
+                    <div class="page-title">Retention Strategy</div>
+                    <div class="page-keyword">employee retention strategies uk</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 3.3K/mo</span>
+                        <span class="metric">💰 High ROI</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">3</div>
+                    <div class="page-url">/london/solutions/culture-transformation/</div>
+                    <div class="page-title">Culture Transformation</div>
+                    <div class="page-keyword">workplace culture change</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 2.7K/mo</span>
+                        <span class="metric">🎯 Strategic</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">4</div>
+                    <div class="page-url">/london/solutions/leadership-development/</div>
+                    <div class="page-title">Leadership Development</div>
+                    <div class="page-keyword">leadership development london</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 4.4K/mo</span>
+                        <span class="metric">👥 Management</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">5</div>
+                    <div class="page-url">/london/solutions/hybrid-excellence/</div>
+                    <div class="page-title">Hybrid Excellence</div>
+                    <div class="page-keyword">hybrid working best practices</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 1.8K/mo</span>
+                        <span class="metric">📈 Growing</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">6</div>
+                    <div class="page-url">/london/solutions/wellbeing-programs/</div>
+                    <div class="page-title">Wellbeing Programs</div>
+                    <div class="page-keyword">employee wellbeing london</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 2.9K/mo</span>
+                        <span class="metric">🌱 Holistic</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 4: Industry Verticals -->
+        <div class="level">
+            <div class="level-header">
+                <h2 class="level-title">LEVEL 4: Industry Vertical Pages</h2>
+                <p class="level-description">Sector-specific solutions with industry benchmarks</p>
+            </div>
+            <div class="pages-grid">
+                <div class="page-card">
+                    <div class="page-priority priority-2">1</div>
+                    <div class="page-url">/technology/</div>
+                    <div class="page-title">Technology Sector</div>
+                    <div class="page-keyword">tech employee retention</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 18K/mo</span>
+                        <span class="metric">💻 High Value</span>
+                    </div>
+                    <div class="page-links">
+                        <div class="links-label">Sub-pages:</div>
+                        <span class="link-tag">/technology/london/</span>
+                        <span class="link-tag">/technology/burnout/</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">2</div>
+                    <div class="page-url">/finance/</div>
+                    <div class="page-title">Finance Sector</div>
+                    <div class="page-keyword">banking employee engagement</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 12K/mo</span>
+                        <span class="metric">🏦 City Focus</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">3</div>
+                    <div class="page-url">/healthcare/</div>
+                    <div class="page-title">Healthcare Sector</div>
+                    <div class="page-keyword">nhs staff burnout</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 9K/mo</span>
+                        <span class="metric">🏥 Critical</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">4</div>
+                    <div class="page-url">/retail/</div>
+                    <div class="page-title">Retail Sector</div>
+                    <div class="page-keyword">retail employee turnover</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 6K/mo</span>
+                        <span class="metric">🛍️ Volume</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">5</div>
+                    <div class="page-url">/manufacturing/</div>
+                    <div class="page-title">Manufacturing</div>
+                    <div class="page-keyword">manufacturing engagement</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 3K/mo</span>
+                        <span class="metric">🏭 Safety Focus</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">6</div>
+                    <div class="page-url">/professional-services/</div>
+                    <div class="page-title">Professional Services</div>
+                    <div class="page-keyword">consulting firm retention</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 4K/mo</span>
+                        <span class="metric">💼 B2B</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 5: Tools & Resources -->
+        <div class="level">
+            <div class="level-header">
+                <h2 class="level-title">LEVEL 5: Tools & Conversion Pages</h2>
+                <p class="level-description">High-conversion tools and resources</p>
+            </div>
+            <div class="pages-grid">
+                <div class="page-card">
+                    <div class="page-priority priority-1">1</div>
+                    <div class="page-url">/calculator/</div>
+                    <div class="page-title">ROI Calculator</div>
+                    <div class="page-keyword">employee turnover cost calculator</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 22K/mo</span>
+                        <span class="metric">🎯 Convert</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-1">2</div>
+                    <div class="page-url">/pilot/</div>
+                    <div class="page-title">Free Pilot Program</div>
+                    <div class="page-keyword">employee engagement pilot</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 1.2K/mo</span>
+                        <span class="metric">💰 Decision</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">3</div>
+                    <div class="page-url">/assessment/</div>
+                    <div class="page-title">Free Assessment</div>
+                    <div class="page-keyword">employee engagement assessment</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 8K/mo</span>
+                        <span class="metric">📊 Lead Gen</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-2">4</div>
+                    <div class="page-url">/demo/</div>
+                    <div class="page-title">Platform Demo</div>
+                    <div class="page-keyword">engagement platform demo</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 3K/mo</span>
+                        <span class="metric">🎥 Sales</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">5</div>
+                    <div class="page-url">/case-studies/</div>
+                    <div class="page-title">Case Studies</div>
+                    <div class="page-keyword">employee engagement success stories</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 2K/mo</span>
+                        <span class="metric">📈 Trust</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-3">6</div>
+                    <div class="page-url">/research/</div>
+                    <div class="page-title">Research & Reports</div>
+                    <div class="page-keyword">employee engagement research 2025</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 5K/mo</span>
+                        <span class="metric">📚 Authority</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 6: Supporting Pages -->
+        <div class="level">
+            <div class="level-header">
+                <h2 class="level-title">LEVEL 6: Supporting & SEO Pages</h2>
+                <p class="level-description">Authority-building and long-tail keyword pages</p>
+            </div>
+            <div class="pages-grid">
+                <div class="page-card">
+                    <div class="page-priority priority-4">1</div>
+                    <div class="page-url">/blog/</div>
+                    <div class="page-title">Insights Blog</div>
+                    <div class="page-keyword">employee engagement tips</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 Various</span>
+                        <span class="metric">📝 Content</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">2</div>
+                    <div class="page-url">/about/</div>
+                    <div class="page-title">About Clover Era</div>
+                    <div class="page-keyword">neuroscience engagement platform</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 Brand</span>
+                        <span class="metric">🏢 Trust</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">3</div>
+                    <div class="page-url">/pricing/</div>
+                    <div class="page-title">Pricing</div>
+                    <div class="page-keyword">employee engagement platform pricing</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 1.8K/mo</span>
+                        <span class="metric">💳 Commercial</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">4</div>
+                    <div class="page-url">/contact/</div>
+                    <div class="page-title">Contact</div>
+                    <div class="page-keyword">contact clover era</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 Direct</span>
+                        <span class="metric">📞 Convert</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">5</div>
+                    <div class="page-url">/partners/</div>
+                    <div class="page-title">Partners</div>
+                    <div class="page-keyword">hr technology partners</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 B2B</span>
+                        <span class="metric">🤝 Network</span>
+                    </div>
+                </div>
+                <div class="page-card">
+                    <div class="page-priority priority-4">6</div>
+                    <div class="page-url">/careers/</div>
+                    <div class="page-title">Careers</div>
+                    <div class="page-keyword">work at clover era</div>
+                    <div class="page-metrics">
+                        <span class="metric">🔍 Recruit</span>
+                        <span class="metric">👥 Culture</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Internal Linking Strategy Table -->
+    <div class="stats-table">
+        <h2 class="stats-title">Internal Linking Matrix</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Page Type</th>
+                    <th>Must Link To</th>
+                    <th>Should Link To</th>
+                    <th>Conversion Path</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Geographic Hubs</strong><br><small>/london/</small></td>
+                    <td>All local crisis pages<br>ROI Calculator<br>Free Pilot</td>
+                    <td>Industry verticals<br>Other cities<br>Research</td>
+                    <td>Hub → Crisis → Solution → Pilot</td>
+                </tr>
+                <tr>
+                    <td><strong>Crisis Pages</strong><br><small>/london/burnout/</small></td>
+                    <td>Related crisis pages<br>Solution pages<br>Calculator</td>
+                    <td>Assessment tool<br>Case studies<br>Emergency consultation</td>
+                    <td>Crisis → Calculator → Pilot</td>
+                </tr>
+                <tr>
+                    <td><strong>Solution Pages</strong><br><small>/solutions/retention/</small></td>
+                    <td>Calculator<br>Case studies<br>Free pilot</td>
+                    <td>Related solutions<br>Industry examples<br>Research</td>
+                    <td>Solution → Demo → Pilot</td>
+                </tr>
+                <tr>
+                    <td><strong>Industry Pages</strong><br><small>/technology/</small></td>
+                    <td>Industry problems<br>Sector solutions<br>Calculator</td>
+                    <td>Geographic versions<br>Case studies<br>Research</td>
+                    <td>Industry → Problem → Calculator → Pilot</td>
+                </tr>
+                <tr>
+                    <td><strong>Tool Pages</strong><br><small>/calculator/</small></td>
+                    <td>Free pilot<br>Consultation<br>Demo</td>
+                    <td>Case studies<br>Solutions<br>Research</td>
+                    <td>Tool → Result → Pilot</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Priority Implementation Schedule -->
+    <div class="stats-table">
+        <h2 class="stats-title">Implementation Schedule & Priority</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Priority Pages</th>
+                    <th>Search Volume</th>
+                    <th>Business Impact</th>
+                    <th>Resources Needed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="high-priority">
+                    <td><strong>Week 1</strong></td>
+                    <td>London Hub<br>3 Crisis Pages (Burnout, Stress, Retention)<br>ROI Calculator</td>
+                    <td>45K/mo combined</td>
+                    <td>Immediate lead capture</td>
+                    <td>Content writer<br>Developer<br>Designer</td>
+                </tr>
+                <tr class="medium-priority">
+                    <td><strong>Week 2</strong></td>
+                    <td>NYC Hub<br>Tech & Finance Verticals<br>3 More Crisis Pages</td>
+                    <td>38K/mo combined</td>
+                    <td>Market expansion</td>
+                    <td>Content writer<br>Local research</td>
+                </tr>
+                <tr>
+                    <td><strong>Week 3</strong></td>
+                    <td>Solution Pages (6)<br>Assessment Tool<br>Demo Page</td>
+                    <td>25K/mo combined</td>
+                    <td>Conversion optimization</td>
+                    <td>Product team<br>Sales input</td>
+                </tr>
+                <tr>
+                    <td><strong>Week 4</strong></td>
+                    <td>Remaining Geo Hubs<br>Industry Pages<br>Case Studies</td>
+                    <td>20K/mo combined</td>
+                    <td>Authority building</td>
+                    <td>Customer success<br>Legal review</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SEO Technical Requirements -->
+    <div class="stats-table">
+        <h2 class="stats-title">Technical SEO Requirements</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Element</th>
+                    <th>Implementation</th>
+                    <th>Priority</th>
+                    <th>Impact</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>URL Structure</strong></td>
+                    <td>/location/problem/<br>/industry/solution/<br>/tools/calculator/</td>
+                    <td class="high-priority">Critical</td>
+                    <td>Site architecture</td>
+                </tr>
+                <tr>
+                    <td><strong>Schema Markup</strong></td>
+                    <td>LocalBusiness for geo pages<br>FAQPage for problems<br>Product for solutions</td>
+                    <td class="high-priority">High</td>
+                    <td>Rich snippets</td>
+                </tr>
+                <tr>
+                    <td><strong>Hreflang Tags</strong></td>
+                    <td>en-gb for UK pages<br>en-us for US pages<br>Cross-linking cities</td>
+                    <td class="medium-priority">Medium</td>
+                    <td>International SEO</td>
+                </tr>
+                <tr>
+                    <td><strong>Internal Links</strong></td>
+                    <td>Min 5 per page<br>Contextual anchors<br>Breadcrumbs</td>
+                    <td class="high-priority">Critical</td>
+                    <td>Link equity flow</td>
+                </tr>
+                <tr>
+                    <td><strong>Page Speed</strong></td>
+                    <td>< 3s load time<br>Optimize images<br>Lazy loading</td>
+                    <td class="high-priority">High</td>
+                    <td>Core Web Vitals</td>
+                </tr>
+                <tr>
+                    <td><strong>XML Sitemaps</strong></td>
+                    <td>Separate by type<br>Priority scores<br>Auto-update</td>
+                    <td class="medium-priority">Medium</td>
+                    <td>Crawl efficiency</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Keyword Distribution Strategy -->
+    <div class="stats-table">
+        <h2 class="stats-title">Keyword Distribution & Content Strategy</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Content Type</th>
+                    <th>Word Count</th>
+                    <th>Keyword Density</th>
+                    <th>Update Frequency</th>
+                    <th>Conversion Elements</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Crisis Pages</strong></td>
+                    <td>2,000-2,500</td>
+                    <td>Primary: 1-2%<br>LSI: 3-5%</td>
+                    <td>Monthly</td>
+                    <td>Emergency CTA<br>Calculator<br>Chat widget</td>
+                </tr>
+                <tr>
+                    <td><strong>Hub Pages</strong></td>
+                    <td>3,000-4,000</td>
+                    <td>Primary: 0.5-1%<br>Local: 2-3%</td>
+                    <td>Quarterly</td>
+                    <td>Multiple CTAs<br>Local proof<br>Testimonials</td>
+                </tr>
+                <tr>
+                    <td><strong>Solution Pages</strong></td>
+                    <td>2,500-3,000</td>
+                    <td>Primary: 1%<br>Commercial: 2%</td>
+                    <td>Quarterly</td>
+                    <td>Demo request<br>ROI data<br>Case studies</td>
+                </tr>
+                <tr>
+                    <td><strong>Industry Pages</strong></td>
+                    <td>3,000-3,500</td>
+                    <td>Industry: 2-3%<br>Problems: 1-2%</td>
+                    <td>Bi-annual</td>
+                    <td>Industry stats<br>Benchmarks<br>Pilot offer</td>
+                </tr>
+                <tr>
+                    <td><strong>Tool Pages</strong></td>
+                    <td>1,500-2,000</td>
+                    <td>Tool-specific: 1%<br>Benefits: 2%</td>
+                    <td>As needed</td>
+                    <td>Tool interface<br>Results display<br>Next steps</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer Note -->
+    <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: #2d2d2d; border-radius: 10px;">
+        <h3 style="color: #FFCC00; margin-bottom: 1rem;">Site Architecture Summary</h3>
+        <p style="color: #cccccc; margin-bottom: 1rem;">
+            <strong>Total Pages:</strong> 60+ | <strong>Priority 1 Pages:</strong> 5 | <strong>Combined Search Volume:</strong> 500K+/mo
+        </p>
+        <p style="color: #999; font-size: 0.9rem;">
+            This architecture creates multiple entry points for different search intents while maintaining a clear conversion path from problem awareness to solution implementation. Each page serves a specific purpose in the customer journey and links strategically to guide users toward conversion.
+        </p>
+    </div>
+
+</body>
+</html>
