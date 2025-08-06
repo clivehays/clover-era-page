@@ -113,6 +113,7 @@
             display: flex;
             gap: 2rem;
             align-items: center;
+            margin-left: auto; /* This pushes the menu to the right */
         }
 
         .nav-links a {
@@ -625,10 +626,15 @@
                 font-size: 2.5rem;
             }
             
+            .mobile-menu-toggle {
+                display: flex !important;
+            }
+            
             .nav-links {
                 display: none;
                 position: fixed;
                 top: 70px;
+                left: 0;
                 right: 0;
                 width: 100%;
                 background: var(--black-primary);
@@ -637,10 +643,11 @@
                 border-bottom: 2px solid var(--yellow-primary);
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.9);
                 z-index: 999;
+                margin-left: 0; /* Reset margin for mobile */
             }
             
             .nav-links.active {
-                display: flex;
+                display: flex !important;
             }
             
             .nav-links a {
@@ -660,10 +667,6 @@
                 text-align: center;
             }
             
-            .mobile-menu-toggle {
-                display: flex;
-            }
-            
             .problems-grid {
                 grid-template-columns: 1fr;
             }
@@ -680,6 +683,10 @@
             .btn-primary, .btn-secondary {
                 width: 100%;
                 max-width: 300px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
