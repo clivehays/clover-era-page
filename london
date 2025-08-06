@@ -6,6 +6,17 @@
     <title>London Employee Engagement Solutions | Workplace Crisis Support | Clover Era</title>
     <meta name="description" content="London's employee engagement crisis: 73% burnout rate, £42B productivity loss. Cut attrition by 67% with neuroscience-backed solutions. Get immediate support.">
     
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Clover Era London - Employee Engagement Solutions">
+    <meta property="og:description" content="73% of London professionals report burnout. Transform your workplace with neuroscience-backed solutions.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.clover-era.com/london/">
+    
+    <!-- Hreflang Tags -->
+    <link rel="alternate" hreflang="en-gb" href="https://www.clover-era.com/london/" />
+    <link rel="alternate" hreflang="en-us" href="https://www.clover-era.com/new-york/" />
+    <link rel="alternate" hreflang="en" href="https://www.clover-era.com/" />
+    
     <!-- Schema Markup for London -->
     <script type="application/ld+json">
     {
@@ -13,22 +24,54 @@
       "@type": "LocalBusiness",
       "name": "Clover Era London",
       "description": "Neuroscience-powered employee engagement platform for London businesses",
+      "url": "https://www.clover-era.com/london/",
+      "telephone": "+44-20-XXXX-XXXX",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "London",
         "addressRegion": "England",
-        "addressCountry": "GB"
+        "addressCountry": "GB",
+        "postalCode": "EC2A"
       },
       "areaServed": {
-        "@type": "City",
-        "name": "London",
         "@type": "GeoCircle",
         "geoMidpoint": {
           "@type": "GeoCoordinates",
           "latitude": "51.5074",
           "longitude": "-0.1278"
+        },
+        "geoRadius": "50000"
+      },
+      "openingHours": "Mo-Fr 09:00-18:00",
+      "priceRange": "£££"
+    }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.clover-era.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Locations",
+          "item": "https://www.clover-era.com/locations/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "London",
+          "item": "https://www.clover-era.com/london/"
         }
-      }
+      ]
     }
     </script>
     
@@ -60,7 +103,7 @@
             overflow-x: hidden;
         }
 
-        /* Navigation - Simplified for sub-page */
+        /* Navigation with Dropdowns - Same as Homepage */
         nav {
             position: fixed;
             top: 0;
@@ -91,21 +134,88 @@
 
         .nav-links {
             display: flex;
-            gap: 3rem;
+            gap: 2.5rem;
             align-items: center;
         }
 
-        .nav-links a {
+        .nav-links > a {
             text-decoration: none;
             color: var(--white);
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             transition: color 0.3s;
+            position: relative;
         }
 
-        .nav-links a:hover {
+        .nav-links > a:hover {
             color: var(--yellow-primary);
+        }
+
+        /* Dropdown Menus */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown > a {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-dropdown.active > a {
+            color: var(--yellow-primary);
+        }
+
+        .nav-dropdown:hover > a {
+            color: var(--yellow-primary);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--black-secondary);
+            min-width: 250px;
+            top: 100%;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            color: var(--white);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-transform: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--yellow-primary);
+            padding-left: 1.5rem;
+        }
+
+        .dropdown-content a.active-location {
+            background: rgba(255, 204, 0, 0.05);
+            color: var(--yellow-primary);
+            font-weight: 600;
         }
 
         .nav-cta {
@@ -124,6 +234,21 @@
         .nav-cta:hover {
             background: var(--yellow-primary);
             color: var(--black-primary);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--yellow-primary);
+            margin: 3px 0;
+            transition: 0.3s;
         }
 
         /* Breadcrumb */
@@ -517,6 +642,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .sector-item:hover {
+            background: rgba(255, 204, 0, 0.1);
+            transform: translateX(5px);
         }
 
         .sector-name {
@@ -526,6 +659,103 @@
         .sector-impact {
             color: var(--yellow-primary);
             font-weight: 600;
+        }
+
+        /* Other Locations Section */
+        .other-locations {
+            background: var(--black-secondary);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .other-locations h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--yellow-primary);
+        }
+
+        .other-locations p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .locations-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .location-link {
+            background: var(--black-primary);
+            border: 1px solid rgba(255, 204, 0, 0.1);
+            border-radius: 4px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .location-link:hover {
+            border-color: var(--yellow-primary);
+            transform: translateY(-3px);
+        }
+
+        .location-link .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Related Resources */
+        .related-resources {
+            background: var(--black-primary);
+            padding: 3rem 2rem;
+        }
+
+        .related-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .related-header h2 {
+            font-size: 2rem;
+            color: var(--yellow-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .resources-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .resource-card {
+            background: var(--black-secondary);
+            border: 1px solid rgba(255, 204, 0, 0.1);
+            border-radius: 4px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .resource-card:hover {
+            border-color: var(--yellow-primary);
+            transform: translateY(-3px);
+        }
+
+        .resource-card h3 {
+            color: var(--yellow-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
         }
 
         /* CTA Section */
@@ -575,18 +805,59 @@
             transform: translateY(-2px);
         }
 
-        /* Footer */
+        /* Footer - Same as Homepage */
         footer {
             background: var(--black-primary);
-            padding: 3rem 2rem 2rem;
+            padding: 4rem 2rem 2rem;
             border-top: 1px solid rgba(255, 204, 0, 0.2);
         }
 
         .footer-content {
             max-width: 1400px;
             margin: 0 auto;
-            text-align: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            color: var(--yellow-primary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
             color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 0.35rem 0;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--yellow-primary);
+        }
+
+        .footer-section .sub-link {
+            padding-left: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 0.85rem;
         }
 
         /* Responsive */
@@ -597,6 +868,10 @@
             
             .nav-links {
                 display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
             }
             
             .crisis-grid, .solutions-grid {
@@ -611,20 +886,70 @@
                 flex-direction: column;
                 align-items: center;
             }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Navigation - Same as Homepage with London Active -->
     <nav>
         <div class="nav-container">
             <a href="/" class="logo">CLOVER ERA</a>
             <div class="nav-links">
                 <a href="/">HOME</a>
-                <a href="/locations/">LOCATIONS</a>
-                <a href="/solutions/">SOLUTIONS</a>
-                <a href="/calculator/">CALCULATOR</a>
-                <a href="#pilot" class="nav-cta">START FREE PILOT</a>
+                
+                <!-- Locations Dropdown with London Highlighted -->
+                <div class="nav-dropdown active">
+                    <a href="#">LOCATIONS ▼</a>
+                    <div class="dropdown-content">
+                        <a href="/london/" class="active-location">🇬🇧 London ✓</a>
+                        <a href="/new-york/">🇺🇸 New York</a>
+                        <a href="/san-francisco/">🌉 San Francisco</a>
+                        <a href="/manchester/">🏭 Manchester</a>
+                        <a href="/singapore/">🇸🇬 Singapore</a>
+                        <a href="/sydney/">🇦🇺 Sydney</a>
+                    </div>
+                </div>
+                
+                <!-- Industries Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#">INDUSTRIES ▼</a>
+                    <div class="dropdown-content">
+                        <a href="/technology/">💻 Technology</a>
+                        <a href="/finance/">🏦 Finance & Banking</a>
+                        <a href="/healthcare/">🏥 Healthcare</a>
+                        <a href="/retail/">🛍️ Retail</a>
+                        <a href="/manufacturing/">🏭 Manufacturing</a>
+                        <a href="/professional-services/">💼 Professional Services</a>
+                    </div>
+                </div>
+                
+                <!-- Solutions Dropdown -->
+                <div class="nav-dropdown">
+                    <a href="#">SOLUTIONS ▼</a>
+                    <div class="dropdown-content">
+                        <a href="/solutions/burnout-prevention/">🔥 Burnout Prevention</a>
+                        <a href="/solutions/retention-strategy/">🎯 Retention Strategy</a>
+                        <a href="/solutions/culture-transformation/">🌟 Culture Change</a>
+                        <a href="/solutions/leadership-development/">👥 Leadership</a>
+                        <a href="/solutions/hybrid-excellence/">💻 Hybrid Working</a>
+                        <a href="/solutions/wellbeing-programs/">🌱 Wellbeing</a>
+                    </div>
+                </div>
+                
+                <a href="/calculator/?city=london">CALCULATOR</a>
+                <a href="/resources/">RESOURCES</a>
+                <a href="/pilot/?city=london" class="nav-cta">START FREE PILOT</a>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
@@ -692,7 +1017,7 @@
             <h2>Your London Team's Attrition is Costing You:</h2>
             <div class="calc-display">£287,000</div>
             <p>per month in lost productivity, recruitment, and training costs</p>
-            <a href="/calculator/?city=london" class="btn-calculate">CALCULATE YOUR EXACT COSTS</a>
+            <a href="/calculator/?city=london&currency=GBP&avg_salary=65000" class="btn-calculate">CALCULATE YOUR EXACT COSTS</a>
         </div>
     </section>
 
@@ -704,22 +1029,22 @@
         </div>
         
         <div class="crisis-grid">
-            <!-- Urgent Crisis Cards -->
-            <a href="/london/burnout/" class="crisis-card urgent">
+            <!-- Urgent Crisis Cards with Updated Paths -->
+            <a href="/london/crisis/burnout/" class="crisis-card urgent">
                 <div class="crisis-icon">🔥</div>
                 <h3 class="crisis-title">Burnout Emergency</h3>
                 <p class="crisis-description">Mass exhaustion, cynicism, and performance collapse spreading through teams</p>
                 <div class="crisis-stat">73% of London employees affected</div>
             </a>
 
-            <a href="/london/stress/" class="crisis-card urgent">
+            <a href="/london/crisis/stress/" class="crisis-card urgent">
                 <div class="crisis-icon">⚡</div>
                 <h3 class="crisis-title">Stress Epidemic</h3>
                 <p class="crisis-description">Overwhelming workloads causing mental health crisis and sick leave surge</p>
                 <div class="crisis-stat">89% report extreme stress</div>
             </a>
 
-            <a href="/london/retention/" class="crisis-card urgent">
+            <a href="/london/crisis/retention/" class="crisis-card urgent">
                 <div class="crisis-icon">🚪</div>
                 <h3 class="crisis-title">Mass Resignations</h3>
                 <p class="crisis-description">Top talent fleeing, knowledge drain accelerating, recruitment costs exploding</p>
@@ -727,42 +1052,42 @@
             </a>
 
             <!-- High Priority Cards -->
-            <a href="/london/hybrid-working/" class="crisis-card">
+            <a href="/london/problems/hybrid-working/" class="crisis-card">
                 <div class="crisis-icon">💻</div>
                 <h3 class="crisis-title">Hybrid Working Failure</h3>
                 <p class="crisis-description">Disconnected teams, collaboration breakdown, culture erosion</p>
                 <div class="crisis-stat">62% report isolation</div>
             </a>
 
-            <a href="/london/toxic-management/" class="crisis-card">
+            <a href="/london/problems/toxic-management/" class="crisis-card">
                 <div class="crisis-icon">☠️</div>
                 <h3 class="crisis-title">Toxic Management</h3>
                 <p class="crisis-description">Poor leadership creating hostile environments and mass exodus</p>
                 <div class="crisis-stat">57% cite bad managers</div>
             </a>
 
-            <a href="/london/productivity/" class="crisis-card">
+            <a href="/london/problems/productivity/" class="crisis-card">
                 <div class="crisis-icon">📉</div>
                 <h3 class="crisis-title">Productivity Collapse</h3>
                 <p class="crisis-description">Disengagement leading to missed targets and competitive disadvantage</p>
                 <div class="crisis-stat">31% productivity loss</div>
             </a>
 
-            <a href="/london/anxiety/" class="crisis-card">
+            <a href="/london/crisis/anxiety/" class="crisis-card">
                 <div class="crisis-icon">😰</div>
                 <h3 class="crisis-title">Workplace Anxiety</h3>
                 <p class="crisis-description">Fear-driven culture impacting decision-making and innovation</p>
                 <div class="crisis-stat">68% report anxiety</div>
             </a>
 
-            <a href="/london/culture/" class="crisis-card">
+            <a href="/london/problems/culture/" class="crisis-card">
                 <div class="crisis-icon">💔</div>
                 <h3 class="crisis-title">Culture Breakdown</h3>
                 <p class="crisis-description">Values misalignment, lack of belonging, psychological safety crisis</p>
                 <div class="crisis-stat">71% feel disconnected</div>
             </a>
 
-            <a href="/london/change-fatigue/" class="crisis-card">
+            <a href="/london/problems/change-fatigue/" class="crisis-card">
                 <div class="crisis-icon">🌪️</div>
                 <h3 class="crisis-title">Change Fatigue</h3>
                 <p class="crisis-description">Constant restructuring causing resistance and performance drops</p>
@@ -847,7 +1172,7 @@
         </div>
     </section>
 
-    <!-- London-Specific Section -->
+    <!-- London-Specific Industries Section -->
     <section class="london-specific">
         <div class="london-content">
             <div class="london-text">
@@ -864,32 +1189,81 @@
                     Generic HR solutions don't work here. You need neuroscience-backed interventions 
                     designed specifically for London's high-pressure, high-cost environment.
                 </p>
-                <a href="/london/research/" class="btn-primary">READ LONDON WORKPLACE REPORT 2025</a>
+                <a href="/research/london-workplace-report-2025/" class="btn-primary">READ LONDON WORKPLACE REPORT 2025</a>
             </div>
             
             <div class="london-sectors">
                 <h3>LONDON SECTOR IMPACT</h3>
-                <div class="sector-item">
-                    <span class="sector-name">Financial Services (City)</span>
-                    <span class="sector-impact">81% burnout</span>
-                </div>
-                <div class="sector-item">
+                <a href="/technology/london/" class="sector-item">
                     <span class="sector-name">Tech (Shoreditch/Kings Cross)</span>
                     <span class="sector-impact">65% turnover</span>
-                </div>
-                <div class="sector-item">
+                </a>
+                <a href="/finance/london/" class="sector-item">
+                    <span class="sector-name">Financial Services (City)</span>
+                    <span class="sector-impact">81% burnout</span>
+                </a>
+                <a href="/professional-services/london/" class="sector-item">
                     <span class="sector-name">Professional Services</span>
                     <span class="sector-impact">£195k/employee loss</span>
-                </div>
-                <div class="sector-item">
-                    <span class="sector-name">Healthcare (NHS)</span>
+                </a>
+                <a href="/healthcare/london/" class="sector-item">
+                    <span class="sector-name">Healthcare (NHS Trusts)</span>
                     <span class="sector-impact">71% stressed</span>
-                </div>
-                <div class="sector-item">
-                    <span class="sector-name">Retail (West End)</span>
+                </a>
+                <a href="/retail/london/" class="sector-item">
+                    <span class="sector-name">Retail (West End/Oxford St)</span>
                     <span class="sector-impact">89% turnover</span>
-                </div>
+                </a>
             </div>
+        </div>
+    </section>
+
+    <!-- Other Locations Section -->
+    <section class="other-locations">
+        <h2>Multiple Office Locations?</h2>
+        <p>We serve all major business centers globally</p>
+        <div class="locations-grid">
+            <a href="/new-york/" class="location-link">
+                <div class="icon">🇺🇸</div>
+                <div>New York</div>
+            </a>
+            <a href="/san-francisco/" class="location-link">
+                <div class="icon">🌉</div>
+                <div>San Francisco</div>
+            </a>
+            <a href="/manchester/" class="location-link">
+                <div class="icon">🏭</div>
+                <div>Manchester</div>
+            </a>
+            <a href="/singapore/" class="location-link">
+                <div class="icon">🇸🇬</div>
+                <div>Singapore</div>
+            </a>
+            <a href="/sydney/" class="location-link">
+                <div class="icon">🇦🇺</div>
+                <div>Sydney</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Related Resources Section -->
+    <section class="related-resources">
+        <div class="related-header">
+            <h2>London-Specific Resources</h2>
+        </div>
+        <div class="resources-grid">
+            <a href="/research/london-workplace-report-2025/" class="resource-card">
+                <h3>📊 London Workplace Report 2025</h3>
+                <p>Comprehensive analysis of engagement trends across London's major sectors</p>
+            </a>
+            <a href="/case-studies/london/" class="resource-card">
+                <h3>💼 London Success Stories</h3>
+                <p>How we helped 200+ London companies transform their workplace culture</p>
+            </a>
+            <a href="/events/london/" class="resource-card">
+                <h3>📅 London Events & Workshops</h3>
+                <p>Join our monthly workshops at our City of London location</p>
+            </a>
         </div>
     </section>
 
@@ -903,16 +1277,94 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Footer - Complete Architecture Same as Homepage -->
     <footer>
         <div class="footer-content">
-            <p>© CLOVER ERA INC. 2025 | London's Leading Employee Engagement Platform</p>
-            <p style="margin-top: 1rem;">
-                <a href="/london/burnout/" style="color: var(--yellow-primary);">Burnout Support</a> | 
-                <a href="/london/stress/" style="color: var(--yellow-primary);">Stress Management</a> | 
-                <a href="/london/retention/" style="color: var(--yellow-primary);">Retention Solutions</a> | 
-                <a href="/london/research/" style="color: var(--yellow-primary);">London Research</a> | 
-                <a href="/contact/" style="color: var(--yellow-primary);">Contact Us</a>
+            <!-- Locations Column with London Context -->
+            <div class="footer-section">
+                <h4>LONDON SOLUTIONS</h4>
+                <ul>
+                    <li><a href="/london/">London Hub</a></li>
+                    <li><a href="/london/crisis/burnout/" class="sub-link">→ Burnout Crisis</a></li>
+                    <li><a href="/london/crisis/stress/" class="sub-link">→ Stress Support</a></li>
+                    <li><a href="/london/crisis/retention/" class="sub-link">→ Retention Crisis</a></li>
+                    <li><a href="/london/problems/hybrid-working/" class="sub-link">→ Hybrid Issues</a></li>
+                    <li><a href="/london/solutions/culture-transformation/" class="sub-link">→ Culture Change</a></li>
+                </ul>
+            </div>
+            
+            <!-- Other Locations -->
+            <div class="footer-section">
+                <h4>OTHER LOCATIONS</h4>
+                <ul>
+                    <li><a href="/new-york/">New York</a></li>
+                    <li><a href="/san-francisco/">San Francisco</a></li>
+                    <li><a href="/manchester/">Manchester</a></li>
+                    <li><a href="/birmingham/">Birmingham</a></li>
+                    <li><a href="/singapore/">Singapore</a></li>
+                    <li><a href="/sydney/">Sydney</a></li>
+                    <li><a href="/locations/">All Locations →</a></li>
+                </ul>
+            </div>
+            
+            <!-- Industries -->
+            <div class="footer-section">
+                <h4>INDUSTRIES</h4>
+                <ul>
+                    <li><a href="/technology/">Technology</a></li>
+                    <li><a href="/finance/">Finance & Banking</a></li>
+                    <li><a href="/healthcare/">Healthcare & NHS</a></li>
+                    <li><a href="/retail/">Retail</a></li>
+                    <li><a href="/manufacturing/">Manufacturing</a></li>
+                    <li><a href="/professional-services/">Professional Services</a></li>
+                </ul>
+            </div>
+            
+            <!-- Solutions -->
+            <div class="footer-section">
+                <h4>SOLUTIONS</h4>
+                <ul>
+                    <li><a href="/solutions/crisis-intervention/">Crisis Intervention</a></li>
+                    <li><a href="/solutions/retention-strategy/">Retention Strategy</a></li>
+                    <li><a href="/solutions/culture-transformation/">Culture Transformation</a></li>
+                    <li><a href="/solutions/leadership-development/">Leadership Development</a></li>
+                    <li><a href="/solutions/hybrid-excellence/">Hybrid Excellence</a></li>
+                    <li><a href="/solutions/wellbeing-programs/">Wellbeing Programs</a></li>
+                </ul>
+            </div>
+            
+            <!-- Tools & Resources -->
+            <div class="footer-section">
+                <h4>TOOLS & RESOURCES</h4>
+                <ul>
+                    <li><a href="/calculator/?city=london">ROI Calculator (London)</a></li>
+                    <li><a href="/assessment/">Free Assessment</a></li>
+                    <li><a href="/demo/">Watch Demo</a></li>
+                    <li><a href="/pilot/?city=london">Start Free Pilot</a></li>
+                    <li><a href="/case-studies/london/">London Case Studies</a></li>
+                    <li><a href="/research/">Research & Reports</a></li>
+                </ul>
+            </div>
+            
+            <!-- Company -->
+            <div class="footer-section">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="/about/">About Clover Era</a></li>
+                    <li><a href="/team/">Leadership Team</a></li>
+                    <li><a href="/careers/">Careers</a></li>
+                    <li><a href="/press/">Press & Media</a></li>
+                    <li><a href="/contact/">Contact Us</a></li>
+                    <li><a href="/privacy/">Privacy Policy</a></li>
+                    <li><a href="/terms/">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>© CLOVER ERA INC. 2025 All Rights Reserved | London's Leading Employee Engagement Platform</p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">
+                Serving the City of London, Canary Wharf, Shoreditch, Kings Cross, and Greater London
             </p>
         </div>
     </footer>
@@ -953,6 +1405,17 @@
                 calcDisplay.textContent = `£${Math.round(start).toLocaleString()}`;
             }, 16);
         }
+
+        // Mobile menu toggle
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                mobileToggle.classList.toggle('active');
+            });
+        }
     </script>
 
     <style>
@@ -964,6 +1427,35 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+        
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--black-primary);
+                flex-direction: column;
+                padding: 2rem;
+                transition: right 0.3s;
+                overflow-y: auto;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-dropdown .dropdown-content {
+                position: static;
+                display: block;
+                margin-top: 0.5rem;
+                margin-bottom: 1rem;
+                border: none;
+                background: var(--black-secondary);
             }
         }
     </style>
