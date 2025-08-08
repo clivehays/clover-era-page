@@ -1,1 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator | Calculate Your Employee Engagement Losses | Clover Era</title>
+    <meta name="description" content="Calculate your exact losses from employee turnover, burnout, and disengagement. See your ROI from Clover Era's neuroscience-powered platform in seconds.">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="employee turnover calculator, ROI calculator, employee engagement cost, burnout calculator, productivity loss calculator">
+    <meta name="author" content="Clover Era">
+    <meta name="robots" content="index, follow">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            /* Brand colors */
+            --primary-teal: #46AEB8;
+            --coral: #FF6B6B;
+            
+            /* Neutral colors */
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F5F7FA;
+            --medium-gray: #E5E9ED;
+            --dark-gray: #6B7280;
+            --charcoal: #1F2937;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            
+            /* Functional colors */
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Navigation (same as main page) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+
+        .mobile-menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-teal);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-teal);
+        }
+
+        .nav-cta {
+            background: var(--coral);
+            color: var(--white) !important;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+            color: var(--white) !important;
+        }
+
+        /* Calculator Hero */
+        .calc-hero {
+            margin-top: 80px;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--light-gray) 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calc-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.05) 0%, 
+                rgba(255, 107, 107, 0.05) 100%);
+            transform: rotate(45deg);
+        }
+
+        .calc-hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calc-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .calc-hero h1 .highlight {
+            color: var(--primary-teal);
+        }
+
+        .calc-hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Calculator Container */
+        .calculator-container {
+            max-width: 1400px;
+            margin: -3rem auto 0;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .calculator-main {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        /* Input Section */
+        .calc-inputs {
+            padding: 3rem;
+            background: var(--white);
+            border-right: 1px solid var(--medium-gray);
+        }
+
+        .calc-section-header {
+            margin-bottom: 2rem;
+        }
+
+        .calc-section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .calc-section-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group small {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: var(--off-white);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .range-input {
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .range-value {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: var(--medium-gray);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-teal);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(70, 174, 184, 0.3);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-teal);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(70, 174, 184, 0.3);
+        }
+
+        /* Results Section */
+        .calc-results {
+            padding: 3rem;
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.03), 
+                rgba(255, 107, 107, 0.03));
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .total-loss {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 3px solid var(--danger);
+        }
+
+        .loss-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .loss-amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+        }
+
+        .loss-period {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .breakdown-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .breakdown-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.1), 
+                rgba(255, 107, 107, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .breakdown-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .breakdown-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--coral);
+        }
+
+        /* ROI Section */
+        .roi-section {
+            background: linear-gradient(135deg, var(--primary-teal), #3A8F98);
+            border-radius: 15px;
+            padding: 2rem;
+            color: var(--white);
+            margin-top: 2rem;
+        }
+
+        .roi-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .roi-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .roi-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .roi-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .roi-metric {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .roi-metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .roi-metric-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.9;
+        }
+
+        .savings-highlight {
+            background: var(--white);
+            color: var(--primary-teal);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .savings-highlight h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .savings-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--success);
+        }
+
+        .savings-period {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Action Section */
+        .action-section {
+            background: var(--light-gray);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .action-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .action-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .action-content p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--coral);
+            padding: 1.2rem 3rem;
+            border: 2px solid var(--coral);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--coral);
+            color: var(--white);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+
+        .comparison-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .comparison-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .comparison-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .comparison-table {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-header-row {
+            background: var(--light-gray);
+            font-weight: 700;
+        }
+
+        .comparison-cell {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .comparison-header-row .comparison-cell {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .without-clover {
+            color: var(--danger);
+        }
+
+        .with-clover {
+            color: var(--success);
+        }
+
+        /* Report Download */
+        .report-section {
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.08), 
+                rgba(255, 107, 107, 0.08));
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .report-content {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .report-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .report-content p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .email-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            padding: 3rem 2rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        footer a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .calculator-main {
+                grid-template-columns: 1fr;
+            }
+            
+            .calc-inputs {
+                border-right: none;
+                border-bottom: 1px solid var(--medium-gray);
+            }
+            
+            .roi-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calc-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .loss-amount {
+                font-size: 2.5rem;
+            }
+            
+            .roi-metric-value {
+                font-size: 2rem;
+            }
+            
+            .savings-amount {
+                font-size: 2rem;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex !important;
+            }
+            
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                width: 100%;
+                background: var(--white);
+                flex-direction: column;
+                padding: 2rem;
+                border-bottom: 2px solid var(--primary-teal);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                z-index: 999;
+                margin-left: 0;
+            }
+            
+            .nav-links.active {
+                display: flex !important;
+            }
+            
+            .comparison-row {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .comparison-cell {
+                justify-content: center;
+                padding: 1rem;
+            }
+            
+            .email-form {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">CLOVER ERA</a>
+            <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="/">HOME</a>
+                <a href="/#problems">PROBLEMS</a>
+                <a href="/assessment/index.html">ASSESSMENT</a>
+                <a href="/pilot/index.html" class="nav-cta">START FREE PILOT</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Calculator Hero -->
+    <section class="calc-hero">
+        <div class="calc-hero-content">
+            <h1>Calculate Your <span class="highlight">Real Cost</span> of Disengagement</h1>
+            <p class="calc-hero-subtitle">
+                Discover exactly how much employee burnout, turnover, and low engagement are costing your organization—and see your potential ROI with Clover Era.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Calculator -->
+    <div class="calculator-container">
+        <div class="calculator-main">
+            <!-- Input Section -->
+            <div class="calc-inputs">
+                <div class="calc-section-header">
+                    <h2>Your Organization</h2>
+                    <p>Enter your details for a personalized analysis</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="employees">Total Number of Employees</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="employees" value="250" min="10" max="100000">
+                    </div>
+                    <small>Full-time employees in your organization</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="avgSalary">Average Annual Salary</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">$</span>
+                        <input type="number" id="avgSalary" value="75000" min="20000" max="500000">
+                    </div>
+                    <small>Average compensation per employee</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="turnoverRate">Annual Turnover Rate</label>
+                    <div class="range-value"><span id="turnoverValue">15</span>%</div>
+                    <input type="range" id="turnoverRate" min="5" max="50" value="15" class="range-input">
+                    <small>Industry average is 15-20%</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="engagementRate">Current Engagement Level</label>
+                    <div class="range-value"><span id="engagementValue">40</span>%</div>
+                    <input type="range" id="engagementRate" min="10" max="80" value="40" class="range-input">
+                    <small>Global average is 23-40%</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="burnoutRate">Burnout Rate</label>
+                    <div class="range-value"><span id="burnoutValue">45</span>%</div>
+                    <input type="range" id="burnoutRate" min="10" max="90" value="45" class="range-input">
+                    <small>Percentage experiencing burnout symptoms</small>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="calc-results">
+                <div class="results-header">
+                    <h2>Your Annual Losses</h2>
+                </div>
+
+                <div class="total-loss">
+                    <div class="loss-label">Total Annual Cost</div>
+                    <div class="loss-amount" id="totalLoss">$2,812,500</div>
+                    <div class="loss-period">Every Year</div>
+                </div>
+
+                <div class="breakdown-grid">
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">
+                            <div class="breakdown-icon">🚪</div>
+                            <span class="breakdown-text">Turnover Costs</span>
+                        </div>
+                        <div class="breakdown-value" id="turnoverCost">$1,687,500</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">
+                            <div class="breakdown-icon">📉</div>
+                            <span class="breakdown-text">Lost Productivity</span>
+                        </div>
+                        <div class="breakdown-value" id="productivityCost">$750,000</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">
+                            <div class="breakdown-icon">🏥</div>
+                            <span class="breakdown-text">Absenteeism</span>
+                        </div>
+                        <div class="breakdown-value" id="absenteeismCost">$375,000</div>
+                    </div>
+                </div>
+
+                <!-- ROI Section -->
+                <div class="roi-section">
+                    <div class="roi-header">
+                        <h3>Your ROI with Clover Era</h3>
+                        <p>Based on proven results from our clients</p>
+                    </div>
+
+                    <div class="roi-metrics">
+                        <div class="roi-metric">
+                            <div class="roi-metric-value" id="roiPercentage">942%</div>
+                            <div class="roi-metric-label">Return on Investment</div>
+                        </div>
+                        <div class="roi-metric">
+                            <div class="roi-metric-value" id="paybackPeriod">1.3</div>
+                            <div class="roi-metric-label">Months to Payback</div>
+                        </div>
+                        <div class="roi-metric">
+                            <div class="roi-metric-value" id="reducedTurnover">67%</div>
+                            <div class="roi-metric-label">Turnover Reduction</div>
+                        </div>
+                        <div class="roi-metric">
+                            <div class="roi-metric-value" id="engagementIncrease">47%</div>
+                            <div class="roi-metric-label">Engagement Increase</div>
+                        </div>
+                    </div>
+
+                    <div class="savings-highlight">
+                        <h4>Projected Annual Savings</h4>
+                        <div class="savings-amount" id="annualSavings">$1,875,000</div>
+                        <div class="savings-period">After Clover Era Investment of <span id="cloverInvestment">$23,600</span>/year</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Section -->
+    <section class="comparison-section">
+        <div class="comparison-container">
+            <div class="comparison-header">
+                <h2>Before vs After Clover Era</h2>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="comparison-row comparison-header-row">
+                    <div class="comparison-cell">Metric</div>
+                    <div class="comparison-cell without-clover">Current State</div>
+                    <div class="comparison-cell with-clover">With Clover Era</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-cell">Annual Turnover</div>
+                    <div class="comparison-cell without-clover" id="currentTurnoverCount">38 employees</div>
+                    <div class="comparison-cell with-clover" id="projectedTurnoverCount">13 employees</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-cell">Engagement Score</div>
+                    <div class="comparison-cell without-clover" id="currentEngagement">40%</div>
+                    <div class="comparison-cell with-clover" id="projectedEngagement">87%</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-cell">Productivity Loss</div>
+                    <div class="comparison-cell without-clover" id="currentProductivityLoss">31%</div>
+                    <div class="comparison-cell with-clover" id="projectedProductivityLoss">8%</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-cell">Sick Days/Year</div>
+                    <div class="comparison-cell without-clover" id="currentSickDays">12 days</div>
+                    <div class="comparison-cell with-clover" id="projectedSickDays">5 days</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-cell">Annual Cost</div>
+                    <div class="comparison-cell without-clover" id="currentTotalCost">$2,812,500</div>
+                    <div class="comparison-cell with-clover" id="projectedTotalCost">$937,500</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+        <div class="action-content">
+            <h2>Stop Losing Money Every Day</h2>
+            <p>Every day you wait costs you <span id="dailyLoss" style="color: var(--coral); font-weight: 700;">$7,705</span> in turnover and lost productivity</p>
+            
+            <div class="action-buttons">
+                <a href="/pilot/index.html" class="btn-primary">START FREE 30-DAY TRIAL</a>
+                <a href="/assessment/index.html" class="btn-secondary">GET FREE ASSESSMENT</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Report Download Section -->
+    <section class="report-section">
+        <div class="report-content">
+            <h3>📊 Get Your Full Report</h3>
+            <p>Download a detailed PDF breakdown of your costs and potential savings to share with your team.</p>
+            
+            <div class="email-form">
+                <input type="email" class="email-input" placeholder="Enter your email" id="reportEmail">
+                <button class="btn-primary" onclick="downloadReport()">GET REPORT</button>
+            </div>
+            
+            <small style="color: var(--text-secondary);">We'll email you the full analysis instantly</small>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© CLOVER ERA 2025 | Neuroscience-Powered Employee Engagement Platform</p>
+        <p>Questions? Contact us at <a href="mailto:hello@clover-era.com">hello@clover-era.com</a></p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileToggle?.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileToggle.classList.toggle('active');
+        });
+
+        // Calculator Logic
+        function calculateROI() {
+            // Get input values
+            const employees = parseInt(document.getElementById('employees').value) || 250;
+            const avgSalary = parseInt(document.getElementById('avgSalary').value) || 75000;
+            const turnoverRate = parseInt(document.getElementById('turnoverRate').value) || 15;
+            const engagementRate = parseInt(document.getElementById('engagementRate').value) || 40;
+            const burnoutRate = parseInt(document.getElementById('burnoutRate').value) || 45;
+
+            // Calculate current costs
+            const annualTurnoverCount = Math.round((employees * turnoverRate) / 100);
+            const turnoverCost = annualTurnoverCount * avgSalary * 1.5; // 150% of salary to replace
+            
+            // Productivity loss calculation (based on disengagement)
+            const disengagedEmployees = Math.round(employees * (1 - engagementRate/100));
+            const productivityLossPercent = 0.34; // 34% productivity loss for disengaged
+            const productivityCost = disengagedEmployees * avgSalary * productivityLossPercent;
+            
+            // Absenteeism calculation (burnout increases sick days)
+            const burnoutEmployees = Math.round(employees * (burnoutRate/100));
+            const additionalSickDays = 7; // Burned out employees take 7 more sick days
+            const dailySalary = avgSalary / 260; // Working days per year
+            const absenteeismCost = burnoutEmployees * additionalSickDays * dailySalary;
+            
+            const totalLoss = turnoverCost + productivityCost + absenteeismCost;
+            
+            // Calculate Clover Era investment
+            const numberOfTeams = Math.ceil(employees / 15); // Teams of 15
+            const monthlyCloverCost = numberOfTeams * 295; // $295 per team per month
+            const annualCloverCost = monthlyCloverCost * 12;
+            
+            // Calculate improvements with Clover Era
+            const reducedTurnoverRate = turnoverRate * 0.33; // 67% reduction
+            const improvedEngagementRate = Math.min(87, engagementRate * 2.175); // 117.5% increase, cap at 87%
+            const reducedBurnoutRate = burnoutRate * 0.25; // 75% reduction
+            
+            // Calculate new costs after Clover Era
+            const newTurnoverCount = Math.round((employees * reducedTurnoverRate) / 100);
+            const newTurnoverCost = newTurnoverCount * avgSalary * 1.5;
+            
+            const newDisengagedEmployees = Math.round(employees * (1 - improvedEngagementRate/100));
+            const newProductivityCost = newDisengagedEmployees * avgSalary * productivityLossPercent;
+            
+            const newBurnoutEmployees = Math.round(employees * (reducedBurnoutRate/100));
+            const newAbsenteeismCost = newBurnoutEmployees * additionalSickDays * dailySalary;
+            
+            const newTotalCost = newTurnoverCost + newProductivityCost + newAbsenteeismCost;
+            
+            // Calculate savings and ROI
+            const grossSavings = totalLoss - newTotalCost;
+            const netSavings = grossSavings - annualCloverCost;
+            const roi = ((netSavings / annualCloverCost) * 100).toFixed(0);
+            const paybackPeriod = (annualCloverCost / (grossSavings / 12)).toFixed(1);
+            
+            // Update main results
+            document.getElementById('totalLoss').textContent = `$${totalLoss.toLocaleString()}`;
+            document.getElementById('turnoverCost').textContent = `$${turnoverCost.toLocaleString()}`;
+            document.getElementById('productivityCost').textContent = `$${productivityCost.toLocaleString()}`;
+            document.getElementById('absenteeismCost').textContent = `$${absenteeismCost.toLocaleString()}`;
+            
+            // Update ROI metrics
+            document.getElementById('roiPercentage').textContent = `${roi}%`;
+            document.getElementById('paybackPeriod').textContent = paybackPeriod;
+            document.getElementById('annualSavings').textContent = `$${netSavings.toLocaleString()}`;
+            document.getElementById('cloverInvestment').textContent = `$${annualCloverCost.toLocaleString()}`;
+            
+            // Update comparison table
+            document.getElementById('currentTurnoverCount').textContent = `${annualTurnoverCount} employees`;
+            document.getElementById('projectedTurnoverCount').textContent = `${newTurnoverCount} employees`;
+            document.getElementById('currentEngagement').textContent = `${engagementRate}%`;
+            document.getElementById('projectedEngagement').textContent = `${improvedEngagementRate.toFixed(0)}%`;
+            document.getElementById('currentProductivityLoss').textContent = `${(productivityLossPercent * 100).toFixed(0)}%`;
+            document.getElementById('projectedProductivityLoss').textContent = `8%`;
+            document.getElementById('currentSickDays').textContent = `12 days`;
+            document.getElementById('projectedSickDays').textContent = `5 days`;
+            document.getElementById('currentTotalCost').textContent = `$${totalLoss.toLocaleString()}`;
+            document.getElementById('projectedTotalCost').textContent = `$${newTotalCost.toLocaleString()}`;
+            
+            // Update daily loss
+            const dailyLoss = Math.round(totalLoss / 365);
+            document.getElementById('dailyLoss').textContent = `$${dailyLoss.toLocaleString()}`;
+        }
+
+        // Update range displays
+        document.getElementById('turnoverRate').addEventListener('input', function() {
+            document.getElementById('turnoverValue').textContent = this.value;
+            calculateROI();
+        });
+
+        document.getElementById('engagementRate').addEventListener('input', function() {
+            document.getElementById('engagementValue').textContent = this.value;
+            calculateROI();
+        });
+
+        document.getElementById('burnoutRate').addEventListener('input', function() {
+            document.getElementById('burnoutValue').textContent = this.value;
+            calculateROI();
+        });
+
+        // Add event listeners for all inputs
+        document.getElementById('employees').addEventListener('input', calculateROI);
+        document.getElementById('avgSalary').addEventListener('input', calculateROI);
+
+        // Download report function
+        function downloadReport() {
+            const email = document.getElementById('reportEmail').value;
+            if (email && email.includes('@')) {
+                alert('Thank you! Your detailed ROI report will be sent to ' + email + ' shortly.');
+                document.getElementById('reportEmail').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        // Initialize calculator on load
+        calculateROI();
+    </script>
+</body>
+</html>
