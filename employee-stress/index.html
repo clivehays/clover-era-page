@@ -270,8 +270,8 @@
 
         .distribution-box {
             background: linear-gradient(135deg, 
-                rgba(70, 174, 184, 0.03), 
-                rgba(70, 174, 184, 0.01));
+                rgba(70, 174, 184, 0.05), 
+                rgba(70, 174, 184, 0.02));
             border: 2px solid var(--primary-teal);
             border-radius: 20px;
             padding: 3rem;
@@ -285,39 +285,54 @@
             letter-spacing: 0.1em;
             color: var(--text-secondary);
             font-weight: 600;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .stress-levels {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .stress-level {
             text-align: center;
-            padding: 1.5rem 1rem;
+            padding: 2rem 1rem;
             border-radius: 15px;
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.08), 
+                rgba(70, 174, 184, 0.04));
             transition: transform 0.3s;
+            position: relative;
         }
 
         .stress-level:last-child {
-            border: 2px solid var(--danger);
+            border: 2px solid var(--coral);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .stress-level:last-child::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 13px;
             background: linear-gradient(135deg, 
-                rgba(239, 68, 68, 0.05), 
-                rgba(239, 68, 68, 0.02));
+                rgba(255, 107, 107, 0.05), 
+                rgba(255, 107, 107, 0.02));
+            z-index: 0;
         }
 
         .stress-percentage {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            color: var(--primary-teal);
+            position: relative;
+            z-index: 1;
         }
 
         .stress-level:last-child .stress-percentage {
-            color: var(--danger);
+            color: var(--primary-teal);
         }
 
         .stress-label {
@@ -326,10 +341,12 @@
             letter-spacing: 0.05em;
             color: var(--text-secondary);
             font-weight: 600;
+            position: relative;
+            z-index: 1;
         }
 
         .stress-level:last-child .stress-label {
-            color: var(--danger);
+            color: var(--text-secondary);
         }
 
         .stress-cost-box {
@@ -969,27 +986,33 @@
     <!-- Stress Distribution Section -->
     <section class="distribution-section">
         <div class="distribution-content">
-            <div class="distribution-header">
-                <h2>Current Stress Distribution in Your Workforce</h2>
-                <p style="color: var(--text-secondary);">Understanding the severity across your organization</p>
+            <div class="distribution-box">
+                <div class="distribution-title">CURRENT STRESS DISTRIBUTION</div>
+                
+                <div class="stress-levels">
+                    <div class="stress-level">
+                        <div class="stress-percentage">3%</div>
+                        <div class="stress-label">LOW STRESS</div>
+                    </div>
+                    <div class="stress-level">
+                        <div class="stress-percentage">8%</div>
+                        <div class="stress-label">MANAGEABLE</div>
+                    </div>
+                    <div class="stress-level">
+                        <div class="stress-percentage">31%</div>
+                        <div class="stress-label">HIGH STRESS</div>
+                    </div>
+                    <div class="stress-level">
+                        <div class="stress-percentage">58%</div>
+                        <div class="stress-label">BREAKING POINT</div>
+                    </div>
+                </div>
             </div>
             
-            <div class="stress-levels">
-                <div class="stress-level low">
-                    <div class="stress-percentage">11%</div>
-                    <div class="stress-label">Low Stress</div>
-                    <div class="stress-description">Manageable workload, good balance</div>
-                </div>
-                <div class="stress-level moderate">
-                    <div class="stress-percentage">42%</div>
-                    <div class="stress-label">Moderate Stress</div>
-                    <div class="stress-description">Feeling pressure, early warning signs</div>
-                </div>
-                <div class="stress-level high">
-                    <div class="stress-percentage">47%</div>
-                    <div class="stress-label">High Stress</div>
-                    <div class="stress-description">Overwhelmed, health impacts beginning</div>
-                </div>
+            <div class="stress-cost-box">
+                <div class="stress-cost-label">Stress-related losses:</div>
+                <div class="stress-cost-amount">$465,000</div>
+                <div class="stress-cost-period">per 100 employees annually</div>
             </div>
         </div>
     </section>
