@@ -853,7 +853,18 @@
             /* Fix calculator number display on mobile */
             .calc-amount {
                 font-size: 2rem !important;
-                word-break: break-all;
+                word-break: normal;
+                overflow-wrap: break-word;
+                line-height: 1.2;
+            }
+            
+            /* Fix calculator result box on mobile */
+            .calc-result {
+                padding: 2rem 1.5rem !important;
+            }
+            
+            .calc-result h3 {
+                font-size: 1.2rem;
             }
             
             /* Fix hero title */
@@ -913,7 +924,12 @@
             }
             
             .calc-amount {
-                font-size: 1.8rem !important;
+                font-size: 1.5rem !important;
+                line-height: 1.3;
+            }
+            
+            .calculator-form {
+                padding: 2rem 1.5rem !important;
             }
             
             h1 {
@@ -1101,7 +1117,7 @@
                 
                 <div class="calc-result">
                     <h3>You're Losing:</h3>
-                    <div class="calc-amount" id="monthlyLoss">$351,563</div>
+                    <div class="calc-amount" id="monthlyLoss">$4,218,750</div>
                     <p style="color: var(--text-secondary); margin-top: 1rem;">Every Single Year</p>
                 </div>
             </div>
@@ -1255,13 +1271,16 @@
             const annualReplacementCost = annualTurnoverCount * salary * 1.5;
             const annualLoss = Math.round(annualReplacementCost);
             
-            document.getElementById('monthlyLoss').textContent = `$${annualLoss.toLocaleString()}`;
+            document.getElementById('monthlyLoss').textContent = `${annualLoss.toLocaleString()}`;
         }
         
         // Add event listeners
         document.getElementById('employees')?.addEventListener('input', calculateROI);
         document.getElementById('salary')?.addEventListener('input', calculateROI);
         document.getElementById('turnover')?.addEventListener('input', calculateROI);
+        
+        // Initialize calculator on page load
+        calculateROI();
         
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
