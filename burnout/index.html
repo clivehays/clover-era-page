@@ -146,7 +146,7 @@
         .hero {
             margin-top: 80px;
             padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.85), rgba(255, 107, 107, 0.75)), 
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.85), rgba(70, 174, 184, 0.75)), 
                         url('/images/person-burnout-corporate.webp') center/cover no-repeat;
             text-align: center;
             position: relative;
@@ -778,48 +778,51 @@
             </div>
             
             <div class="symptoms-grid">
-                <div class="symptom-card" data-cost="38000">
+                <div class="symptom-card" data-impact="high">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Constant exhaustion complaints</span>
                 </div>
-                <div class="symptom-card" data-cost="42000">
+                <div class="symptom-card" data-impact="critical">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Rising sick days & absences</span>
                 </div>
-                <div class="symptom-card" data-cost="45000">
+                <div class="symptom-card" data-impact="high">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Declining work quality</span>
                 </div>
-                <div class="symptom-card" data-cost="52000">
+                <div class="symptom-card" data-impact="critical">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Increased turnover rates</span>
                 </div>
-                <div class="symptom-card" data-cost="35000">
+                <div class="symptom-card" data-impact="medium">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Low team morale</span>
                 </div>
-                <div class="symptom-card" data-cost="40000">
+                <div class="symptom-card" data-impact="high">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Cynicism & negativity</span>
                 </div>
-                <div class="symptom-card" data-cost="38000">
+                <div class="symptom-card" data-impact="medium">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Missed deadlines</span>
                 </div>
-                <div class="symptom-card" data-cost="48000">
+                <div class="symptom-card" data-impact="critical">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Top performers leaving</span>
                 </div>
-                <div class="symptom-card" data-cost="36000">
+                <div class="symptom-card" data-impact="medium">
                     <div class="symptom-checkbox"></div>
                     <span class="symptom-text">Emotional detachment</span>
                 </div>
             </div>
             
             <div class="cost-calculator">
-                <p style="color: var(--text-secondary); font-size: 1.1rem;">Every symptom checked costs you £38,000 per year in lost productivity</p>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Based on your symptoms, estimated annual burnout cost:</p>
                 <div class="cost-display">£<span id="totalCost">0</span></div>
-                <p style="color: var(--text-primary); font-weight: 600;">Annual cost of burnout in your organization</p>
+                <p style="color: var(--text-primary); font-weight: 600;">Per 100 employees affected by burnout</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">
+                    Calculation based on: productivity loss (34%), increased absences, turnover costs, and reduced quality
+                </p>
             </div>
         </div>
     </section>
@@ -964,17 +967,35 @@
         });
 
         // Symptom checker and cost calculator
-        let totalCost = 0;
+        let selectedSymptoms = 0;
+        const baseCostPer100 = 750000; // Base cost for 100 employees with mild burnout
         
         document.querySelectorAll('.symptom-card').forEach(card => {
             card.addEventListener('click', function() {
                 this.classList.toggle('selected');
-                const cost = parseInt(this.dataset.cost);
+                const impact = this.dataset.impact;
                 
                 if (this.classList.contains('selected')) {
-                    totalCost += cost;
+                    selectedSymptoms++;
                 } else {
-                    totalCost -= cost;
+                    selectedSymptoms--;
+                }
+                
+                // Calculate cost based on severity and number of symptoms
+                let totalCost = 0;
+                let criticalCount = document.querySelectorAll('.symptom-card.selected[data-impact="critical"]').length;
+                let highCount = document.querySelectorAll('.symptom-card.selected[data-impact="high"]').length;
+                let mediumCount = document.querySelectorAll('.symptom-card.selected[data-impact="medium"]').length;
+                
+                // Base calculation per 100 employees
+                // Critical symptoms = £500k per symptom (turnover, absences)
+                // High symptoms = £300k per symptom (productivity, quality)
+                // Medium symptoms = £150k per symptom (morale, deadlines)
+                totalCost = (criticalCount * 500000) + (highCount * 300000) + (mediumCount * 150000);
+                
+                // If no symptoms selected, show 0
+                if (selectedSymptoms === 0) {
+                    totalCost = 0;
                 }
                 
                 // Animate the cost update
