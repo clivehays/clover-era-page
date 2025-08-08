@@ -40,28 +40,28 @@
         }
 
         :root {
-            --black-primary: #000000;
-            --black-secondary: #1a1a1a;
-            --yellow-primary: #FFCC00;
-            --yellow-accent: #FFD700;
-            --dark-gray: #2d2d2d;
-            --medium-gray: #3d3d3d;
-            --light-gray: #666666;
-            --white: #FFFFFF;
-            --text-light: #CCCCCC;
-            --red-alert: #FF4444;
-            --red-danger: #CC0000;
-            --green-success: #00CC66;
-            --orange-warning: #FF8800;
-            --purple-toxic: #8B008B;
-            --pink-disconnect: #FF1493;
+            --primary-teal: #30D5C8;
+            --dark-teal: #15A296;
+            --coral: #FF6B6B;
+            --light-coral: #FF9999;
+            --bg-light: #F5F5F7;
+            --bg-white: #FFFFFF;
+            --bg-section: #FAFAFA;
+            --text-dark: #1a1a1a;
+            --text-gray: #666666;
+            --text-light-gray: #999999;
+            --accent-purple: #9B59B6;
+            --accent-pink: #FF1493;
+            --success-green: #2ECC71;
+            --warning-orange: #F39C12;
+            --border-light: rgba(0, 0, 0, 0.1);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            color: var(--white);
-            background: var(--black-primary);
+            color: var(--text-dark);
+            background: var(--bg-light);
             overflow-x: hidden;
         }
 
@@ -70,10 +70,11 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: var(--black-primary);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
             z-index: 1000;
             padding: 1.5rem 0;
-            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .nav-container {
@@ -88,7 +89,10 @@
         .logo {
             font-size: 1.75rem;
             font-weight: 700;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             text-decoration: none;
@@ -111,7 +115,7 @@
             display: block;
             width: 100%;
             height: 3px;
-            background: var(--yellow-primary);
+            background: var(--primary-teal);
             border-radius: 2px;
             transition: all 0.3s ease;
         }
@@ -125,7 +129,7 @@
 
         .nav-links a {
             text-decoration: none;
-            color: var(--white);
+            color: var(--text-dark);
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -133,14 +137,14 @@
         }
 
         .nav-links a:hover {
-            color: var(--yellow-primary);
+            color: var(--primary-teal);
         }
 
         .nav-cta {
-            background: var(--yellow-primary);
-            color: var(--black-primary) !important;
+            background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+            color: var(--bg-white) !important;
             padding: 0.75rem 1.5rem;
-            border-radius: 4px;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s;
@@ -148,15 +152,14 @@
 
         .nav-cta:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
-            color: var(--black-primary) !important;
+            box-shadow: 0 5px 15px rgba(48, 213, 200, 0.3);
         }
 
         /* Crisis Hero Section */
         .crisis-hero {
             margin-top: 80px;
             padding: 3rem 2rem;
-            background: linear-gradient(135deg, var(--black-primary) 0%, var(--black-secondary) 100%);
+            background: var(--bg-white);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -169,7 +172,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(255, 20, 147, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle at 50% 50%, rgba(255, 107, 107, 0.05) 0%, transparent 70%);
         }
 
         /* Broken connection animation */
@@ -191,7 +194,7 @@
             position: absolute;
             width: 2px;
             height: 100%;
-            background: linear-gradient(to bottom, transparent, var(--pink-disconnect), transparent);
+            background: linear-gradient(to bottom, transparent, var(--coral), transparent);
             animation: disconnect 4s infinite;
         }
 
@@ -209,8 +212,8 @@
         }
 
         .crisis-badge {
-            background: var(--pink-disconnect);
-            color: var(--white);
+            background: linear-gradient(135deg, var(--coral), var(--light-coral));
+            color: var(--bg-white);
             padding: 0.5rem 1.5rem;
             border-radius: 50px;
             display: inline-block;
@@ -232,47 +235,54 @@
             font-weight: 700;
             margin-bottom: 1rem;
             line-height: 1.1;
+            color: var(--text-dark);
         }
 
         .crisis-title .danger {
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--coral), var(--primary-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             display: block;
         }
 
         .crisis-stat {
             font-size: 4rem;
             font-weight: 900;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin: 1rem 0;
-            text-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
+            filter: drop-shadow(0 0 30px rgba(48, 213, 200, 0.5));
         }
 
         .crisis-subtitle {
             font-size: 1.5rem;
-            color: var(--text-light);
+            color: var(--text-gray);
             margin-bottom: 2rem;
         }
 
         /* Trust Meter */
         .trust-meter {
-            background: rgba(139, 0, 139, 0.1);
-            border: 2px solid var(--purple-toxic);
+            background: rgba(255, 107, 107, 0.05);
+            border: 2px solid var(--coral);
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 15px;
             margin: 2rem auto;
             max-width: 600px;
         }
 
         .meter-label {
             font-size: 1rem;
-            color: var(--text-light);
+            color: var(--text-gray);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 1rem;
         }
 
         .meter-bar {
-            background: var(--black-primary);
+            background: var(--bg-light);
             height: 40px;
             border-radius: 20px;
             overflow: hidden;
@@ -280,7 +290,7 @@
         }
 
         .meter-fill {
-            background: linear-gradient(90deg, var(--red-danger) 0%, var(--pink-disconnect) 100%);
+            background: linear-gradient(90deg, var(--coral) 0%, var(--accent-pink) 100%);
             height: 100%;
             width: 12%;
             border-radius: 20px;
@@ -288,7 +298,7 @@
             align-items: center;
             justify-content: flex-end;
             padding-right: 1rem;
-            color: var(--white);
+            color: var(--bg-white);
             font-weight: 700;
         }
 
@@ -297,32 +307,53 @@
             justify-content: space-between;
             margin-top: 0.5rem;
             font-size: 0.8rem;
-            color: var(--text-light);
+            color: var(--text-light-gray);
         }
 
         .crisis-cost {
-            background: rgba(255, 20, 147, 0.2);
-            border: 2px solid var(--pink-disconnect);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(48, 213, 200, 0.05));
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 15px;
             margin: 2rem auto;
             max-width: 600px;
         }
 
+        .crisis-cost::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--coral), var(--primary-teal));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
         .cost-label {
             font-size: 1.2rem;
-            color: var(--text-light);
+            color: var(--text-gray);
             margin-bottom: 0.5rem;
         }
 
         .cost-amount {
             font-size: 3rem;
             font-weight: 700;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .cost-period {
-            color: var(--orange-warning);
+            color: var(--warning-orange);
             font-size: 1.2rem;
             font-weight: 600;
         }
@@ -330,8 +361,7 @@
         /* Symptom Checker Section */
         .symptom-section {
             padding: 4rem 2rem;
-            background: var(--black-secondary);
-            border-top: 1px solid rgba(255, 204, 0, 0.2);
+            background: var(--bg-section);
         }
 
         .symptom-container {
@@ -347,10 +377,14 @@
         .symptom-header h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            color: var(--text-dark);
         }
 
         .symptom-header .warning {
-            color: var(--pink-disconnect);
+            background: linear-gradient(135deg, var(--coral), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .symptom-grid {
@@ -361,23 +395,25 @@
         }
 
         .symptom-item {
-            background: var(--black-primary);
-            border: 1px solid rgba(255, 20, 147, 0.3);
-            border-radius: 8px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 15px;
             padding: 1.5rem;
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .symptom-item:hover {
-            border-color: var(--yellow-primary);
+            border-color: var(--primary-teal);
             transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(48, 213, 200, 0.2);
         }
 
         .symptom-item.checked {
-            background: rgba(255, 20, 147, 0.1);
-            border-color: var(--pink-disconnect);
+            background: rgba(255, 107, 107, 0.05);
+            border-color: var(--coral);
         }
 
         .symptom-item.checked::after {
@@ -385,7 +421,7 @@
             position: absolute;
             top: 1rem;
             right: 1rem;
-            color: var(--pink-disconnect);
+            color: var(--coral);
             font-size: 1.5rem;
             font-weight: bold;
         }
@@ -399,20 +435,40 @@
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
+            color: var(--text-dark);
         }
 
         .symptom-desc {
-            color: var(--text-light);
+            color: var(--text-gray);
             font-size: 0.9rem;
         }
 
         .symptom-result {
-            background: rgba(255, 20, 147, 0.2);
-            border: 2px solid var(--pink-disconnect);
-            border-radius: 8px;
+            background: var(--bg-white);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            border-radius: 15px;
             padding: 2rem;
             text-align: center;
             display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .symptom-result::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--coral), var(--primary-teal));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
 
         .symptom-result.show {
@@ -428,21 +484,23 @@
         .result-score {
             font-size: 3rem;
             font-weight: 700;
-            color: var(--red-alert);
+            background: linear-gradient(135deg, var(--coral), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 1rem;
         }
 
         .result-message {
             font-size: 1.5rem;
-            color: var(--white);
+            color: var(--text-dark);
             margin-bottom: 2rem;
         }
 
         /* Cost Calculator Section */
         .calculator-section {
-            background: var(--black-primary);
+            background: var(--bg-white);
             padding: 4rem 2rem;
-            border-top: 1px solid rgba(255, 204, 0, 0.2);
         }
 
         .calculator-container {
@@ -458,17 +516,21 @@
         .calculator-header h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            color: var(--text-dark);
         }
 
         .money-burning {
-            color: var(--pink-disconnect);
+            background: linear-gradient(135deg, var(--coral), var(--warning-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .calculator-form {
-            background: var(--black-secondary);
+            background: var(--bg-section);
             padding: 2rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid var(--border-light);
         }
 
         .calc-grid {
@@ -484,31 +546,50 @@
         }
 
         .calc-input label {
-            color: var(--text-light);
+            color: var(--text-gray);
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
 
         .calc-input input {
-            background: var(--black-primary);
-            border: 1px solid rgba(255, 204, 0, 0.3);
-            color: var(--white);
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
             padding: 0.75rem;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 1.1rem;
         }
 
         .calc-input input:focus {
             outline: none;
-            border-color: var(--yellow-primary);
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 2px rgba(48, 213, 200, 0.2);
         }
 
         .calc-results {
-            background: rgba(255, 20, 147, 0.1);
-            border: 2px solid var(--pink-disconnect);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.03), rgba(48, 213, 200, 0.03));
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
             padding: 2rem;
-            border-radius: 8px;
+            border-radius: 15px;
             margin-top: 2rem;
+        }
+
+        .calc-results::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--coral), var(--primary-teal));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
 
         .result-grid {
@@ -519,7 +600,7 @@
         }
 
         .result-item h4 {
-            color: var(--text-light);
+            color: var(--text-gray);
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
@@ -528,14 +609,17 @@
         .result-value {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* Culture Impact Visual */
         .impact-visual {
-            background: rgba(139, 0, 139, 0.05);
-            border: 1px solid rgba(139, 0, 139, 0.3);
-            border-radius: 8px;
+            background: rgba(155, 89, 182, 0.03);
+            border: 1px solid rgba(155, 89, 182, 0.2);
+            border-radius: 15px;
             padding: 2rem;
             margin-top: 2rem;
         }
@@ -546,7 +630,10 @@
         }
 
         .impact-header h3 {
-            color: var(--purple-toxic);
+            background: linear-gradient(135deg, var(--accent-purple), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
         }
@@ -560,8 +647,8 @@
         .impact-item {
             text-align: center;
             padding: 1rem;
-            background: var(--black-primary);
-            border-radius: 4px;
+            background: var(--bg-white);
+            border-radius: 10px;
         }
 
         .impact-icon {
@@ -570,20 +657,20 @@
         }
 
         .impact-metric {
-            color: var(--red-alert);
+            color: var(--coral);
             font-weight: 700;
             font-size: 1.3rem;
         }
 
         .impact-label {
-            color: var(--text-light);
+            color: var(--text-gray);
             font-size: 0.9rem;
             margin-top: 0.5rem;
         }
 
         /* Neuroscience Section */
         .science-section {
-            background: var(--black-secondary);
+            background: var(--bg-section);
             padding: 4rem 2rem;
         }
 
@@ -600,23 +687,27 @@
         .science-header h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            color: var(--text-dark);
         }
 
         .brain-highlight {
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .failure-reasons {
-            background: rgba(255, 20, 147, 0.05);
-            border-left: 4px solid var(--pink-disconnect);
+            background: rgba(255, 107, 107, 0.05);
+            border-left: 4px solid var(--coral);
             padding: 2rem;
             margin-bottom: 3rem;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 15px 15px 0;
         }
 
         .failure-title {
             font-size: 1.5rem;
-            color: var(--pink-disconnect);
+            color: var(--coral);
             margin-bottom: 1rem;
         }
 
@@ -626,7 +717,7 @@
 
         .failure-list li {
             padding: 0.75rem 0;
-            color: var(--text-light);
+            color: var(--text-gray);
             position: relative;
             padding-left: 2rem;
         }
@@ -635,7 +726,7 @@
             content: '✗';
             position: absolute;
             left: 0;
-            color: var(--pink-disconnect);
+            color: var(--coral);
             font-weight: bold;
         }
 
@@ -646,21 +737,23 @@
         }
 
         .solution-card {
-            background: var(--black-primary);
-            border: 1px solid rgba(255, 204, 0, 0.2);
-            border-radius: 8px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 15px;
             padding: 2rem;
             transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .solution-card:hover {
-            border-color: var(--yellow-primary);
+            border-color: var(--primary-teal);
             transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(48, 213, 200, 0.2);
         }
 
         .solution-number {
-            background: var(--yellow-primary);
-            color: var(--black-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+            color: var(--bg-white);
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -674,21 +767,22 @@
         .solution-title {
             font-size: 1.3rem;
             margin-bottom: 1rem;
+            color: var(--text-dark);
         }
 
         .solution-desc {
-            color: var(--text-light);
+            color: var(--text-gray);
             margin-bottom: 1rem;
         }
 
         .solution-stat {
-            color: var(--green-success);
+            color: var(--success-green);
             font-weight: 600;
         }
 
         /* Quick Wins Section */
         .quickwins-section {
-            background: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
             padding: 4rem 2rem;
         }
 
@@ -699,15 +793,16 @@
         }
 
         .quickwins-container h2 {
-            color: var(--black-primary);
+            color: var(--bg-white);
             font-size: 2.5rem;
             margin-bottom: 1rem;
         }
 
         .quickwins-subtitle {
-            color: var(--black-primary);
+            color: var(--bg-white);
             font-size: 1.2rem;
             margin-bottom: 3rem;
+            opacity: 0.9;
         }
 
         .wins-grid {
@@ -718,15 +813,17 @@
         }
 
         .win-card {
-            background: var(--black-primary);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             padding: 2rem;
-            border-radius: 8px;
+            border-radius: 15px;
             text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .win-number {
-            background: var(--yellow-primary);
-            color: var(--black-primary);
+            background: var(--bg-white);
+            color: var(--dark-teal);
             padding: 0.5rem 1rem;
             border-radius: 50px;
             display: inline-block;
@@ -735,30 +832,31 @@
         }
 
         .win-title {
-            color: var(--white);
+            color: var(--bg-white);
             font-size: 1.3rem;
             margin-bottom: 1rem;
         }
 
         .win-desc {
-            color: var(--text-light);
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 1rem;
         }
 
         .win-action {
-            color: var(--yellow-primary);
+            color: var(--bg-white);
             font-weight: 600;
         }
 
         .free-resources {
-            background: var(--black-primary);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             padding: 2rem;
-            border-radius: 8px;
-            border: 2px solid var(--black-primary);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .resource-title {
-            color: var(--yellow-primary);
+            color: var(--bg-white);
             font-size: 1.5rem;
             margin-bottom: 1.5rem;
         }
@@ -772,8 +870,8 @@
 
         .resource-list li {
             padding: 0.75rem 0;
-            color: var(--text-light);
-            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .resource-list li::before {
@@ -783,9 +881,8 @@
 
         /* Case Study Section */
         .case-section {
-            background: var(--black-primary);
+            background: var(--bg-white);
             padding: 4rem 2rem;
-            border-top: 1px solid rgba(255, 204, 0, 0.2);
         }
 
         .case-container {
@@ -801,12 +898,13 @@
         .case-header h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            color: var(--text-dark);
         }
 
         .case-box {
-            background: var(--black-secondary);
-            border: 2px solid var(--green-success);
-            border-radius: 8px;
+            background: var(--bg-section);
+            border: 2px solid var(--success-green);
+            border-radius: 15px;
             padding: 3rem;
             position: relative;
         }
@@ -816,8 +914,8 @@
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--green-success);
-            color: var(--white);
+            background: linear-gradient(135deg, var(--success-green), var(--primary-teal));
+            color: var(--bg-white);
             padding: 0.5rem 2rem;
             border-radius: 50px;
             font-weight: 600;
@@ -827,7 +925,7 @@
 
         .case-company {
             font-size: 1.5rem;
-            color: var(--white);
+            color: var(--text-dark);
             margin-bottom: 2rem;
             margin-top: 1rem;
         }
@@ -846,36 +944,40 @@
         .metric-value {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             display: block;
         }
 
         .metric-label {
-            color: var(--text-light);
+            color: var(--text-gray);
             font-size: 0.9rem;
             text-transform: uppercase;
         }
 
         .case-quote {
-            background: rgba(255, 204, 0, 0.1);
-            border-left: 4px solid var(--yellow-primary);
+            background: rgba(48, 213, 200, 0.1);
+            border-left: 4px solid var(--primary-teal);
             padding: 1.5rem;
             margin: 2rem 0;
             text-align: left;
             font-style: italic;
-            color: var(--text-light);
+            color: var(--text-gray);
+            border-radius: 0 10px 10px 0;
         }
 
         .case-author {
             text-align: right;
-            color: var(--white);
+            color: var(--text-dark);
             font-style: normal;
             margin-top: 1rem;
         }
 
         /* Solution Preview Section */
         .solution-preview {
-            background: var(--black-secondary);
+            background: var(--bg-section);
             padding: 4rem 2rem;
         }
 
@@ -892,6 +994,7 @@
         .preview-header h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            color: var(--text-dark);
         }
 
         .preview-grid {
@@ -902,11 +1005,12 @@
         }
 
         .preview-card {
-            background: var(--black-primary);
-            border: 1px solid rgba(255, 204, 0, 0.2);
-            border-radius: 8px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 15px;
             padding: 2rem;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .preview-icon {
@@ -917,17 +1021,20 @@
         .preview-title {
             font-size: 1.3rem;
             margin-bottom: 1rem;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .preview-desc {
-            color: var(--text-light);
+            color: var(--text-gray);
             margin-bottom: 1rem;
         }
 
         .preview-time {
-            background: rgba(0, 204, 102, 0.2);
-            color: var(--green-success);
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success-green);
             padding: 0.5rem 1rem;
             border-radius: 50px;
             display: inline-block;
@@ -935,30 +1042,50 @@
         }
 
         .guarantee-box {
-            background: rgba(255, 204, 0, 0.1);
-            border: 2px solid var(--yellow-primary);
-            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(48, 213, 200, 0.05), rgba(255, 107, 107, 0.05));
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            border-radius: 15px;
             padding: 2rem;
             text-align: center;
         }
 
+        .guarantee-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
         .guarantee-title {
             font-size: 2rem;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 1rem;
         }
 
         .guarantee-text {
             font-size: 1.2rem;
-            color: var(--white);
+            color: var(--text-dark);
         }
 
         /* CTA Section */
         .cta-section {
-            background: linear-gradient(135deg, var(--black-primary) 0%, var(--black-secondary) 100%);
+            background: var(--bg-white);
             padding: 4rem 2rem;
             text-align: center;
-            border-top: 1px solid rgba(255, 204, 0, 0.2);
         }
 
         .cta-container {
@@ -969,26 +1096,44 @@
         .cta-container h2 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            color: var(--white);
+            color: var(--text-dark);
         }
 
         .cta-subtitle {
             font-size: 1.5rem;
-            color: var(--text-light);
+            color: var(--text-gray);
             margin-bottom: 2rem;
         }
 
         .cta-timer {
-            background: rgba(255, 20, 147, 0.2);
-            border: 2px solid var(--pink-disconnect);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(48, 213, 200, 0.05));
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 15px;
             display: inline-block;
             margin-bottom: 2rem;
         }
 
+        .cta-timer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--coral), var(--primary-teal));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
         .timer-label {
-            color: var(--text-light);
+            color: var(--text-gray);
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -997,7 +1142,10 @@
         .timer-value {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .cta-buttons {
@@ -1009,11 +1157,11 @@
         }
 
         .btn-primary {
-            background: var(--yellow-primary);
-            color: var(--black-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+            color: var(--bg-white);
             padding: 1rem 2.5rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px;
             font-size: 1.1rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -1026,15 +1174,15 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(48, 213, 200, 0.3);
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--white);
+            color: var(--text-dark);
             padding: 1rem 2.5rem;
-            border: 2px solid var(--white);
-            border-radius: 4px;
+            border: 2px solid var(--text-dark);
+            border-radius: 25px;
             font-size: 1.1rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -1046,16 +1194,16 @@
         }
 
         .btn-secondary:hover {
-            background: var(--white);
-            color: var(--black-primary);
+            background: var(--text-dark);
+            color: var(--bg-white);
         }
 
         .btn-emergency {
-            background: var(--purple-toxic);
-            color: var(--white);
+            background: linear-gradient(135deg, var(--coral), var(--accent-pink));
+            color: var(--bg-white);
             padding: 1rem 2.5rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px;
             font-size: 1.1rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -1067,22 +1215,21 @@
         }
 
         .btn-emergency:hover {
-            background: var(--pink-disconnect);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 20, 147, 0.3);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
         }
 
         .urgency-text {
-            color: var(--pink-disconnect);
+            color: var(--coral);
             font-weight: 600;
             font-size: 1.1rem;
         }
 
         /* Footer */
         footer {
-            background: var(--black-primary);
+            background: var(--bg-section);
             padding: 3rem 2rem 2rem;
-            border-top: 1px solid rgba(255, 204, 0, 0.2);
+            border-top: 1px solid var(--border-light);
         }
 
         .footer-content {
@@ -1095,7 +1242,10 @@
         }
 
         .footer-section h4 {
-            color: var(--yellow-primary);
+            background: linear-gradient(135deg, var(--primary-teal), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 1rem;
             text-transform: uppercase;
             font-size: 0.9rem;
@@ -1107,7 +1257,7 @@
         }
 
         .footer-section a {
-            color: var(--text-light);
+            color: var(--text-gray);
             text-decoration: none;
             display: block;
             padding: 0.35rem 0;
@@ -1116,14 +1266,14 @@
         }
 
         .footer-section a:hover {
-            color: var(--yellow-primary);
+            color: var(--primary-teal);
         }
 
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
+            border-top: 1px solid var(--border-light);
+            color: var(--text-gray);
             font-size: 0.85rem;
         }
 
@@ -1148,11 +1298,11 @@
                 left: 0;
                 right: 0;
                 width: 100%;
-                background: var(--black-primary);
+                background: var(--bg-white);
                 flex-direction: column;
                 padding: 2rem;
-                border-bottom: 2px solid var(--yellow-primary);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.9);
+                border-bottom: 2px solid var(--primary-teal);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
                 z-index: 999;
                 margin-left: 0;
             }
@@ -1163,7 +1313,7 @@
             
             .nav-links a {
                 padding: 1rem 0;
-                border-bottom: 1px solid rgba(255, 204, 0, 0.1);
+                border-bottom: 1px solid var(--border-light);
                 width: 100%;
                 text-align: center;
             }
@@ -1281,7 +1431,7 @@
         <div class="symptom-container">
             <div class="symptom-header">
                 <h2>Signs Your Culture is <span class="warning">Dying</span></h2>
-                <p style="color: var(--text-light); font-size: 1.2rem;">Which toxic symptoms are spreading?</p>
+                <p style="color: var(--text-gray); font-size: 1.2rem;">Which toxic symptoms are spreading?</p>
             </div>
             
             <div class="symptom-grid">
@@ -1343,7 +1493,7 @@
             <div class="symptom-result" id="symptomResult">
                 <div class="result-score" id="resultScore">CULTURE CRISIS</div>
                 <div class="result-message">Your organization is culturally bankrupt</div>
-                <p style="color: var(--text-light); margin-bottom: 2rem;">
+                <p style="color: var(--text-gray); margin-bottom: 2rem;">
                     Each cultural failure costs £127,000 in lost productivity annually
                 </p>
                 <a href="/assessment/index.html" class="btn-primary">GET CULTURE RESCUE PLAN →</a>
@@ -1356,26 +1506,26 @@
         <div class="calculator-container">
             <div class="calculator-header">
                 <h2>The Price of <span class="money-burning">Cultural Collapse</span></h2>
-                <p style="color: var(--text-light);">Calculate what toxic culture really costs</p>
+                <p style="color: var(--text-gray);">Calculate what toxic culture really costs</p>
             </div>
             
             <div class="calculator-form">
                 <div class="calc-grid">
                     <div class="calc-input">
                         <label>Number of Employees</label>
-                        <input type="number" id="employees" value="350" min="1">
+                        <input type="number" id="employees" value="350" min="1" onchange="calculateCulture()">
                     </div>
                     <div class="calc-input">
                         <label>Average Salary (£)</label>
-                        <input type="number" id="salary" value="52000" min="1">
+                        <input type="number" id="salary" value="52000" min="1" onchange="calculateCulture()">
                     </div>
                     <div class="calc-input">
                         <label>Disconnection Rate (%)</label>
-                        <input type="number" id="disconnection" value="71" min="0" max="100">
+                        <input type="number" id="disconnection" value="71" min="0" max="100" onchange="calculateCulture()">
                     </div>
                     <div class="calc-input">
                         <label>Trust Score (0-100)</label>
-                        <input type="number" id="trust" value="12" min="0" max="100">
+                        <input type="number" id="trust" value="12" min="0" max="100" onchange="calculateCulture()">
                     </div>
                 </div>
                 
@@ -1399,7 +1549,7 @@
                 <div class="impact-visual">
                     <div class="impact-header">
                         <h3>Culture Breakdown Impact</h3>
-                        <p style="color: var(--text-light);">What dies when culture fails</p>
+                        <p style="color: var(--text-gray);">What dies when culture fails</p>
                     </div>
                     <div class="impact-items">
                         <div class="impact-item">
@@ -1437,7 +1587,7 @@
         <div class="science-container">
             <div class="science-header">
                 <h2>The <span class="brain-highlight">Neurology of Trust</span></h2>
-                <p style="color: var(--text-light);">Why culture isn't fixed with pizza parties and values posters</p>
+                <p style="color: var(--text-gray);">Why culture isn't fixed with pizza parties and values posters</p>
             </div>
             
             <div class="failure-reasons">
@@ -1483,262 +1633,4 @@
             <p class="quickwins-subtitle">3 interventions to stop the bleeding today</p>
             
             <div class="wins-grid">
-                <div class="win-card">
-                    <span class="win-number">RESCUE #1</span>
-                    <h3 class="win-title">Anonymous Truth Channel</h3>
-                    <p class="win-desc">Create safe space for real feedback. No retaliation. Act on top 3 issues immediately.</p>
-                    <div class="win-action">→ 56% trust improvement</div>
-                </div>
-                
-                <div class="win-card">
-                    <span class="win-number">RESCUE #2</span>
-                    <h3 class="win-title">Fire a Toxic Star</h3>
-                    <p class="win-desc">Remove one high-performing bully. Watch culture transform overnight.</p>
-                    <div class="win-action">→ 41% morale boost</div>
-                </div>
-                
-                <div class="win-card">
-                    <span class="win-number">RESCUE #3</span>
-                    <h3 class="win-title">Leader Vulnerability</h3>
-                    <p class="win-desc">CEO admits 3 failures publicly. Creates permission for honesty.</p>
-                    <div class="win-action">→ 33% openness increase</div>
-                </div>
-            </div>
-            
-            <div class="free-resources">
-                <h3 class="resource-title">Culture Revival Toolkit:</h3>
-                <ul class="resource-list">
-                    <li>Psychological Safety Assessment (15 min)</li>
-                    <li>Trust Rebuilding Playbook</li>
-                    <li>Toxicity Detection Checklist</li>
-                    <li>Culture Reset 30-Day Plan</li>
-                </ul>
-                <a href="/assessment/index.html" class="btn-primary" style="background: var(--yellow-primary); color: var(--black-primary);">
-                    GET CULTURE TOOLKIT FREE →
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Case Study Section -->
-    <section class="case-section">
-        <div class="case-container">
-            <div class="case-header">
-                <h2>From Toxic to <span style="color: var(--green-success);">Thriving</span></h2>
-                <p style="color: var(--text-light);">How a broken culture became best-in-class</p>
-            </div>
-            
-            <div class="case-box">
-                <div class="case-badge">CULTURE TRANSFORMATION</div>
-                <h3 class="case-company">Professional Services Firm • 2,100 Employees • Birmingham</h3>
-                
-                <div class="case-metrics">
-                    <div class="metric-item">
-                        <span class="metric-value">From 11% to 84%</span>
-                        <span class="metric-label">Trust Score</span>
-                    </div>
-                    <div class="metric-item">
-                        <span class="metric-value">£5.2M</span>
-                        <span class="metric-label">Productivity Gains</span>
-                    </div>
-                    <div class="metric-item">
-                        <span class="metric-value">92%</span>
-                        <span class="metric-label">Would Recommend</span>
-                    </div>
-                    <div class="metric-item">
-                        <span class="metric-value">#3</span>
-                        <span class="metric-label">Best Places to Work</span>
-                    </div>
-                </div>
-                
-                <div class="case-quote">
-                    "Our culture was poison. Partners didn't talk. Teams competed destructively. Good people left weekly. Clover Era's assessment revealed 11% psychological safety - basically a warzone. They helped us remove toxic leaders, rebuild trust systematically, and create real connection. Within 6 months, we went from worst to best workplace in our sector."
-                    <div class="case-author">— James Patterson, Managing Partner</div>
-                </div>
-                
-                <a href="/assessment/index.html" class="btn-primary">ASSESS YOUR CULTURE →</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Solution Preview Section -->
-    <section class="solution-preview">
-        <div class="preview-container">
-            <div class="preview-header">
-                <h2>Your Culture <span style="color: var(--yellow-primary);">Renaissance</span></h2>
-                <p style="color: var(--text-light);">From breakdown to breakthrough in 90 days</p>
-            </div>
-            
-            <div class="preview-grid">
-                <div class="preview-card">
-                    <div class="preview-icon">🔬</div>
-                    <h3 class="preview-title">Week 1-2</h3>
-                    <p class="preview-desc">Deep culture audit reveals hidden toxicity patterns and trust gaps</p>
-                    <div class="preview-time">Truth Revealed</div>
-                </div>
-                
-                <div class="preview-card">
-                    <div class="preview-icon">🏗️</div>
-                    <h3 class="preview-title">Week 3-4</h3>
-                    <p class="preview-desc">Remove toxic elements, establish safety, begin trust rebuilding</p>
-                    <div class="preview-time">Foundation Reset</div>
-                </div>
-                
-                <div class="preview-card">
-                    <div class="preview-icon">🌱</div>
-                    <h3 class="preview-title">Month 2</h3>
-                    <p class="preview-desc">New behaviors rewarded, connection strengthens, silos dissolve</p>
-                    <div class="preview-time">Culture Shifts</div>
-                </div>
-                
-                <div class="preview-card">
-                    <div class="preview-icon">🎯</div>
-                    <h3 class="preview-title">Month 3</h3>
-                    <p class="preview-desc">Values lived, innovation returns, people proud to work here</p>
-                    <div class="preview-time">84% Trust Achieved</div>
-                </div>
-            </div>
-            
-            <div class="guarantee-box">
-                <h3 class="guarantee-title">🛡️ Culture Transformation Guarantee</h3>
-                <p class="guarantee-text">
-                    If your trust score doesn't improve by 300% in 90 days,<br>
-                    we refund everything and work free until it does.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-container">
-            <h2>Your Best People Are Planning Their Exit</h2>
-            <p class="cta-subtitle">They won't work in a toxic culture anymore</p>
-            
-            <div class="cta-timer">
-                <div class="timer-label">Culture decay cost:</div>
-                <div class="timer-value" id="lossTimer">£127</div>
-            </div>
-            
-            <div class="cta-buttons">
-                <a href="/assessment/index.html" class="btn-primary">START CULTURE ASSESSMENT</a>
-                <a href="/calculator/index.html" class="btn-secondary">CALCULATE YOUR LOSSES</a>
-                <a href="/pilot/index.html" class="btn-emergency">EMERGENCY INTERVENTION</a>
-            </div>
-            
-            <p class="urgency-text">
-                ⚠️ Culture breakdown is contagious - one toxic team infects all
-            </p>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>CRISIS SOLUTIONS</h4>
-                <ul>
-                    <li><a href="/culture-breakdown/index.html">Culture Breakdown</a></li>
-                    <li><a href="/burnout/index.html">Employee Burnout</a></li>
-                    <li><a href="/retention-crisis/index.html">Retention Crisis</a></li>
-                    <li><a href="/toxic-management/index.html">Toxic Management</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>MORE PROBLEMS</h4>
-                <ul>
-                    <li><a href="/employee-stress/index.html">Workplace Stress</a></li>
-                    <li><a href="/workplace-anxiety/index.html">Workplace Anxiety</a></li>
-                    <li><a href="/hybrid-working-issues/index.html">Hybrid Working</a></li>
-                    <li><a href="/change-fatigue/index.html">Change Fatigue</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>TAKE ACTION</h4>
-                <ul>
-                    <li><a href="/calculator/index.html">ROI Calculator</a></li>
-                    <li><a href="/assessment/index.html">Free Assessment</a></li>
-                    <li><a href="/pilot/index.html">30-Day Free Trial</a></li>
-                    <li><a href="/contact/index.html">Emergency Support</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>RESOURCES</h4>
-                <ul>
-                    <li><a href="/about/index.html">Our Science</a></li>
-                    <li><a href="/case-studies/index.html">Success Stories</a></li>
-                    <li><a href="/privacy/index.html">Privacy</a></li>
-                    <li><a href="/terms/index.html">Terms</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© CLOVER ERA 2025 | Neuroscience-Powered Culture Transformation | Build Thriving Workplaces</p>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileToggle?.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-        });
-
-        // Symptom Checker
-        let checkedSymptoms = 0;
-        
-        function toggleSymptom(element) {
-            element.classList.toggle('checked');
-            checkedSymptoms = document.querySelectorAll('.symptom-item.checked').length;
-            
-            if (checkedSymptoms >= 3) {
-                const result = document.getElementById('symptomResult');
-                result.classList.add('show');
-                
-                const score = document.getElementById('resultScore');
-                if (checkedSymptoms >= 7) {
-                    score.textContent = 'TOXIC WASTELAND';
-                    score.style.color = 'var(--red-danger)';
-                } else if (checkedSymptoms >= 5) {
-                    score.textContent = 'CULTURE EMERGENCY';
-                    score.style.color = 'var(--red-alert)';
-                } else {
-                    score.textContent = 'CULTURE WARNING';
-                    score.style.color = 'var(--orange-warning)';
-                }
-            }
-        }
-
-        // Culture Calculator
-        function calculateCulture() {
-            const employees = parseInt(document.getElementById('employees').value) || 350;
-            const salary = parseInt(document.getElementById('salary').value) || 52000;
-            const disconnection = parseInt(document.getElementById('disconnection').value) || 71;
-            const trust = parseInt(document.getElementById('trust').value) || 12;
-            
-            // Calculate losses
-            const disconnectedEmployees = (employees * disconnection) / 100;
-            
-            // Low trust multiplier (lower trust = higher cost)
-            const trustMultiplier = (100 - trust) / 100;
-            
-            // Productivity loss from disconnection
-            const productivityLoss = disconnectedEmployees * salary * 0.35 * trustMultiplier;
-            
-            // Innovation loss
-            const innovationLoss = employees * salary * 0.15 * trustMultiplier;
-            
-            // Collaboration inefficiency
-            const collaborationLoss = employees * salary * 0.20 * (disconnection / 100);
-            
-            // Turnover from culture issues
-            const cultureTurnover = employees * 0.18 * salary * 1.5 * trustMultiplier;
-            
-            const annualLoss = Math.round(productivityLoss + innovationLoss + collaborationLoss + cultureTurnover);
-            const monthlyLoss = Math.round(annualLoss / 12);
-            const perEmployee = Math.round(annualLoss / employees);
-            
-            document.getElementById('monthlyLoss').
+                <div class="win
