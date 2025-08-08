@@ -274,8 +274,7 @@
                 rgba(70, 174, 184, 0.02));
             border: 2px solid var(--primary-teal);
             border-radius: 20px;
-            padding: 3rem;
-            text-align: center;
+            padding: 2.5rem 3rem 3rem;
             box-shadow: 0 10px 40px rgba(70, 174, 184, 0.1);
         }
 
@@ -286,67 +285,84 @@
             color: var(--text-secondary);
             font-weight: 600;
             margin-bottom: 2.5rem;
+            text-align: center;
         }
 
         .stress-levels {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
             gap: 1.5rem;
-            margin-bottom: 2rem;
         }
 
         .stress-level {
+            flex: 1;
+            max-width: 160px;
             text-align: center;
             padding: 2rem 1rem;
             border-radius: 15px;
             background: linear-gradient(135deg, 
                 rgba(70, 174, 184, 0.08), 
                 rgba(70, 174, 184, 0.04));
-            transition: transform 0.3s;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 140px;
         }
 
         .stress-level:last-child {
             border: 2px solid var(--coral);
             background: rgba(255, 255, 255, 0.95);
-        }
-
-        .stress-level:last-child::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 13px;
-            background: linear-gradient(135deg, 
-                rgba(255, 107, 107, 0.05), 
-                rgba(255, 107, 107, 0.02));
-            z-index: 0;
+            padding: calc(2rem - 2px) calc(1rem - 2px);
         }
 
         .stress-percentage {
             font-size: 3rem;
             font-weight: 800;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             color: var(--primary-teal);
-            position: relative;
-            z-index: 1;
-        }
-
-        .stress-level:last-child .stress-percentage {
-            color: var(--primary-teal);
+            line-height: 1;
         }
 
         .stress-label {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--text-secondary);
             font-weight: 600;
-            position: relative;
-            z-index: 1;
+            line-height: 1.2;
         }
 
-        .stress-level:last-child .stress-label {
+        .stress-cost-box {
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.05), 
+                rgba(70, 174, 184, 0.02));
+            border: 2px solid var(--primary-teal);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-top: 2rem;
+            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.1);
+        }
+
+        .stress-cost-label {
+            font-size: 1rem;
             color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .stress-cost-amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--coral);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .stress-cost-period {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .stress-cost-box {
@@ -880,12 +896,16 @@
         /* Responsive */
         @media (max-width: 768px) {
             h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             
             .hero {
                 padding: 4rem 1.5rem;
                 min-height: 450px;
+            }
+            
+            .hero-stat {
+                font-size: 4rem;
             }
             
             .mobile-menu-toggle {
@@ -917,6 +937,16 @@
                 border-bottom: 1px solid var(--medium-gray);
                 width: 100%;
                 text-align: center;
+            }
+            
+            .stress-levels {
+                flex-wrap: wrap;
+            }
+            
+            .stress-level {
+                flex: 1 1 45%;
+                max-width: none;
+                min-width: 130px;
             }
             
             .signs-grid {
