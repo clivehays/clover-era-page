@@ -1276,8 +1276,58 @@
                 } else {
                     selectedSymptoms--;
                 }
+                
+                // Show result after selecting symptoms
+                updateSymptomResult();
             });
         });
+
+        // Function to update symptom assessment result
+        function updateSymptomResult() {
+            const resultDiv = document.getElementById('symptom-result');
+            const resultMessage = document.getElementById('result-message');
+            const recommendationText = document.getElementById('recommendation-text');
+            
+            if (selectedSymptoms === 0) {
+                resultDiv.style.display = 'none';
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            
+            // Scroll to result smoothly
+            setTimeout(() => {
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+            
+            if (selectedSymptoms <= 2) {
+                resultMessage.innerHTML = `<strong style="color: var(--success);">Low Anxiety Indicators (${selectedSymptoms}/9)</strong><br>
+                    Your team shows minimal signs of workplace anxiety. However, prevention is key to maintaining this healthy state.`;
+                recommendationText.textContent = "Focus on preventive measures. Implement regular check-ins and maintain open communication channels to keep anxiety levels low.";
+            } else if (selectedSymptoms <= 4) {
+                resultMessage.innerHTML = `<strong style="color: var(--warning);">Moderate Anxiety Levels (${selectedSymptoms}/9)</strong><br>
+                    Your team is showing early warning signs of workplace anxiety that could impact performance if not addressed.`;
+                recommendationText.textContent = "Time for proactive intervention. Consider implementing stress-reduction workshops, improving work-life balance policies, and creating safer spaces for feedback.";
+            } else if (selectedSymptoms <= 6) {
+                resultMessage.innerHTML = `<strong style="color: var(--coral);">High Anxiety Levels (${selectedSymptoms}/9)</strong><br>
+                    Your team is experiencing significant anxiety that is likely already affecting productivity, innovation, and retention.`;
+                recommendationText.textContent = "Immediate action recommended. Launch a comprehensive anxiety-reduction program, review management practices, and consider bringing in expert support to address systemic issues.";
+            } else {
+                resultMessage.innerHTML = `<strong style="color: var(--danger);">Critical Anxiety Crisis (${selectedSymptoms}/9)</strong><br>
+                    Your workplace is in an anxiety crisis. This level of fear-driven culture is severely damaging performance, health, and retention.`;
+                recommendationText.textContent = "Urgent transformation needed. This requires immediate leadership intervention, comprehensive culture change, and professional support. Consider our 30-day intensive program to reverse this crisis.";
+            }
+            
+            // Update the calculator with anxiety percentage based on symptoms
+            const anxietyPercentage = Math.round((selectedSymptoms / 9) * 100);
+            document.getElementById('anxietyRate').value = Math.min(anxietyPercentage, 95);
+            calculateAnxietyCosts();
+        }
+        
+        // Function to scroll to calculator
+        function scrollToCalculator() {
+            document.querySelector('.cost-section').scrollIntoView({ behavior: 'smooth' });
+        }
 
         // Anxiety cost calculator
         function calculateAnxietyCosts() {
