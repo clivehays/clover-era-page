@@ -1073,23 +1073,35 @@
             font-size: 0.85rem;
         }
 
-        /* Adjusted Cookie Consent Banner Positioning and Width */
-        .cc-nb-main-container {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-            bottom: 0 !important;
+        /* Force Cookie Consent Banner to Bottom - More Specific Selectors */
+        #cc-nb-main,
+        .cc-nb-main,
+        .cc-nb-main-container,
+        div.cc-nb-main-container {
+            position: fixed !important;
+            bottom: 20px !important;
             top: auto !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
             max-width: 1200px !important;
             width: 90% !important;
-            margin: 0 auto 20px !important;
+            margin: 0 !important;
             border-radius: 15px !important;
             box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.15) !important;
+            z-index: 999999 !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+        }
+
+        /* Override any top positioning */
+        .cc-nb-main-container[style*="top"] {
+            top: auto !important;
+            bottom: 20px !important;
         }
 
         /* Ensure it stays at bottom on all screen sizes */
-        .cc-nb-okagain {
-            bottom: 0 !important;
+        .cc-nb-okagain,
+        #cc-nb-okagain {
+            bottom: 20px !important;
             top: auto !important;
         }
 
@@ -1112,38 +1124,44 @@
         }
 
         /* Style the buttons */
-        .cc-nb-accept {
+        .cc-nb-accept,
+        button.cc-nb-accept {
             background-color: #46AEB8 !important;
             border-color: #46AEB8 !important;
             padding: 0.6rem 1.5rem !important;
             font-size: 0.9rem !important;
         }
 
-        .cc-nb-accept:hover {
+        .cc-nb-accept:hover,
+        button.cc-nb-accept:hover {
             background-color: #3A9DA5 !important;
             border-color: #3A9DA5 !important;
         }
 
-        .cc-nb-reject {
+        .cc-nb-reject,
+        button.cc-nb-reject {
             background-color: #FF6B6B !important;
             border-color: #FF6B6B !important;
             padding: 0.6rem 1.5rem !important;
             font-size: 0.9rem !important;
         }
 
-        .cc-nb-reject:hover {
+        .cc-nb-reject:hover,
+        button.cc-nb-reject:hover {
             background-color: #E55555 !important;
             border-color: #E55555 !important;
         }
 
-        .cc-nb-customize {
+        .cc-nb-customize,
+        button.cc-nb-customize {
             color: #46AEB8 !important;
             border-color: #46AEB8 !important;
             padding: 0.6rem 1.5rem !important;
             font-size: 0.9rem !important;
         }
 
-        .cc-nb-customize:hover {
+        .cc-nb-customize:hover,
+        button.cc-nb-customize:hover {
             background-color: #46AEB8 !important;
             color: #FFFFFF !important;
         }
@@ -1156,6 +1174,12 @@
         .cc-cp-save {
             background-color: #46AEB8 !important;
             border-color: #46AEB8 !important;
+        }
+
+        /* Additional override for any inline styles */
+        [id^="cc-nb"] {
+            bottom: 20px !important;
+            top: auto !important;
         }
 
         /* Responsive */
