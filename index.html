@@ -1656,4 +1656,208 @@
     <!-- Science Section -->
     <section class="science-section" aria-label="Our scientific approach">
         <div class="science-content">
-            <h2>The <span
+            <h2>The <span style="color: var(--primary-teal);">Neuroscience</span> Difference</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.2rem;">
+                We don't use vanity metrics. We measure what matters to your brain and your bottom line.
+            </p>
+            
+            <div class="science-grid">
+                <div class="science-item">
+                    <div class="science-number">1.</div>
+                    <div class="science-title">Brain-Based Metrics</div>
+                    <div class="science-description">Track dopamine, cortisol, and cognitive load - not just surveys</div>
+                </div>
+                <div class="science-item">
+                    <div class="science-number">2.</div>
+                    <div class="science-title">Predictive AI</div>
+                    <div class="science-description">Know who's leaving 6 months before they do</div>
+                </div>
+                <div class="science-item">
+                    <div class="science-number">3.</div>
+                    <div class="science-title">Proven ROI</div>
+                    <div class="science-description">Most clients see positive ROI within 30 days</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" aria-label="Call to action">
+        <h2>Ready to Stop the Bleeding?</h2>
+        <p>Every day you wait costs $1,400 in lost productivity and turnover</p>
+        <div class="hero-cta-group" style="position: relative; z-index: 1;">
+            <a href="/assessment/index.html" class="btn-primary" aria-label="Take free assessment">
+                FREE ASSESSMENT
+            </a>
+            <a href="/pilot/index.html" class="btn-secondary" aria-label="Start 30-day free trial">
+                START 30-DAY FREE TRIAL
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer aria-label="Footer navigation">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ENGAGEMENT RESOURCES</h4>
+                <ul>
+                    <li><a href="/what-is-employee-engagement/" class="highlight-link">What Is Employee Engagement?</a></li>
+                    <li><a href="/employee-engagement-strategies/">Engagement Strategies</a></li>
+                    <li><a href="/measure-employee-engagement/">How to Measure</a></li>
+                    <li><a href="/engagement-best-practices/">Best Practices</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PROBLEMS WE SOLVE</h4>
+                <ul>
+                    <li><a href="/burnout/index.html">Employee Burnout</a></li>
+                    <li><a href="/employee-stress/index.html">Workplace Stress</a></li>
+                    <li><a href="/retention-crisis/index.html">Retention Crisis</a></li>
+                    <li><a href="/workplace-anxiety/index.html">Workplace Anxiety</a></li>
+                    <li><a href="/hybrid-working-issues/index.html">Hybrid Working</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>GET STARTED</h4>
+                <ul>
+                    <li><a href="/calculator/index.html">ROI Calculator</a></li>
+                    <li><a href="/assessment/index.html">Free Assessment</a></li>
+                    <li><a href="/pilot/index.html">30-Day Free Trial</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#science">Our Science</a></li>
+                    <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                    <li><a href="/cookie-policy/">Cookie Policy</a></li>
+                    <li><a href="#" id="open_preferences_center">Cookie Preferences</a></li>
+                    <li><a href="#terms">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© CLOVER ERA 2025 | Neuroscience-Powered Employee Engagement Platform</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileToggle?.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileToggle.classList.toggle('active');
+            // Update aria-expanded
+            const isExpanded = navLinks.classList.contains('active');
+            mobileToggle.setAttribute('aria-expanded', isExpanded);
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileToggle?.classList.remove('active');
+                mobileToggle?.setAttribute('aria-expanded', 'false');
+            });
+        });
+        
+        // Simple ROI Calculator
+        function calculateROI() {
+            const employees = parseInt(document.getElementById('employees').value) || 250;
+            const salary = parseInt(document.getElementById('salary').value) || 75000;
+            const turnover = parseInt(document.getElementById('turnover').value) || 15;
+            
+            // Calculate annual loss (1.5x salary per employee who leaves)
+            const employeesLeaving = employees * (turnover / 100);
+            const costPerEmployee = salary * 1.5;
+            const totalLoss = employeesLeaving * costPerEmployee;
+            
+            // Format with commas
+            const formattedLoss = ' + totalLoss.toLocaleString('en-US', {
+                maximumFractionDigits: 0
+            });
+            
+            document.getElementById('monthlyLoss').textContent = formattedLoss;
+        }
+        
+        // Add event listeners for calculator inputs
+        document.getElementById('employees')?.addEventListener('input', calculateROI);
+        document.getElementById('salary')?.addEventListener('input', calculateROI);
+        document.getElementById('turnover')?.addEventListener('input', calculateROI);
+        
+        // Initial calculation
+        calculateROI();
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                // Skip if it's the cookie preferences link
+                if (href === '#' && this.id === 'open_preferences_center') {
+                    return;
+                }
+                
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe problem cards and science items
+        document.querySelectorAll('.problem-card, .science-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        // Add loading="lazy" to images for better performance
+        document.querySelectorAll('img').forEach(img => {
+            if (!img.hasAttribute('loading')) {
+                img.setAttribute('loading', 'lazy');
+            }
+        });
+        
+        // Track calculator usage (for analytics when enabled)
+        let calculatorUsed = false;
+        document.querySelectorAll('#employees, #salary, #turnover').forEach(input => {
+            input.addEventListener('change', () => {
+                if (!calculatorUsed) {
+                    calculatorUsed = true;
+                    // This will be picked up by analytics if enabled via cookie consent
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'calculator_used', {
+                            'event_category': 'engagement',
+                            'event_label': 'roi_calculator'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
