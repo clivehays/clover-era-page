@@ -1395,29 +1395,35 @@
         const mobileToggle = document.getElementById('mobileToggle');
         const navLinks = document.getElementById('navLinks');
         
-        mobileToggle?.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-        });
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                mobileToggle.classList.toggle('active');
+            });
+        }
 
         // Search functionality (basic implementation)
         const searchInput = document.querySelector('.search-input');
         const searchBtn = document.querySelector('.search-btn');
         
-        searchBtn?.addEventListener('click', function() {
-            const searchTerm = searchInput.value.toLowerCase();
-            if (searchTerm) {
-                // In a real implementation, this would search and filter resources
-                console.log('Searching for:', searchTerm);
-                // Could redirect to a search results page or filter current page
-            }
-        });
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function() {
+                const searchTerm = searchInput.value.toLowerCase();
+                if (searchTerm) {
+                    // In a real implementation, this would search and filter resources
+                    console.log('Searching for:', searchTerm);
+                    // Could redirect to a search results page or filter current page
+                }
+            });
+        }
         
-        searchInput?.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchBtn.click();
-            }
-        });
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && searchBtn) {
+                    searchBtn.click();
+                }
+            });
+        }
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
