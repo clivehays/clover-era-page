@@ -24,7 +24,7 @@
     <meta property="og:description" content="Employee burnout is driving massive turnover. 182 out of 250 employees are burning out. Stop losing £38,000 per burned out employee with proven solutions.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://cloverera.com/burnout/">
-    <meta property="og:image" content="https://cloverera.com/images/person-burnout-corporate.webp">
+    <meta property="og:image" content="https://cloverera.com/burnout/Employee-burnout.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Employee burnout and turnover crisis visualization">
@@ -35,7 +35,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Employee Burnout & Turnover Crisis | 73% Affected">
     <meta name="twitter:description" content="Employee burnout driving 47% turnover rates. Calculate costs and discover solutions.">
-    <meta name="twitter:image" content="https://cloverera.com/images/person-burnout-corporate.webp">
+    <meta name="twitter:image" content="https://cloverera.com/burnout/Employee-burnout.jpg">
     <meta name="twitter:image:alt" content="Employee burnout and workplace turnover statistics">
     <meta name="twitter:site" content="@CloverEra">
     
@@ -56,7 +56,7 @@
       "description": "Comprehensive guide to employee burnout, its impact on employee turnover, and proven solutions. Learn how burnout costs organizations £38,000 per employee.",
       "image": {
         "@type": "ImageObject",
-        "url": "https://cloverera.com/images/person-burnout-corporate.webp",
+        "url": "https://cloverera.com/burnout/Employee-burnout.jpg",
         "width": 1200,
         "height": 630,
         "caption": "Employee burnout crisis affecting modern workplaces"
@@ -341,24 +341,42 @@
 
         /* Hero Section */
         .hero {
-            margin-top: 80px;
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(31, 41, 55, 0.85), rgba(70, 174, 184, 0.75)), 
-                        url('/images/person-burnout-corporate.webp') center/cover no-repeat;
-            text-align: center;
+            margin-top: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
             position: relative;
             overflow: hidden;
-            min-height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 700px;
+        }
+
+        .hero-image-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 3rem 2rem;
         }
 
         .hero-content {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
+            padding: 3rem 2rem 4rem;
+            text-align: center;
         }
 
         .crisis-badge {
@@ -366,40 +384,91 @@
             color: var(--white);
             padding: 0.75rem 2rem;
             border-radius: 50px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             font-weight: 600;
             margin-bottom: 2rem;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
         h1 {
             font-size: 3.5rem;
             font-weight: 800;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-            color: var(--white);
-            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2rem;
+            line-height: 1.3;
+            color: var(--text-primary);
         }
 
-        h1 .stat {
-            color: #FFD700;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        h1 .burnout-text {
+            color: var(--coral);
+        }
+
+        h1 .burnout-word {
+            color: var(--primary-teal);
+        }
+
+        .hero-stat {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            margin: 2rem 0 1rem;
+            display: block;
         }
 
         .hero-subtitle {
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.3rem;
+            color: var(--text-secondary);
             margin-bottom: 3rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-            font-weight: 500;
+            font-weight: 400;
+        }
+
+        .source-citation {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        .source-citation a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .source-citation a:hover {
+            text-decoration: underline;
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb-nav {
+            margin-top: 80px;
+            padding: 1rem 2rem;
+            background: var(--off-white);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .breadcrumb-nav nav ol {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--primary-teal);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--coral);
+            text-decoration: underline;
         }
 
         /* SEO Content Section */
@@ -1072,12 +1141,54 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="crisis-badge">🔥 EMPLOYEE BURNOUT CRISIS ALERT</div>
-            <h1><span class="stat">73%</span> of Your Employees Are Experiencing <strong>Burnout</strong></h1>
-            <p class="hero-subtitle">That's 182 out of every 250 employees suffering from <strong>employee burnout</strong> and driving <strong>employee turnover</strong></p>
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb-nav" style="margin-top: 80px; padding: 1rem 2rem; background: var(--off-white); border-bottom: 1px solid var(--medium-gray);">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <nav aria-label="Breadcrumb">
+                <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0; font-size: 0.9rem;">
+                    <li><a href="/" style="color: var(--primary-teal); text-decoration: none;">Home</a></li>
+                    <li style="color: var(--text-secondary);">/</li>
+                    <li><a href="/#problems" style="color: var(--primary-teal); text-decoration: none;">Problems</a></li>
+                    <li style="color: var(--text-secondary);">/</li>
+                    <li style="color: var(--text-primary); font-weight: 600;">Employee Burnout</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Hero Section with Image -->
+    <section class="hero" style="margin-top: 0; padding: 0; background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%); position: relative; overflow: hidden; min-height: 700px;">
+        <div class="hero-image-container" style="position: relative; width: 100%; height: 400px; overflow: hidden;">
+            <img src="Employee-burnout.jpg" 
+                 alt="Employee burnout crisis visualization showing workplace burnout and turnover affecting 73% of workers" 
+                 class="hero-image"
+                 style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                 width="1200"
+                 height="400">
+            <div class="hero-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 3rem 2rem;">
+                <div style="max-width: 1200px; margin: 0 auto; color: white;">
+                    <h1 style="color: white; font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800;">Employee Burnout & Turnover Crisis</h1>
+                    <p style="font-size: 1.2rem; opacity: 0.95;">73% of workers experiencing burnout, driving record employee turnover rates</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-content" style="max-width: 1200px; margin: 0 auto; padding: 3rem 2rem 4rem; text-align: center;">
+            <div class="crisis-badge" style="background: var(--danger); color: var(--white); padding: 0.75rem 2rem; border-radius: 50px; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; margin-bottom: 2rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);">
+                🔥 EMPLOYEE BURNOUT EPIDEMIC ALERT
+            </div>
+            <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 2rem; line-height: 1.3; color: var(--text-primary);">
+                Your Team Is<br>
+                <span style="color: var(--coral);">Burning Out</span> from <span style="color: var(--primary-teal);">Employee Burnout</span><br>
+                And <span style="color: var(--coral);">Employee Turnover</span> Is Skyrocketing
+            </h1>
+            <div style="font-size: 5rem; font-weight: 800; color: var(--primary-teal); margin: 2rem 0 1rem; display: block;">73%</div>
+            <p style="font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 3rem; font-weight: 400;">
+                Report severe <strong>burnout</strong> symptoms driving <strong>employee turnover</strong> to crisis levels
+            </p>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); font-style: italic; margin-top: 1rem;">
+                Source: <a href="https://www.gallup.com/workplace/313160/preventing-and-dealing-with-employee-burnout.aspx" target="_blank" rel="noopener" style="color: var(--primary-teal); text-decoration: none;">Gallup State of the Global Workplace Report 2024</a>
+            </p>
         </div>
     </section>
 
