@@ -1,1361 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Stress, Work Stress & Workplace Stress Solutions | Manager Stress Crisis 2025 | Clover Era</title>
+// Employee Stress Calculator JavaScript
+// Place this file in /js/employee-stress-calculator.js
+
+console.log('Employee Stress Calculator script loaded');
+
+// Wait for the page to fully load
+window.addEventListener('load', function() {
+    console.log('Window loaded, initializing calculator...');
     
-    <!-- Essential SEO Meta Tags -->
-    <meta name="description" content="Employee stress affects 89% of workers. Complete guide to workplace stress, work stress, and manager stress. Proven solutions reducing employee stress by 50% in 30 days. Calculate your workplace stress costs now.">
-    <meta name="keywords" content="employee stress, work stress, workplace stress, manager stress, employee stress management, work stress solutions, workplace stress reduction, manager stress relief, occupational stress, job stress, employee burnout, workplace mental health, stress at work, employee wellbeing, workplace anxiety">
-    <meta name="author" content="Clover Era">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="googlebot" content="index, follow">
-    <link rel="canonical" href="https://cloverera.com/employee-stress/">
-    
-    <!-- GEO Tags for Local SEO -->
-    <meta name="geo.region" content="US">
-    <meta name="geo.placename" content="United States">
-    <meta name="geo.position" content="40.7128;-74.0060">
-    <meta name="ICBM" content="40.7128, -74.0060">
-    
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="Employee Stress Crisis: 89% Report Extreme Workplace Stress | Work Stress Solutions">
-    <meta property="og:description" content="Comprehensive guide to employee stress, work stress, manager stress, and workplace stress. Evidence-based solutions reducing stress by 50% in 30 days.">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://cloverera.com/employee-stress/">
-    <meta property="og:image" content="https://cloverera.com/employee-stress/Employee-stress-epidemic.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Employee stress epidemic visualization showing workplace stress statistics">
-    <meta property="og:site_name" content="Clover Era">
-    <meta property="og:locale" content="en_US">
-    
-    <!-- Twitter Card Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Employee Stress & Workplace Stress Crisis | Manager Stress Solutions">
-    <meta name="twitter:description" content="89% of employees report extreme work stress. Calculate costs and discover solutions for workplace stress.">
-    <meta name="twitter:image" content="https://cloverera.com/employee-stress/Employee-stress-epidemic.jpg">
-    <meta name="twitter:image:alt" content="Employee stress and workplace stress statistics visualization">
-    <meta name="twitter:site" content="@CloverEra">
-    
-    <!-- Additional SEO Tags -->
-    <meta http-equiv="content-language" content="en-US">
-    <meta name="rating" content="general">
-    <meta name="distribution" content="global">
-    <meta name="revisit-after" content="7 days">
-    <meta name="expires" content="never">
-    
-    <!-- Structured Data - Article Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "@id": "https://cloverera.com/employee-stress/#article",
-      "headline": "Employee Stress Crisis: Complete Guide to Workplace Stress, Work Stress & Manager Stress",
-      "alternativeHeadline": "89% of Employees Report Extreme Workplace Stress - Evidence-Based Solutions",
-      "description": "Comprehensive guide covering employee stress, work stress, manager stress, and workplace stress. Learn causes, symptoms, costs, and proven solutions.",
-      "image": {
-        "@type": "ImageObject",
-        "url": "https://cloverera.com/employee-stress/Employee-stress-epidemic.jpg",
-        "width": 1200,
-        "height": 630,
-        "caption": "Employee stress epidemic affecting modern workplaces"
-      },
-      "author": {
-        "@type": "Organization",
-        "name": "Clover Era",
-        "url": "https://cloverera.com",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://cloverera.com/images/Clover-era-new-logo-1.png"
-        }
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Clover Era",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://cloverera.com/images/Clover-era-new-logo-1.png",
-          "width": 200,
-          "height": 60
-        }
-      },
-      "datePublished": "2025-01-15",
-      "dateModified": "2025-08-15",
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://cloverera.com/employee-stress/"
-      },
-      "keywords": "employee stress, work stress, workplace stress, manager stress, workplace mental health",
-      "articleSection": "Employee Wellbeing",
-      "wordCount": 4500,
-      "about": {
-        "@type": "Thing",
-        "name": "Employee Stress and Workplace Stress Management"
-      }
+    // Utility Functions
+    function formatWithCommas(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-    </script>
     
-    <!-- FAQPage Schema for Featured Snippets -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is employee stress?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Employee stress is the harmful physical and emotional response when job requirements don't match workers' capabilities, resources, or needs. It affects 89% of workers and costs organizations $300 billion annually."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What causes workplace stress?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Workplace stress is caused by excessive workloads, unclear expectations, lack of control, poor management, work-life imbalance, and organizational changes. These factors create chronic stress affecting employee health and productivity."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How does manager stress affect teams?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Manager stress has a 3x multiplier effect - one stressed manager impacts 8-12 employees, creating ripple effects throughout the organization. It leads to poor communication, bad decisions, and increased team stress levels."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What are the costs of work stress?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Work stress costs organizations approximately $465,000 per 100 employees annually through productivity loss (34% reduction), increased absenteeism, higher healthcare costs, and 40% of employee turnover."
-          }
-        }
-      ]
+    function removeCommas(str) {
+        if (!str) return '';
+        return String(str).replace(/,/g, '');
     }
-    </script>
     
-    <!-- Organization Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Clover Era",
-      "url": "https://cloverera.com",
-      "logo": "https://cloverera.com/images/Clover-era-new-logo-1.png",
-      "description": "Leading provider of employee stress and workplace stress solutions",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "United States"
-      },
-      "sameAs": [
-        "https://www.linkedin.com/company/cloverera",
-        "https://twitter.com/CloverEra"
-      ],
-      "knowsAbout": ["employee stress", "workplace stress", "work stress", "manager stress", "employee wellbeing"]
-    }
-    </script>
-    
-    <!-- BreadcrumbList Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://cloverera.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Employee Stress",
-          "item": "https://cloverera.com/employee-stress/"
-        }
-      ]
-    }
-    </script>
-    
-    <!-- HowTo Schema for Solutions -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Reduce Employee Stress and Workplace Stress",
-      "description": "Evidence-based steps to reduce employee stress, work stress, and manager stress by 50% in 30 days",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Assess Current Stress Levels",
-          "text": "Measure employee stress and workplace stress using validated assessments"
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Identify Root Causes",
-          "text": "Analyze systemic causes of work stress and manager stress"
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Implement Interventions",
-          "text": "Deploy targeted solutions for workplace stress reduction"
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Monitor Progress",
-          "text": "Track improvements in employee stress metrics"
-        }
-      ]
-    }
-    </script>
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-teal: #46AEB8;
-            --coral: #FF6B6B;
-            --white: #FFFFFF;
-            --off-white: #FAFBFC;
-            --light-gray: #F5F7FA;
-            --medium-gray: #E5E9ED;
-            --dark-gray: #6B7280;
-            --charcoal: #1F2937;
-            --text-primary: #111827;
-            --text-secondary: #4B5563;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --info: #3B82F6;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: var(--white);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            padding: 1rem 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo img {
-            height: 35px;
-            width: auto;
-            display: block;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 30px;
-            height: 24px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            z-index: 1001;
-        }
-
-        .mobile-menu-toggle span {
-            display: block;
-            width: 100%;
-            height: 3px;
-            background: var(--primary-teal);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            margin-left: auto;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-teal);
-        }
-
-        .nav-cta {
-            background: var(--coral);
-            color: var(--white) !important;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
-
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
-            color: var(--white) !important;
-        }
-
-        /* Hero Section with Image */
-        .hero {
-            margin-top: 80px;
-            padding: 0;
-            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
-            position: relative;
-            overflow: hidden;
-            min-height: 700px;
-        }
-
-        .hero-image-container {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            overflow: hidden;
-        }
-
-        .hero-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            padding: 3rem 2rem;
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 2rem 4rem;
-            text-align: center;
-        }
-
-        .crisis-badge {
-            background: var(--primary-teal);
-            color: var(--white);
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            box-shadow: 0 4px 15px rgba(70, 174, 184, 0.3);
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
-            line-height: 1.3;
-            color: var(--text-primary);
-        }
-
-        h1 .stress-text {
-            color: var(--coral);
-        }
-
-        h1 .stress-word {
-            color: var(--primary-teal);
-        }
-
-        .hero-stat {
-            font-size: 5rem;
-            font-weight: 800;
-            color: var(--primary-teal);
-            margin: 2rem 0 1rem;
-            display: block;
-        }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            font-weight: 400;
-        }
-
-        /* SEO Content Section */
-        .seo-content-section {
-            padding: 4rem 2rem;
-            background: var(--white);
-        }
-
-        .seo-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .seo-content h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 2rem;
-        }
-
-        .seo-content h3 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary-teal);
-            margin: 2rem 0 1rem;
-        }
-
-        .seo-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .seo-content ul {
-            margin: 1rem 0 2rem 2rem;
-        }
-
-        .seo-content li {
-            margin-bottom: 0.75rem;
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-        }
-
-        .highlight-box {
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.08), rgba(70, 174, 184, 0.04));
-            border-left: 4px solid var(--primary-teal);
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 10px;
-        }
-
-        /* Stress Distribution Section */
-        .distribution-section {
-            padding: 3rem 2rem 4rem;
-            background: var(--light-gray);
-        }
-
-        .distribution-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .distribution-box {
-            background: var(--white);
-            border: 2px solid var(--primary-teal);
-            border-radius: 20px;
-            padding: 2.5rem 3rem 3rem;
-            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .distribution-title {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 2.5rem;
-            text-align: center;
-        }
-
-        .stress-levels {
-            display: flex;
-            justify-content: center;
-            align-items: stretch;
-            gap: 1.5rem;
-        }
-
-        .stress-level {
-            flex: 1;
-            max-width: 160px;
-            text-align: center;
-            padding: 2rem 1rem;
-            border-radius: 15px;
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.08), rgba(70, 174, 184, 0.04));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 140px;
-        }
-
-        .stress-level:last-child {
-            border: 2px solid var(--coral);
-            background: rgba(255, 255, 255, 0.95);
-        }
-
-        .stress-percentage {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            color: var(--primary-teal);
-            line-height: 1;
-        }
-
-        .stress-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .stress-cost-box {
-            background: var(--white);
-            border: 2px solid var(--coral);
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            margin-top: 2rem;
-            box-shadow: 0 10px 40px rgba(255, 107, 107, 0.1);
-        }
-
-        .stress-cost-label {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .stress-cost-amount {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--coral);
-            margin-bottom: 0.5rem;
-        }
-
-        /* Warning Signs Section */
-        .warning-signs-section {
-            padding: 4rem 2rem;
-            background: var(--white);
-        }
-
-        .warning-signs-content {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .warning-signs-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .warning-signs-header h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .signs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .sign-card {
-            background: var(--white);
-            border: 2px solid var(--medium-gray);
-            border-radius: 12px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .sign-card:hover {
-            border-color: var(--warning);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.1);
-        }
-
-        .sign-card.selected {
-            border-color: var(--warning);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(245, 158, 11, 0.02));
-        }
-
-        .sign-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--medium-gray);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .sign-card.selected .sign-checkbox {
-            border-color: var(--warning);
-            background: var(--warning);
-        }
-
-        .sign-card.selected .sign-checkbox::after {
-            content: '✓';
-            color: var(--white);
-            font-weight: bold;
-        }
-
-        /* Calculator Section */
-        .calculator-section {
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.08), rgba(255, 107, 107, 0.08));
-        }
-
-        .calculator-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .calculator-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .calculator-header h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .calculator-form {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-        }
-
-        .calc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .calc-input {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .calc-input label {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .calc-input input {
-            padding: 1rem;
-            border: 2px solid var(--medium-gray);
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: all 0.3s;
-            background: var(--off-white);
-        }
-
-        .calc-input input:focus {
-            outline: none;
-            border-color: var(--primary-teal);
-            background: var(--white);
-            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
-        }
-
-        .cost-breakdown {
-            background: var(--off-white);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-top: 2rem;
-        }
-
-        .cost-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--medium-gray);
-        }
-
-        .cost-item:last-child {
-            border-bottom: none;
-            padding-top: 1.5rem;
-            margin-top: 0.5rem;
-            border-top: 2px solid var(--primary-teal);
-        }
-
-        .cost-label {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .cost-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--coral);
-        }
-
-        /* Solution Section */
-        .solution-section {
-            padding: 6rem 2rem;
-            background: var(--white);
-        }
-
-        .solution-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .solution-header h2 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .features-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 2.5rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.15);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(255, 107, 107, 0.1));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-icon img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .feature-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
-        }
-
-        /* Quick Wins Section */
-        .quick-wins {
-            padding: 4rem 2rem;
-            background: var(--light-gray);
-        }
-
-        .quick-wins-content {
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .wins-list {
-            display: grid;
-            gap: 1.5rem;
-            text-align: left;
-        }
-
-        .win-item {
-            background: var(--white);
-            border-left: 4px solid var(--primary-teal);
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 6rem 2rem;
-            background: var(--white);
-            text-align: center;
-        }
-
-        .cta-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            background: var(--coral);
-            color: var(--white);
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.25);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.35);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--charcoal);
-            padding: 4rem 2rem 2rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-section h4 {
-            color: var(--primary-teal);
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            display: block;
-            padding: 0.5rem 0;
-            transition: color 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .footer-section a:hover {
-            color: var(--white);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.85rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .hero-stat {
-                font-size: 4rem;
-            }
-            
-            .mobile-menu-toggle {
-                display: flex !important;
-            }
-            
-            .nav-links {
-                display: none;
-                position: fixed;
-                top: 70px;
-                left: 0;
-                right: 0;
-                width: 100%;
-                background: var(--white);
-                flex-direction: column;
-                padding: 2rem;
-                border-bottom: 2px solid var(--primary-teal);
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                z-index: 999;
-                margin-left: 0;
-            }
-            
-            .nav-links.active {
-                display: flex !important;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <img src="/images/Clover-era-new-logo-1.png" alt="Clover Era Logo - Employee Stress and Workplace Stress Solutions">
-                CLOVER ERA
-            </a>
-            <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="nav-links" id="navLinks">
-                <a href="/">HOME</a>
-                <a href="/#problems">PROBLEMS</a>
-                <a href="/calculator/index.html">CALCULATOR</a>
-                <a href="/assessment/index.html">ASSESSMENT</a>
-                <a href="/pilot/index.html" class="nav-cta">START FREE PILOT</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section with Image -->
-    <section class="hero">
-        <div class="hero-image-container">
-            <img src="Employee-stress-epidemic.jpg" 
-                 alt="Employee stress epidemic visualization showing workplace stress crisis affecting 89% of workers" 
-                 class="hero-image"
-                 width="1200"
-                 height="400"
-                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541199249251-5b2f71379020?w=1200&h=400&fit=crop&q=80'">
-            <div class="hero-overlay">
-                <div style="max-width: 1200px; margin: 0 auto; color: white;">
-                    <h1 style="color: white; font-size: 2.5rem; margin-bottom: 1rem;">Employee Stress & Workplace Stress Crisis</h1>
-                    <p style="font-size: 1.2rem; opacity: 0.95;">89% of workers report extreme stress affecting their daily performance</p>
-                </div>
-            </div>
-        </div>
+    // Main Calculator Function
+    function calculateStressCosts() {
+        console.log('Running calculateStressCosts...');
         
-        <div class="hero-content">
-            <div class="crisis-badge">⚡ EMPLOYEE STRESS EPIDEMIC ALERT</div>
-            <h1>
-                Your Team Is<br>
-                <span class="stress-text">Drowning</span> in <span class="stress-word">Work Stress</span><br>
-                And <span class="stress-text">Manager Stress</span> Is Getting Worse
-            </h1>
-            <div class="hero-stat">89%</div>
-            <p class="hero-subtitle">Report extreme <strong>workplace stress</strong> levels that affect their work daily</p>
-            <p class="source-citation">
-                Source: <a href="https://www.apa.org/news/press/releases/stress/2023/work-in-america-stress" target="_blank" rel="noopener">American Psychological Association Work & Stress Report 2023</a>
-            </p>
-        </div>
-    </section>
-
-    <!-- SEO Content Section -->
-    <section class="seo-content-section">
-        <div class="seo-content">
-            <h2>Understanding Employee Stress, Work Stress, and Workplace Stress</h2>
+        try {
+            // Get input elements
+            const empInput = document.getElementById('employees');
+            const salInput = document.getElementById('avgSalary');
+            const daysInput = document.getElementById('stressDays');
             
-            <p><strong>Employee stress</strong> has become the defining crisis of modern workplaces. With 89% of employees reporting extreme <strong>workplace stress</strong>, organizations face unprecedented challenges in managing <strong>work stress</strong> and its impact on productivity, health, and retention.</p>
+            console.log('Input elements found:', {
+                employees: empInput ? 'yes' : 'no',
+                salary: salInput ? 'yes' : 'no',
+                days: daysInput ? 'yes' : 'no'
+            });
             
-            <h3>What is Employee Stress?</h3>
-            <p><strong>Employee stress</strong> is the harmful physical and emotional response that occurs when job requirements exceed workers' capabilities, resources, or needs. Unlike normal workplace pressure, chronic <strong>work stress</strong> leads to serious health consequences, decreased productivity, and organizational dysfunction.</p>
+            // Get values with defaults
+            let employees = 250;
+            let avgSalary = 55000;
+            let stressDays = 10;
             
-            <div class="highlight-box">
-                <p><strong>Key Fact:</strong> Employee stress costs U.S. businesses $300 billion annually through absenteeism, turnover, diminished productivity, and medical costs. Workplace stress is now the leading cause of worker disability claims.</p>
-            </div>
+            if (empInput && empInput.value) {
+                const cleanValue = removeCommas(empInput.value);
+                const parsed = parseInt(cleanValue);
+                if (!isNaN(parsed) && parsed > 0) {
+                    employees = parsed;
+                }
+            }
             
-            <h3>The Five Types of Workplace Stress</h3>
-            <ul>
-                <li><strong>Acute Work Stress:</strong> Short-term stress from immediate workplace pressures and deadlines</li>
-                <li><strong>Chronic Employee Stress:</strong> Long-term exposure to stressful work conditions without relief</li>
-                <li><strong>Episodic Workplace Stress:</strong> Frequent acute stress episodes creating a pattern of crisis</li>
-                <li><strong>Traumatic Work Stress:</strong> Stress from workplace violence, accidents, or severe conflicts</li>
-                <li><strong>Organizational Stress:</strong> Systemic stress from company culture and management practices</li>
-            </ul>
+            if (salInput && salInput.value) {
+                const cleanValue = removeCommas(salInput.value);
+                const parsed = parseInt(cleanValue);
+                if (!isNaN(parsed) && parsed > 0) {
+                    avgSalary = parsed;
+                }
+            }
             
-            <h3>Manager Stress: The Multiplier Effect</h3>
-            <p><strong>Manager stress</strong> represents a unique category within <strong>workplace stress</strong> that has cascading effects throughout organizations. When managers experience high <strong>work stress</strong> levels, it directly impacts team morale, productivity, and overall <strong>employee stress</strong> levels.</p>
+            if (daysInput && daysInput.value) {
+                const parsed = parseInt(daysInput.value);
+                if (!isNaN(parsed) && parsed >= 0) {
+                    stressDays = parsed;
+                }
+            }
             
-            <p>Research shows that <strong>manager stress</strong> has a 3x multiplier effect - one stressed manager typically impacts 8-12 employees, creating a ripple effect of <strong>workplace stress</strong> throughout the organization. This makes addressing <strong>manager stress</strong> critical for overall organizational health.</p>
+            console.log('Using values:', { employees, avgSalary, stressDays });
             
-            <h3>Common Causes of Employee Stress and Work Stress</h3>
-            <ul>
-                <li><strong>Workload and Pace:</strong> Unrealistic deadlines and excessive demands creating unsustainable work stress</li>
-                <li><strong>Lack of Control:</strong> Limited autonomy and decision-making power increasing employee stress</li>
-                <li><strong>Role Ambiguity:</strong> Unclear expectations and responsibilities amplifying workplace stress</li>
-                <li><strong>Poor Management:</strong> Toxic leadership and manager stress affecting entire teams</li>
-                <li><strong>Work-Life Imbalance:</strong> Blurred boundaries between work and personal life</li>
-                <li><strong>Job Insecurity:</strong> Fear of layoffs and economic uncertainty driving work stress</li>
-                <li><strong>Interpersonal Conflicts:</strong> Workplace relationships and team dynamics creating stress</li>
-                <li><strong>Organizational Change:</strong> Constant restructuring and change fatigue</li>
-            </ul>
+            // Perform calculations
+            const stressedEmployees = Math.round(employees * 0.47);
+            const productivityLoss = Math.round(stressedEmployees * avgSalary * 0.34);
+            const dailySalary = avgSalary / 260;
+            const absenteeismCost = Math.round(employees * stressDays * dailySalary);
+            const healthcareCost = Math.round(stressedEmployees * 3000);
+            const turnoverCount = Math.round(stressedEmployees * 0.23);
+            const turnoverCost = Math.round(turnoverCount * avgSalary * 1.5);
+            const totalCost = productivityLoss + absenteeismCost + healthcareCost + turnoverCost;
             
-            <h3>Physical and Mental Health Impact of Workplace Stress</h3>
-            <p>Chronic <strong>employee stress</strong> doesn't just affect productivity - it causes serious health problems. Workers experiencing high <strong>workplace stress</strong> are:</p>
-            <ul>
-                <li>50% more likely to develop cardiovascular disease</li>
-                <li>2x more likely to experience depression and anxiety</li>
-                <li>75% more likely to develop type 2 diabetes</li>
-                <li>60% more likely to have sleep disorders</li>
-                <li>40% more likely to develop musculoskeletal disorders</li>
-            </ul>
+            console.log('Calculated values:', {
+                productivityLoss,
+                absenteeismCost,
+                healthcareCost,
+                turnoverCost,
+                totalCost
+            });
             
-            <div class="highlight-box">
-                <p><strong>Research Finding:</strong> The World Health Organization recognizes workplace stress as a global epidemic, with work stress being the second most reported work-related health problem, affecting 28% of workers globally.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stress Distribution Section -->
-    <section class="distribution-section">
-        <div class="distribution-content">
-            <h2 style="text-align: center; margin-bottom: 2rem;">Current Employee Stress and Workplace Stress Distribution</h2>
+            // Update display elements
+            const elements = {
+                'productivityLoss': productivityLoss,
+                'absenteeismCost': absenteeismCost,
+                'healthcareCost': healthcareCost,
+                'turnoverCost': turnoverCost,
+                'totalCost': totalCost
+            };
             
-            <div class="distribution-box">
-                <div class="distribution-title">WORK STRESS LEVELS ACROSS ORGANIZATIONS</div>
-                
-                <div class="stress-levels">
-                    <div class="stress-level">
-                        <div class="stress-percentage">3%</div>
-                        <div class="stress-label">LOW WORK STRESS</div>
-                    </div>
-                    <div class="stress-level">
-                        <div class="stress-percentage">8%</div>
-                        <div class="stress-label">MANAGEABLE STRESS</div>
-                    </div>
-                    <div class="stress-level">
-                        <div class="stress-percentage">31%</div>
-                        <div class="stress-label">HIGH EMPLOYEE STRESS</div>
-                    </div>
-                    <div class="stress-level">
-                        <div class="stress-percentage">58%</div>
-                        <div class="stress-label">EXTREME WORKPLACE STRESS</div>
-                    </div>
-                </div>
-            </div>
+            for (const [id, value] of Object.entries(elements)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = '$' + formatWithCommas(value);
+                    console.log(`Updated ${id}: $${formatWithCommas(value)}`);
+                } else {
+                    console.error(`Element not found: ${id}`);
+                }
+            }
             
-            <div class="stress-cost-box">
-                <div class="stress-cost-label">Employee stress and work stress related losses:</div>
-                <div class="stress-cost-amount">$465,000</div>
-                <div class="stress-cost-period">per 100 employees annually from workplace stress</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Warning Signs Section -->
-    <section class="warning-signs-section">
-        <div class="warning-signs-content">
-            <div class="warning-signs-header">
-                <h2>Employee Stress and Work Stress Warning Signs in Your Teams</h2>
-                <p style="color: var(--text-secondary);">Identify workplace stress symptoms - select all that you're observing</p>
-            </div>
-            
-            <div class="signs-grid">
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Increased sick days from stress</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Work stress irritability & conflicts</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Missed deadlines due to stress</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Reduced quality from employee stress</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Workplace stress fatigue complaints</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Work stress anxiety symptoms</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Manager stress disengagement</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Turnover from workplace stress</span>
-                </div>
-                <div class="sign-card">
-                    <div class="sign-checkbox"></div>
-                    <span class="sign-text">Physical symptoms of work stress</span>
-                </div>
-            </div>
-            
-            <div class="stress-alert" id="stressAlert" style="display: none;">
-                <div class="alert-title">⚠️ HIGH EMPLOYEE STRESS WARNING</div>
-                <div class="alert-text">Based on your selections, your organization is experiencing dangerous workplace stress levels</div>
-                <div class="alert-stat"><span id="stressPercentage">0</span>% of employees at risk from work stress</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stress Calculator Section -->
-    <section class="calculator-section">
-        <div class="calculator-content">
-            <div class="calculator-header">
-                <h2>Calculate Your Employee Stress and Workplace Stress Costs</h2>
-                <p style="color: var(--text-secondary);">See the real financial impact of work stress and manager stress</p>
-            </div>
-            
-            <div class="calculator-form">
-                <div class="calc-grid">
-                    <div class="calc-input">
-                        <label for="employees">Number of Employees</label>
-                        <input type="number" id="employees" value="250" min="5" step="5" aria-label="Number of employees">
-                    </div>
-                    <div class="calc-input">
-                        <label for="avgSalary">Average Annual Salary</label>
-                        <input type="number" id="avgSalary" value="55000" min="5000" step="5000" aria-label="Average annual salary">
-                    </div>
-                    <div class="calc-input">
-                        <label for="stressDays">Work Stress Days (per employee/year)</label>
-                        <input type="number" id="stressDays" value="10" min="0" max="50" aria-label="Stress days per employee per year">
-                    </div>
-                </div>
-                
-                <div class="cost-breakdown">
-                    <div class="cost-item">
-                        <span class="cost-label">Employee Stress Productivity Loss (34% reduction)</span>
-                        <span class="cost-value" id="productivityLoss">$0</span>
-                    </div>
-                    <div class="cost-item">
-                        <span class="cost-label">Work Stress Absenteeism Cost</span>
-                        <span class="cost-value" id="absenteeismCost">$0</span>
-                    </div>
-                    <div class="cost-item">
-                        <span class="cost-label">Workplace Stress Healthcare Impact</span>
-                        <span class="cost-value" id="healthcareCost">$0</span>
-                    </div>
-                    <div class="cost-item">
-                        <span class="cost-label">Manager Stress Turnover Risk</span>
-                        <span class="cost-value" id="turnoverCost">$0</span>
-                    </div>
-                    <div class="cost-item">
-                        <span class="cost-label">Total Annual Employee Stress Cost</span>
-                        <span class="cost-value" id="totalCost">$0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Solution Section -->
-    <section class="solution-section">
-        <div class="solution-header">
-            <h2>Evidence-Based Solutions for Employee Stress and Workplace Stress</h2>
-            <p style="color: var(--text-secondary); font-size: 1.2rem;">Why traditional wellness programs fail to address work stress and manager stress</p>
-        </div>
+        } catch (error) {
+            console.error('Error in calculateStressCosts:', error);
+        }
+    }
+    
+    // Initialize Calculator
+    function initializeCalculator() {
+        console.log('Initializing calculator...');
         
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <img src="/images/Employee-Real-time-stress-monitoring.png" alt="Real-time employee stress monitoring technology for workplace stress reduction">
-                </div>
-                <div class="feature-title">Real-Time Employee Stress Monitoring</div>
-                <div class="feature-description">Track work stress indicators including HRV, cortisol patterns, and allostatic load to identify workplace stress in real-time</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <img src="/images/Employee-Root-Cause-Analysis.png" alt="Root cause analysis tools for identifying workplace stress and manager stress triggers">
-                </div>
-                <div class="feature-title">Work Stress Root Cause Analysis</div>
-                <div class="feature-description">Identify systemic causes of employee stress and workplace stress at their source using advanced analytics</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <img src="/images/Employee-Nervous-System-Recovery.png" alt="Nervous system recovery programs for employee stress and work stress management">
-                </div>
-                <div class="feature-title">Workplace Stress Recovery Programs</div>
-                <div class="feature-description">Rebuild resilience to work stress and manager stress through targeted nervous system interventions</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Quick Wins Section -->
-    <section class="quick-wins">
-        <div class="quick-wins-content">
-            <h2>3 Immediate Interventions to Reduce Employee Stress and Work Stress</h2>
-            <p class="quick-wins-subtitle">Quick wins for workplace stress reduction while evaluating comprehensive solutions</p>
+        try {
+            // Get input elements
+            const empInput = document.getElementById('employees');
+            const salInput = document.getElementById('avgSalary');
+            const daysInput = document.getElementById('stressDays');
             
-            <div class="wins-list">
-                <div class="win-item">
-                    <div class="win-number">Reduce Work Stress #1</div>
-                    <div class="win-title">Meeting Detox for Employee Stress Relief</div>
-                    <div class="win-description">Cancel 50% of recurring meetings for 2 weeks. Watch workplace stress levels plummet and productivity soar.</div>
-                </div>
-                <div class="win-item">
-                    <div class="win-number">Manage Manager Stress #2</div>
-                    <div class="win-title">Work Stress Response Time Boundaries</div>
-                    <div class="win-description">Implement 24-hour email response minimum. No instant messaging after 5pm to reduce employee stress.</div>
-                </div>
-                <div class="win-item">
-                    <div class="win-number">Workplace Stress Relief #3</div>
-                    <div class="win-title">Priority Pruning for Work Stress</div>
-                    <div class="win-description">Each team drops bottom 30% of projects. Focus on what matters to reduce manager stress and employee stress.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-content">
-            <h2>Your Workplace Stress Is Making People Sick</h2>
+            // Check if elements exist
+            if (!empInput || !salInput || !daysInput) {
+                console.error('Required input elements not found!');
+                console.log('Looking for: employees, avgSalary, stressDays');
+                // Try to find any input elements on the page for debugging
+                const allInputs = document.querySelectorAll('input[type="number"]');
+                console.log('Found ' + allInputs.length + ' number inputs on page');
+                allInputs.forEach(function(input, index) {
+                    console.log(`Input ${index}: id="${input.id}", value="${input.value}"`);
+                });
+                return;
+            }
             
-            <div class="cta-warning" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(255, 107, 107, 0.04)); border-left: 4px solid var(--coral); padding: 1.5rem 2rem; border-radius: 10px; margin: 2rem auto 3rem; max-width: 700px; display: flex; align-items: center; gap: 1rem;">
-                <div style="color: var(--warning); font-size: 1.5rem; flex-shrink: 0;">⚠️</div>
-                <div style="color: var(--text-primary); font-weight: 500; text-align: left; line-height: 1.5;">Chronic employee stress and work stress cause permanent health damage - every day you wait costs lives and money</div>
-            </div>
+            // Set initial values
+            if (!empInput.value) empInput.value = '250';
+            if (!salInput.value) salInput.value = '55000';
+            if (!daysInput.value) daysInput.value = '10';
             
-            <div class="cta-buttons">
-                <a href="/pilot/index.html" class="btn-primary">REDUCE WORKPLACE STRESS NOW</a>
-                <a href="/assessment/index.html" class="btn-primary" style="background: var(--white); color: var(--coral); border: 2px solid var(--coral);">GET EMPLOYEE STRESS ASSESSMENT</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>EMPLOYEE STRESS SOLUTIONS</h4>
-                <ul>
-                    <li><a href="/employee-stress/">Employee Stress Management</a></li>
-                    <li><a href="/workplace-stress/">Workplace Stress Reduction</a></li>
-                    <li><a href="/work-stress/">Work Stress Solutions</a></li>
-                    <li><a href="/manager-stress/">Manager Stress Relief</a></li>
-                    <li><a href="/burnout/">Employee Burnout Prevention</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>WORKPLACE STRESS RESOURCES</h4>
-                <ul>
-                    <li><a href="/stress-calculator/">Work Stress Cost Calculator</a></li>
-                    <li><a href="/stress-assessment/">Employee Stress Assessment</a></li>
-                    <li><a href="/workplace-wellness/">Workplace Wellness Programs</a></li>
-                    <li><a href="/stress-management/">Stress Management Training</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>GET STARTED</h4>
-                <ul>
-                    <li><a href="/calculator/">ROI Calculator</a></li>
-                    <li><a href="/assessment/">Free Stress Assessment</a></li>
-                    <li><a href="/pilot/">30-Day Free Trial</a></li>
-                    <li><a href="/contact/">Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>COMPANY</h4>
-                <ul>
-                    <li><a href="/about/">About Clover Era</a></li>
-                    <li><a href="/science/">Stress Science Research</a></li>
-                    <li><a href="/privacy/">Privacy Policy</a></li>
-                    <li><a href="/terms/">Terms of Service</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2025 Clover Era | Leading Provider of Employee Stress, Work Stress, Workplace Stress, and Manager Stress Solutions</p>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
+            console.log('Initial values set');
+            
+            // Add input event listeners
+            empInput.addEventListener('input', function() {
+                console.log('Employee input changed to:', this.value);
+                calculateStressCosts();
+            });
+            
+            salInput.addEventListener('input', function() {
+                console.log('Salary input changed to:', this.value);
+                calculateStressCosts();
+            });
+            
+            daysInput.addEventListener('input', function() {
+                console.log('Days input changed to:', this.value);
+                calculateStressCosts();
+            });
+            
+            // Add blur event listeners for formatting
+            empInput.addEventListener('blur', function() {
+                const value = removeCommas(this.value);
+                if (value && !isNaN(value)) {
+                    this.value = formatWithCommas(value);
+                }
+            });
+            
+            salInput.addEventListener('blur', function() {
+                const value = removeCommas(this.value);
+                if (value && !isNaN(value)) {
+                    this.value = formatWithCommas(value);
+                }
+            });
+            
+            // Run initial calculation
+            console.log('Running initial calculation...');
+            calculateStressCosts();
+            
+            // Format initial values after a short delay
+            setTimeout(function() {
+                if (empInput.value) {
+                    const value = removeCommas(empInput.value);
+                    if (value && !isNaN(value)) {
+                        empInput.value = formatWithCommas(value);
+                    }
+                }
+                if (salInput.value) {
+                    const value = removeCommas(salInput.value);
+                    if (value && !isNaN(value)) {
+                        salInput.value = formatWithCommas(value);
+                    }
+                }
+                console.log('Initial formatting complete');
+            }, 100);
+            
+        } catch (error) {
+            console.error('Error in initializeCalculator:', error);
+        }
+    }
+    
+    // Initialize Warning Signs
+    function initializeWarningSigns() {
+        console.log('Initializing warning signs...');
         
-        mobileToggle?.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-        });
-
-        // Warning signs checker
         let selectedSigns = 0;
         const stressAlert = document.getElementById('stressAlert');
         const stressPercentage = document.getElementById('stressPercentage');
         
-        document.querySelectorAll('.sign-card').forEach(card => {
+        const signCards = document.querySelectorAll('.sign-card');
+        console.log('Found ' + signCards.length + ' sign cards');
+        
+        signCards.forEach(function(card) {
             card.addEventListener('click', function() {
                 this.classList.toggle('selected');
                 
@@ -1367,163 +215,87 @@
                 
                 const percentage = Math.min(47 + (selectedSigns * 6), 89);
                 
-                if (selectedSigns >= 3) {
+                if (selectedSigns >= 3 && stressAlert) {
                     stressAlert.style.display = 'block';
-                    stressPercentage.textContent = percentage;
-                } else {
+                    if (stressPercentage) {
+                        stressPercentage.textContent = percentage;
+                    }
+                } else if (stressAlert) {
                     stressAlert.style.display = 'none';
                 }
             });
         });
-
-        // Stress cost calculator with formatting
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
+    }
+    
+    // Initialize Mobile Menu
+    function initializeMobileMenu() {
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
         
-        function calculateStressCosts() {
-            const employees = parseInt(document.getElementById('employees').value) || 250;
-            const avgSalary = parseInt(document.getElementById('avgSalary').value) || 55000;
-            const stressDays = parseInt(document.getElementById('stressDays').value) || 10;
+        if (mobileToggle && navLinks) {
+            mobileToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                mobileToggle.classList.toggle('active');
+            });
+            console.log('Mobile menu initialized');
+        }
+    }
+    
+    // Initialize Smooth Scroll
+    function initializeSmoothScroll() {
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+    }
+    
+    // Main initialization
+    console.log('Starting initialization...');
+    initializeCalculator();
+    initializeWarningSigns();
+    initializeMobileMenu();
+    initializeSmoothScroll();
+    
+    // Also try to initialize after a delay as fallback
+    setTimeout(function() {
+        console.log('Running delayed initialization check...');
+        const testElement = document.getElementById('totalCost');
+        if (testElement && testElement.textContent === '$0') {
+            console.log('Calculator still showing $0, re-running calculation...');
+            calculateStressCosts();
+        }
+    }, 500);
+});
+
+// Also add DOMContentLoaded as backup
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
+    
+    // Check if calculator needs initialization
+    setTimeout(function() {
+        const totalElement = document.getElementById('totalCost');
+        if (totalElement && totalElement.textContent === '$0') {
+            console.log('Detected $0 in total, triggering recalculation...');
             
-            const stressedEmployees = Math.round(employees * 0.47);
-            const productivityLoss = stressedEmployees * avgSalary * 0.34;
-            const dailySalary = avgSalary / 260;
-            const absenteeismCost = employees * stressDays * dailySalary;
-            const healthcareCost = stressedEmployees * 3000;
-            const turnoverRate = 0.23;
-            const turnoverCount = Math.round(stressedEmployees * turnoverRate);
-            const turnoverCost = turnoverCount * avgSalary * 1.5;
-            const totalCost = productivityLoss + absenteeismCost + healthcareCost + turnoverCost;
+            // Try to trigger calculation directly
+            const empInput = document.getElementById('employees');
+            const salInput = document.getElementById('avgSalary');
+            const daysInput = document.getElementById('stressDays');
             
-            document.getElementById('productivityLoss').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(productivityLoss));
-            document.getElementById('absenteeismCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(absenteeismCost));
-            document.getElementById('healthcareCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(healthcareCost));
-            document.getElementById('turnoverCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(turnoverCost));
-            document.getElementById('totalCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(totalCost));
+            if (empInput) empInput.value = empInput.value || '250';
+            if (salInput) salInput.value = salInput.value || '55000';
+            if (daysInput) daysInput.value = daysInput.value || '10';
+            
+            // Force recalculation
+            window.dispatchEvent(new Event('load'));
         }
-        
-        // Format input fields with commas
-        function formatInputValue(input) {
-            let value = input.value.replace(/,/g, '');
-            if (!isNaN(value) && value !== '') {
-                input.value = formatNumber(value);
-            }
-        }
-        
-        // Handle input formatting
-        const employeesInput = document.getElementById('employees');
-        const salaryInput = document.getElementById('avgSalary');
-        
-        employeesInput?.addEventListener('input', function(e) {
-            let value = this.value.replace(/,/g, '');
-            if (!isNaN(value)) {
-                calculateStressCosts();
-            }
-        });
-        
-        employeesInput?.addEventListener('blur', function() {
-            formatInputValue(this);
-        });
-        
-        salaryInput?.addEventListener('input', function(e) {
-            let value = this.value.replace(/,/g, '');
-            if (!isNaN(value)) {
-                calculateStressCosts();
-            }
-        });
-        
-        salaryInput?.addEventListener('blur', function() {
-            formatInputValue(this);
-        });
-        
-        document.getElementById('stressDays')?.addEventListener('input', calculateStressCosts);
-
-        // Initialize calculator with formatted values
-        calculateStressCosts();
-        formatInputValue(employeesInput);
-        formatInputValue(salaryInput);
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+    }, 1000);
+});
