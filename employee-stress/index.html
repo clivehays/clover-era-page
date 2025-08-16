@@ -1181,11 +1181,11 @@
                 <div class="calc-grid">
                     <div class="calc-input">
                         <label for="employees">Number of Employees</label>
-                        <input type="number" id="employees" value="250" min="1" aria-label="Number of employees">
+                        <input type="number" id="employees" value="250" min="5" step="5" aria-label="Number of employees">
                     </div>
                     <div class="calc-input">
                         <label for="avgSalary">Average Annual Salary</label>
-                        <input type="number" id="avgSalary" value="55000" min="1" aria-label="Average annual salary">
+                        <input type="number" id="avgSalary" value="55000" min="5000" step="5000" aria-label="Average annual salary">
                     </div>
                     <div class="calc-input">
                         <label for="stressDays">Work Stress Days (per employee/year)</label>
@@ -1376,11 +1376,7 @@
             });
         });
 
-        // Stress cost calculator with formatting
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-        
+        // Stress cost calculator
         function calculateStressCosts() {
             const employees = parseInt(document.getElementById('employees').value) || 250;
             const avgSalary = parseInt(document.getElementById('avgSalary').value) || 55000;
@@ -1396,123 +1392,18 @@
             const turnoverCost = turnoverCount * avgSalary * 1.5;
             const totalCost = productivityLoss + absenteeismCost + healthcareCost + turnoverCost;
             
-            document.getElementById('productivityLoss').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(productivityLoss));
-            document.getElementById('absenteeismCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(absenteeismCost));
-            document.getElementById('healthcareCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(healthcareCost));
-            document.getElementById('turnoverCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(turnoverCost));
-            document.getElementById('totalCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(totalCost));
+            document.getElementById('productivityLoss').textContent = '$' + Math.round(productivityLoss).toLocaleString();
+            document.getElementById('absenteeismCost').textContent = '$' + Math.round(absenteeismCost).toLocaleString();
+            document.getElementById('healthcareCost').textContent = '$' + Math.round(healthcareCost).toLocaleString();
+            document.getElementById('turnoverCost').textContent = '$' + Math.round(turnoverCost).toLocaleString();
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
         }
-        
-        // Format input fields with commas
-        function formatInputValue(input) {
-            let value = input.value.replace(/,/g, '');
-            if (!isNaN(value) && value !== '') {
-                input.value = formatNumber(value);
-            }
-        }
-        
-        // Handle input formatting
-        const employeesInput = document.getElementById('employees');
-        const salaryInput = document.getElementById('avgSalary');
-        
-        employeesInput?.addEventListener('input', function(e) {
-            let value = this.value.replace(/,/g, '');
-            if (!isNaN(value)) {
-                calculateStressCosts();
-            }
-        });
-        
-        employeesInput?.addEventListener('blur', function() {
-            formatInputValue(this);
-        });
-        
-        salaryInput?.addEventListener('input', function(e) {
-            let value = this.value.replace(/,/g, '');
-            if (!isNaN(value)) {
-                calculateStressCosts();
-            }
-        });
-        
-        salaryInput?.addEventListener('blur', function() {
-            formatInputValue(this);
-        });
-        
+
+        document.getElementById('employees')?.addEventListener('input', calculateStressCosts);
+        document.getElementById('avgSalary')?.addEventListener('input', calculateStressCosts);
         document.getElementById('stressDays')?.addEventListener('input', calculateStressCosts);
 
-        // Initialize calculator with formatted values
         calculateStressCosts();
-        formatInputValue(employeesInput);
-        formatInputValue(salaryInput);
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
