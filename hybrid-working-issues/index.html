@@ -170,17 +170,22 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             z-index: 1000;
-            padding: 1rem 0;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        /* Breadcrumb in Navigation */
+        .nav-breadcrumb {
+            background: rgba(250, 251, 252, 0.8);
+            border-top: 1px solid var(--medium-gray);
         }
 
         .logo {
@@ -261,71 +266,49 @@
             color: var(--white) !important;
         }
 
-        /* Breadcrumb */
-        .breadcrumb {
-            background: var(--light-gray);
-            padding: 1rem 2rem;
-            margin-top: 70px;
-        }
-
-        .breadcrumb-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .breadcrumb-list {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-        }
-
-        .breadcrumb-list a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .breadcrumb-list a:hover {
-            color: var(--primary-teal);
-        }
-
-        .breadcrumb-separator {
-            color: var(--text-secondary);
-            margin: 0 0.5rem;
-        }
-
-        .breadcrumb-current {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        /* Hero Section with dark overlay */
-        .hero {
-            padding: 4rem 2rem;
-            background-image: linear-gradient(rgba(31, 41, 55, 0.85), rgba(31, 41, 55, 0.85)), 
-                              url('/images/hybrid-working-issues-hero.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+        /* Hero Image Container */
+        .hero-image-container {
             position: relative;
+            width: 100%;
+            height: 400px;
             overflow: hidden;
-            min-height: 600px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-top: 120px; /* Increased to account for nav + breadcrumbs */
+            display: block;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            display: block;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 3rem 2rem;
+        }
+
+        /* Main Hero Content */
+        .hero {
+            padding: 3rem 2rem 4rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            position: relative;
+            display: block;
         }
 
         .hero-content {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
+            text-align: center;
         }
 
         .crisis-badge {
-            background: var(--blue);
+            background: var(--danger);
             color: var(--white);
             padding: 0.75rem 2rem;
             border-radius: 50px;
@@ -337,65 +320,46 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
-            backdrop-filter: blur(10px);
-            background: rgba(96, 165, 250, 0.95);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 2rem;
             line-height: 1.3;
-            color: var(--white);
-            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+            color: var(--text-primary);
         }
 
-        h1 .highlight-red {
-            color: #FFB6B6;
-            text-shadow: 0 0 20px rgba(255, 182, 182, 0.5);
-        }
-
-        h1 .highlight-green {
-            color: #7FE5DB;
-            text-shadow: 0 0 20px rgba(127, 229, 219, 0.5);
-        }
-
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin: 3rem 0;
-            text-align: center;
-        }
-
-        .hero-stat-item {
-            color: var(--white);
-        }
-
-        .hero-stat-number {
-            font-size: 3.5rem;
+        .hero-stat {
+            font-size: 5rem;
             font-weight: 800;
-            color: #FFD700;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            color: var(--primary-teal);
+            margin: 2rem 0 1rem;
             display: block;
-        }
-
-        .hero-stat-label {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 0.5rem;
         }
 
         .hero-subtitle {
             font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.95);
+            color: var(--text-secondary);
             margin-bottom: 3rem;
             font-weight: 400;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-            text-align: center;
+        }
+
+        .source-citation {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        .source-citation a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .source-citation a:hover {
+            text-decoration: underline;
         }
 
         /* SEO Content Section */
@@ -435,18 +399,41 @@
             font-weight: 600;
         }
 
-        .key-fact-box {
-            background: linear-gradient(135deg, 
-                rgba(96, 165, 250, 0.08), 
-                rgba(96, 165, 250, 0.04));
-            border-left: 4px solid var(--blue);
-            padding: 1.5rem 2rem;
-            border-radius: 10px;
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04));
+            border-left: 4px solid var(--danger);
+            padding: 1.5rem;
             margin: 2rem 0;
+            border-radius: 10px;
         }
 
-        .key-fact-box strong {
-            color: var(--blue);
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--off-white);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--medium-gray);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         /* Quiet Quitting Section */
@@ -980,21 +967,19 @@
         /* Responsive */
         @media (max-width: 768px) {
             h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
             
             .hero {
-                padding: 3rem 1.5rem;
-                min-height: 450px;
+                padding: 4rem 1.5rem;
             }
             
-            .hero-stats {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+            .hero-subtitle {
+                font-size: 1.2rem;
             }
             
-            .hero-stat-number {
-                font-size: 2.5rem;
+            .hero-stat {
+                font-size: 4rem;
             }
             
             .mobile-menu-toggle {
@@ -1081,91 +1066,139 @@
                 <a href="/pilot/index.html" class="nav-cta">START FREE PILOT</a>
             </div>
         </div>
+        <!-- Breadcrumb Navigation in Header -->
+        <div class="nav-breadcrumb">
+            <div class="nav-container">
+                <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0.5rem 0; font-size: 0.85rem;">
+                    <li><a href="/" style="color: var(--primary-teal); text-decoration: none;">Home</a></li>
+                    <li style="color: var(--text-secondary);">/</li>
+                    <li><a href="/#problems" style="color: var(--primary-teal); text-decoration: none;">Problems</a></li>
+                    <li style="color: var(--text-secondary);">/</li>
+                    <li style="color: var(--text-primary); font-weight: 600;">Hybrid Working Issues</li>
+                </ol>
+            </div>
+        </div>
     </nav>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <div class="breadcrumb-container">
-            <nav aria-label="breadcrumb">
-                <div class="breadcrumb-list">
-                    <a href="/">Home</a>
-                    <span class="breadcrumb-separator">›</span>
-                    <a href="/#problems">Problems We Solve</a>
-                    <span class="breadcrumb-separator">›</span>
-                    <span class="breadcrumb-current">Hybrid Working Issues</span>
-                </div>
-            </nav>
+    <!-- Hero Image Section -->
+    <div class="hero-image-container">
+        <img src="hybrid-working-issues.jpg" 
+             alt="Hybrid working issues visualization showing quiet quitting and challenges of hybrid office culture affecting 73% of workers" 
+             class="hero-image"
+             width="1200"
+             height="400">
+        <div class="hero-overlay">
+            <div style="max-width: 1200px; margin: 0 auto; color: white;">
+                <h1 style="color: white; font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800;">Hybrid Working Issues & Quiet Quitting Crisis</h1>
+                <p style="font-size: 1.2rem; opacity: 0.95;">73% disconnected, 67% quietly quitting, challenges of hybrid office culture destroying teams</p>
+            </div>
         </div>
     </div>
-
-    <!-- Hero Section -->
+    
+    <!-- Main Hero Content -->
     <section class="hero">
         <div class="hero-content">
-            <div class="crisis-badge">🌐 HYBRID WORKING CRISIS</div>
-            <h1>
-                <span class="highlight-red">Hybrid Working Issues</span> Driving<br>
-                <span class="highlight-green">Quiet Quitting</span> Epidemic in UK
-            </h1>
-            
-            <div class="hero-stats">
-                <div class="hero-stat-item">
-                    <span class="hero-stat-number">73%</span>
-                    <span class="hero-stat-label">Report Hybrid Working Issues</span>
-                </div>
-                <div class="hero-stat-item">
-                    <span class="hero-stat-number">67%</span>
-                    <span class="hero-stat-label">Quiet Quitting in Hybrid Work</span>
-                </div>
-                <div class="hero-stat-item">
-                    <span class="hero-stat-number">£45K</span>
-                    <span class="hero-stat-label">Cost Per Disconnected Worker</span>
-                </div>
+            <div class="crisis-badge">
+                🌐 HYBRID WORKING CRISIS ALERT
             </div>
-            
-            <p class="hero-subtitle">Transform challenges of hybrid office culture into connected, high-performing teams</p>
+            <h1>
+                Your Teams Are<br>
+                <span style="color: var(--coral);">Disconnected</span> from <span style="color: var(--primary-teal);">Hybrid Working Issues</span><br>
+                And <span style="color: var(--coral);">Quiet Quitting</span> Is Spreading
+            </h1>
+            <div class="hero-stat">73%</div>
+            <p class="hero-subtitle">
+                Report severe <strong>hybrid working issues</strong> driving <strong>quiet quitting and hybrid work</strong> dysfunction
+            </p>
+            <p class="source-citation">
+                Source: <a href="https://www.gallup.com/workplace/398135/advantages-challenges-hybrid-work.aspx" target="_blank" rel="noopener">Gallup State of Hybrid Work Report 2024</a>
+            </p>
         </div>
     </section>
 
     <!-- SEO Content Section -->
     <section class="seo-content-section">
         <div class="seo-content">
-            <h2>Understanding Hybrid Working Issues in the UK</h2>
+            <h2>Understanding Hybrid Working Issues and Their Impact on Quiet Quitting</h2>
             
             <p><strong>Hybrid working issues</strong> have become the defining challenge for UK businesses, with 73% of workers experiencing disconnection that directly leads to <strong>quiet quitting and hybrid work</strong> becoming inseparable problems. The <strong>challenges of hybrid office culture</strong> are costing British businesses £38 billion annually through lost productivity, increased turnover, and widespread disengagement.</p>
             
-            <div class="key-fact-box">
-                <strong>Critical UK Fact:</strong> Hybrid working issues are the #1 driver of quiet quitting in the UK, with 67% of quiet quitters citing challenges of hybrid office culture as their primary reason for disengagement. UK organisations lose £45,000 per disconnected hybrid worker annually.
+            <h3>What Are Hybrid Working Issues?</h3>
+            <p><strong>Hybrid working issues</strong> manifest as a complex set of interconnected problems that erode team cohesion, productivity, and company culture. Unlike traditional workplace challenges, <strong>hybrid working issues</strong> create a two-tier system where remote workers feel overlooked while office workers bear the burden of maintaining culture.</p>
+            
+            <div class="highlight-box">
+                <p><strong>Critical UK Fact:</strong> Hybrid working issues are the #1 driver of quiet quitting in the UK, with 67% of quiet quitters citing challenges of hybrid office culture as their primary reason for disengagement. UK organisations lose £45,000 per disconnected hybrid worker annually.</p>
             </div>
             
-            <h3>The Reality of Hybrid Working Issues</h3>
+            <h3>The Quiet Quitting and Hybrid Work Connection</h3>
+            <p><strong>Quiet quitting and hybrid work</strong> have become intrinsically linked in UK workplaces. When employees face persistent <strong>hybrid working issues</strong>—from proximity bias to communication gaps—they gradually disengage while continuing to collect their paycheque. This silent exodus of engagement represents one of the most significant <strong>challenges of hybrid office culture</strong> facing British businesses today.</p>
             
-            <p>Hybrid working issues manifest as a complex set of interconnected problems that erode team cohesion, productivity, and company culture. Unlike traditional workplace challenges, <strong>hybrid working issues</strong> create a two-tier system where remote workers feel overlooked while office workers bear the burden of maintaining culture.</p>
-            
-            <p>The World Health Organization and UK's Health and Safety Executive now recognise hybrid working issues as a significant workplace stressor, contributing to mental health challenges and the growing phenomenon of <strong>quiet quitting and hybrid work</strong> becoming synonymous in modern workplaces.</p>
-            
-            <h3>How Quiet Quitting and Hybrid Work Connect</h3>
-            
-            <p><strong>Quiet quitting and hybrid work</strong> have become intrinsically linked in UK workplaces. When employees face persistent hybrid working issues—from proximity bias to communication gaps—they gradually disengage while continuing to collect their paycheque. This silent exodus of engagement represents one of the most significant <strong>challenges of hybrid office culture</strong> facing British businesses today.</p>
-            
-            <p>Research from leading UK institutions shows that quiet quitting in hybrid environments follows predictable patterns:</p>
-            
-            <ul style="margin: 1.5rem 0; padding-left: 2rem; color: var(--text-secondary); line-height: 1.8;">
-                <li>Remote workers feeling invisible and undervalued begin reducing discretionary effort</li>
-                <li>Office workers experiencing meeting overload start protecting their time</li>
-                <li>Cross-location collaboration deteriorates as teams work in silos</li>
-                <li>Innovation and creativity decline as spontaneous interactions disappear</li>
-                <li>Company culture fragments into location-based subcultures</li>
+            <ul>
+                <li><strong>Stage 1 - Initial Disconnection:</strong> Remote workers feeling invisible and undervalued begin reducing discretionary effort</li>
+                <li><strong>Stage 2 - Silent Withdrawal:</strong> Cross-location collaboration deteriorates as teams work in silos</li>
+                <li><strong>Stage 3 - Active Disengagement:</strong> Innovation and creativity decline as spontaneous interactions disappear</li>
+                <li><strong>Stage 4 - Quiet Quitting:</strong> Employees do minimum required while actively job searching</li>
             </ul>
             
-            <h3>The True Challenges of Hybrid Office Culture</h3>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-number">73%</div>
+                    <div class="stat-label">Experiencing Issues</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">67%</div>
+                    <div class="stat-label">Quietly Quitting</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2.8x</div>
+                    <div class="stat-label">More Likely to Leave</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">£45k</div>
+                    <div class="stat-label">Cost Per Worker</div>
+                </div>
+            </div>
             
-            <p>The <strong>challenges of hybrid office culture</strong> extend far beyond logistics and technology. UK organisations struggle with fundamental questions about fairness, inclusion, and maintaining competitive advantage when teams are dispersed. These hybrid working issues create cascading effects throughout the organisation:</p>
+            <h3>Key Challenges of Hybrid Office Culture</h3>
+            <p>The <strong>challenges of hybrid office culture</strong> extend far beyond logistics and technology. UK organisations struggle with fundamental questions about fairness, inclusion, and maintaining competitive advantage when teams are dispersed:</p>
             
-            <p><strong>Proximity Bias:</strong> 82% of UK remote workers report being passed over for promotions, contributing directly to quiet quitting and hybrid work dissatisfaction.</p>
+            <ul>
+                <li><strong>Proximity Bias:</strong> 82% of UK remote workers report being passed over for promotions</li>
+                <li><strong>Culture Erosion:</strong> 71% of UK companies report significant culture degradation</li>
+                <li><strong>Communication Breakdown:</strong> 45% increase in miscommunication incidents</li>
+                <li><strong>Meeting Overload:</strong> Virtual meeting fatigue driving further disengagement</li>
+                <li><strong>Career Stagnation:</strong> Limited visibility and networking opportunities for remote staff</li>
+            </ul>
             
-            <p><strong>Culture Erosion:</strong> 71% of UK companies report significant culture degradation due to hybrid working issues, with new employees never fully integrating.</p>
+            <h3>The True Cost of Hybrid Working Issues</h3>
+            <p><strong>Hybrid working issues</strong> and the resulting <strong>quiet quitting and hybrid work</strong> crisis create cascading financial impacts:</p>
             
-            <p><strong>Communication Breakdown:</strong> The challenges of hybrid office culture include a 45% increase in miscommunication incidents, leading to project delays and team friction.</p>
+            <div class="highlight-box">
+                <p><strong>Cost Breakdown:</strong> Each employee affected by hybrid working issues costs £45,000 annually. For a company with 200 hybrid workers experiencing challenges of hybrid office culture, annual losses exceed £6.5 million including lost productivity, quiet quitting impacts, and turnover.</p>
+            </div>
+            
+            <h3>Industries Most Affected by Hybrid Working Issues</h3>
+            <p>While <strong>hybrid working issues</strong> affect all sectors, certain UK industries experience higher rates of <strong>quiet quitting and hybrid work</strong> challenges:</p>
+            
+            <ul>
+                <li><strong>Financial Services:</strong> 78% report hybrid issues, 45% quiet quitting rate</li>
+                <li><strong>Technology:</strong> 72% hybrid challenges, 41% actively disengaged</li>
+                <li><strong>Professional Services:</strong> 76% culture issues, 38% quiet quitting</li>
+                <li><strong>Government:</strong> 69% disconnection, 35% minimal engagement</li>
+                <li><strong>Healthcare Admin:</strong> 74% hybrid struggles, 42% seeking alternatives</li>
+            </ul>
+            
+            <h3>Solving Hybrid Working Issues to Prevent Quiet Quitting</h3>
+            <p>Organisations that successfully address <strong>hybrid working issues</strong> see dramatic reductions in <strong>quiet quitting and hybrid work</strong> problems. Evidence-based strategies for overcoming <strong>challenges of hybrid office culture</strong> include:</p>
+            
+            <ul>
+                <li>Implementing equity frameworks to ensure equal opportunities regardless of location</li>
+                <li>Creating structured connection programs to bridge the virtual divide</li>
+                <li>Establishing clear hybrid work policies that prevent proximity bias</li>
+                <li>Building asynchronous collaboration systems for time-zone flexibility</li>
+                <li>Training managers specifically for hybrid team leadership</li>
+                <li>Developing inclusive meeting practices that engage all participants equally</li>
+            </ul>
         </div>
     </section>
 
