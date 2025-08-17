@@ -1,1 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Clover ERA Works | Transform Employee Engagement in 30 Seconds Daily</title>
+    <meta name="description" content="Discover how Clover ERA uses anonymous daily pulse checks and the proven CLOVER framework to transform workplace engagement. Simple 30-second check-ins drive powerful outcomes.">
+    <meta name="keywords" content="employee engagement software, team engagement dashboard, workplace culture transformation, CLOVER framework, anonymous feedback system, manager enablement tools">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="How Clover ERA Works | 30-Second Daily Engagement Solution">
+    <meta property="og:description" content="Transform your workplace culture with Clover ERA's proven framework. Anonymous daily pulse checks + actionable insights = engaged teams.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.cloverera.com/how-it-works/">
+    <meta property="og:image" content="https://www.cloverera.com/images/clover-era-dashboard.jpg">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Clover ERA",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "iOS, Android, Web",
+        "description": "Employee engagement platform using daily pulse checks and the CLOVER framework",
+        "offers": {
+            "@type": "Offer",
+            "price": "Contact for pricing"
+        }
+    }
+    </script>
+    
+    <style>
+        :root {
+            --primary-green: #00A676;
+            --dark-green: #007A5A;
+            --light-green: #E8F5F0;
+            --danger-red: #DC3545;
+            --warning-yellow: #FFC107;
+            --text-dark: #2C3E50;
+            --text-light: #6C757D;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--white);
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        .cta-button {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .cta-button:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,166,118,0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--light-green) 0%, var(--white) 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Process Section */
+        .process-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 3rem;
+        }
+
+        .process-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .process-step:nth-child(1) { animation-delay: 0.1s; }
+        .process-step:nth-child(2) { animation-delay: 0.2s; }
+        .process-step:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-green);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 5px 20px rgba(0,166,118,0.3);
+        }
+
+        .step-content {
+            flex: 1;
+            margin-left: 2rem;
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .step-description {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .step-highlight {
+            display: inline-block;
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Framework Section */
+        .framework-section {
+            background: var(--light-gray);
+            padding: 5rem 2rem;
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .framework-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .framework-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .framework-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .framework-title {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .framework-description {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .framework-metrics {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .metric-tag {
+            display: inline-block;
+            background: var(--light-green);
+            color: var(--dark-green);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Dashboard Preview Section */
+        .dashboard-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+
+        .dashboard-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .dashboard-content h3 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-features {
+            list-style: none;
+        }
+
+        .dashboard-features li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--primary-green);
+        }
+
+        .dashboard-mock {
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .mock-header {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mock-chart {
+            background: var(--white);
+            height: 200px;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        .mock-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .mock-action {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            padding: 5rem 2rem;
+            color: var(--white);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-description {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: var(--light-gray);
+        }
+
+        .cta-content h2 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-content p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-green);
+            padding: 1rem 2rem;
+            border: 2px solid var(--primary-green);
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .process-step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .step-content {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+
+            .dashboard-preview {
+                grid-template-columns: 1fr;
+            }
+
+            .framework-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">🍀 Clover ERA</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/how-it-works/">How It Works</a></li>
+                <li><a href="/productivity-loss/">Productivity Loss</a></li>
+                <li><a href="/burnout/">Burnout</a></li>
+                <li><a href="/contact/" class="cta-button">Get Started</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Transform Employee Engagement in Just 30 Seconds a Day</h1>
+            <p class="hero-subtitle">Clover ERA combines anonymous daily pulse checks with the proven CLOVER framework to create workplaces where people thrive. Simple for employees, powerful for leaders.</p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">30</div>
+                    <div class="stat-label">Seconds Daily</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Anonymous</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Key Dimensions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">23%</div>
+                    <div class="stat-label">Performance Boost</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Process -->
+    <section class="process-section">
+        <div class="container">
+            <h2 class="section-title">Simple Process, Powerful Results</h2>
+            
+            <div class="process-timeline">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Daily Pulse Check</h3>
+                        <p class="step-description">Employees receive a simple notification on their phone asking one question about their workday. They select their response and provide a brief reason - all in under 30 seconds. Complete anonymity ensures honest, actionable feedback.</p>
+                        <span class="step-highlight">⏱️ 30 seconds daily</span>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Real-Time Team Insights</h3>
+                        <p class="step-description">Team leaders access a dynamic dashboard showing engagement levels across the six CLOVER dimensions. See trends, identify issues early, and understand what's driving your team's engagement - all based on anonymous, aggregated data from teams of up to 20 people.</p>
+                        <span class="step-highlight">📊 Live dashboard updates</span>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Micro-Actions That Matter</h3>
+                        <p class="step-description">The Action Hub provides targeted, easy-to-implement suggestions based on your team's specific needs. These micro and mini actions integrate seamlessly into your workday, helping you build an engaging environment without overwhelming your schedule.</p>
+                        <span class="step-highlight">🎯 Personalized action plans</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLOVER Framework Section -->
+    <section class="framework-section">
+        <div class="container">
+            <h2 class="section-title">The Proven CLOVER Framework</h2>
+            <p style="text-align: center; color: var(--text-light); max-width: 800px; margin: 0 auto 2rem;">Based on decades of research and real-world application, the CLOVER framework addresses the six critical dimensions of employee engagement.</p>
+            
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <div class="framework-icon">💬</div>
+                    <h3 class="framework-title">Communication</h3>
+                    <p class="framework-description">Build trust through meaningful conversations. When teams communicate effectively, productivity increases by up to 25% and workplace failures decrease by 86%.</p>
+                    <div class="framework-metrics">
+                        <span class="metric-tag">Weekly check-ins</span>
+                        <span class="metric-tag">Feedback loops</span>
+                        <span class="metric-tag">Transparency</span>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-icon">📚</div>
+                    <h3 class="framework-title">Learning</h3>
+                    <p class="framework-description">Foster continuous growth and development. Organizations with strong learning cultures see 30-50% higher retention rates and 8.6% productivity gains.</p>
+                    <div class="framework-metrics">
+                        <span class="metric-tag">Skill development</span>
+                        <span class="metric-tag">Knowledge sharing</span>
+                        <span class="metric-tag">Innovation</span>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-icon">🚀</div>
+                    <h3 class="framework-title">Opportunity</h3>
+                    <p class="framework-description">Create clear paths for growth and advancement. 94% of employees stay longer when companies invest in their career development.</p>
+                    <div class="framework-metrics">
+                        <span class="metric-tag">Career paths</span>
+                        <span class="metric-tag">Internal mobility</span>
+                        <span class="metric-tag">Stretch assignments</span>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-icon">🤝</div>
+                    <h3 class="framework-title">Vulnerability</h3>
+                    <p class="framework-description">Build psychological safety where teams can take risks, admit mistakes, and ask for help. This is the #1 factor distinguishing high-performing teams.</p>
+                    <div class="framework-metrics">
+                        <span class="metric-tag">Trust building</span>
+                        <span class="metric-tag">Safe failure</span>
+                        <span class="metric-tag">Open dialogue</span>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-icon">⚡</div>
+                    <h3 class="framework-title">Enablement</h3>
+                    <p class="framework-description">Remove barriers and provide the tools, authority, and resources teams need to excel. Enabled teams show 682% higher revenue growth.</p>
+                    <div class="framework-metrics">
+                        <span class="metric-tag">Right tools</span>
+                        <span class="metric-tag">Decision authority</span>
+                        <span class="metric-tag">Clear processes</span>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-icon">🔍</div>
+                    <h3 class="framework-title">Reflection</h3>
+                    <p class="framework-description">Create space for learning from experience. Teams that reflect regularly see 23% performance improvements and reduced stress levels.</p>
+                    <div class="framework-metrics">
+                        <span class="metric-tag">Regular reviews</span>
+                        <span class="metric-tag">Learning capture</span>
+                        <span class="metric-tag">Continuous improvement</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview Section -->
+    <section class="dashboard-section">
+        <div class="container">
+            <h2 class="section-title">Empowering Leaders with Actionable Insights</h2>
+            
+            <div class="dashboard-preview">
+                <div class="dashboard-content">
+                    <h3>Your Command Center for Engagement</h3>
+                    <ul class="dashboard-features">
+                        <li>
+                            <div class="feature-icon">📈</div>
+                            <div>
+                                <strong>Real-time engagement metrics</strong> across all six CLOVER dimensions
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">🎯</div>
+                            <div>
+                                <strong>Targeted action recommendations</strong> based on your team's specific needs
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">📊</div>
+                            <div>
+                                <strong>Trend analysis and predictive insights</strong> to prevent issues before they impact performance
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">💡</div>
+                            <div>
+                                <strong>Micro-learning resources</strong> to build your leadership skills incrementally
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">🏆</div>
+                            <div>
+                                <strong>Success tracking</strong> to celebrate wins and measure impact
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="dashboard-mock">
+                    <div class="mock-header">
+                        <span style="font-weight: bold;">Team Dashboard</span>
+                        <span style="color: var(--primary-green);">Engagement: 78%</span>
+                    </div>
+                    <div class="mock-chart">
+                        📊 Engagement Trend Chart
+                    </div>
+                    <div class="mock-actions">
+                        <div class="mock-action">📋 Today's Action</div>
+                        <div class="mock-action">💬 Team Insights</div>
+                        <div class="mock-action">🎯 Quick Wins</div>
+                        <div class="mock-action">📚 Resources</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Why Teams Love Clover ERA</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔒</div>
+                    <h3 class="benefit-title">Complete Anonymity</h3>
+                    <p class="benefit-description">Employees feel safe sharing honest feedback, leading to more accurate insights and real change.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">⚡</div>
+                    <h3 class="benefit-title">Minimal Time Investment</h3>
+                    <p class="benefit-description">30 seconds for employees, minutes for managers - maximum impact with minimum disruption.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">📱</div>
+                    <h3 class="benefit-title">Mobile-First Design</h3>
+                    <p class="benefit-description">Works seamlessly on any device, meeting your team where they are.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎯</div>
+                    <h3 class="benefit-title">Actionable Guidance</h3>
+                    <p class="benefit-description">Not just data - specific, practical actions that fit into your existing workflow.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">📈</div>
+                    <h3 class="benefit-title">Proven Framework</h3>
+                    <p class="benefit-description">Based on decades of research and real-world success stories across industries.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🤝</div>
+                    <h3 class="benefit-title">Manager Enablement</h3>
+                    <p class="benefit-description">Transforms untrained managers into engagement champions with guided support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Transform Your Workplace Culture?</h2>
+            <p>Join organizations that are solving the trillion-dollar engagement problem, one 30-second check-in at a time.</p>
+            
+            <div class="cta-buttons">
+                <a href="/demo/" class="btn-primary">Request a Demo</a>
+                <a href="/contact/" class="btn-secondary">Learn More</a>
+            </div>
+            
+            <p style="margin-top: 2rem; font-size: 0.9rem; color: var(--text-light);">
+                No credit card required • Start seeing results in days, not months
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/privacy/">Privacy Policy</a>
+                <a href="/terms/">Terms of Service</a>
+                <a href="/about/">About Us</a>
+                <a href="/blog/">Blog</a>
+                <a href="/contact/">Contact</a>
+            </div>
+            <p style="opacity: 0.7;">© 2024 Clover ERA. Transforming workplaces through engagement.</p>
+        </div>
+    </footer>
+
+    <!-- Smooth Scroll Script -->
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe framework cards
+        document.querySelectorAll('.framework-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
