@@ -1606,4 +1606,128 @@
                 <ul>
                     <li><a href="/calculator/">Productivity Calculator</a></li>
                     <li><a href="/assessment/">Free Assessment</a></li>
-                    <li>
+                    <li><a href="/pilot/">30-Day Free Trial</a></li>
+                    <li><a href="/contact/">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="/about/">About Clover Era</a></li>
+                    <li><a href="/science/">Productivity Science Research</a></li>
+                    <li><a href="/blog/">Blog</a></li>
+                    <li><a href="/resources/">Resources</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Clover Era. All rights reserved. | <a href="/privacy/" style="color: rgba(255, 255, 255, 0.6);">Privacy Policy</a> | <a href="/terms/" style="color: rgba(255, 255, 255, 0.6);">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactive Elements -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+
+        // Productivity Drain Checker Functionality
+        const drainCards = document.querySelectorAll('.drain-card');
+        const productivityImpactDisplay = document.getElementById('productivityImpact');
+        
+        // Impact values for each drain level
+        const impactValues = {
+            'medium': 18000,
+            'high': 28000,
+            'critical': 38000
+        };
+        
+        drainCards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                calculateProductivityImpact();
+            });
+        });
+        
+        function calculateProductivityImpact() {
+            let totalImpact = 0;
+            
+            drainCards.forEach(card => {
+                if (card.classList.contains('selected')) {
+                    const impact = card.dataset.impact;
+                    totalImpact += impactValues[impact];
+                }
+            });
+            
+            // Animate the number change
+            animateValue(productivityImpactDisplay, parseInt(productivityImpactDisplay.textContent.replace(/,/g, '')), totalImpact, 500);
+        }
+        
+        // Cost Calculator Functionality
+        const employeesInput = document.getElementById('employees');
+        const avgSalaryInput = document.getElementById('avgSalary');
+        const disengagedRateInput = document.getElementById('disengagedRate');
+        
+        // Add event listeners to all calculator inputs
+        [employeesInput, avgSalaryInput, disengagedRateInput].forEach(input => {
+            input.addEventListener('input', calculateCosts);
+        });
+        
+        function calculateCosts() {
+            const employees = parseInt(employeesInput.value) || 0;
+            const avgSalary = parseInt(avgSalaryInput.value) || 0;
+            const disengagedRate = parseInt(disengagedRateInput.value) / 100 || 0;
+            
+            const disengagedEmployees = employees * disengagedRate;
+            
+            // Calculate different cost categories based on research
+            // Time waste: 31% of salary for 2.5 hours daily waste
+            const timeCost = disengagedEmployees * avgSalary * 0.31;
+            
+            // Output loss: 34% productivity decline
+            const outputCost = disengagedEmployees * avgSalary * 0.34;
+            
+            // Quality issues: 8% for errors and rework
+            const qualityCost = disengagedEmployees * avgSalary * 0.08;
+            
+            // Opportunity cost: 15% for missed opportunities
+            const opportunityCost = disengagedEmployees * avgSalary * 0.15;
+            
+            const totalCost = timeCost + outputCost + qualityCost + opportunityCost;
+            
+            // Update display with formatted numbers
+            document.getElementById('timeCost').textContent = '£' + formatNumber(Math.round(timeCost));
+            document.getElementById('outputCost').textContent = '£' + formatNumber(Math.round(outputCost));
+            document.getElementById('qualityCost').textContent = '£' + formatNumber(Math.round(qualityCost));
+            document.getElementById('opportunityCost').textContent = '£' + formatNumber(Math.round(opportunityCost));
+            document.getElementById('totalCost').textContent = '£' + formatNumber(Math.round(totalCost));
+        }
+        
+        // Helper function to format numbers with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // Helper function to animate number changes
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = formatNumber(Math.round(current));
+            }, 16);
+        }
+        
+        // Calculate initial costs on page load
+        calculateCosts();
+    </script>
+</body>
+</html>
