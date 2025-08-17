@@ -1215,7 +1215,7 @@
 
     <!-- Hero Image Section -->
     <div class="hero-image-container">
-        <img src="/images/Employees-Broken-Culture.webp" 
+        <img src="/images/Employee-culture-breakdown.webp" 
              alt="Workplace culture breakdown crisis showing toxic environment affecting 88% of organizations" 
              class="hero-image"
              width="1200"
@@ -1621,4 +1621,113 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p
+            <p>&copy; 2025 Clover Era. All rights reserved. | <a href="/privacy/" style="color: rgba(255, 255, 255, 0.6);">Privacy Policy</a> | <a href="/terms/" style="color: rgba(255, 255, 255, 0.6);">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactive Elements -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+
+        // Culture Issues Checker Functionality
+        const issueCards = document.querySelectorAll('.issue-card');
+        const cultureImpactDisplay = document.getElementById('cultureImpact');
+        
+        // Impact values for each issue level
+        const impactValues = {
+            'medium': 20000,
+            'high': 35000,
+            'critical': 45000
+        };
+        
+        issueCards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                calculateCultureImpact();
+            });
+        });
+        
+        function calculateCultureImpact() {
+            let totalImpact = 0;
+            
+            issueCards.forEach(card => {
+                if (card.classList.contains('selected')) {
+                    const impact = card.dataset.impact;
+                    totalImpact += impactValues[impact];
+                }
+            });
+            
+            // Animate the number change
+            animateValue(cultureImpactDisplay, parseInt(cultureImpactDisplay.textContent.replace(/,/g, '')), totalImpact, 500);
+        }
+        
+        // Cost Calculator Functionality
+        const employeesInput = document.getElementById('employees');
+        const avgSalaryInput = document.getElementById('avgSalary');
+        const cultureRateInput = document.getElementById('cultureRate');
+        
+        // Add event listeners to all calculator inputs
+        [employeesInput, avgSalaryInput, cultureRateInput].forEach(input => {
+            input.addEventListener('input', calculateCosts);
+        });
+        
+        function calculateCosts() {
+            const employees = parseInt(employeesInput.value) || 0;
+            const avgSalary = parseInt(avgSalaryInput.value) || 0;
+            const cultureRate = parseInt(cultureRateInput.value) / 100 || 0;
+            
+            const affectedEmployees = employees * cultureRate;
+            
+            // Calculate different cost categories based on research
+            // Turnover: 25% of affected employees leave, replacement costs 1.5x salary
+            const turnoverCost = Math.round(affectedEmployees * 0.25) * (avgSalary * 1.5);
+            
+            // Productivity loss: 40% reduction for affected employees
+            const productivityCost = affectedEmployees * avgSalary * 0.40;
+            
+            // Disengagement: 34% based on Gallup research
+            const disengagementCost = affectedEmployees * avgSalary * 0.34;
+            
+            // Innovation loss: 20% value loss from lack of innovation
+            const innovationCost = affectedEmployees * avgSalary * 0.20;
+            
+            const totalCost = turnoverCost + productivityCost + disengagementCost + innovationCost;
+            
+            // Update display with formatted numbers
+            document.getElementById('turnoverCost').textContent = '£' + formatNumber(Math.round(turnoverCost));
+            document.getElementById('productivityCost').textContent = '£' + formatNumber(Math.round(productivityCost));
+            document.getElementById('disengagementCost').textContent = '£' + formatNumber(Math.round(disengagementCost));
+            document.getElementById('innovationCost').textContent = '£' + formatNumber(Math.round(innovationCost));
+            document.getElementById('totalCost').textContent = '£' + formatNumber(Math.round(totalCost));
+        }
+        
+        // Helper function to format numbers with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // Helper function to animate number changes
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = formatNumber(Math.round(current));
+            }, 16);
+        }
+        
+        // Calculate initial costs on page load
+        calculateCosts();
+    </script>
+</body>
+</html>
