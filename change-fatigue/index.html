@@ -1606,4 +1606,128 @@
                 <ul>
                     <li><a href="/calculator/">Change Calculator</a></li>
                     <li><a href="/assessment/">Free Assessment</a></li>
-                    <li><a href="https://www.cloverera.com/
+                    <li><a href="https://www.cloverera.com/30-day-free-pilot/index.html">30-Day Free Trial</a></li>
+                    <li><a href="/contact/">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="/about/">About Clover Era</a></li>
+                    <li><a href="/science/">Change Science Research</a></li>
+                    <li><a href="/blog/">Blog</a></li>
+                    <li><a href="/resources/">Resources</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Clover Era. All rights reserved. | <a href="/privacy/" style="color: rgba(255, 255, 255, 0.6);">Privacy Policy</a> | <a href="/terms/" style="color: rgba(255, 255, 255, 0.6);">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactive Elements -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+
+        // Change Fatigue Symptoms Checker Functionality
+        const symptomCards = document.querySelectorAll('.symptom-card');
+        const fatigueImpactDisplay = document.getElementById('fatigueImpact');
+        
+        // Impact values for each symptom level
+        const impactValues = {
+            'medium': 22000,
+            'high': 38000,
+            'critical': 48000
+        };
+        
+        symptomCards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                calculateFatigueImpact();
+            });
+        });
+        
+        function calculateFatigueImpact() {
+            let totalImpact = 0;
+            
+            symptomCards.forEach(card => {
+                if (card.classList.contains('selected')) {
+                    const impact = card.dataset.impact;
+                    totalImpact += impactValues[impact];
+                }
+            });
+            
+            // Animate the number change
+            animateValue(fatigueImpactDisplay, parseInt(fatigueImpactDisplay.textContent.replace(/,/g, '')), totalImpact, 500);
+        }
+        
+        // Cost Calculator Functionality
+        const employeesInput = document.getElementById('employees');
+        const avgSalaryInput = document.getElementById('avgSalary');
+        const fatigueRateInput = document.getElementById('fatigueRate');
+        
+        // Add event listeners to all calculator inputs
+        [employeesInput, avgSalaryInput, fatigueRateInput].forEach(input => {
+            input.addEventListener('input', calculateCosts);
+        });
+        
+        function calculateCosts() {
+            const employees = parseInt(employeesInput.value) || 0;
+            const avgSalary = parseInt(avgSalaryInput.value) || 0;
+            const fatigueRate = parseInt(fatigueRateInput.value) / 100 || 0;
+            
+            const affectedEmployees = employees * fatigueRate;
+            
+            // Calculate different cost categories based on research
+            // Failed initiatives: 25% of salary wasted on failed changes
+            const failureCost = affectedEmployees * avgSalary * 0.25;
+            
+            // Productivity loss: 65% productivity drop during changes
+            const productivityCost = affectedEmployees * avgSalary * 0.65;
+            
+            // Turnover: 30% of affected employees leave, replacement costs 1.5x salary
+            const turnoverCost = Math.round(affectedEmployees * 0.30) * (avgSalary * 1.5);
+            
+            // Resistance and delays: 15% additional costs
+            const resistanceCost = affectedEmployees * avgSalary * 0.15;
+            
+            const totalCost = failureCost + productivityCost + turnoverCost + resistanceCost;
+            
+            // Update display with formatted numbers
+            document.getElementById('failureCost').textContent = '£' + formatNumber(Math.round(failureCost));
+            document.getElementById('productivityCost').textContent = '£' + formatNumber(Math.round(productivityCost));
+            document.getElementById('turnoverCost').textContent = '£' + formatNumber(Math.round(turnoverCost));
+            document.getElementById('resistanceCost').textContent = '£' + formatNumber(Math.round(resistanceCost));
+            document.getElementById('totalCost').textContent = '£' + formatNumber(Math.round(totalCost));
+        }
+        
+        // Helper function to format numbers with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // Helper function to animate number changes
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = formatNumber(Math.round(current));
+            }, 16);
+        }
+        
+        // Calculate initial costs on page load
+        calculateCosts();
+    </script>
+</body>
+</html>
