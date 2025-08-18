@@ -1,4 +1,4 @@
-// header.js - Complete version with breadcrumb creation
+// header.js - CEO-optimized version with demo focus and trust indicators
 document.addEventListener('DOMContentLoaded', function() {
     // Add favicon if not present
     if (!document.querySelector('link[rel="icon"]')) {
@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', function() {
             z-index: 1000;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             border-bottom: none !important;
+            transition: all 0.3s ease;
+        }
+
+        nav.main-nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .nav-container {
@@ -60,6 +66,32 @@ document.addEventListener('DOMContentLoaded', function() {
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        /* Trust Bar Styles */
+        .trust-bar {
+            background: #F5F7FA;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6B7280;
+            border-top: 1px solid #E5E9ED;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .trust-bar span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .trust-bar strong {
+            color: #46AEB8;
+            font-weight: 600;
         }
 
         .logo {
@@ -192,19 +224,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         .nav-cta {
-            background: #FF6B6B;
+            background: #46AEB8;
             color: #FFFFFF !important;
             padding: 0.75rem 2rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 4px 15px rgba(70, 174, 184, 0.3);
         }
 
         .nav-cta:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 6px 25px rgba(70, 174, 184, 0.4);
             color: #FFFFFF !important;
         }
 
@@ -219,8 +251,8 @@ document.addEventListener('DOMContentLoaded', function() {
             background: rgba(250, 251, 252, 0.95) !important;
             border-bottom: 1px solid #E5E9ED !important;
             z-index: 999 !important;
-            display: block !important; /* Force display */
-            visibility: visible !important; /* Force visibility */
+            display: block !important;
+            visibility: visible !important;
             opacity: 1 !important;
             margin: 0 !important;
             box-sizing: border-box !important;
@@ -268,12 +300,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* Adjust body and hero for navigation */
         body {
-            padding-top: 70px !important; /* Just main nav height */
+            padding-top: 70px !important;
             margin-top: 0 !important;
         }
         
         body.has-breadcrumb {
-            padding-top: 120px !important; /* Main nav + breadcrumb on other pages */
+            padding-top: 120px !important;
+        }
+
+        body.has-trust-bar {
+            padding-top: 110px !important;
+        }
+
+        body.has-breadcrumb.has-trust-bar {
+            padding-top: 160px !important;
         }
 
         /* Remove top margin only from the immediate container after nav */
@@ -355,6 +395,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 text-align: center;
             }
 
+            .trust-bar {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+                gap: 1rem;
+            }
+
+            .trust-bar span {
+                font-size: 0.7rem;
+            }
+
             .breadcrumb-nav {
                 top: 70px;
                 padding: 0.75rem 1rem;
@@ -371,6 +421,14 @@ document.addEventListener('DOMContentLoaded', function() {
             body.has-breadcrumb {
                 padding-top: 110px !important;
             }
+
+            body.has-trust-bar {
+                padding-top: 105px !important;
+            }
+
+            body.has-breadcrumb.has-trust-bar {
+                padding-top: 145px !important;
+            }
             
             /* Remove top margin from immediate container after nav on mobile */
             body > div:first-of-type,
@@ -382,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(styleElement);
 
-    // Create the main navigation element
+    // Create the main navigation element with CEO-optimized structure
     const nav = document.createElement('nav');
     nav.classList.add('main-nav');
     nav.setAttribute('aria-label', 'Main navigation');
@@ -399,23 +457,27 @@ document.addEventListener('DOMContentLoaded', function() {
         </button>
         <div class="nav-links" id="navLinks">
             <a href="/how-it-works.html">HOW IT WORKS</a>
+            <a href="/pricing">PRICING</a>
             <div class="nav-dropdown">
                 <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
                     RESOURCES <span style="font-size: 0.8rem;">▼</span>
                 </a>
                 <div class="nav-dropdown-menu">
-                    <a href="/what-is-employee-engagement/" class="featured-link">📚 What Is Employee Engagement?</a>
-                    <a href="https://www.cloverera.com/engagement-strategies/index.html">Engagement Strategies</a>
-                    <a href="https://www.cloverera.com/how-to-measure-employee-engagement/index.html">How to Measure</a>
-                    <a href="https://www.cloverera.com/employee-engagement-best-practices/index.html">Best Practices</a>
-                    <a href="/calculator/index.html">ROI of Engagement</a>
+                    <a href="/case-studies" class="featured-link">📊 Success Stories</a>
+                    <a href="/what-is-employee-engagement/">What Is Engagement?</a>
+                    <a href="/#calculator">ROI Calculator</a>
+                    <a href="/assessment/index.html">Free Assessment</a>
+                    <a href="/implementation-guide">Implementation Guide</a>
                 </div>
             </div>
-            <a href="/#problems">PROBLEMS</a>
-            <a href="/#calculator">CALCULATOR</a>
-            <a href="/assessment/index.html">ASSESSMENT</a>
-            <a href="/30-day-free-pilot/index.html" class="nav-cta">START FREE PILOT</a>
+            <a href="/#problems">SOLUTIONS</a>
+            <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">BOOK DEMO</a>
         </div>
+    </div>
+    <div class="trust-bar">
+        <span>🎯 <strong>12+ companies</strong> already transforming</span>
+        <span>✅ <strong>100%</strong> continued after trial</span>
+        <span>🚀 <strong>Fresh from beta</strong> - Limited spots</span>
     </div>
     `;
 
@@ -430,7 +492,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const isHomePage = currentPath === '' || currentPath === '/';
     
-    // Add class to body if we have breadcrumbs
+    // Add classes to body for proper spacing
+    document.body.classList.add('has-trust-bar');
     if (!isHomePage) {
         document.body.classList.add('has-breadcrumb');
     }
@@ -455,26 +518,44 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add page-specific breadcrumbs based on URL
         if (currentPath.includes('/burnout')) {
-            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
             breadcrumbHTML += '<li>Employee Burnout</li>';
         } else if (currentPath.includes('/stress')) {
-            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
             breadcrumbHTML += '<li>Employee Stress</li>';
         } else if (currentPath.includes('/anxiety')) {
-            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
             breadcrumbHTML += '<li>Workplace Anxiety</li>';
         } else if (currentPath.includes('/change-fatigue')) {
-            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
             breadcrumbHTML += '<li>Change Fatigue</li>';
         } else if (currentPath.includes('/turnover')) {
-            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
             breadcrumbHTML += '<li>Employee Turnover</li>';
         } else if (currentPath.includes('/retention')) {
-            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
             breadcrumbHTML += '<li>Employee Retention</li>';
+        } else if (currentPath.includes('/hybrid-working')) {
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
+            breadcrumbHTML += '<li>Hybrid Working Issues</li>';
+        } else if (currentPath.includes('/toxic-management')) {
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
+            breadcrumbHTML += '<li>Toxic Management</li>';
+        } else if (currentPath.includes('/productivity-loss')) {
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
+            breadcrumbHTML += '<li>Productivity Loss</li>';
+        } else if (currentPath.includes('/culture-breakdown')) {
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
+            breadcrumbHTML += '<li>Culture Breakdown</li>';
         } else if (currentPath.includes('/what-is-employee-engagement')) {
             breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
             breadcrumbHTML += '<li>What Is Employee Engagement</li>';
+        } else if (currentPath.includes('/case-studies')) {
+            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
+            breadcrumbHTML += '<li>Success Stories</li>';
+        } else if (currentPath.includes('/implementation-guide')) {
+            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
+            breadcrumbHTML += '<li>Implementation Guide</li>';
         } else if (currentPath.includes('/employee-engagement-strategies')) {
             breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
             breadcrumbHTML += '<li>Engagement Strategies</li>';
@@ -485,12 +566,14 @@ document.addEventListener('DOMContentLoaded', function() {
             breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
             breadcrumbHTML += '<li>Best Practices</li>';
         } else if (currentPath.includes('/engagement')) {
-            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
             breadcrumbHTML += '<li>Employee Engagement</li>';
         } else if (currentPath.includes('/assessment')) {
             breadcrumbHTML += '<li>Assessment</li>';
         } else if (currentPath.includes('/calculator')) {
-            breadcrumbHTML += '<li>Calculator</li>';
+            breadcrumbHTML += '<li>ROI Calculator</li>';
+        } else if (currentPath.includes('/pricing')) {
+            breadcrumbHTML += '<li>Pricing</li>';
         } else if (currentPath.includes('/pilot') || currentPath.includes('/30-day')) {
             breadcrumbHTML += '<li>Free Pilot</li>';
         } else if (currentPath.includes('/resources-hub')) {
@@ -530,7 +613,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Insert breadcrumb after main nav if it exists
     if (breadcrumbNav) {
-        document.body.insertBefore(breadcrumbNav, nav.nextSibling);
+        // Find the trust bar and insert after it
+        const trustBar = document.querySelector('.trust-bar');
+        if (trustBar) {
+            trustBar.parentNode.insertBefore(breadcrumbNav, trustBar.nextSibling);
+        } else {
+            document.body.insertBefore(breadcrumbNav, nav.nextSibling);
+        }
         console.log('Breadcrumb inserted');
         
         // Force breadcrumb visibility
@@ -541,8 +630,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Adjust body padding/margin and first content element
     if (!isHomePage) {
-        // For pages with breadcrumbs
-        document.body.style.paddingTop = '120px';
+        // For pages with breadcrumbs and trust bar
+        document.body.style.paddingTop = '160px';
         document.body.style.marginTop = '0';
         
         // Find the first major content section and adjust it
@@ -552,10 +641,20 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Adjusted first section margin');
         }
     } else {
-        // For home page
-        document.body.style.paddingTop = '70px';
+        // For home page with trust bar
+        document.body.style.paddingTop = '110px';
         document.body.style.marginTop = '0';
     }
+
+    // Add scroll effect to navigation
+    window.addEventListener('scroll', function() {
+        const mainNav = document.querySelector('.main-nav');
+        if (window.scrollY > 50) {
+            mainNav.classList.add('scrolled');
+        } else {
+            mainNav.classList.remove('scrolled');
+        }
+    });
 
     // Initialize mobile menu functionality
     const mobileToggle = document.getElementById('mobileToggle');
@@ -583,7 +682,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 navLinks.classList.remove('active');
                 mobileToggle.classList.remove('active');
                 mobileToggle.setAttribute('aria-expanded', 'false');
-                breadcrumbNav.style.display = 'block';
+                if (breadcrumbNav) breadcrumbNav.style.display = 'block';
             }
         });
 
@@ -593,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 navLinks.classList.remove('active');
                 mobileToggle.classList.remove('active');
                 mobileToggle.setAttribute('aria-expanded', 'false');
-                breadcrumbNav.style.display = 'block';
+                if (breadcrumbNav) breadcrumbNav.style.display = 'block';
             });
         });
     }
