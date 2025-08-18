@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             backdrop-filter: blur(20px);
             z-index: 1000;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-bottom: none !important;
         }
 
         .nav-container {
@@ -240,15 +241,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* Adjust body and hero for navigation */
         body {
-            padding-top: 70px !important; /* Just main nav on home page */
+            padding-top: 70px !important; /* Just main nav height */
+            margin-top: 0 !important;
         }
         
         body.has-breadcrumb {
             padding-top: 120px !important; /* Main nav + breadcrumb on other pages */
         }
 
+        /* Remove any top margin/padding from first elements */
+        body > *:first-child:not(nav),
+        body > nav + *:not(nav),
+        body > nav + nav + *,
+        .hero-image-container,
+        .hero,
+        section:first-of-type,
+        main > *:first-child {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+        
+        /* Ensure clean edge-to-edge hero images */
         .hero-image-container {
             margin-top: 0 !important;
+            border-top: none !important;
+        }
+        
+        /* Remove any borders that might appear */
+        nav.main-nav + * {
+            border-top: none !important;
         }
 
         /* Mobile Responsive */
@@ -316,7 +337,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             body {
+                padding-top: 70px !important;
+            }
+            
+            body.has-breadcrumb {
                 padding-top: 110px !important;
+            }
+            
+            /* Ensure clean layout on mobile */
+            body > *:first-child:not(nav),
+            body > nav + *:not(nav),
+            body > nav + nav + *,
+            .hero-image-container,
+            .hero,
+            section:first-of-type {
+                margin-top: 0 !important;
             }
         }
     `;
@@ -427,9 +462,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Adjust breadcrumb position when mobile menu is open
             if (isExpanded && window.innerWidth <= 768) {
-                breadcrumbNav.style.display = 'none';
+                if (breadcrumbNav) breadcrumbNav.style.display = 'none';
             } else {
-                breadcrumbNav.style.display = 'block';
+                if (breadcrumbNav) breadcrumbNav.style.display = 'block';
             }
         });
 
