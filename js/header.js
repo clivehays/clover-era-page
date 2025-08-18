@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
         📚 The Trillion Dollar Problem Book
     </a>
     <a href="/neuroscience-book-preview/">
-        🧠 New Book: Preview Chapter
+        🧠 New - Neuroscience of Employee Engagement: Preview Chapter
     </a>
                     </div>
                 </div>
