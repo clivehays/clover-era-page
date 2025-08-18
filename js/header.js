@@ -62,10 +62,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 0.75rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            min-height: 70px;
         }
 
         /* Trust Bar Styles */
@@ -522,11 +523,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">BOOK DEMO</a>
         </div>
     </div>
-    <div class="trust-bar">
-        <span><img src="https://www.cloverera.com/images/Employee-Clear-Goals.png" alt="Companies Icon"> <strong>12+ companies</strong> already transforming</span>
-        <span>✅ <strong>100%</strong> continued after trial</span>
-        <span><img src="https://www.cloverera.com/images/Employee-resilience-training.png" alt="Beta Icon"> <strong>Fresh from beta</strong> - Limited spots</span>
-    </div>
     `;
 
     // Determine if we need breadcrumbs (not on home page)
@@ -658,15 +654,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Insert main navigation at the beginning of body
     document.body.insertBefore(nav, document.body.firstChild);
     
-    // Insert breadcrumb after main nav if it exists
+    // Insert trust bar after main nav as a separate element
+    document.body.insertBefore(trustBar, nav.nextSibling);
+    
+    // Insert breadcrumb after trust bar if it exists
     if (breadcrumbNav) {
-        // Find the trust bar and insert after it
-        const trustBar = document.querySelector('.trust-bar');
-        if (trustBar) {
-            trustBar.parentNode.insertBefore(breadcrumbNav, trustBar.nextSibling);
-        } else {
-            document.body.insertBefore(breadcrumbNav, nav.nextSibling);
-        }
+        document.body.insertBefore(breadcrumbNav, trustBar.nextSibling);
         console.log('Breadcrumb inserted');
         
         // Force breadcrumb visibility
