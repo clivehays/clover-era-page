@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <a href="/employee-engagement-strategies/">Engagement Strategies</a>
                         <a href="/measure-employee-engagement/">How to Measure</a>
                         <a href="/engagement-best-practices/">Best Practices</a>
-                        <a href="/engagement-roi/">ROI of Engagement</a>
+                        <a href="https://www.clover-era.com/calculator/index.html">ROI of Engagement</a>
                     </div>
                 </div>
                 <a href="/#problems">PROBLEMS</a>
