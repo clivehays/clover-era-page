@@ -387,36 +387,36 @@ document.addEventListener('DOMContentLoaded', function() {
     nav.classList.add('main-nav');
     nav.setAttribute('aria-label', 'Main navigation');
     nav.innerHTML = `
-        <div class="nav-container">
-            <a href="/" class="logo" aria-label="Clover Era Home">
-                <img src="/images/Clover-era-new-logo-1.png" alt="Clover Era Logo - Employee Engagement Platform" width="35" height="35">
-                CLOVER ERA
-            </a>
-            <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="nav-links" id="navLinks">
-                <a href="/how-it-works.html">HOW IT WORKS</a>
-                <div class="nav-dropdown">
-                    <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
-                        RESOURCES <span style="font-size: 0.8rem;">▼</span>
-                    </a>
-                    <div class="nav-dropdown-menu">
-                        <a href="/what-is-employee-engagement/" class="featured-link">📚 What Is Employee Engagement?</a>
-                        <a href="https://www.cloverera.com/how-to-measure-employee-engagement/index.html">How to Measure</a>
-                        <a href="/measure-employee-engagement/">How to Measure</a>
-                        <a href="/engagement-best-practices/">Best Practices</a>
-                        <a href="/calculator/index.html">ROI of Engagement</a>
-                    </div>
+    <div class="nav-container">
+        <a href="/" class="logo" aria-label="Clover Era Home">
+            <img src="/images/Clover-era-new-logo-1.png" alt="Clover Era Logo - Employee Engagement Platform" width="35" height="35">
+            CLOVER ERA
+        </a>
+        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-links" id="navLinks">
+            <a href="/how-it-works.html">HOW IT WORKS</a>
+            <div class="nav-dropdown">
+                <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
+                    RESOURCES <span style="font-size: 0.8rem;">▼</span>
+                </a>
+                <div class="nav-dropdown-menu">
+                    <a href="/what-is-employee-engagement/" class="featured-link">📚 What Is Employee Engagement?</a>
+                    <a href="https://www.cloverera.com/engagement-strategies/index.html">Engagement Strategies</a>
+                    <a href="https://www.cloverera.com/how-to-measure-employee-engagement/index.html">How to Measure</a>
+                    <a href="/engagement-best-practices/">Best Practices</a>
+                    <a href="/calculator/index.html">ROI of Engagement</a>
                 </div>
-                <a href="/#problems">PROBLEMS</a>
-                <a href="/#calculator">CALCULATOR</a>
-                <a href="/assessment/index.html">ASSESSMENT</a>
-                <a href="/30-day-free-pilot/index.html" class="nav-cta">START FREE PILOT</a>
             </div>
+            <a href="/#problems">PROBLEMS</a>
+            <a href="/#calculator">CALCULATOR</a>
+            <a href="/assessment/index.html">ASSESSMENT</a>
+            <a href="/30-day-free-pilot/index.html" class="nav-cta">START FREE PILOT</a>
         </div>
+    </div>
     `;
 
     // Determine if we need breadcrumbs (not on home page)
