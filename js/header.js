@@ -424,6 +424,18 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (currentPath.includes('/anxiety')) {
             breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
             breadcrumbHTML += '<li>Workplace Anxiety</li>';
+        } else if (currentPath.includes('/change-fatigue')) {
+            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li>Change Fatigue</li>';
+        } else if (currentPath.includes('/turnover')) {
+            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li>Employee Turnover</li>';
+        } else if (currentPath.includes('/retention')) {
+            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li>Employee Retention</li>';
+        } else if (currentPath.includes('/engagement')) {
+            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li>Employee Engagement</li>';
         } else if (currentPath.includes('/assessment')) {
             breadcrumbHTML += '<li>Assessment</li>';
         } else if (currentPath.includes('/calculator')) {
@@ -434,6 +446,24 @@ document.addEventListener('DOMContentLoaded', function() {
             breadcrumbHTML += '<li>Resources</li>';
         } else if (currentPath.includes('/how-it-works')) {
             breadcrumbHTML += '<li>How It Works</li>';
+        } else if (currentPath.includes('/about')) {
+            breadcrumbHTML += '<li>About</li>';
+        } else if (currentPath.includes('/contact')) {
+            breadcrumbHTML += '<li>Contact</li>';
+        } else if (currentPath.includes('/privacy')) {
+            breadcrumbHTML += '<li>Privacy Policy</li>';
+        } else if (currentPath.includes('/terms')) {
+            breadcrumbHTML += '<li>Terms of Service</li>';
+        } else {
+            // For any other page, try to create a breadcrumb from the URL
+            const pathParts = currentPath.split('/').filter(part => part);
+            if (pathParts.length > 0) {
+                // Convert URL slug to readable text (e.g., "mental-health" -> "Mental Health")
+                const pageName = pathParts[pathParts.length - 1]
+                    .replace(/-/g, ' ')
+                    .replace(/\b\w/g, l => l.toUpperCase());
+                breadcrumbHTML += '<li>' + pageName + '</li>';
+            }
         }
         
         breadcrumbHTML += '</ol>';
