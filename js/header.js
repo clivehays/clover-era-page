@@ -238,9 +238,13 @@ document.addEventListener('DOMContentLoaded', function() {
             font-weight: 600;
         }
 
-        /* Adjust body and hero for both navs */
+        /* Adjust body and hero for navigation */
         body {
-            padding-top: 120px !important; /* Account for main nav + breadcrumb */
+            padding-top: 70px !important; /* Just main nav on home page */
+        }
+        
+        body.has-breadcrumb {
+            padding-top: 120px !important; /* Main nav + breadcrumb on other pages */
         }
 
         .hero-image-container {
@@ -355,46 +359,59 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
 
-    // Create breadcrumb navigation
-    const breadcrumbNav = document.createElement('nav');
-    breadcrumbNav.classList.add('breadcrumb-nav');
-    breadcrumbNav.setAttribute('aria-label', 'Breadcrumb navigation');
-    
-    // Determine breadcrumb based on current page
+    // Determine if we need breadcrumbs (not on home page)
     const currentPath = window.location.pathname;
-    let breadcrumbHTML = '<ol>';
+    const isHomePage = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
     
-    // Always start with Home
-    breadcrumbHTML += '<li><a href="/">Home</a></li>';
-    
-    // Add page-specific breadcrumbs based on URL
-    if (currentPath.includes('/burnout')) {
-        breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
-        breadcrumbHTML += '<li>Employee Burnout</li>';
-    } else if (currentPath.includes('/stress')) {
-        breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
-        breadcrumbHTML += '<li>Employee Stress</li>';
-    } else if (currentPath.includes('/anxiety')) {
-        breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
-        breadcrumbHTML += '<li>Workplace Anxiety</li>';
-    } else if (currentPath.includes('/assessment')) {
-        breadcrumbHTML += '<li>Assessment</li>';
-    } else if (currentPath.includes('/calculator')) {
-        breadcrumbHTML += '<li>Calculator</li>';
-    } else if (currentPath.includes('/pilot') || currentPath.includes('/30-day')) {
-        breadcrumbHTML += '<li>Free Pilot</li>';
-    } else if (currentPath.includes('/resources')) {
-        breadcrumbHTML += '<li>Resources</li>';
-    } else if (currentPath.includes('/how-it-works')) {
-        breadcrumbHTML += '<li>How It Works</li>';
+    // Add class to body if we have breadcrumbs
+    if (!isHomePage) {
+        document.body.classList.add('has-breadcrumb');
     }
     
-    breadcrumbHTML += '</ol>';
-    breadcrumbNav.innerHTML = breadcrumbHTML;
+    let breadcrumbNav = null;
+    
+    if (!isHomePage) {
+        // Create breadcrumb navigation only for non-home pages
+        breadcrumbNav = document.createElement('nav');
+        breadcrumbNav.classList.add('breadcrumb-nav');
+        breadcrumbNav.setAttribute('aria-label', 'Breadcrumb navigation');
+        
+        let breadcrumbHTML = '<ol>';
+        
+        // Always start with Home
+        breadcrumbHTML += '<li><a href="/">Home</a></li>';
+        
+        // Add page-specific breadcrumbs based on URL
+        if (currentPath.includes('/burnout')) {
+            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li>Employee Burnout</li>';
+        } else if (currentPath.includes('/stress')) {
+            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li>Employee Stress</li>';
+        } else if (currentPath.includes('/anxiety')) {
+            breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+            breadcrumbHTML += '<li>Workplace Anxiety</li>';
+        } else if (currentPath.includes('/assessment')) {
+            breadcrumbHTML += '<li>Assessment</li>';
+        } else if (currentPath.includes('/calculator')) {
+            breadcrumbHTML += '<li>Calculator</li>';
+        } else if (currentPath.includes('/pilot') || currentPath.includes('/30-day')) {
+            breadcrumbHTML += '<li>Free Pilot</li>';
+        } else if (currentPath.includes('/resources')) {
+            breadcrumbHTML += '<li>Resources</li>';
+        } else if (currentPath.includes('/how-it-works')) {
+            breadcrumbHTML += '<li>How It Works</li>';
+        }
+        
+        breadcrumbHTML += '</ol>';
+        breadcrumbNav.innerHTML = breadcrumbHTML;
+        
+        // Insert breadcrumb after main nav
+        document.body.insertBefore(breadcrumbNav, nav.nextSibling);
+    }
 
-    // Insert both navigations at the beginning of body
+    // Insert main navigation at the beginning of body
     document.body.insertBefore(nav, document.body.firstChild);
-    document.body.insertBefore(breadcrumbNav, nav.nextSibling);
 
     // Initialize mobile menu functionality
     const mobileToggle = document.getElementById('mobileToggle');
