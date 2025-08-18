@@ -87,11 +87,19 @@ document.addEventListener('DOMContentLoaded', function() {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            white-space: nowrap;
         }
 
         .trust-bar strong {
             color: #46AEB8;
             font-weight: 600;
+        }
+
+        .trust-bar img {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         .logo {
@@ -396,13 +404,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             .trust-bar {
-                padding: 0.5rem;
-                font-size: 0.75rem;
-                gap: 1rem;
+                padding: 0.4rem 0.5rem;
+                font-size: 0.7rem;
+                gap: 0.5rem;
+                line-height: 1.2;
             }
 
             .trust-bar span {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
+                flex: 0 0 auto;
+                padding: 0.2rem 0;
+            }
+
+            .trust-bar img {
+                width: 14px;
+                height: 14px;
             }
 
             .breadcrumb-nav {
@@ -423,11 +439,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             body.has-trust-bar {
-                padding-top: 105px !important;
+                padding-top: 100px !important;
             }
 
             body.has-breadcrumb.has-trust-bar {
-                padding-top: 145px !important;
+                padding-top: 140px !important;
             }
             
             /* Remove top margin from immediate container after nav on mobile */
@@ -435,6 +451,46 @@ document.addEventListener('DOMContentLoaded', function() {
             body > section:first-of-type,
             body > nav.main-nav + * {
                 margin-top: 0 !important;
+            }
+        }
+
+        /* Even smaller mobile screens */
+        @media (max-width: 480px) {
+            .trust-bar {
+                padding: 0.3rem;
+                font-size: 0.65rem;
+                gap: 0.3rem;
+                flex-direction: column;
+            }
+
+            .trust-bar span {
+                font-size: 0.7rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            body.has-trust-bar {
+                padding-top: 120px !important;
+            }
+
+            body.has-breadcrumb.has-trust-bar {
+                padding-top: 160px !important;
+            }
+        }
+
+        /* Very small mobile screens */
+        @media (max-width: 380px) {
+            .trust-bar span {
+                font-size: 0.65rem;
+            }
+
+            .trust-bar strong {
+                font-size: 0.7rem;
+            }
+
+            .trust-bar img {
+                width: 12px;
+                height: 12px;
             }
         }
     `;
@@ -475,9 +531,9 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
     <div class="trust-bar">
-        <span><img src="https://www.cloverera.com/images/Employee-Clear-Goals.png" alt="Companies Icon" style="width: 16px; height: 16px; vertical-align: middle;"> <strong>12+ companies</strong> already transforming</span>
+        <span><img src="https://www.cloverera.com/images/Employee-Clear-Goals.png" alt="Companies Icon"> <strong>12+ companies</strong> already transforming</span>
         <span>✅ <strong>100%</strong> continued after trial</span>
-        <span><img src="https://www.cloverera.com/images/Employee-resilience-training.png" alt="Beta Icon" style="width: 16px; height: 16px; vertical-align: middle;"> <strong>Fresh from beta</strong> - Limited spots</span>
+        <span><img src="https://www.cloverera.com/images/Employee-resilience-training.png" alt="Beta Icon"> <strong>Fresh from beta</strong> - Limited spots</span>
     </div>
     `;
 
