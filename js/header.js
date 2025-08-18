@@ -197,6 +197,8 @@ document.addEventListener('DOMContentLoaded', function() {
             background: rgba(250, 251, 252, 0.95);
             border-bottom: 1px solid #E5E9ED;
             z-index: 999;
+            display: block !important; /* Force display */
+            visibility: visible !important; /* Force visibility */
         }
 
         .breadcrumb-nav ol {
@@ -371,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span></span>
             </button>
             <div class="nav-links" id="navLinks">
-                <a href="https://www.clover-era.com/how-it-works.html">HOW IT WORKS</a>
+                <a href="/how-it-works.html">HOW IT WORKS</a>
                 <div class="nav-dropdown">
                     <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
                         RESOURCES <span style="font-size: 0.8rem;">▼</span>
@@ -381,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <a href="/employee-engagement-strategies/">Engagement Strategies</a>
                         <a href="/measure-employee-engagement/">How to Measure</a>
                         <a href="/engagement-best-practices/">Best Practices</a>
-                        <a href="https://www.clover-era.com/calculator/index.html">ROI of Engagement</a>
+                        <a href="/calculator/index.html">ROI of Engagement</a>
                     </div>
                 </div>
                 <a href="/#problems">PROBLEMS</a>
@@ -394,7 +396,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Determine if we need breadcrumbs (not on home page)
     const currentPath = window.location.pathname;
-    const isHomePage = currentPath === '/' || currentPath === '/index.html' || currentPath === '';
+    const currentHost = window.location.hostname;
+    const isHomePage = currentPath === '/' || currentPath === '/index.html' || currentPath === '' || currentPath === '/index.htm';
     
     // Add class to body if we have breadcrumbs
     if (!isHomePage) {
@@ -403,8 +406,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let breadcrumbNav = null;
     
+    // Always show breadcrumbs except on home page
     if (!isHomePage) {
-        // Create breadcrumb navigation only for non-home pages
+        // Create breadcrumb navigation for all non-home pages
         breadcrumbNav = document.createElement('nav');
         breadcrumbNav.classList.add('breadcrumb-nav');
         breadcrumbNav.setAttribute('aria-label', 'Breadcrumb navigation');
