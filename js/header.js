@@ -1,5 +1,9 @@
 // header.js - CEO-optimized version with demo focus, trust indicators, and SEO enhancements
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize global variables first to prevent reference errors
+    let trustBar = null;
+    let breadcrumbNav = null;
+    
     // SEO and Geo optimizations
     // Add meta tags for better SEO if not present
     if (!document.querySelector('meta[name="description"]')) {
@@ -593,6 +597,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Current path:', currentPath);
     console.log('Is home page:', isHomePage);
     
+    // Initialize variables at the module level
+    let trustBar = null;
     let breadcrumbNav = null;
     
     // Always show breadcrumbs except on home page
