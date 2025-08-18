@@ -108,6 +108,63 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #46AEB8;
         }
 
+        /* Dropdown Styles */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+        }
+
+        .nav-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #FFFFFF;
+            border: 1px solid #E5E9ED;
+            border-radius: 10px;
+            padding: 1rem 0;
+            min-width: 250px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+
+        .nav-dropdown:hover .nav-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #111827;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            text-transform: none;
+        }
+
+        .nav-dropdown-menu a:hover {
+            background: #F5F7FA;
+            color: #46AEB8;
+        }
+
+        .nav-dropdown-menu .featured-link {
+            border-bottom: 1px solid #E5E9ED;
+            margin-bottom: 0.5rem;
+            padding-bottom: 1rem;
+            font-weight: 600;
+        }
+
         .nav-cta {
             background: #46AEB8;
             color: #FFFFFF !important;
@@ -144,9 +201,19 @@ document.addEventListener('DOMContentLoaded', function() {
             transition: all 0.3s ease;
         }
 
+        /* Fix body padding to eliminate white space */
         body {
-            padding-top: 110px !important;
+            padding-top: 110px !important; /* nav (70px) + trust bar (40px) */
             margin-top: 0 !important;
+        }
+
+        /* Ensure hero/first section sits flush against trust bar */
+        body > section:first-of-type,
+        body > .hero,
+        .hero-image-container,
+        main > section:first-of-type {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
         }
 
         @media (max-width: 768px) {
@@ -172,6 +239,24 @@ document.addEventListener('DOMContentLoaded', function() {
             .nav-links.active {
                 display: flex !important;
             }
+
+            .nav-dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin-top: 0;
+                width: 100%;
+                background: #F5F7FA;
+                border-radius: 0;
+            }
+            
+            body {
+                padding-top: 100px !important;
+            }
         }
     `;
     document.head.appendChild(styleElement);
@@ -193,6 +278,18 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="nav-links" id="navLinks">
                 <a href="/how-it-works.html">HOW IT WORKS</a>
                 <a href="/pricing">PRICING</a>
+                <div class="nav-dropdown">
+                    <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
+                        RESOURCES <span style="font-size: 0.8rem;">▼</span>
+                    </a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/case-studies" class="featured-link">📊 Success Stories</a>
+                        <a href="/what-is-employee-engagement/">What Is Engagement?</a>
+                        <a href="/#calculator">ROI Calculator</a>
+                        <a href="/assessment/index.html">Free Assessment</a>
+                        <a href="/implementation-guide">Implementation Guide</a>
+                    </div>
+                </div>
                 <a href="/#problems">SOLUTIONS</a>
                 <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">BOOK DEMO</a>
             </div>
