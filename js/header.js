@@ -1,6 +1,15 @@
-// header.js - Fixed version with breadcrumb preservation
+// header.js - Complete version with breadcrumb fix and favicon
 document.addEventListener('DOMContentLoaded', function() {
-    // First, add the navigation styles if they don't exist
+    // Add favicon if not present
+    if (!document.querySelector('link[rel="icon"]')) {
+        const favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.type = 'image/png';
+        favicon.href = '/images/Clover-era-new-logo-1.png';
+        document.head.appendChild(favicon);
+    }
+
+    // Add the navigation styles
     const styleElement = document.createElement('style');
     styleElement.textContent = `
         /* Navigation Styles */
@@ -169,15 +178,28 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #FFFFFF !important;
         }
 
-        /* Ensure existing navigation/breadcrumb is positioned correctly */
-        body > nav:not(.main-nav) {
+        /* Breadcrumb positioning fix */
+        .breadcrumb-container,
+        .breadcrumbs,
+        nav.breadcrumb,
+        .page-breadcrumb {
             margin-top: 70px !important;
             position: relative !important;
+            z-index: 100;
+            display: block !important;
+            visibility: visible !important;
         }
 
-        /* Adjust any header that might exist */
-        body > header {
-            margin-top: 70px !important;
+        /* Ensure body content starts below fixed nav */
+        body {
+            padding-top: 70px;
+        }
+
+        /* If there's a hero section right after nav, adjust it */
+        .hero-section,
+        .page-hero,
+        section:first-of-type {
+            margin-top: 0 !important;
         }
 
         /* Mobile Responsive */
@@ -234,13 +256,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: 100%;
                 text-align: center;
             }
+
+            .breadcrumb-container,
+            .breadcrumbs,
+            nav.breadcrumb,
+            .page-breadcrumb {
+                margin-top: 70px !important;
+            }
         }
     `;
     document.head.appendChild(styleElement);
 
     // Create the navigation element
     const nav = document.createElement('nav');
-    nav.classList.add('main-nav'); // Add a class to distinguish from existing nav
+    nav.classList.add('main-nav');
     nav.setAttribute('aria-label', 'Main navigation');
     nav.innerHTML = `
         <div class="nav-container">
@@ -278,25 +307,45 @@ document.addEventListener('DOMContentLoaded', function() {
     // Insert navigation at the beginning of body
     document.body.insertBefore(nav, document.body.firstChild);
 
-    // Find any existing navigation/breadcrumb and ensure it's positioned below our main nav
-    const existingNavs = document.querySelectorAll('body > nav:not(.main-nav)');
-    existingNavs.forEach(existingNav => {
-        // If there's an existing nav (like breadcrumbs), ensure it's positioned correctly
-        existingNav.style.marginTop = '70px';
-        existingNav.style.position = 'relative';
+    // Find and reposition any existing breadcrumb navigation
+    // Look for common breadcrumb selectors
+    const breadcrumbSelectors = [
+        '.breadcrumb',
+        '.breadcrumbs', 
+        'nav.breadcrumb',
+        '.breadcrumb-container',
+        '.page-breadcrumb',
+        'nav:not(.main-nav)',
+        '[class*="breadcrumb"]'
+    ];
+
+    breadcrumbSelectors.forEach(selector => {
+        const breadcrumbs = document.querySelectorAll(selector);
+        breadcrumbs.forEach(breadcrumb => {
+            if (breadcrumb && !breadcrumb.classList.contains('main-nav')) {
+                breadcrumb.style.marginTop = '70px';
+                breadcrumb.style.position = 'relative';
+                breadcrumb.style.display = 'block';
+                breadcrumb.style.visibility = 'visible';
+                breadcrumb.style.zIndex = '100';
+                
+                // If the breadcrumb was hidden, make sure it's visible
+                const computedStyle = window.getComputedStyle(breadcrumb);
+                if (computedStyle.display === 'none') {
+                    breadcrumb.style.display = 'block';
+                }
+            }
+        });
     });
 
-    // Also check for header elements that might contain breadcrumbs
-    const headers = document.querySelectorAll('body > header');
+    // Also check if breadcrumbs are in a header element
+    const headers = document.querySelectorAll('header');
     headers.forEach(header => {
-        header.style.marginTop = '70px';
+        if (header.querySelector('[class*="breadcrumb"]')) {
+            header.style.marginTop = '70px';
+            header.style.position = 'relative';
+        }
     });
-
-    // Add padding to body for the fixed navigation
-    // Only if there's no existing nav or header that already handles this
-    if (existingNavs.length === 0 && headers.length === 0) {
-        document.body.style.paddingTop = '70px';
-    }
 
     // Initialize mobile menu functionality
     const mobileToggle = document.getElementById('mobileToggle');
