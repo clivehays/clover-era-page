@@ -1,5 +1,42 @@
-// header.js - CEO-optimized version with demo focus and trust indicators
+// header.js - CEO-optimized version with demo focus, trust indicators, and SEO enhancements
 document.addEventListener('DOMContentLoaded', function() {
+    // SEO and Geo optimizations
+    // Add meta tags for better SEO if not present
+    if (!document.querySelector('meta[name="description"]')) {
+        const metaDesc = document.createElement('meta');
+        metaDesc.name = 'description';
+        metaDesc.content = 'Clover Era - Neuroscience-powered employee engagement platform. Reduce turnover by 29%, save millions annually. Book a demo today.';
+        document.head.appendChild(metaDesc);
+    }
+    
+    // Add Open Graph tags if not present
+    if (!document.querySelector('meta[property="og:title"]')) {
+        const ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        ogTitle.content = document.title || 'Clover Era - Employee Engagement Platform';
+        document.head.appendChild(ogTitle);
+    }
+    
+    // Add structured data for organization
+    if (!document.querySelector('script[type="application/ld+json"]')) {
+        const structuredData = document.createElement('script');
+        structuredData.type = 'application/ld+json';
+        structuredData.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Clover Era",
+            "url": "https://www.cloverera.com",
+            "logo": "https://www.cloverera.com/images/Clover-era-new-logo-1.png",
+            "description": "Neuroscience-powered employee engagement platform",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "12"
+            }
+        });
+        document.head.appendChild(structuredData);
+    }
+    
     // Add favicon if not present
     if (!document.querySelector('link[rel="icon"]')) {
         const favicon = document.createElement('link');
