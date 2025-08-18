@@ -1232,6 +1232,8 @@
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
                 z-index: 999;
                 margin-left: 0;
+                max-height: calc(100vh - 70px);
+                overflow-y: auto;
             }
             
             .nav-links.active {
@@ -1245,6 +1247,18 @@
                 text-align: center;
             }
             
+            /* Mobile dropdown handling */
+            .nav-dropdown {
+                width: 100%;
+            }
+            
+            .nav-dropdown-toggle {
+                width: 100%;
+                justify-content: center;
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--medium-gray);
+            }
+            
             .nav-dropdown-menu {
                 position: static;
                 opacity: 1;
@@ -1254,6 +1268,15 @@
                 border: none;
                 padding: 0;
                 margin-top: 0;
+                width: 100%;
+                background: var(--light-gray);
+                border-radius: 0;
+            }
+            
+            .nav-dropdown-menu a {
+                text-align: left;
+                padding-left: 2rem;
+                background: var(--light-gray);
             }
             
             .nav-links a:last-child {
@@ -1447,6 +1470,7 @@
                 <span></span>
             </button>
             <div class="nav-links" id="navLinks">
+                <a href="/how-it-works/">HOW IT WORKS</a>
                 <div class="nav-dropdown">
                     <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
                         RESOURCES <span style="font-size: 0.8rem;">▼</span>
@@ -1654,8 +1678,7 @@
                         <label for="turnover">Annual Turnover (%)</label>
                         <input type="number" id="turnover" value="15" min="0" max="100" step="1" aria-label="Annual turnover percentage">
                     </div>
-                </div>
-                
+                </div>             
                 <div class="calc-result">
                     <h3>You're Losing:</h3>
                     <div class="calc-amount" id="calcResult">$4,218,750</div>
@@ -1687,7 +1710,6 @@
                     <li>Expert onboarding included</li>
                     <li>Cancel anytime - no questions asked</li>
                 </ul>
-                <!-- UPDATED: Changed to /30-day-free-pilot/index.html -->
                 <a href="/30-day-free-pilot/index.html" class="btn-primary" style="background: var(--white); color: var(--coral);" aria-label="Start your free 30-day trial">START YOUR FREE TRIAL →</a>
             </div>
             <p style="color: var(--text-secondary); margin-top: 2rem; font-style: italic; font-size: 1.1rem;">
@@ -1732,7 +1754,6 @@
             <a href="/assessment/index.html" class="btn-primary" aria-label="Take free assessment">
                 FREE ASSESSMENT
             </a>
-            <!-- UPDATED: Changed to /30-day-free-pilot/index.html -->
             <a href="/30-day-free-pilot/index.html" class="btn-secondary" aria-label="Start 30-day free trial">
                 START 30-DAY FREE TRIAL
             </a>
@@ -1749,6 +1770,7 @@
                     <li><a href="/employee-engagement-strategies/">Engagement Strategies</a></li>
                     <li><a href="/measure-employee-engagement/">How to Measure</a></li>
                     <li><a href="/engagement-best-practices/">Best Practices</a></li>
+                    <li><a href="/how-it-works/">How It Works</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -1766,7 +1788,6 @@
                 <ul>
                     <li><a href="/calculator/index.html">ROI Calculator</a></li>
                     <li><a href="/assessment/index.html">Free Assessment</a></li>
-                    <!-- UPDATED: Changed to /30-day-free-pilot/index.html -->
                     <li><a href="/30-day-free-pilot/index.html">30-Day Free Trial</a></li>
                     <li><a href="#contact">Contact Us</a></li>
                 </ul>
@@ -1789,25 +1810,39 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileToggle?.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-            // Update aria-expanded
-            const isExpanded = navLinks.classList.contains('active');
-            mobileToggle.setAttribute('aria-expanded', isExpanded);
-        });
+        // Mobile menu toggle - Fixed version
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    navLinks.classList.toggle('active');
+                    mobileToggle.classList.toggle('active');
+                    // Update aria-expanded
+                    const isExpanded = navLinks.classList.contains('active');
+                    mobileToggle.setAttribute('aria-expanded', isExpanded);
+                });
 
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileToggle?.classList.remove('active');
-                mobileToggle?.setAttribute('aria-expanded', 'false');
-            });
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
+                        navLinks.classList.remove('active');
+                        mobileToggle.classList.remove('active');
+                        mobileToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                // Close mobile menu when clicking a link
+                document.querySelectorAll('.nav-links a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                        mobileToggle.classList.remove('active');
+                        mobileToggle.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
         });
         
         // Simple ROI Calculator
@@ -1822,7 +1857,7 @@
             const totalLoss = employeesLeaving * costPerEmployee;
             
             // Format with commas
-            const formattedLoss = ' + totalLoss.toLocaleString('en-US', {
+            const formattedLoss = '$' + totalLoss.toLocaleString('en-US', {
                 maximumFractionDigits: 0
             });
             
