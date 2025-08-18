@@ -27,93 +27,6 @@
     <meta name="twitter:description" content="Free guides, tools, and strategies to transform your workplace engagement.">
     <meta name="twitter:image" content="https://www.cloverera.com/images/resources-hero.webp">
     
-    <!-- Schema Markup -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "CollectionPage",
-          "name": "Employee Engagement Resources",
-          "description": "Comprehensive collection of employee engagement resources, guides, and tools",
-          "url": "https://www.cloverera.com/resources-hub/",
-          "publisher": {
-            "@type": "Organization",
-            "name": "Clover Era",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://www.cloverera.com/images/Clover-era-new-logo-1.png"
-            }
-          },
-          "mainEntity": {
-            "@type": "ItemList",
-            "itemListElement": [
-              {
-                "@type": "Article",
-                "position": 1,
-                "name": "What Is Employee Engagement?",
-                "description": "Complete guide to understanding employee engagement",
-                "url": "https://www.cloverera.com/what-is-employee-engagement/"
-              },
-              {
-                "@type": "HowTo",
-                "position": 2,
-                "name": "How to Measure Employee Engagement",
-                "description": "Methods and metrics for measuring engagement",
-                "url": "https://www.cloverera.com/measure-employee-engagement/"
-              },
-              {
-                "@type": "Article",
-                "position": 3,
-                "name": "Employee Engagement Strategies",
-                "description": "Proven strategies to boost engagement",
-                "url": "https://www.cloverera.com/employee-engagement-strategies/"
-              }
-            ]
-          }
-        },
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://www.cloverera.com"
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Resources Hub",
-              "item": "https://www.cloverera.com/resources-hub"
-            }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "What resources are available for improving employee engagement?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "We offer comprehensive guides on engagement definition, measurement tools, implementation strategies, ROI calculators, best practices, and problem-specific solutions for burnout, stress, retention, and culture issues."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Are these employee engagement resources free?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, all our educational resources, guides, and assessment tools are completely free. You can also start a free 30-day trial of our platform with up to 20 employees."
-              }
-            }
-          ]
-        }
-      ]
-    }
-    </script>
-    
     <style>
         * {
             margin: 0;
@@ -361,6 +274,7 @@
             outline: none;
             border-color: var(--primary-teal);
             box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+            transform: scale(1.02);
         }
 
         .search-btn {
@@ -379,6 +293,69 @@
 
         .search-btn:hover {
             background: var(--coral);
+        }
+
+        /* Search Enhancement Styles */
+        .search-match {
+            animation: highlightFade 0.5s ease;
+            position: relative;
+        }
+
+        @keyframes highlightFade {
+            0% {
+                background: linear-gradient(135deg, 
+                    rgba(70, 174, 184, 0.2), 
+                    rgba(70, 174, 184, 0.1));
+            }
+            100% {
+                background: transparent;
+            }
+        }
+
+        .search-results-message {
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-match::before {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         /* Resource Categories */
@@ -913,8 +890,38 @@
     </style>
 </head>
 <body>
-    <script src="/js/header.js"></script>
-  
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <img src="/images/Clover-era-new-logo-1.png" alt="Clover Era">
+                Clover Era
+            </a>
+            
+            <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="/">Home</a>
+                <a href="/resources-hub/" class="active">Resources</a>
+                <a href="/calculator/">Calculator</a>
+                <a href="/assessment/">Assessment</a>
+                <a href="/30-day-free-pilot/" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="/">Home</a>
+            <span>›</span>
+            <span>Resources Hub</span>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -990,11 +997,11 @@
                             </a>
                         </li>
                         <li class="resource-item">
-    <a href="/what-is-employee-engagement/#engagement-vs-satisfaction">
-        Engagement vs. Satisfaction
-        <span class="resource-badge new">New</span>
-    </a>
-</li>
+                            <a href="/what-is-employee-engagement/#engagement-vs-satisfaction">
+                                Engagement vs. Satisfaction
+                                <span class="resource-badge new">New</span>
+                            </a>
+                        </li>
                         <li class="resource-item">
                             <a href="/engagement-myths/">
                                 Common Engagement Myths
@@ -1368,416 +1375,300 @@
             });
         }
 
-        // Search functionality (basic implementation)
-       <!-- Add this enhanced JavaScript to replace the existing search functionality script -->
-<script>
-// Enhanced Search Functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.querySelector('.search-input');
-    const searchBtn = document.querySelector('.search-btn');
-    
-    // Create search index of all searchable content
-    function createSearchIndex() {
-        const searchableItems = [];
-        
-        // Index category cards
-        document.querySelectorAll('.category-card').forEach(card => {
-            const title = card.querySelector('.category-title')?.textContent || '';
-            const description = card.querySelector('.category-description')?.textContent || '';
-            const resources = [];
+        // Enhanced Search Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            const searchBtn = document.querySelector('.search-btn');
             
-            card.querySelectorAll('.resource-item a').forEach(link => {
-                const resourceText = link.textContent.trim();
-                resources.push(resourceText);
-            });
+            // Create search index of all searchable content
+            function createSearchIndex() {
+                const searchableItems = [];
+                
+                // Index category cards
+                document.querySelectorAll('.category-card').forEach(card => {
+                    const title = card.querySelector('.category-title')?.textContent || '';
+                    const description = card.querySelector('.category-description')?.textContent || '';
+                    const resources = [];
+                    
+                    card.querySelectorAll('.resource-item a').forEach(link => {
+                        const resourceText = link.textContent.trim();
+                        resources.push(resourceText);
+                    });
+                    
+                    searchableItems.push({
+                        element: card,
+                        type: 'category',
+                        title: title,
+                        content: `${title} ${description} ${resources.join(' ')}`.toLowerCase(),
+                        originalDisplay: card.style.display || 'block'
+                    });
+                });
+                
+                // Index tool cards
+                document.querySelectorAll('.tool-card').forEach(card => {
+                    const title = card.querySelector('.tool-title')?.textContent || '';
+                    const description = card.querySelector('.tool-description')?.textContent || '';
+                    
+                    searchableItems.push({
+                        element: card,
+                        type: 'tool',
+                        title: title,
+                        content: `${title} ${description}`.toLowerCase(),
+                        originalDisplay: card.style.display || 'block'
+                    });
+                });
+                
+                // Index problem links
+                document.querySelectorAll('.problem-link').forEach(link => {
+                    const name = link.querySelector('.problem-name')?.textContent || '';
+                    const metric = link.querySelector('.problem-metric')?.textContent || '';
+                    
+                    searchableItems.push({
+                        element: link,
+                        type: 'problem',
+                        title: name,
+                        content: `${name} ${metric}`.toLowerCase(),
+                        originalDisplay: link.style.display || 'flex'
+                    });
+                });
+                
+                return searchableItems;
+            }
             
-            searchableItems.push({
-                element: card,
-                type: 'category',
-                title: title,
-                content: `${title} ${description} ${resources.join(' ')}`.toLowerCase(),
-                originalDisplay: card.style.display || 'block'
-            });
-        });
-        
-        // Index tool cards
-        document.querySelectorAll('.tool-card').forEach(card => {
-            const title = card.querySelector('.tool-title')?.textContent || '';
-            const description = card.querySelector('.tool-description')?.textContent || '';
-            
-            searchableItems.push({
-                element: card,
-                type: 'tool',
-                title: title,
-                content: `${title} ${description}`.toLowerCase(),
-                originalDisplay: card.style.display || 'block'
-            });
-        });
-        
-        // Index problem links
-        document.querySelectorAll('.problem-link').forEach(link => {
-            const name = link.querySelector('.problem-name')?.textContent || '';
-            const metric = link.querySelector('.problem-metric')?.textContent || '';
-            
-            searchableItems.push({
-                element: link,
-                type: 'problem',
-                title: name,
-                content: `${name} ${metric}`.toLowerCase(),
-                originalDisplay: link.style.display || 'flex'
-            });
-        });
-        
-        return searchableItems;
-    }
-    
-    // Perform search and filter results
-    function performSearch(searchTerm) {
-        if (!searchTerm || searchTerm.trim() === '') {
-            resetSearch();
-            return;
-        }
-        
-        const searchIndex = createSearchIndex();
-        const terms = searchTerm.toLowerCase().split(' ').filter(t => t.length > 0);
-        let hasResults = false;
-        
-        // Track which sections have results
-        const sectionsWithResults = {
-            categories: false,
-            tools: false,
-            problems: false
-        };
-        
-        searchIndex.forEach(item => {
-            // Check if all search terms are found in the content
-            const matches = terms.every(term => item.content.includes(term));
-            
-            if (matches) {
-                item.element.style.display = item.originalDisplay;
-                item.element.classList.add('search-match');
-                hasResults = true;
+            // Perform search and filter results
+            function performSearch(searchTerm) {
+                if (!searchTerm || searchTerm.trim() === '') {
+                    resetSearch();
+                    return;
+                }
+                
+                const searchIndex = createSearchIndex();
+                const terms = searchTerm.toLowerCase().split(' ').filter(t => t.length > 0);
+                let hasResults = false;
                 
                 // Track which sections have results
-                if (item.type === 'category') sectionsWithResults.categories = true;
-                if (item.type === 'tool') sectionsWithResults.tools = true;
-                if (item.type === 'problem') sectionsWithResults.problems = true;
+                const sectionsWithResults = {
+                    categories: false,
+                    tools: false,
+                    problems: false
+                };
                 
-                // Highlight matching resources within category cards
-                if (item.type === 'category') {
-                    highlightMatchingResources(item.element, terms);
-                }
-            } else {
-                item.element.style.display = 'none';
-                item.element.classList.remove('search-match');
+                searchIndex.forEach(item => {
+                    // Check if all search terms are found in the content
+                    const matches = terms.every(term => item.content.includes(term));
+                    
+                    if (matches) {
+                        item.element.style.display = item.originalDisplay;
+                        item.element.classList.add('search-match');
+                        hasResults = true;
+                        
+                        // Track which sections have results
+                        if (item.type === 'category') sectionsWithResults.categories = true;
+                        if (item.type === 'tool') sectionsWithResults.tools = true;
+                        if (item.type === 'problem') sectionsWithResults.problems = true;
+                        
+                        // Highlight matching resources within category cards
+                        if (item.type === 'category') {
+                            highlightMatchingResources(item.element, terms);
+                        }
+                    } else {
+                        item.element.style.display = 'none';
+                        item.element.classList.remove('search-match');
+                    }
+                });
+                
+                // Show/hide section headers based on results
+                updateSectionVisibility(sectionsWithResults);
+                
+                // Show search results message
+                showSearchResults(searchTerm, hasResults);
             }
-        });
-        
-        // Show/hide section headers based on results
-        updateSectionVisibility(sectionsWithResults);
-        
-        // Show search results message
-        showSearchResults(searchTerm, hasResults);
-    }
-    
-    // Highlight matching resources within a category card
-    function highlightMatchingResources(categoryCard, searchTerms) {
-        categoryCard.querySelectorAll('.resource-item').forEach(item => {
-            const link = item.querySelector('a');
-            if (link) {
-                const text = link.textContent.toLowerCase();
-                const matches = searchTerms.some(term => text.includes(term));
+            
+            // Highlight matching resources within a category card
+            function highlightMatchingResources(categoryCard, searchTerms) {
+                categoryCard.querySelectorAll('.resource-item').forEach(item => {
+                    const link = item.querySelector('a');
+                    if (link) {
+                        const text = link.textContent.toLowerCase();
+                        const matches = searchTerms.some(term => text.includes(term));
+                        
+                        if (matches) {
+                            item.style.background = 'linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(70, 174, 184, 0.05))';
+                            item.style.borderRadius = '8px';
+                            item.style.padding = '0.25rem';
+                            item.style.marginLeft = '-0.25rem';
+                        } else {
+                            item.style.background = '';
+                            item.style.borderRadius = '';
+                            item.style.padding = '';
+                            item.style.marginLeft = '';
+                        }
+                    }
+                });
+            }
+            
+            // Update section visibility based on search results
+            function updateSectionVisibility(sectionsWithResults) {
+                // Categories section
+                const categoriesSection = document.querySelector('.categories-section');
+                if (categoriesSection) {
+                    categoriesSection.style.display = sectionsWithResults.categories ? 'block' : 'none';
+                }
                 
-                if (matches) {
-                    item.style.background = 'linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(70, 174, 184, 0.05))';
-                    item.style.borderRadius = '8px';
-                    item.style.padding = '0.25rem';
-                    item.style.marginLeft = '-0.25rem';
+                // Tools section
+                const toolsSection = document.querySelector('.tools-section');
+                if (toolsSection) {
+                    toolsSection.style.display = sectionsWithResults.tools ? 'block' : 'none';
+                }
+                
+                // Problems section
+                const problemsSection = document.querySelector('.problems-section');
+                if (problemsSection) {
+                    problemsSection.style.display = sectionsWithResults.problems ? 'block' : 'none';
+                }
+                
+                // Hide featured section during search
+                const featuredSection = document.querySelector('.featured-section');
+                if (featuredSection) {
+                    featuredSection.style.display = 'none';
+                }
+            }
+            
+            // Show search results message
+            function showSearchResults(searchTerm, hasResults) {
+                // Remove existing message if any
+                const existingMessage = document.querySelector('.search-results-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
+                // Create new message
+                const message = document.createElement('div');
+                message.className = 'search-results-message';
+                message.style.cssText = `
+                    padding: 1.5rem;
+                    background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(99, 102, 241, 0.1));
+                    text-align: center;
+                    margin: 2rem auto;
+                    max-width: 800px;
+                    border-radius: 12px;
+                    font-size: 1.1rem;
+                `;
+                
+                if (hasResults) {
+                    const matchCount = document.querySelectorAll('.search-match').length;
+                    message.innerHTML = `
+                        <p style="color: var(--text-primary); margin-bottom: 0.5rem;">
+                            Found <strong>${matchCount}</strong> results for "<strong>${searchTerm}</strong>"
+                        </p>
+                        <button onclick="resetSearch()" style="
+                            background: var(--primary-teal);
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1.5rem;
+                            border-radius: 50px;
+                            cursor: pointer;
+                            font-weight: 600;
+                            margin-top: 0.5rem;
+                        ">Clear Search</button>
+                    `;
                 } else {
+                    message.innerHTML = `
+                        <p style="color: var(--text-primary); margin-bottom: 1rem;">
+                            No results found for "<strong>${searchTerm}</strong>"
+                        </p>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+                            Try different keywords or browse our categories below
+                        </p>
+                        <button onclick="resetSearch()" style="
+                            background: var(--primary-teal);
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1.5rem;
+                            border-radius: 50px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">Clear Search</button>
+                    `;
+                }
+                
+                // Insert message after hero section
+                const heroSection = document.querySelector('.hero');
+                if (heroSection && heroSection.nextSibling) {
+                    heroSection.parentNode.insertBefore(message, heroSection.nextSibling);
+                }
+            }
+            
+            // Reset search and show all content
+            window.resetSearch = function() {
+                const searchInput = document.querySelector('.search-input');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+                
+                // Remove search results message
+                const message = document.querySelector('.search-results-message');
+                if (message) {
+                    message.remove();
+                }
+                
+                // Show all items
+                const searchIndex = createSearchIndex();
+                searchIndex.forEach(item => {
+                    item.element.style.display = item.originalDisplay;
+                    item.element.classList.remove('search-match');
+                });
+                
+                // Clear resource highlighting
+                document.querySelectorAll('.resource-item').forEach(item => {
                     item.style.background = '';
                     item.style.borderRadius = '';
                     item.style.padding = '';
                     item.style.marginLeft = '';
-                }
-            }
-        });
-    }
-    
-    // Update section visibility based on search results
-    function updateSectionVisibility(sectionsWithResults) {
-        // Categories section
-        const categoriesSection = document.querySelector('.categories-section');
-        if (categoriesSection) {
-            categoriesSection.style.display = sectionsWithResults.categories ? 'block' : 'none';
-        }
-        
-        // Tools section
-        const toolsSection = document.querySelector('.tools-section');
-        if (toolsSection) {
-            toolsSection.style.display = sectionsWithResults.tools ? 'block' : 'none';
-        }
-        
-        // Problems section
-        const problemsSection = document.querySelector('.problems-section');
-        if (problemsSection) {
-            problemsSection.style.display = sectionsWithResults.problems ? 'block' : 'none';
-        }
-        
-        // Hide featured section during search
-        const featuredSection = document.querySelector('.featured-section');
-        if (featuredSection) {
-            featuredSection.style.display = 'none';
-        }
-    }
-    
-    // Show search results message
-    function showSearchResults(searchTerm, hasResults) {
-        // Remove existing message if any
-        const existingMessage = document.querySelector('.search-results-message');
-        if (existingMessage) {
-            existingMessage.remove();
-        }
-        
-        // Create new message
-        const message = document.createElement('div');
-        message.className = 'search-results-message';
-        message.style.cssText = `
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(99, 102, 241, 0.1));
-            text-align: center;
-            margin: 2rem auto;
-            max-width: 800px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-        `;
-        
-        if (hasResults) {
-            const matchCount = document.querySelectorAll('.search-match').length;
-            message.innerHTML = `
-                <p style="color: var(--text-primary); margin-bottom: 0.5rem;">
-                    Found <strong>${matchCount}</strong> results for "<strong>${searchTerm}</strong>"
-                </p>
-                <button onclick="resetSearch()" style="
-                    background: var(--primary-teal);
-                    color: white;
-                    border: none;
-                    padding: 0.5rem 1.5rem;
-                    border-radius: 50px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    margin-top: 0.5rem;
-                ">Clear Search</button>
-            `;
-        } else {
-            message.innerHTML = `
-                <p style="color: var(--text-primary); margin-bottom: 1rem;">
-                    No results found for "<strong>${searchTerm}</strong>"
-                </p>
-                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
-                    Try different keywords or browse our categories below
-                </p>
-                <button onclick="resetSearch()" style="
-                    background: var(--primary-teal);
-                    color: white;
-                    border: none;
-                    padding: 0.5rem 1.5rem;
-                    border-radius: 50px;
-                    cursor: pointer;
-                    font-weight: 600;
-                ">Clear Search</button>
-            `;
-        }
-        
-        // Insert message after hero section
-        const heroSection = document.querySelector('.hero');
-        if (heroSection && heroSection.nextSibling) {
-            heroSection.parentNode.insertBefore(message, heroSection.nextSibling);
-        }
-    }
-    
-    // Reset search and show all content
-    window.resetSearch = function() {
-        const searchInput = document.querySelector('.search-input');
-        if (searchInput) {
-            searchInput.value = '';
-        }
-        
-        // Remove search results message
-        const message = document.querySelector('.search-results-message');
-        if (message) {
-            message.remove();
-        }
-        
-        // Show all items
-        const searchIndex = createSearchIndex();
-        searchIndex.forEach(item => {
-            item.element.style.display = item.originalDisplay;
-            item.element.classList.remove('search-match');
-        });
-        
-        // Clear resource highlighting
-        document.querySelectorAll('.resource-item').forEach(item => {
-            item.style.background = '';
-            item.style.borderRadius = '';
-            item.style.padding = '';
-            item.style.marginLeft = '';
-        });
-        
-        // Show all sections
-        document.querySelectorAll('.categories-section, .tools-section, .problems-section, .featured-section').forEach(section => {
-            section.style.display = 'block';
-        });
-    }
-    
-    // Handle search button click
-    if (searchBtn) {
-        searchBtn.addEventListener('click', function() {
-            const searchTerm = searchInput.value;
-            performSearch(searchTerm);
-        });
-    }
-    
-    // Handle Enter key in search input
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performSearch(this.value);
-            }
-        });
-        
-        // Live search as user types (with debouncing)
-        let searchTimeout;
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            const searchTerm = this.value;
-            
-            // If search is empty, reset immediately
-            if (!searchTerm || searchTerm.trim() === '') {
-                resetSearch();
-                return;
+                });
+                
+                // Show all sections
+                document.querySelectorAll('.categories-section, .tools-section, .problems-section, .featured-section').forEach(section => {
+                    section.style.display = 'block';
+                });
             }
             
-            // Otherwise, debounce the search
-            searchTimeout = setTimeout(() => {
-                performSearch(searchTerm);
-            }, 300);
-        });
-    }
-    
-    // Add smooth scroll animation for search results
-    function scrollToResults() {
-        const firstMatch = document.querySelector('.search-match');
-        if (firstMatch) {
-            const yOffset = -100; // Account for fixed header
-            const y = firstMatch.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-    }
-    
-    // Enhanced search with relevance scoring (optional advanced feature)
-    function calculateRelevance(content, searchTerms) {
-        let score = 0;
-        searchTerms.forEach(term => {
-            // Count occurrences
-            const regex = new RegExp(term, 'gi');
-            const matches = content.match(regex);
-            if (matches) {
-                score += matches.length;
+            // Handle search button click
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function() {
+                    const searchTerm = searchInput.value;
+                    performSearch(searchTerm);
+                });
             }
             
-            // Bonus for title matches
-            if (content.substring(0, 50).includes(term)) {
-                score += 2;
+            // Handle Enter key in search input
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch(this.value);
+                    }
+                });
+                
+                // Live search as user types (with debouncing)
+                let searchTimeout;
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const searchTerm = this.value;
+                    
+                    // If search is empty, reset immediately
+                    if (!searchTerm || searchTerm.trim() === '') {
+                        resetSearch();
+                        return;
+                    }
+                    
+                    // Otherwise, debounce the search
+                    searchTimeout = setTimeout(() => {
+                        performSearch(searchTerm);
+                    }, 300);
+                });
             }
         });
-        return score;
-    }
-});
-</script>
 
-<!-- Add these styles to your existing CSS -->
-<style>
-/* Search Enhancement Styles */
-.search-match {
-    animation: highlightFade 0.5s ease;
-    position: relative;
-}
-
-@keyframes highlightFade {
-    0% {
-        background: linear-gradient(135deg, 
-            rgba(70, 174, 184, 0.2), 
-            rgba(70, 174, 184, 0.1));
-    }
-    100% {
-        background: transparent;
-    }
-}
-
-.search-results-message {
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Highlight effect for matching items */
-.search-match::before {
-    content: '✓';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--success);
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 1;
-    animation: popIn 0.3s ease;
-}
-
-@keyframes popIn {
-    0% {
-        transform: scale(0);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Search input focus enhancement */
-.search-input:focus {
-    transform: scale(1.02);
-}
-
-/* No results state */
-.no-results {
-    text-align: center;
-    padding: 3rem;
-    color: var(--text-secondary);
-}
-
-.no-results h3 {
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-}
-</style>
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
