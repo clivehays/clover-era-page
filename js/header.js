@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                     <div class="nav-dropdown-menu">
                         <a href="/what-is-employee-engagement/" class="featured-link">📚 What Is Employee Engagement?</a>
-                        <a href="https://www.cloverera.com/engagement-strategies/index.html">Engagement Strategies</a>
+                        <a href="https://www.cloverera.com/how-to-measure-employee-engagement/index.html">How to Measure</a>
                         <a href="/measure-employee-engagement/">How to Measure</a>
                         <a href="/engagement-best-practices/">Best Practices</a>
                         <a href="/calculator/index.html">ROI of Engagement</a>
