@@ -9,11 +9,21 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(favicon);
     }
 
-    // Remove any existing navigation that might conflict
+    // Remove ALL existing navigation elements that might conflict
     const existingNavs = document.querySelectorAll('nav');
     existingNavs.forEach(nav => {
+        // Remove any nav that isn't our main-nav or breadcrumb-nav
         if (!nav.classList.contains('main-nav') && !nav.classList.contains('breadcrumb-nav')) {
             nav.remove();
+        }
+    });
+    
+    // Also remove any header elements that contain navigation
+    const headers = document.querySelectorAll('header');
+    headers.forEach(header => {
+        // Check if header contains nav elements or nav-like classes
+        if (header.querySelector('nav') || header.querySelector('.nav-links') || header.querySelector('.navigation')) {
+            header.remove();
         }
     });
 
@@ -395,14 +405,24 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
 
     // Determine if we need breadcrumbs (not on home page)
-    const currentPath = window.location.pathname;
-    const currentHost = window.location.hostname;
-    const isHomePage = currentPath === '/' || currentPath === '/index.html' || currentPath === '' || currentPath === '/index.htm';
+    let currentPath = window.location.pathname;
+    
+    // Normalize path - remove index.html and trailing slashes
+    currentPath = currentPath.replace('/index.html', '').replace('/index.htm', '');
+    if (currentPath.endsWith('/') && currentPath.length > 1) {
+        currentPath = currentPath.slice(0, -1);
+    }
+    
+    const isHomePage = currentPath === '' || currentPath === '/';
     
     // Add class to body if we have breadcrumbs
     if (!isHomePage) {
         document.body.classList.add('has-breadcrumb');
     }
+    
+    // Debug logging
+    console.log('Current path:', currentPath);
+    console.log('Is home page:', isHomePage);
     
     let breadcrumbNav = null;
     
