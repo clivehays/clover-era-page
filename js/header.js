@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             border-bottom: none !important;
             transition: all 0.3s ease;
+            height: 70px;
         }
 
         nav.main-nav.scrolled {
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            min-height: 70px;
+            height: 100%;
         }
 
         /* Trust Bar Styles */
@@ -83,12 +84,15 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #6B7280;
             border-top: 1px solid #E5E9ED;
             border-bottom: 1px solid #E5E9ED;
-            display: flex;
+            display: flex !important;
             justify-content: center;
             align-items: center;
             gap: 1.5rem;
             flex-wrap: wrap;
-            z-index: 998;
+            z-index: 999;
+            visibility: visible !important;
+            opacity: 1 !important;
+            height: 40px;
         }
 
         .trust-bar span {
@@ -656,6 +660,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Insert trust bar after main nav as a separate element
     document.body.insertBefore(trustBar, nav.nextSibling);
+    
+    // Force trust bar to be visible
+    trustBar.style.display = 'flex';
+    trustBar.style.visibility = 'visible';
+    trustBar.style.opacity = '1';
+    
+    console.log('Trust bar inserted:', trustBar);
     
     // Insert breadcrumb after trust bar if it exists
     if (breadcrumbNav) {
