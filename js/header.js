@@ -1,4 +1,4 @@
-// header.js - Complete version with breadcrumb fix and favicon
+// header.js - Complete version with breadcrumb creation
 document.addEventListener('DOMContentLoaded', function() {
     // Add favicon if not present
     if (!document.querySelector('link[rel="icon"]')) {
@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
         favicon.href = '/images/Clover-era-new-logo-1.png';
         document.head.appendChild(favicon);
     }
+
+    // Remove any existing navigation that might conflict
+    const existingNavs = document.querySelectorAll('nav');
+    existingNavs.forEach(nav => {
+        if (!nav.classList.contains('main-nav') && !nav.classList.contains('breadcrumb-nav')) {
+            nav.remove();
+        }
+    });
 
     // Add the navigation styles
     const styleElement = document.createElement('style');
@@ -178,27 +186,64 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #FFFFFF !important;
         }
 
-        /* Breadcrumb positioning fix */
-        .breadcrumb-container,
-        .breadcrumbs,
-        nav.breadcrumb,
-        .page-breadcrumb {
-            margin-top: 70px !important;
-            position: relative !important;
-            z-index: 100;
-            display: block !important;
-            visibility: visible !important;
+        /* Breadcrumb Styles */
+        .breadcrumb-nav {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            background: rgba(250, 251, 252, 0.95);
+            border-bottom: 1px solid #E5E9ED;
+            z-index: 999;
         }
 
-        /* Ensure body content starts below fixed nav */
+        .breadcrumb-nav ol {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.9rem;
+            max-width: 1400px;
+        }
+
+        .breadcrumb-nav li {
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breadcrumb-nav li:not(:last-child)::after {
+            content: '/';
+            color: #E5E9ED;
+            margin-left: 0.5rem;
+        }
+
+        .breadcrumb-nav a {
+            color: #46AEB8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .breadcrumb-nav a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-nav li:last-child {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        /* Adjust body and hero for both navs */
         body {
-            padding-top: 70px;
+            padding-top: 120px !important; /* Account for main nav + breadcrumb */
         }
 
-        /* If there's a hero section right after nav, adjust it */
-        .hero-section,
-        .page-hero,
-        section:first-of-type {
+        .hero-image-container {
             margin-top: 0 !important;
         }
 
@@ -220,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding: 2rem;
                 border-bottom: 2px solid #46AEB8;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                z-index: 999;
+                z-index: 998;
                 margin-left: 0;
                 max-height: calc(100vh - 70px);
                 overflow-y: auto;
@@ -257,17 +302,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 text-align: center;
             }
 
-            .breadcrumb-container,
-            .breadcrumbs,
-            nav.breadcrumb,
-            .page-breadcrumb {
-                margin-top: 70px !important;
+            .breadcrumb-nav {
+                top: 70px;
+                padding: 0.75rem 1rem;
+            }
+
+            .breadcrumb-nav ol {
+                font-size: 0.8rem;
+            }
+
+            body {
+                padding-top: 110px !important;
             }
         }
     `;
     document.head.appendChild(styleElement);
 
-    // Create the navigation element
+    // Create the main navigation element
     const nav = document.createElement('nav');
     nav.classList.add('main-nav');
     nav.setAttribute('aria-label', 'Main navigation');
@@ -304,48 +355,46 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
 
-    // Insert navigation at the beginning of body
+    // Create breadcrumb navigation
+    const breadcrumbNav = document.createElement('nav');
+    breadcrumbNav.classList.add('breadcrumb-nav');
+    breadcrumbNav.setAttribute('aria-label', 'Breadcrumb navigation');
+    
+    // Determine breadcrumb based on current page
+    const currentPath = window.location.pathname;
+    let breadcrumbHTML = '<ol>';
+    
+    // Always start with Home
+    breadcrumbHTML += '<li><a href="/">Home</a></li>';
+    
+    // Add page-specific breadcrumbs based on URL
+    if (currentPath.includes('/burnout')) {
+        breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+        breadcrumbHTML += '<li>Employee Burnout</li>';
+    } else if (currentPath.includes('/stress')) {
+        breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+        breadcrumbHTML += '<li>Employee Stress</li>';
+    } else if (currentPath.includes('/anxiety')) {
+        breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
+        breadcrumbHTML += '<li>Workplace Anxiety</li>';
+    } else if (currentPath.includes('/assessment')) {
+        breadcrumbHTML += '<li>Assessment</li>';
+    } else if (currentPath.includes('/calculator')) {
+        breadcrumbHTML += '<li>Calculator</li>';
+    } else if (currentPath.includes('/pilot') || currentPath.includes('/30-day')) {
+        breadcrumbHTML += '<li>Free Pilot</li>';
+    } else if (currentPath.includes('/resources')) {
+        breadcrumbHTML += '<li>Resources</li>';
+    } else if (currentPath.includes('/how-it-works')) {
+        breadcrumbHTML += '<li>How It Works</li>';
+    }
+    
+    breadcrumbHTML += '</ol>';
+    breadcrumbNav.innerHTML = breadcrumbHTML;
+
+    // Insert both navigations at the beginning of body
     document.body.insertBefore(nav, document.body.firstChild);
-
-    // Find and reposition any existing breadcrumb navigation
-    // Look for common breadcrumb selectors
-    const breadcrumbSelectors = [
-        '.breadcrumb',
-        '.breadcrumbs', 
-        'nav.breadcrumb',
-        '.breadcrumb-container',
-        '.page-breadcrumb',
-        'nav:not(.main-nav)',
-        '[class*="breadcrumb"]'
-    ];
-
-    breadcrumbSelectors.forEach(selector => {
-        const breadcrumbs = document.querySelectorAll(selector);
-        breadcrumbs.forEach(breadcrumb => {
-            if (breadcrumb && !breadcrumb.classList.contains('main-nav')) {
-                breadcrumb.style.marginTop = '70px';
-                breadcrumb.style.position = 'relative';
-                breadcrumb.style.display = 'block';
-                breadcrumb.style.visibility = 'visible';
-                breadcrumb.style.zIndex = '100';
-                
-                // If the breadcrumb was hidden, make sure it's visible
-                const computedStyle = window.getComputedStyle(breadcrumb);
-                if (computedStyle.display === 'none') {
-                    breadcrumb.style.display = 'block';
-                }
-            }
-        });
-    });
-
-    // Also check if breadcrumbs are in a header element
-    const headers = document.querySelectorAll('header');
-    headers.forEach(header => {
-        if (header.querySelector('[class*="breadcrumb"]')) {
-            header.style.marginTop = '70px';
-            header.style.position = 'relative';
-        }
-    });
+    document.body.insertBefore(breadcrumbNav, nav.nextSibling);
 
     // Initialize mobile menu functionality
     const mobileToggle = document.getElementById('mobileToggle');
@@ -358,6 +407,13 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileToggle.classList.toggle('active');
             const isExpanded = navLinks.classList.contains('active');
             mobileToggle.setAttribute('aria-expanded', isExpanded);
+            
+            // Adjust breadcrumb position when mobile menu is open
+            if (isExpanded && window.innerWidth <= 768) {
+                breadcrumbNav.style.display = 'none';
+            } else {
+                breadcrumbNav.style.display = 'block';
+            }
         });
 
         // Close menu when clicking outside
@@ -366,6 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 navLinks.classList.remove('active');
                 mobileToggle.classList.remove('active');
                 mobileToggle.setAttribute('aria-expanded', 'false');
+                breadcrumbNav.style.display = 'block';
             }
         });
 
@@ -375,6 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 navLinks.classList.remove('active');
                 mobileToggle.classList.remove('active');
                 mobileToggle.setAttribute('aria-expanded', 'false');
+                breadcrumbNav.style.display = 'block';
             });
         });
     }
