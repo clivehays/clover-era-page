@@ -70,17 +70,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* Trust Bar Styles */
         .trust-bar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            width: 100%;
             background: #F5F7FA;
             padding: 0.5rem 1rem;
             text-align: center;
             font-size: 0.85rem;
             color: #6B7280;
             border-top: 1px solid #E5E9ED;
+            border-bottom: 1px solid #E5E9ED;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 1.5rem;
             flex-wrap: wrap;
+            z-index: 998;
         }
 
         .trust-bar span {
@@ -251,14 +258,14 @@ document.addEventListener('DOMContentLoaded', function() {
         /* Breadcrumb Styles */
         .breadcrumb-nav {
             position: fixed !important;
-            top: 70px !important;
+            top: 110px !important;
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
             padding: 1rem 2rem !important;
             background: rgba(250, 251, 252, 0.95) !important;
             border-bottom: 1px solid #E5E9ED !important;
-            z-index: 999 !important;
+            z-index: 997 !important;
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
@@ -308,20 +315,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* Adjust body and hero for navigation */
         body {
-            padding-top: 70px !important;
+            padding-top: 110px !important; /* Nav + Trust bar */
             margin-top: 0 !important;
         }
         
         body.has-breadcrumb {
-            padding-top: 120px !important;
-        }
-
-        body.has-trust-bar {
-            padding-top: 110px !important;
-        }
-
-        body.has-breadcrumb.has-trust-bar {
-            padding-top: 160px !important;
+            padding-top: 160px !important; /* Nav + Trust bar + Breadcrumb */
         }
 
         /* Remove top margin only from the immediate container after nav */
@@ -404,6 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             .trust-bar {
+                top: 70px; /* Position below nav on mobile */
                 padding: 0.4rem 0.5rem;
                 font-size: 0.7rem;
                 gap: 0.5rem;
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             .breadcrumb-nav {
-                top: 70px;
+                top: 100px !important; /* Below nav + trust bar on mobile */
                 padding: 0.75rem 1rem;
             }
 
@@ -431,19 +431,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             body {
-                padding-top: 70px !important;
+                padding-top: 100px !important; /* Nav + Trust bar on mobile */
             }
             
             body.has-breadcrumb {
-                padding-top: 110px !important;
-            }
-
-            body.has-trust-bar {
-                padding-top: 100px !important;
-            }
-
-            body.has-breadcrumb.has-trust-bar {
-                padding-top: 140px !important;
+                padding-top: 140px !important; /* Nav + Trust bar + Breadcrumb */
             }
             
             /* Remove top margin from immediate container after nav on mobile */
@@ -469,11 +461,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 justify-content: center;
             }
 
-            body.has-trust-bar {
-                padding-top: 120px !important;
+            body {
+                padding-top: 120px !important; /* More space for vertical trust bar */
             }
 
-            body.has-breadcrumb.has-trust-bar {
+            body.has-breadcrumb {
                 padding-top: 160px !important;
             }
         }
@@ -549,7 +541,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const isHomePage = currentPath === '' || currentPath === '/';
     
     // Add classes to body for proper spacing
-    document.body.classList.add('has-trust-bar');
     if (!isHomePage) {
         document.body.classList.add('has-breadcrumb');
     }
@@ -685,9 +676,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Adjust body padding/margin and first content element
+    const trustBarHeight = 40; // Approximate height of trust bar
+    const navHeight = 70;
+    const breadcrumbHeight = 50;
+    
     if (!isHomePage) {
         // For pages with breadcrumbs and trust bar
-        document.body.style.paddingTop = '160px';
+        const totalHeight = navHeight + trustBarHeight + breadcrumbHeight;
+        document.body.style.paddingTop = totalHeight + 'px';
         document.body.style.marginTop = '0';
         
         // Find the first major content section and adjust it
@@ -698,7 +694,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     } else {
         // For home page with trust bar
-        document.body.style.paddingTop = '110px';
+        const totalHeight = navHeight + trustBarHeight;
+        document.body.style.paddingTop = totalHeight + 'px';
         document.body.style.marginTop = '0';
     }
 
