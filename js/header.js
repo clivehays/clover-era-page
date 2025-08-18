@@ -249,25 +249,26 @@ document.addEventListener('DOMContentLoaded', function() {
             padding-top: 120px !important; /* Main nav + breadcrumb on other pages */
         }
 
-        /* Remove any top margin/padding from first elements */
-        body > *:first-child:not(nav),
-        body > nav + *:not(nav),
-        body > nav + nav + *,
-        .hero-image-container,
-        .hero,
-        section:first-of-type,
-        main > *:first-child {
+        /* Remove top margin only from the immediate container after nav */
+        body > div:first-of-type,
+        body > section:first-of-type,
+        body > main:first-of-type,
+        body > nav.main-nav + *,
+        body > nav.main-nav + nav + * {
             margin-top: 0 !important;
-            padding-top: 0 !important;
         }
         
-        /* Ensure clean edge-to-edge hero images */
+        /* Specifically target hero image containers to sit flush */
         .hero-image-container {
             margin-top: 0 !important;
             border-top: none !important;
         }
         
-        /* Remove any borders that might appear */
+        /* Remove any borders between nav and content */
+        nav.main-nav {
+            border-bottom: none !important;
+        }
+        
         nav.main-nav + * {
             border-top: none !important;
         }
@@ -344,13 +345,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding-top: 110px !important;
             }
             
-            /* Ensure clean layout on mobile */
-            body > *:first-child:not(nav),
-            body > nav + *:not(nav),
-            body > nav + nav + *,
-            .hero-image-container,
-            .hero,
-            section:first-of-type {
+            /* Remove top margin from immediate container after nav on mobile */
+            body > div:first-of-type,
+            body > section:first-of-type,
+            body > nav.main-nav + * {
                 margin-top: 0 !important;
             }
         }
