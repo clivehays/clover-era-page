@@ -41,31 +41,13 @@
             color: var(--text-primary);
             background: var(--white);
             overflow-x: hidden;
-
-        }
-
-        .logo {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo img {
-            height: 35px;
-            width: auto;
-            display: block;
+            padding-top: 120px; /* Space for header + breadcrumb */
         }
 
         /* Assessment Container */
         .assessment-container {
             max-width: 900px;
-            margin: 100px auto 4rem;
+            margin: 2rem auto 4rem;
             padding: 0 2rem;
         }
 
@@ -648,9 +630,13 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            body {
+                padding-top: 110px; /* Adjusted for mobile header */
+            }
+
             .assessment-container {
                 padding: 0 1rem;
-                margin-top: 80px;
+                margin-top: 1rem;
             }
 
             .question-section {
@@ -702,41 +688,18 @@
             .btn-primary, .btn-secondary {
                 width: 100%;
             }
-
-            .mobile-menu-toggle {
-                display: flex !important;
-            }
-
-            .nav-links {
-                display: none;
-                position: fixed;
-                top: 70px;
-                left: 0;
-                right: 0;
-                width: 100%;
-                background: var(--white);
-                flex-direction: column;
-                padding: 2rem;
-                border-bottom: 2px solid var(--primary-teal);
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                z-index: 999;
-                margin-left: 0;
-            }
-
-            .nav-links.active {
-                display: flex !important;
-            }
         }
     </style>
 </head>
 <body>
-<script src="/js/header.js"></script>
+    <!-- The header will be inserted by header.js -->
+    <script src="/js/header.js"></script>
 
     <!-- Assessment Container -->
     <div class="assessment-container">
         <!-- Progress Bar -->
         <div class="progress-container">
-            <div class="progress-bar" id="progressBar" style="width: 8%"></div>
+            <div class="progress-bar" id="progressBar" style="width: 16.67%"></div>
         </div>
         <div class="progress-text" id="progressText">Question 1 of 6</div>
 
@@ -964,8 +927,50 @@
             </div>
         </div>
 
-        <!-- Additional Questions 6-12 would follow the same pattern -->
-        <!-- For brevity, I'll skip to the contact form -->
+        <!-- Question 6: Budget Priority -->
+        <div class="question-section" data-question="6">
+            <div class="question-header">
+                <div class="question-number">Question 6 of 6</div>
+                <h2 class="question-title">How much of a priority is employee engagement in your budget?</h2>
+                <p class="question-subtitle">This helps us recommend appropriate solutions</p>
+            </div>
+            
+            <div class="answer-options">
+                <div class="answer-option" data-value="high">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">High Priority</div>
+                        <div class="answer-description">Significant budget allocated</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="medium">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Medium Priority</div>
+                        <div class="answer-description">Some budget available</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="low">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Low Priority</div>
+                        <div class="answer-description">Limited budget</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="exploring">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Exploring Options</div>
+                        <div class="answer-description">Evaluating potential investment</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-back" onclick="previousQuestion()">← Back</button>
+                <button class="btn btn-next" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
 
         <!-- Contact Form -->
         <div class="contact-section" data-question="contact">
@@ -1052,7 +1057,7 @@
                 <h3>Ready to Transform Your Workplace?</h3>
                 <p>Clover Era can reduce your turnover by 67% and boost engagement by 47% in just 30 days</p>
                 <div class="cta-buttons">
-                    <a href="/pilot/index.html" class="btn-primary">Start Free 30-Day Trial</a>
+                    <a href="/30-day-free-pilot/index.html" class="btn-primary">Start Free 30-Day Trial</a>
                     <a href="/calculator/index.html" class="btn-secondary">See Full ROI Analysis</a>
                 </div>
             </div>
@@ -1060,18 +1065,9 @@
     </div>
 
     <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileToggle?.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-        });
-
         // Assessment Logic
         let currentQuestion = 1;
-        const totalQuestions = 12;
+        const totalQuestions = 6;
         const answers = {};
 
         // Handle single-select answers
@@ -1145,12 +1141,12 @@
             
             currentQuestion++;
             
-            // For demo, skip questions 6-11 and go straight to contact form
-            if (currentQuestion === 6) {
+            if (currentQuestion === 7) {
+                // Show contact form after question 6
                 document.querySelector('.contact-section').classList.add('active');
                 document.getElementById('progressBar').style.width = '100%';
                 document.getElementById('progressText').textContent = 'Almost done!';
-            } else if (currentQuestion <= 5) {
+            } else if (currentQuestion <= 6) {
                 // Show next question
                 document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
                 updateProgress();
@@ -1161,7 +1157,7 @@
             // Handle going back from contact form
             if (document.querySelector('.contact-section.active')) {
                 document.querySelector('.contact-section').classList.remove('active');
-                currentQuestion = 5;
+                currentQuestion = 6;
                 document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
                 updateProgress();
                 return;
