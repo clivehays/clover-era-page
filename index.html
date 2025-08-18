@@ -1,119 +1,145 @@
-// header.js - CEO-optimized version with demo focus and trust indicators
-document.addEventListener('DOMContentLoaded', function() {
-    // Add favicon if not present
-    if (!document.querySelector('link[rel="icon"]')) {
-        const favicon = document.createElement('link');
-        favicon.rel = 'icon';
-        favicon.type = 'image/png';
-        favicon.href = '/images/Clover-era-new-logo-1.png';
-        document.head.appendChild(favicon);
-    }
-
-    // Remove ALL existing navigation elements that might conflict
-    const existingNavs = document.querySelectorAll('nav');
-    existingNavs.forEach(nav => {
-        // Remove any nav that isn't our main-nav or breadcrumb-nav
-        if (!nav.classList.contains('main-nav') && !nav.classList.contains('breadcrumb-nav')) {
-            console.log('Removing existing nav:', nav);
-            nav.remove();
-        }
-    });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Engagement Platform | Reduce Burnout 67% | Save $4.2M Annually | Clover Era</title>
+    <meta name="description" content="Stop employee burnout and reduce attrition by 67% in 30 days with neuroscience-powered engagement solutions. Free assessment shows you're losing $4.2M annually. Start free 30-day trial.">
     
-    // Also remove any header elements that contain navigation
-    const headers = document.querySelectorAll('header');
-    headers.forEach(header => {
-        // Check if header contains nav elements or nav-like classes
-        if (header.querySelector('nav') || header.querySelector('.nav-links') || header.querySelector('.navigation')) {
-            console.log('Removing header with nav:', header);
-            header.remove();
-        }
-    });
+    <!-- Enhanced SEO Meta Tags -->
+    <meta name="keywords" content="employee engagement platform, employee burnout solutions, workplace stress management, employee retention software, reduce employee attrition, employee wellbeing platform, workplace mental health, employee engagement software, burnout prevention, retention crisis solutions, workplace anxiety help, toxic management solutions, hybrid work engagement, employee productivity software, organizational culture platform">
+    <meta name="author" content="Clover Era">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="category" content="Business Software">
+    <link rel="canonical" href="https://www.cloverera.com/">
+    <link rel="alternate" hreflang="en" href="https://www.cloverera.com/">
     
-    // Remove any existing breadcrumb sections that aren't ours
-    const existingBreadcrumbs = document.querySelectorAll('.breadcrumb');
-    existingBreadcrumbs.forEach(bc => {
-        if (!bc.classList.contains('breadcrumb-nav')) {
-            console.log('Removing existing breadcrumb:', bc);
-            bc.remove();
-        }
+    <!-- Open Graph Enhanced Tags -->
+    <meta property="og:title" content="Stop Employee Burnout & Save $4.2M Annually | Clover Era">
+    <meta property="og:description" content="73% of employees are burning out. Our neuroscience-powered platform reduces attrition by 67% in 30 days. Calculate your losses and start free trial.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.cloverera.com">
+    <meta property="og:image" content="https://www.cloverera.com/Employee-Engagement-Active-Management.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Clover Era">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Stop Employee Burnout & Save $4.2M | Clover Era">
+    <meta name="twitter:description" content="Neuroscience-powered platform reduces employee attrition by 67%. Free 30-day trial.">
+    <meta name="twitter:image" content="https://www.cloverera.com/Active-Management-of-Employee-Engagement.webp">
+    <meta name="twitter:site" content="@cloverera">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Clover-era-new-logo-1.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/Clover-era-new-logo-1.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/Clover-era-new-logo-1.png">
+    <link rel="shortcut icon" href="/images/Clover-era-new-logo-1.png">
+    <meta name="theme-color" content="#46AEB8">
+    
+    <!-- Cookie Consent by TermsFeed -->
+    <script type="text/javascript" src="https://www.termsfeed.com/public/cookie-consent/4.2.0/cookie-consent.js" charset="UTF-8"></script>
+    <script type="text/javascript" charset="UTF-8">
+    document.addEventListener('DOMContentLoaded', function () {
+        cookieconsent.run({
+            "notice_banner_type": "headline",
+            "consent_type": "express",
+            "palette": "light",
+            "language": "en",
+            "page_load_consent_levels": ["strictly-necessary"],
+            "notice_banner_reject_button_hide": false,
+            "preferences_center_close_button_hide": false,
+            "page_refresh_confirmation_buttons": false,
+            "website_name": "Clover ERA",
+            "website_privacy_policy_url": "https://www.cloverera.com/privacy-policy/"
+        });
     });
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    // Add the navigation styles
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-        /* Navigation Styles */
-        nav.main-nav {
+        :root {
+            /* Solid colors only */
+            --primary-teal: #46AEB8;
+            --coral: #FF6B6B;
+            
+            /* Neutral colors */
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F5F7FA;
+            --medium-gray: #E5E9ED;
+            --dark-gray: #6B7280;
+            --charcoal: #1F2937;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            
+            /* Functional colors */
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --purple: #8B5CF6;
+            --indigo: #6366F1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Skip to Content (Accessibility) */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-teal);
+            color: var(--white);
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-to-content:focus {
+            top: 0;
+        }
+
+        /* Navigation */
+        nav {
             position: fixed;
             top: 0;
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             z-index: 1000;
+            padding: 1rem 0;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border-bottom: none !important;
-            transition: all 0.3s ease;
-        }
-
-        nav.main-nav.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0.75rem 2rem;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            min-height: 70px;
-        }
-
-        /* Trust Bar Styles */
-        .trust-bar {
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            width: 100%;
-            background: #F5F7FA;
-            padding: 0.5rem 1rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #6B7280;
-            border-top: 1px solid #E5E9ED;
-            border-bottom: 1px solid #E5E9ED;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            z-index: 998;
-        }
-
-        .trust-bar span {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            white-space: nowrap;
-        }
-
-        .trust-bar strong {
-            color: #46AEB8;
-            font-weight: 600;
-        }
-
-        .trust-bar img {
-            width: 16px;
-            height: 16px;
-            vertical-align: middle;
-            display: inline-block;
         }
 
         .logo {
             font-size: 1.75rem;
             font-weight: 700;
-            color: #46AEB8;
+            color: var(--primary-teal);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             text-decoration: none;
@@ -128,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             display: block;
         }
 
+        /* Hamburger Menu Button */
         .mobile-menu-toggle {
             display: none;
             flex-direction: column;
@@ -145,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
             display: block;
             width: 100%;
             height: 3px;
-            background: #46AEB8;
+            background: var(--primary-teal);
             border-radius: 2px;
             transition: all 0.3s ease;
         }
@@ -171,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         .nav-links a {
             text-decoration: none;
-            color: #111827;
+            color: var(--text-primary);
             font-size: 0.9rem;
             font-weight: 500;
             text-transform: uppercase;
@@ -180,9 +207,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         .nav-links a:hover {
-            color: #46AEB8;
+            color: var(--primary-teal);
         }
 
+        /* New dropdown for Resources */
         .nav-dropdown {
             position: relative;
         }
@@ -198,8 +226,8 @@ document.addEventListener('DOMContentLoaded', function() {
             position: absolute;
             top: 100%;
             left: 0;
-            background: #FFFFFF;
-            border: 1px solid #E5E9ED;
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
             border-radius: 10px;
             padding: 1rem 0;
             min-width: 250px;
@@ -220,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .nav-dropdown-menu a {
             display: block;
             padding: 0.75rem 1.5rem;
-            color: #111827;
+            color: var(--text-primary);
             text-decoration: none;
             transition: all 0.3s;
             font-size: 0.9rem;
@@ -228,20 +256,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         .nav-dropdown-menu a:hover {
-            background: #F5F7FA;
-            color: #46AEB8;
+            background: var(--light-gray);
+            color: var(--primary-teal);
         }
 
         .nav-dropdown-menu .featured-link {
-            border-bottom: 1px solid #E5E9ED;
+            border-bottom: 1px solid var(--medium-gray);
             margin-bottom: 0.5rem;
             padding-bottom: 1rem;
             font-weight: 600;
         }
 
         .nav-cta {
-            background: #46AEB8;
-            color: #FFFFFF !important;
+            background: var(--primary-teal);
+            color: var(--white) !important;
             padding: 0.75rem 2rem;
             border-radius: 50px;
             text-decoration: none;
@@ -253,103 +281,758 @@ document.addEventListener('DOMContentLoaded', function() {
         .nav-cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 25px rgba(70, 174, 184, 0.4);
-            color: #FFFFFF !important;
+            color: var(--white) !important;
         }
 
-        /* Breadcrumb Styles */
-        .breadcrumb-nav {
-            position: fixed !important;
-            top: 110px !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            padding: 1rem 2rem !important;
-            background: rgba(250, 251, 252, 0.95) !important;
-            border-bottom: 1px solid #E5E9ED !important;
-            z-index: 997 !important;
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            margin: 0 !important;
-            box-sizing: border-box !important;
-        }
-
-        .breadcrumb-nav ol {
-            list-style: none !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-            margin: 0 auto !important;
-            padding: 0 !important;
-            font-size: 0.9rem !important;
-            max-width: 1400px !important;
-        }
-
-        .breadcrumb-nav li {
-            color: #6B7280;
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 6rem 2rem;
+            background: url('/Employee-Engagement-Active-Management.webp') center 35%/cover no-repeat;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
         }
 
-        .breadcrumb-nav li:not(:last-child)::after {
-            content: '/';
-            color: #E5E9ED;
-            margin-left: 0.5rem;
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInScale 0.8s ease;
         }
 
-        .breadcrumb-nav a {
-            color: #46AEB8;
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .hero-badge {
+            background: var(--primary-teal);
+            color: var(--white);
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 15px rgba(70, 174, 184, 0.4);
+            backdrop-filter: blur(10px);
+            background: rgba(70, 174, 184, 0.95);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: var(--white);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 .highlight {
+            color: #7FE5DB;
+            text-shadow: 0 0 20px rgba(127, 229, 219, 0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
             text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--coral);
+            padding: 1.2rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--coral);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+            border-color: var(--white);
+        }
+
+        /* Quick Stats Bar */
+        .stats-bar {
+            background: var(--white);
+            padding: 4rem 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-item .tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .stat-item:hover .tooltip {
+            opacity: 0.95;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        /* New Engagement Definition CTA */
+        .engagement-cta-bar {
+            background: linear-gradient(135deg, 
+                rgba(99, 102, 241, 0.08), 
+                rgba(70, 174, 184, 0.08));
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .engagement-cta-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .engagement-cta-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .engagement-cta-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-learn-more {
+            background: var(--indigo);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-learn-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Problem Identifier Section */
+        .problems-section {
+            padding: 6rem 2rem;
+            background: var(--light-gray);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section-header h2 .urgent {
+            color: var(--primary-teal);
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+        }
+
+        .problems-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .problem-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.15);
+        }
+
+        .problem-card.urgent::before {
+            content: 'HIGH PRIORITY';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-teal);
+            color: var(--white);
+            padding: 0.3rem 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            border-radius: 50px;
+        }
+
+        .problem-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.1), 
+                rgba(255, 107, 107, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .problem-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .problem-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .problem-stat {
+            color: var(--primary-teal);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .problem-cta {
+            color: var(--primary-teal);
+            margin-top: 1rem;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .problem-card:hover .problem-cta {
+            transform: translateX(5px);
+        }
+
+        /* ROI Calculator Section */
+        .calculator-section {
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.08), 
+                rgba(255, 107, 107, 0.08));
+            padding: 6rem 2rem;
+        }
+
+        .calculator-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .calculator-content h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
+
+        .calculator-form {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .calc-input {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .calc-input label {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .calc-input input {
+            background: var(--off-white);
+            border: 2px solid var(--medium-gray);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
             font-weight: 500;
             transition: all 0.3s;
         }
 
-        .breadcrumb-nav a:hover {
-            text-decoration: underline;
+        .calc-input input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
         }
 
-        .breadcrumb-nav li:last-child {
-            color: #111827;
+        .calc-result {
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.05), 
+                rgba(255, 107, 107, 0.05));
+            border: 2px solid transparent;
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            padding: 3rem;
+            border-radius: 15px;
+            margin-top: 3rem;
+        }
+
+        .calc-result h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .calc-amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+        }
+
+        /* Trust Section */
+        .trust-section {
+            background: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .trial-box {
+            background: var(--primary-teal);
+            border-radius: 20px;
+            padding: 4rem;
+            color: var(--white);
+            box-shadow: 0 15px 50px rgba(70, 174, 184, 0.3);
+        }
+
+        .trial-box h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .trial-box ul {
+            list-style: none;
+            text-align: left;
+            max-width: 500px;
+            margin: 2rem auto 3rem;
+        }
+
+        .trial-box li {
+            padding: 0.75rem 0;
+            opacity: 0.95;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .trial-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Science Section */
+        .science-section {
+            background: var(--light-gray);
+            padding: 6rem 2rem;
+        }
+
+        .science-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .science-content h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .science-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .science-item {
+            padding: 2.5rem;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .science-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.15);
+        }
+
+        .science-number {
+            color: var(--primary-teal);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .science-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .science-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            background: var(--white);
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .how-it-works h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--text-primary);
+        }
+
+        .steps-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            position: relative;
+        }
+
+        @media (min-width: 900px) {
+            .steps-grid::before {
+                content: '';
+                position: absolute;
+                top: 35px;
+                left: 25%;
+                right: 25%;
+                height: 2px;
+                background: linear-gradient(90deg, 
+                    var(--primary-teal) 0%, 
+                    var(--primary-teal) 45%, 
+                    transparent 45%, 
+                    transparent 55%, 
+                    var(--primary-teal) 55%, 
+                    var(--primary-teal) 100%);
+                z-index: 0;
+            }
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: var(--primary-teal);
+            color: var(--white);
+            border-radius: 50%;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 20px rgba(70, 174, 184, 0.3);
+        }
+
+        .step h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .step:hover .step-number {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(70, 174, 184, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.05) 0%, 
+                rgba(255, 107, 107, 0.05) 100%);
+            transform: rotate(-45deg);
+        }
+
+        .cta-section h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            color: var(--primary-teal);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
             font-weight: 600;
         }
 
-        /* Adjust body and hero for navigation */
-        body {
-            padding-top: 110px !important; /* Nav + Trust bar */
-            margin-top: 0 !important;
-        }
-        
-        body.has-breadcrumb {
-            padding-top: 160px !important; /* Nav + Trust bar + Breadcrumb */
+        .footer-section ul {
+            list-style: none;
         }
 
-        /* Remove top margin only from the immediate container after nav */
-        body > div:first-of-type,
-        body > section:first-of-type,
-        body > main:first-of-type,
-        body > nav.main-nav + *,
-        body > nav.main-nav + nav + * {
-            margin-top: 0 !important;
-        }
-        
-        /* Specifically target hero image containers to sit flush */
-        .hero-image-container {
-            margin-top: 0 !important;
-            border-top: none !important;
-        }
-        
-        /* Remove any borders between nav and content */
-        nav.main-nav {
-            border-bottom: none !important;
-        }
-        
-        nav.main-nav + * {
-            border-top: none !important;
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+            font-size: 0.95rem;
         }
 
-        /* Mobile Responsive */
+        .footer-section a:hover {
+            color: var(--white);
+        }
+
+        .footer-section .highlight-link {
+            color: var(--primary-teal);
+            font-weight: 600;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        /* Cookie Consent Banner Styling */
+        #cc-nb-main,
+        .cc-nb-main,
+        .cc-nb-main-container,
+        div.cc-nb-main-container {
+            position: fixed !important;
+            bottom: 20px !important;
+            top: auto !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            max-width: 1200px !important;
+            width: 90% !important;
+            margin: 0 !important;
+            border-radius: 15px !important;
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.15) !important;
+            z-index: 999999 !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+            background-color: #FFFFFF !important;
+            background: #FFFFFF !important;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            .hero {
+                min-height: 450px;
+                padding: 4rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
             .mobile-menu-toggle {
                 display: flex !important;
             }
@@ -361,12 +1044,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 left: 0;
                 right: 0;
                 width: 100%;
-                background: #FFFFFF;
+                background: var(--white);
                 flex-direction: column;
                 padding: 2rem;
-                border-bottom: 2px solid #46AEB8;
+                border-bottom: 2px solid var(--primary-teal);
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                z-index: 998;
+                z-index: 999;
                 margin-left: 0;
                 max-height: calc(100vh - 70px);
                 overflow-y: auto;
@@ -378,9 +1061,20 @@ document.addEventListener('DOMContentLoaded', function() {
             
             .nav-links a {
                 padding: 1rem 0;
-                border-bottom: 1px solid #E5E9ED;
+                border-bottom: 1px solid var(--medium-gray);
                 width: 100%;
                 text-align: center;
+            }
+            
+            .nav-dropdown {
+                width: 100%;
+            }
+            
+            .nav-dropdown-toggle {
+                width: 100%;
+                justify-content: center;
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--medium-gray);
             }
             
             .nav-dropdown-menu {
@@ -393,8 +1087,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding: 0;
                 margin-top: 0;
                 width: 100%;
-                background: #F5F7FA;
+                background: var(--light-gray);
                 border-radius: 0;
+            }
+            
+            .nav-dropdown-menu a {
+                text-align: left;
+                padding-left: 2rem;
+                background: var(--light-gray);
+            }
+            
+            .nav-links a:last-child {
+                border-bottom: none;
             }
             
             .nav-cta {
@@ -402,347 +1106,809 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: 100%;
                 text-align: center;
             }
-
-            .trust-bar {
-                top: 70px; /* Position below nav on mobile */
-                padding: 0.4rem 0.5rem;
-                font-size: 0.7rem;
-                gap: 0.5rem;
+            
+            .problems-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+                padding: 1rem 2rem;
+                font-size: 0.9rem;
+                white-space: normal;
+                line-height: 1.3;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .calc-amount {
+                font-size: 2rem !important;
+                word-break: normal;
+                overflow-wrap: break-word;
                 line-height: 1.2;
             }
-
-            .trust-bar span {
-                font-size: 0.65rem;
-                flex: 0 0 auto;
-                padding: 0.2rem 0;
-            }
-
-            .trust-bar img {
-                width: 14px;
-                height: 14px;
-            }
-
-            .breadcrumb-nav {
-                top: 100px !important; /* Below nav + trust bar on mobile */
-                padding: 0.75rem 1rem;
-            }
-
-            .breadcrumb-nav ol {
-                font-size: 0.8rem;
-            }
-
-            body {
-                padding-top: 100px !important; /* Nav + Trust bar on mobile */
+            
+            .calc-result {
+                padding: 2rem 1.5rem !important;
             }
             
-            body.has-breadcrumb {
-                padding-top: 140px !important; /* Nav + Trust bar + Breadcrumb */
+            .calc-result h3 {
+                font-size: 1.2rem;
             }
             
-            /* Remove top margin from immediate container after nav on mobile */
-            body > div:first-of-type,
-            body > section:first-of-type,
-            body > nav.main-nav + * {
-                margin-top: 0 !important;
+            .hero h1 {
+                font-size: 2rem;
+                text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+                text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+            
+            .cta-section p {
+                font-size: 1.1rem;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .science-content h2 {
+                font-size: 2rem;
+            }
+            
+            .calculator-content h2 {
+                font-size: 2rem;
+            }
+            
+            .trial-box {
+                padding: 2rem;
+            }
+            
+            .trial-box h3 {
+                font-size: 1.8rem;
+            }
+
+            .how-it-works h2 {
+                font-size: 2rem;
+                margin-bottom: 3rem;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .step-number {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .step h3 {
+                font-size: 1.3rem;
+            }
+            
+            .step p {
+                font-size: 1rem;
+            }
+
+            /* Beta Disclosure Mobile Fixes */
+            .beta-disclosure div[style*="padding: 3rem"] {
+                padding: 2rem 1.5rem !important;
+            }
+            
+            .beta-disclosure h3 {
+                font-size: 1.5rem !important;
+            }
+            
+            .beta-disclosure p {
+                font-size: 1rem !important;
+            }
+            
+            .beta-disclosure .btn-primary {
+                white-space: normal !important;
+                line-height: 1.3 !important;
+                padding: 1rem 1.5rem !important;
+            }
+            
+            .beta-disclosure div[style*="grid"] {
+                gap: 1.5rem !important;
+            }
+            
+            .beta-disclosure div[style*="font-size: 2rem"] {
+                font-size: 1.5rem !important;
+            }
+            
+            .beta-disclosure span[style*="padding: 0.5rem 1.5rem"] {
+                padding: 0.4rem 1rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .hero-badge {
+                font-size: 0.7rem;
+                padding: 0.5rem 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .engagement-cta-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .engagement-cta-content p {
+                font-size: 1rem;
+            }
+            
+            .btn-learn-more {
+                padding: 0.9rem 2rem;
+                font-size: 0.9rem;
+            }
+
+            .cc-nb-main-container {
+                width: 95% !important;
+                margin: 0 auto 10px !important;
+                border-radius: 10px 10px 0 0 !important;
+            }
+            
+            .cc-nb-inner {
+                padding: 1.2rem 1.5rem !important;
+            }
+            
+            .cc-nb-buttons {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+            
+            .cc-nb-accept,
+            .cc-nb-reject,
+            .cc-nb-customize {
+                width: 100% !important;
+                margin: 0 !important;
             }
         }
-
-        /* Even smaller mobile screens */
+        
         @media (max-width: 480px) {
-            .trust-bar {
-                padding: 0.3rem;
-                font-size: 0.65rem;
-                gap: 0.3rem;
-                flex-direction: column;
+            .cc-nb-main-container {
+                width: 100% !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
             }
-
-            .trust-bar span {
-                font-size: 0.7rem;
-                width: 100%;
-                justify-content: center;
+            
+            .cc-nb-title {
+                font-size: 1rem !important;
             }
-
-            body {
-                padding-top: 120px !important; /* More space for vertical trust bar */
+            
+            .cc-nb-text {
+                font-size: 0.85rem !important;
             }
-
-            body.has-breadcrumb {
-                padding-top: 160px !important;
+            
+            /* Even smaller mobile fixes */
+            .hero-badge span {
+                display: block;
+                line-height: 1.4;
+            }
+            
+            .beta-disclosure span[style*="FRESH FROM BETA"] {
+                display: inline-block !important;
+                line-height: 1.3 !important;
+                text-align: center !important;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .problem-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .problem-card.urgent::before {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.5rem;
             }
         }
 
-        /* Very small mobile screens */
         @media (max-width: 380px) {
-            .trust-bar span {
+            .hero {
+                min-height: 400px;
+                padding: 3rem 1rem;
+            }
+            
+            .btn-primary, .btn-secondary {
+                font-size: 0.85rem;
+                padding: 0.9rem 1.5rem;
+                white-space: normal;
+                line-height: 1.3;
+            }
+            
+            .calc-amount {
+                font-size: 1.5rem !important;
+                line-height: 1.3;
+            }
+            
+            .calculator-form {
+                padding: 2rem 1.5rem !important;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-badge {
                 font-size: 0.65rem;
+                padding: 0.4rem 0.8rem;
+                white-space: normal;
+                line-height: 1.3;
             }
-
-            .trust-bar strong {
-                font-size: 0.7rem;
+            
+            .beta-disclosure h3 {
+                font-size: 1.3rem !important;
+                line-height: 1.3 !important;
             }
-
-            .trust-bar img {
-                width: 12px;
-                height: 12px;
+            
+            .beta-disclosure div[style*="padding: 3rem"] {
+                padding: 1.5rem 1rem !important;
             }
         }
-    `;
-    document.head.appendChild(styleElement);
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+    <!-- Skip to Content Link (Accessibility) -->
+    <a href="#main" class="skip-to-content">Skip to main content</a>
 
-    // Create the main navigation element with CEO-optimized structure
-    const nav = document.createElement('nav');
-    nav.classList.add('main-nav');
-    nav.setAttribute('aria-label', 'Main navigation');
-    nav.innerHTML = `
-    <div class="nav-container">
-        <a href="/" class="logo" aria-label="Clover Era Home">
-            <img src="/images/Clover-era-new-logo-1.png" alt="Clover Era Logo - Employee Engagement Platform" width="35" height="35">
-            CLOVER ERA
-        </a>
-        <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="nav-links" id="navLinks">
-            <a href="/how-it-works.html">HOW IT WORKS</a>
-            <a href="/pricing">PRICING</a>
-            <div class="nav-dropdown">
-                <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
-                    RESOURCES <span style="font-size: 0.8rem;">▼</span>
+    <!-- Hero Section -->
+    <section class="hero" id="main">
+        <div class="hero-content">
+            <div class="hero-badge" itemscope itemtype="https://schema.org/Award">
+                <span itemprop="name">🚀 NOW ACCEPTING EARLY ADOPTERS • FRESH FROM SUCCESSFUL BETA</span>
+            </div>
+            
+            <h1 itemprop="headline">The <span class="highlight">Real-Time</span>.<br>Engagement Platform for Managers</h1>
+            
+            <p class="hero-subtitle" itemprop="description">
+               "Finally, something that isn't just another HR system — this is a tool my managers actually use daily & it makes a difference." - CEO cyber sec firm of 268 people
+            </p>
+            
+            <div class="hero-cta-group">
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" aria-label="Book a 15-minute demo">SEE 15-MIN DEMO</a>
+                <a href="#calculator" class="btn-secondary" aria-label="Calculate your ROI">CALCULATE YOUR ROI</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats Bar -->
+    <section class="stats-bar" aria-label="Key statistics">
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-value">23%</span>
+                <span class="stat-label">Reduction in Burnout<br><small style="font-size: 0.75rem; opacity: 0.8;">(Average across our clients)</small></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">$4.2M</span>
+                <span class="stat-label">Average Annual Savings<br><small style="font-size: 0.75rem; opacity: 0.8;">(250 employees at 15% turnover)</small></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">29%</span>
+                <span class="stat-label">Turnover Reduction<br><small style="font-size: 0.75rem; opacity: 0.8;">(Average from Beta clients)</small></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">7 Days</span>
+                <span class="stat-label">To See First Results</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW BETA DISCLOSURE SECTION -->
+    <section class="beta-disclosure" id="beta-program" style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.05), rgba(139, 92, 246, 0.05)); padding: 4rem 2rem; text-align: center;">
+        <div style="max-width: 1000px; margin: 0 auto;">
+            <div style="background: white; border-radius: 20px; padding: 3rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); border: 2px solid rgba(139, 92, 246, 0.2);">
+                <span style="background: linear-gradient(135deg, #8B5CF6, #46AEB8); color: white; padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; display: inline-block; margin-bottom: 1.5rem;">
+                    🚀 FRESH FROM BETA • LIMITED EARLY ADOPTER PROGRAM
+                </span>
+                
+                <h3 style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--text-primary);">
+                    Join <span style="color: var(--primary-teal);">12 Pioneer Companies</span> Already Transforming Their Teams
+                </h3>
+                
+                <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6;">
+                    We've just completed our beta program with select IT services, SaaS, and cybersecurity companies (200-500 employees). 
+                    Due to the <strong>competitive advantage</strong> our platform provides, beta clients prefer confidentiality.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                    <div>
+                        <div style="color: var(--purple); font-size: 2rem; font-weight: 800;">100%</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Beta clients continued post-trial</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--purple); font-size: 2rem; font-weight: 800;">Aug-Dec 2024</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Beta program timeline</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--purple); font-size: 2rem; font-weight: 800;">20 Spots</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Q1 2025 early adopters</div>
+                    </div>
+                </div>
+                
+                <p style="background: var(--light-gray); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong>Early Adopter Benefits:</strong> Founder-level support • Preferred pricing locked for 3 years • Direct product input • Priority implementation
+                </p>
+                
+                <p style="color: var(--danger); font-weight: 600; margin-top: 1rem; margin-bottom: 2rem;">
+                    ⚠️ Average employee turnover costs are rising 12% annually. Every month you wait costs approximately $350,000.
+                </p>
+                
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" style="background: var(--purple); box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);">
+                    CLAIM YOUR EARLY ADOPTER SPOT
                 </a>
-                <div class="nav-dropdown-menu">
-                    <a href="/case-studies" class="featured-link">📊 Success Stories</a>
-                    <a href="/what-is-employee-engagement/">What Is Engagement?</a>
-                    <a href="/#calculator">ROI Calculator</a>
-                    <a href="/assessment/index.html">Free Assessment</a>
-                    <a href="/implementation-guide">Implementation Guide</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Employee Engagement CTA Bar -->
+    <section class="engagement-cta-bar">
+        <div class="engagement-cta-content">
+            <h2>Don't Know What Employee Engagement Really Is?</h2>
+            <p>
+                Most companies confuse engagement with happiness or satisfaction. 
+                Learn why <strong>emotional commitment</strong> drives 6% higher profits and 5x shareholder returns.
+            </p>
+            <a href="/what-is-employee-engagement/" class="btn-learn-more">
+                LEARN WHAT ENGAGEMENT REALLY MEANS →
+            </a>
+        </div>
+    </section>
+
+    <!-- Problem Identifier Section -->
+    <section class="problems-section" id="problems" aria-label="Common workplace problems">
+        <div class="section-header">
+            <h2>Which <span class="urgent">Opportunity</span> Will Drive Your Growth?</h2>
+            <p>Select your priority area for data-driven improvements</p>
+        </div>
+        
+        <div class="problems-grid">
+            <!-- Burnout -->
+            <a href="/burnout/index.html" class="problem-card urgent" aria-label="Employee burnout solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Burnout-Icon.png" alt="Employee Burnout Solutions - Reduce Workplace Exhaustion" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Employee Burnout</h3>
+                <p class="problem-description">Proactively identify and prevent team exhaustion</p>
+                <div class="problem-stat">Reduce burnout by 23%</div>
+                <span class="problem-cta">See Prevention Strategies →</span>
+            </a>
+
+            <!-- Employee Stress -->
+            <a href="/employee-stress/index.html" class="problem-card urgent" aria-label="Employee stress management">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Stress-Icon.png" alt="Employee Stress Management - Workplace Wellbeing Solutions" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Employee Stress</h3>
+                <p class="problem-description">Balance workloads and support team wellbeing</p>
+                <div class="problem-stat">Reduce stress by 89%</div>
+                <span class="problem-cta">Explore Wellbeing Tools →</span>
+            </a>
+
+            <!-- Retention Crisis -->
+            <a href="/retention-crisis/index.html" class="problem-card urgent" aria-label="Employee retention solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Attrition-Icon.png" alt="Employee Retention Solutions - Stop Talent Turnover" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Retention Crisis</h3>
+                <p class="problem-description">Retain top talent and build team loyalty</p>
+                <div class="problem-stat">Improve retention by 47%</div>
+                <span class="problem-cta">Build Retention Strategy →</span>
+            </a>
+
+            <!-- Workplace Anxiety -->
+            <a href="/workplace-anxiety/index.html" class="problem-card" aria-label="Workplace anxiety solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Workplace-Anxiety-Icon.png" alt="Workplace Anxiety Solutions - Reduce Employee Stress" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Workplace Anxiety</h3>
+                <p class="problem-description">Create psychological safety for innovation</p>
+                <div class="problem-stat">Boost confidence in 68% of team</div>
+                <span class="problem-cta">Foster Innovation →</span>
+            </a>
+
+            <!-- Hybrid Working Issues -->
+            <a href="/hybrid-working-issues/index.html" class="problem-card" aria-label="Hybrid working solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Hybrid-working-issues-Icon.png" alt="Hybrid Working Solutions - Remote Team Engagement" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Hybrid Working Issues</h3>
+                <p class="problem-description">Connect distributed teams effectively</p>
+                <div class="problem-stat">Increase connection by 62%</div>
+                <span class="problem-cta">Optimize Hybrid Work →</span>
+            </a>
+
+            <!-- Toxic Management -->
+            <a href="/toxic-management/index.html" class="problem-card" aria-label="Toxic management solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Toxic-management-Icon.png" alt="Toxic Management Solutions - Leadership Development" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Toxic Management</h3>
+                <p class="problem-description">Develop managers into inspiring leaders</p>
+                <div class="problem-stat">Enhance leadership for 57% impact</div>
+                <span class="problem-cta">Develop Leaders →</span>
+            </a>
+
+            <!-- Productivity Loss -->
+            <a href="/productivity-loss/index.html" class="problem-card" aria-label="Productivity loss solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Productivity-loss-Icon.png" alt="Productivity Loss Solutions - Boost Employee Performance" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Productivity Loss</h3>
+                <p class="problem-description">Maximize team engagement and output</p>
+                <div class="problem-stat">Increase productivity by 31%</div>
+                <span class="problem-cta">Enhance Performance →</span>
+            </a>
+
+            <!-- Culture Breakdown -->
+            <a href="/culture-breakdown/index.html" class="problem-card" aria-label="Culture breakdown solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Culture-Breakdown-Icon.png" alt="Culture Breakdown Solutions - Build Psychological Safety" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Culture Breakdown</h3>
+                <p class="problem-description">Strengthen culture and team alignment</p>
+                <div class="problem-stat">Connect 71% more effectively</div>
+                <span class="problem-cta">Strengthen Culture →</span>
+            </a>
+
+            <!-- Change Fatigue -->
+            <a href="/change-fatigue/index.html" class="problem-card" aria-label="Change fatigue solutions">
+                <div class="problem-icon">
+                    <img src="/images/Employee-Change-Fatigue-Icon.png" alt="Change Fatigue Solutions - Change Management Support" style="width: 40px; height: 40px; object-fit: contain;" loading="lazy">
+                </div>
+                <h3 class="problem-title">Change Fatigue</h3>
+                <p class="problem-description">Navigate change with team resilience</p>
+                <div class="problem-stat">Build resilience in 83% of team</div>
+                <span class="problem-cta">Lead Change Better →</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- ROI Calculator Section -->
+    <section class="calculator-section" id="calculator" aria-label="ROI Calculator">
+        <div class="calculator-content">
+            <h2>Calculate Your Potential Savings</h2>
+            
+            <div class="calculator-form">
+                <div class="calc-grid">
+                    <div class="calc-input">
+                        <label for="employees">Number of Employees</label>
+                        <input type="number" id="employees" value="250" min="5" step="5" aria-label="Number of employees">
+                    </div>
+                    <div class="calc-input">
+                        <label for="salary">Average Salary ($)</label>
+                        <input type="number" id="salary" value="75000" min="5000" step="5000" aria-label="Average salary">
+                    </div>
+                    <div class="calc-input">
+                        <label for="turnover">Annual Turnover (%)</label>
+                        <input type="number" id="turnover" value="15" min="0" max="100" step="1" aria-label="Annual turnover percentage">
+                    </div>
+            </div>
+                
+                <div class="calc-result">
+                    <h3>You Could Save:</h3>
+                    <div class="calc-amount" id="calcResult">$4,218,750</div>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Every Single Year</p>
                 </div>
             </div>
-            <a href="/#problems">SOLUTIONS</a>
-            <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">BOOK DEMO</a>
-        </div>
-    </div>
-    `;
-
-    // Determine if we need breadcrumbs (not on home page)
-    let currentPath = window.location.pathname;
-    
-    // Normalize path - remove index.html and trailing slashes
-    currentPath = currentPath.replace('/index.html', '').replace('/index.htm', '');
-    if (currentPath.endsWith('/') && currentPath.length > 1) {
-        currentPath = currentPath.slice(0, -1);
-    }
-    
-    const isHomePage = currentPath === '' || currentPath === '/';
-    
-    // Add classes to body for proper spacing
-    if (!isHomePage) {
-        document.body.classList.add('has-breadcrumb');
-    }
-    
-    // Debug logging
-    console.log('Current path:', currentPath);
-    console.log('Is home page:', isHomePage);
-    
-    let breadcrumbNav = null;
-    
-    // Always show breadcrumbs except on home page
-    if (!isHomePage) {
-        // Create breadcrumb navigation for all non-home pages
-        breadcrumbNav = document.createElement('nav');
-        breadcrumbNav.classList.add('breadcrumb-nav');
-        breadcrumbNav.setAttribute('aria-label', 'Breadcrumb navigation');
-        
-        let breadcrumbHTML = '<ol>';
-        
-        // Always start with Home
-        breadcrumbHTML += '<li><a href="/">Home</a></li>';
-        
-        // Add page-specific breadcrumbs based on URL
-        if (currentPath.includes('/burnout')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Employee Burnout</li>';
-        } else if (currentPath.includes('/stress')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Employee Stress</li>';
-        } else if (currentPath.includes('/anxiety')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Workplace Anxiety</li>';
-        } else if (currentPath.includes('/change-fatigue')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Change Fatigue</li>';
-        } else if (currentPath.includes('/turnover')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Employee Turnover</li>';
-        } else if (currentPath.includes('/retention')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Employee Retention</li>';
-        } else if (currentPath.includes('/hybrid-working')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Hybrid Working Issues</li>';
-        } else if (currentPath.includes('/toxic-management')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Toxic Management</li>';
-        } else if (currentPath.includes('/productivity-loss')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Productivity Loss</li>';
-        } else if (currentPath.includes('/culture-breakdown')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Culture Breakdown</li>';
-        } else if (currentPath.includes('/what-is-employee-engagement')) {
-            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
-            breadcrumbHTML += '<li>What Is Employee Engagement</li>';
-        } else if (currentPath.includes('/case-studies')) {
-            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
-            breadcrumbHTML += '<li>Success Stories</li>';
-        } else if (currentPath.includes('/implementation-guide')) {
-            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
-            breadcrumbHTML += '<li>Implementation Guide</li>';
-        } else if (currentPath.includes('/employee-engagement-strategies')) {
-            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
-            breadcrumbHTML += '<li>Engagement Strategies</li>';
-        } else if (currentPath.includes('/measure-employee-engagement')) {
-            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
-            breadcrumbHTML += '<li>How to Measure</li>';
-        } else if (currentPath.includes('/engagement-best-practices')) {
-            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
-            breadcrumbHTML += '<li>Best Practices</li>';
-        } else if (currentPath.includes('/engagement')) {
-            breadcrumbHTML += '<li><a href="/#problems">Solutions</a></li>';
-            breadcrumbHTML += '<li>Employee Engagement</li>';
-        } else if (currentPath.includes('/assessment')) {
-            breadcrumbHTML += '<li>Assessment</li>';
-        } else if (currentPath.includes('/calculator')) {
-            breadcrumbHTML += '<li>ROI Calculator</li>';
-        } else if (currentPath.includes('/pricing')) {
-            breadcrumbHTML += '<li>Pricing</li>';
-        } else if (currentPath.includes('/pilot') || currentPath.includes('/30-day')) {
-            breadcrumbHTML += '<li>Free Pilot</li>';
-        } else if (currentPath.includes('/resources-hub')) {
-            breadcrumbHTML += '<li>Resources</li>';
-        } else if (currentPath.includes('/resources')) {
-            breadcrumbHTML += '<li>Resources</li>';
-        } else if (currentPath.includes('/how-it-works')) {
-            breadcrumbHTML += '<li>How It Works</li>';
-        } else if (currentPath.includes('/about')) {
-            breadcrumbHTML += '<li>About</li>';
-        } else if (currentPath.includes('/contact')) {
-            breadcrumbHTML += '<li>Contact</li>';
-        } else if (currentPath.includes('/privacy')) {
-            breadcrumbHTML += '<li>Privacy Policy</li>';
-        } else if (currentPath.includes('/terms')) {
-            breadcrumbHTML += '<li>Terms of Service</li>';
-        } else {
-            // For any other page, try to create a breadcrumb from the URL
-            const pathParts = currentPath.split('/').filter(part => part);
-            if (pathParts.length > 0) {
-                // Convert URL slug to readable text (e.g., "mental-health" -> "Mental Health")
-                const pageName = pathParts[pathParts.length - 1]
-                    .replace(/-/g, ' ')
-                    .replace(/\b\w/g, l => l.toUpperCase());
-                breadcrumbHTML += '<li>' + pageName + '</li>';
-            }
-        }
-        
-        breadcrumbHTML += '</ol>';
-        breadcrumbNav.innerHTML = breadcrumbHTML;
-        
-        console.log('Creating breadcrumb with HTML:', breadcrumbHTML);
-    }
-
-    // Insert main navigation at the beginning of body
-    document.body.insertBefore(nav, document.body.firstChild);
-    
-    // Insert breadcrumb after main nav if it exists
-    if (breadcrumbNav) {
-        // Find the trust bar and insert after it
-        const trustBar = document.querySelector('.trust-bar');
-        if (trustBar) {
-            trustBar.parentNode.insertBefore(breadcrumbNav, trustBar.nextSibling);
-        } else {
-            document.body.insertBefore(breadcrumbNav, nav.nextSibling);
-        }
-        console.log('Breadcrumb inserted');
-        
-        // Force breadcrumb visibility
-        breadcrumbNav.style.display = 'block';
-        breadcrumbNav.style.visibility = 'visible';
-        breadcrumbNav.style.opacity = '1';
-    }
-    
-    // Adjust body padding/margin and first content element
-    const trustBarHeight = 40; // Approximate height of trust bar
-    const navHeight = 70;
-    const breadcrumbHeight = 50;
-    
-    if (!isHomePage) {
-        // For pages with breadcrumbs and trust bar
-        const totalHeight = navHeight + trustBarHeight + breadcrumbHeight;
-        document.body.style.paddingTop = totalHeight + 'px';
-        document.body.style.marginTop = '0';
-        
-        // Find the first major content section and adjust it
-        const firstSection = document.querySelector('section, main, .hero, article');
-        if (firstSection) {
-            firstSection.style.marginTop = '0';
-            console.log('Adjusted first section margin');
-        }
-    } else {
-        // For home page with trust bar
-        const totalHeight = navHeight + trustBarHeight;
-        document.body.style.paddingTop = totalHeight + 'px';
-        document.body.style.marginTop = '0';
-    }
-
-    // Add scroll effect to navigation
-    window.addEventListener('scroll', function() {
-        const mainNav = document.querySelector('.main-nav');
-        if (window.scrollY > 50) {
-            mainNav.classList.add('scrolled');
-        } else {
-            mainNav.classList.remove('scrolled');
-        }
-    });
-
-    // Initialize mobile menu functionality
-    const mobileToggle = document.getElementById('mobileToggle');
-    const navLinks = document.getElementById('navLinks');
-    
-    if (mobileToggle && navLinks) {
-        mobileToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-            const isExpanded = navLinks.classList.contains('active');
-            mobileToggle.setAttribute('aria-expanded', isExpanded);
             
-            // Adjust breadcrumb position when mobile menu is open
-            if (isExpanded && window.innerWidth <= 768) {
-                if (breadcrumbNav) breadcrumbNav.style.display = 'none';
-            } else {
-                if (breadcrumbNav) breadcrumbNav.style.display = 'block';
+            <div style="margin-top: 3rem;">
+                <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 2rem;">
+                    Want to see how these savings apply to your specific situation?
+                </p>
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" aria-label="Book a personalized demo">
+                    BOOK A PERSONALIZED DEMO
+                </a>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; font-size: 0.95rem;">
+                    or <a href="/30-day-free-pilot/index.html" style="color: var(--primary-teal); text-decoration: underline;">start with a free trial</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Free Trial Section -->
+    <section class="trust-section" aria-label="Free trial information">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <h2 style="font-size: 3rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary);">
+                See It In Action. <span style="color: var(--primary-teal);">No Commitment.</span>
+            </h2>
+            <div class="trial-box">
+                <h3>Quick Demo for Busy Leaders</h3>
+                <p style="font-size: 1.25rem; margin-bottom: 1.5rem; opacity: 0.95;">
+                    <span style="font-weight: 700;">15 minutes</span> to transform your team
+                </p>
+                <ul>
+                    <li>See how companies like yours save millions</li>
+                    <li>Get answers to your specific questions</li>
+                    <li>Review implementation timeline & support</li>
+                    <li>Understand pricing for your organization</li>
+                    <li>No pushy sales tactics - just valuable insights</li>
+                </ul>
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" style="background: var(--white); color: var(--primary-teal);" aria-label="Book your personalized demo">BOOK YOUR DEMO →</a>
+                <p style="margin-top: 1.5rem; opacity: 0.9;">
+                    Prefer to explore on your own? 
+                    <a href="/30-day-free-pilot/index.html" style="color: var(--white); text-decoration: underline;">Start a free 30-day trial</a>
+                </p>
+            </div>
+            <p style="color: var(--text-secondary); margin-top: 2rem; font-style: italic; font-size: 1.1rem;">
+                "The demo showed us exactly how to reduce turnover in our dev team. We signed up immediately." - CTO, 300-person IT services firm
+            </p>
+        </div>
+    </section>
+
+    <!-- Science Section -->
+    <section class="science-section" aria-label="Our scientific approach">
+        <div class="science-content">
+            <h2>The <span style="color: var(--primary-teal);">Neuroscience</span> Difference</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.2rem;">
+                We don't use vanity metrics. We measure what matters to your brain and your bottom line.
+            </p>
+            
+            <div class="science-grid">
+                <div class="science-item">
+                    <div class="science-number">1.</div>
+                    <div class="science-title">Brain-Based Metrics</div>
+                    <div class="science-description">Track dopamine, cortisol, and cognitive load - not just surveys</div>
+                </div>
+                <div class="science-item">
+                    <div class="science-number">2.</div>
+                    <div class="science-title">Predictive AI</div>
+                    <div class="science-description">Know which areas people are most likely to leave from, 6 months before they do</div>
+                </div>
+                <div class="science-item">
+                    <div class="science-number">3.</div>
+                    <div class="science-title">Proven ROI</div>
+                    <div class="science-description">Most clients see positive ROI within 30 days</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" aria-label="How it works">
+        <h2>Simple Implementation, Powerful Results</h2>
+        <div class="steps-grid">
+            <div class="step">
+                <span class="step-number">1</span>
+                <h3>Quick Setup</h3>
+                <p>15-minute onboarding for managers with dedicated support</p>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <h3>Real-Time Insights</h3>
+                <p>Daily actionable data, not annual surveys that arrive too late</p>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <h3>Measurable Impact</h3>
+                <p>See engagement improvements within 7 days, ROI within 30</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" aria-label="Call to action">
+        <h2>Ready to See the Difference?</h2>
+        <p>Join hundreds of companies transforming their teams with neuroscience</p>
+        <div class="hero-cta-group" style="position: relative; z-index: 1;">
+            <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" aria-label="Book a demo">
+                BOOK YOUR DEMO
+            </a>
+            <a href="/assessment/index.html" class="btn-secondary" aria-label="Take free assessment">
+                FREE ASSESSMENT
+            </a>
+        </div>
+        <p style="color: var(--text-secondary); margin-top: 2rem; font-size: 0.95rem; position: relative; z-index: 1;">
+            Have questions? Call us at 1-800-XXX-XXXX or <a href="mailto:demo@cloverera.com" style="color: var(--primary-teal);">email our team</a>
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer aria-label="Footer navigation">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ENGAGEMENT RESOURCES</h4>
+                <ul>
+                    <li><a href="/what-is-employee-engagement/" class="highlight-link">What Is Employee Engagement?</a></li>
+                    <li><a href="https://www.cloverera.com/engagement-strategies/index.html">Engagement Strategies</a></li>
+                    <li><a href="https://www.cloverera.com/how-to-measure-employee-engagement/index.html">How to Measure</a></li>
+                    <li><a href="https://www.cloverera.com/employee-engagement-best-practices/index.html">Best Practices</a></li>
+                    <li><a href="https://www.clover-era.com/how-it-works.html">How It Works</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PROBLEMS WE SOLVE</h4>
+                <ul>
+                    <li><a href="/burnout/index.html">Employee Burnout</a></li>
+                    <li><a href="/employee-stress/index.html">Workplace Stress</a></li>
+                    <li><a href="/retention-crisis/index.html">Retention Crisis</a></li>
+                    <li><a href="/workplace-anxiety/index.html">Workplace Anxiety</a></li>
+                    <li><a href="/hybrid-working-issues/index.html">Hybrid Working</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>GET STARTED</h4>
+                <ul>
+                    <li><a href="/calculator/index.html">ROI Calculator</a></li>
+                    <li><a href="/assessment/index.html">Free Assessment</a></li>
+                    <li><a href="#beta-program" style="color: var(--purple); font-weight: 600;">🚀 Early Adopter Program</a></li>
+                    <li><a href="/30-day-free-pilot/index.html">30-Day Free Trial</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#science">Our Science</a></li>
+                    <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                    <li><a href="/cookie-policy/">Cookie Policy</a></li>
+                    <li><a href="#" id="open_preferences_center">Cookie Preferences</a></li>
+                    <li><a href="#terms">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© CLOVER ERA 2025 | Neuroscience-Powered Employee Engagement Platform</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    mobileToggle.classList.toggle('active');
+                    mobileToggle.setAttribute('aria-expanded', 
+                        navLinks.classList.contains('active') ? 'true' : 'false');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
+                        navLinks.classList.remove('active');
+                        mobileToggle.classList.remove('active');
+                        mobileToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                // Close mobile menu when clicking a link
+                document.querySelectorAll('.nav-links a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                        mobileToggle.classList.remove('active');
+                        mobileToggle.setAttribute('aria-expanded', 'false');
+                    });
+                });
             }
         });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
-                navLinks.classList.remove('active');
-                mobileToggle.classList.remove('active');
-                mobileToggle.setAttribute('aria-expanded', 'false');
-                if (breadcrumbNav) breadcrumbNav.style.display = 'block';
-            }
-        });
-
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileToggle.classList.remove('active');
-                mobileToggle.setAttribute('aria-expanded', 'false');
-                if (breadcrumbNav) breadcrumbNav.style.display = 'block';
+        
+        // Simple ROI Calculator
+        function calculateROI() {
+            const employees = parseInt(document.getElementById('employees').value) || 250;
+            const salary = parseInt(document.getElementById('salary').value) || 75000;
+            const turnover = parseInt(document.getElementById('turnover').value) || 15;
+            
+            // Calculate annual loss (1.5x salary per employee who leaves)
+            const employeesLeaving = employees * (turnover / 100);
+            const costPerEmployee = salary * 1.5;
+            const totalLoss = employeesLeaving * costPerEmployee;
+            
+            // Format with commas
+            const formattedLoss = ' + totalLoss.toLocaleString('en-US', {
+                maximumFractionDigits: 0
+            });
+            
+            document.getElementById('calcResult').textContent = formattedLoss;
+        }
+        
+        // Add event listeners for calculator inputs
+        document.getElementById('employees')?.addEventListener('input', calculateROI);
+        document.getElementById('salary')?.addEventListener('input', calculateROI);
+        document.getElementById('turnover')?.addEventListener('input', calculateROI);
+        
+        // Initial calculation
+        calculateROI();
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                // Skip if it's the cookie preferences link
+                if (href === '#' && this.id === 'open_preferences_center') {
+                    return;
+                }
+                
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
-    }
-});
+        
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe problem cards and science items
+        document.querySelectorAll('.problem-card, .science-item, .step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        // Add loading="lazy" to images for better performance
+        document.querySelectorAll('img').forEach(img => {
+            if (!img.hasAttribute('loading')) {
+                img.setAttribute('loading', 'lazy');
+            }
+        });
+        
+        // Track calculator usage (for analytics when enabled)
+        let calculatorUsed = false;
+        document.querySelectorAll('#employees, #salary, #turnover').forEach(input => {
+            input.addEventListener('change', () => {
+                if (!calculatorUsed) {
+                    calculatorUsed = true;
+                    // This will be picked up by analytics if enabled via cookie consent
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'calculator_used', {
+                            'event_category': 'engagement',
+                            'event_label': 'roi_calculator'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+    <!-- Add this line right before </body> -->
+    <script src="/js/calculator.js"></script>
+</body>
+</html>
