@@ -254,8 +254,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 border-radius: 0;
             }
             
+            /* Hide trust bar on mobile */
+            .trust-bar {
+                display: none !important;
+            }
+            
+            /* Adjust body padding on mobile (only nav height needed) */
             body {
-                padding-top: 100px !important;
+                padding-top: 70px !important;
             }
         }
     `;
