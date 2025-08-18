@@ -307,13 +307,6 @@ document.addEventListener('DOMContentLoaded', function() {
     trustBar.className = 'trust-bar';
     trustBar.innerHTML = `
         <span style="color: #6B7280; display: inline-flex; align-items: center; gap: 0.5rem;">
-            <img src="https://www.cloverera.com/images/Employee-Clear-Goals.png" alt="Companies" style="width: 16px; height: 16px; vertical-align: middle;">
-            <strong style="color: #46AEB8;">12+ companies</strong> already transforming
-        </span>
-        <span style="color: #6B7280; display: inline-flex; align-items: center; gap: 0.5rem;">
-            ✅ <strong style="color: #46AEB8;">100%</strong> continued after trial
-        </span>
-        <span style="color: #6B7280; display: inline-flex; align-items: center; gap: 0.5rem;">
             <img src="https://www.cloverera.com/images/Employee-resilience-training.png" alt="Beta" style="width: 16px; height: 16px; vertical-align: middle;">
             <strong style="color: #46AEB8;">Fresh from beta</strong> - Limited spots
         </span>
