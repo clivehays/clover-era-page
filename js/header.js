@@ -294,6 +294,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         <a href="/#calculator">ROI Calculator</a>
                         <a href="/assessment/index.html">Free Assessment</a>
                         <a href="/implementation-guide">Implementation Guide</a>
+                        <a href="/trillion-dollar-problem/" class="featured-link">
+        📚 The Trillion Dollar Problem Book
+    </a>
+    <a href="/neuroscience-book-preview/">
+        🧠 New Book: Preview Chapter
+    </a>
+    <a href="/research-papers/">
+        📊 Published Research
+    </a>
                     </div>
                 </div>
                 <a href="/#problems">SOLUTIONS</a>
