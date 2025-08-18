@@ -1,10 +1,10 @@
-// header.js - Complete working version
+// header.js - Fixed version with breadcrumb preservation
 document.addEventListener('DOMContentLoaded', function() {
     // First, add the navigation styles if they don't exist
     const styleElement = document.createElement('style');
     styleElement.textContent = `
         /* Navigation Styles */
-        nav {
+        nav.main-nav {
             position: fixed;
             top: 0;
             width: 100%;
@@ -169,6 +169,17 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #FFFFFF !important;
         }
 
+        /* Ensure existing navigation/breadcrumb is positioned correctly */
+        body > nav:not(.main-nav) {
+            margin-top: 70px !important;
+            position: relative !important;
+        }
+
+        /* Adjust any header that might exist */
+        body > header {
+            margin-top: 70px !important;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .mobile-menu-toggle {
@@ -229,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Create the navigation element
     const nav = document.createElement('nav');
+    nav.classList.add('main-nav'); // Add a class to distinguish from existing nav
     nav.setAttribute('aria-label', 'Main navigation');
     nav.innerHTML = `
         <div class="nav-container">
@@ -266,8 +278,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Insert navigation at the beginning of body
     document.body.insertBefore(nav, document.body.firstChild);
 
-    // Add margin to body to account for fixed navigation
-    document.body.style.marginTop = '70px';
+    // Find any existing navigation/breadcrumb and ensure it's positioned below our main nav
+    const existingNavs = document.querySelectorAll('body > nav:not(.main-nav)');
+    existingNavs.forEach(existingNav => {
+        // If there's an existing nav (like breadcrumbs), ensure it's positioned correctly
+        existingNav.style.marginTop = '70px';
+        existingNav.style.position = 'relative';
+    });
+
+    // Also check for header elements that might contain breadcrumbs
+    const headers = document.querySelectorAll('body > header');
+    headers.forEach(header => {
+        header.style.marginTop = '70px';
+    });
+
+    // Add padding to body for the fixed navigation
+    // Only if there's no existing nav or header that already handles this
+    if (existingNavs.length === 0 && headers.length === 0) {
+        document.body.style.paddingTop = '70px';
+    }
 
     // Initialize mobile menu functionality
     const mobileToggle = document.getElementById('mobileToggle');
