@@ -668,12 +668,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Insert trust bar after main nav as a separate element
     document.body.insertBefore(trustBar, nav.nextSibling);
     
-    // Force trust bar to be visible
+    // Debug - check if trust bar has content
+    console.log('Trust bar element:', trustBar);
+    console.log('Trust bar children:', trustBar.children.length);
+    console.log('Trust bar text content:', trustBar.textContent);
+    
+    // Force trust bar to be visible with additional inline styles
     trustBar.style.display = 'flex';
     trustBar.style.visibility = 'visible';
     trustBar.style.opacity = '1';
-    
-    console.log('Trust bar inserted:', trustBar);
+    trustBar.style.position = 'fixed';
+    trustBar.style.top = '70px';
+    trustBar.style.left = '0';
+    trustBar.style.right = '0';
+    trustBar.style.zIndex = '999';
     
     // Insert breadcrumb after trust bar if it exists
     if (breadcrumbNav) {
