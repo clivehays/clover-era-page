@@ -433,6 +433,18 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (currentPath.includes('/retention')) {
             breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
             breadcrumbHTML += '<li>Employee Retention</li>';
+        } else if (currentPath.includes('/what-is-employee-engagement')) {
+            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
+            breadcrumbHTML += '<li>What Is Employee Engagement</li>';
+        } else if (currentPath.includes('/employee-engagement-strategies')) {
+            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
+            breadcrumbHTML += '<li>Engagement Strategies</li>';
+        } else if (currentPath.includes('/measure-employee-engagement')) {
+            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
+            breadcrumbHTML += '<li>How to Measure</li>';
+        } else if (currentPath.includes('/engagement-best-practices')) {
+            breadcrumbHTML += '<li><a href="/resources-hub/index.html">Resources</a></li>';
+            breadcrumbHTML += '<li>Best Practices</li>';
         } else if (currentPath.includes('/engagement')) {
             breadcrumbHTML += '<li><a href="/#problems">Problems</a></li>';
             breadcrumbHTML += '<li>Employee Engagement</li>';
@@ -442,6 +454,8 @@ document.addEventListener('DOMContentLoaded', function() {
             breadcrumbHTML += '<li>Calculator</li>';
         } else if (currentPath.includes('/pilot') || currentPath.includes('/30-day')) {
             breadcrumbHTML += '<li>Free Pilot</li>';
+        } else if (currentPath.includes('/resources-hub')) {
+            breadcrumbHTML += '<li>Resources</li>';
         } else if (currentPath.includes('/resources')) {
             breadcrumbHTML += '<li>Resources</li>';
         } else if (currentPath.includes('/how-it-works')) {
