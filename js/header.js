@@ -77,11 +77,11 @@ document.addEventListener('DOMContentLoaded', function() {
             left: 0;
             right: 0;
             width: 100%;
-            background: #F5F7FA;
+            background: #F5F7FA !important;
             padding: 0.5rem 1rem;
             text-align: center;
             font-size: 0.85rem;
-            color: #6B7280;
+            color: #6B7280 !important;
             border-top: 1px solid #E5E9ED;
             border-bottom: 1px solid #E5E9ED;
             display: flex !important;
@@ -93,17 +93,22 @@ document.addEventListener('DOMContentLoaded', function() {
             visibility: visible !important;
             opacity: 1 !important;
             height: 40px;
+            box-sizing: border-box;
         }
 
         .trust-bar span {
-            display: inline-flex;
+            display: inline-flex !important;
             align-items: center;
             gap: 0.5rem;
             white-space: nowrap;
+            color: #6B7280 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            font-size: 0.85rem;
         }
 
         .trust-bar strong {
-            color: #46AEB8;
+            color: #46AEB8 !important;
             font-weight: 600;
         }
 
@@ -111,7 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
             width: 16px;
             height: 16px;
             vertical-align: middle;
-            display: inline-block;
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .logo {
