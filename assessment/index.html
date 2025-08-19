@@ -1330,33 +1330,153 @@
         }
 
         // Handle form submission
-        document.getElementById('assessmentForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Calculate results
-            const results = calculateResults();
-            
-            // Update results display
-            animateRiskMeter(results.riskScore);
-            
-            // Animate other metrics
-            setTimeout(() => {
-                document.getElementById('costValue').textContent = formatCurrency(results.totalCost);
-                document.getElementById('turnoverRisk').textContent = results.turnoverRisk + '%';
-                document.getElementById('productivityGap').textContent = results.productivityGap + '%';
-                
-                // Update CTA text based on risk level
-                const ctaText = document.getElementById('ctaText');
-                if (results.riskScore >= 70) {
-                    ctaText.textContent = 'Clover Era can reduce your critical risk by 67% and save you ' + 
-                                         formatCurrency(results.totalCost * 0.67) + ' annually';
-                } else if (results.riskScore >= 50) {
-                    ctaText.textContent = 'Clover Era can reduce your turnover by 47% and boost engagement, saving ' + 
-                                         formatCurrency(results.totalCost * 0.47) + ' per year';
-                } else {
-                    ctaText.textContent = 'Clover Era can help maintain and improve your already good engagement levels';
-                }
-            }, 1000);
+        // Replace this with your actual Web App URL
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyokddmEucup2KlO29EBYaeC0x9aeUJGmuxZwooWzacLteV8x0-KsG71jQr2ghTrOvH8g/exec';
+
+// Update the form submission handler
+document.getElementById('assessmentForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Processing...';
+    submitBtn.disabled = true;
+    
+    // Calculate results
+    const results = calculateResults();
+    
+    // Prepare data for Google Sheets
+    const formData = new FormData(this);
+    const assessmentData = {
+        // Contact info
+        firstName: formData.get('firstName'),
+        lastName: formData.get('lastName'),
+        email: formData.get('email'),
+        company: formData.get('company'),
+        jobTitle: formData.get('title'),
+        phone: formData.get('phone') || '',
+        
+        // Assessment answers
+        companySize: answers['1'] || '',
+        turnoverRate: answers['2'] || '',
+        engagementLevel: answers['3'] || '',
+        challenges: answers['4'] || [],
+        burnoutPercentage: answers['5'] || '',
+        budgetPriority: answers['6'] || '',
+        
+        // Calculated results
+        riskScore: results.riskScore,
+        riskLevel: getRiskLevel(results.riskScore),
+        annualCost: results.totalCost,
+        turnoverRisk: results.turnoverRisk,
+        productivityGap: results.productivityGap
+    };
+    
+    // Send to Google Sheets
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Important for Google Apps Script
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(assessmentData)
+        });
+        
+        console.log('Data sent successfully to Google Sheets');
+        
+        // Show success message (optional)
+        showSuccessNotification();
+        
+    } catch (error) {
+        console.error('Error sending data to Google Sheets:', error);
+        // Still show results even if sheet update fails
+    }
+    
+    // Update results display
+    animateRiskMeter(results.riskScore);
+    
+    // Animate other metrics
+    setTimeout(() => {
+        document.getElementById('costValue').textContent = formatCurrency(results.totalCost);
+        document.getElementById('turnoverRisk').textContent = results.turnoverRisk + '%';
+        document.getElementById('productivityGap').textContent = results.productivityGap + '%';
+        
+        // Update CTA text based on risk level
+        const ctaText = document.getElementById('ctaText');
+        if (results.riskScore >= 70) {
+            ctaText.textContent = 'Clover Era can reduce your critical risk by 67% and save you ' + 
+                                 formatCurrency(results.totalCost * 0.67) + ' annually';
+        } else if (results.riskScore >= 50) {
+            ctaText.textContent = 'Clover Era can reduce your turnover by 47% and boost engagement, saving ' + 
+                                 formatCurrency(results.totalCost * 0.47) + ' per year';
+        } else {
+            ctaText.textContent = 'Clover Era can help maintain and improve your already good engagement levels';
+        }
+    }, 1000);
+    
+    // Hide contact form and show results
+    document.querySelector('.contact-section').classList.remove('active');
+    document.querySelector('.results-section').classList.add('active');
+    
+    // Hide progress bar
+    document.querySelector('.progress-container').style.display = 'none';
+    document.querySelector('.progress-text').style.display = 'none';
+    
+    // Reset button
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+});
+
+// Helper function to get risk level text
+function getRiskLevel(score) {
+    if (score < 30) return 'Low Risk';
+    if (score < 50) return 'Moderate Risk';
+    if (score < 70) return 'High Risk';
+    return 'Critical Risk';
+}
+
+// Optional: Show success notification
+function showSuccessNotification() {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10B981;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    notification.textContent = '✓ Assessment data saved successfully';
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Add animation styles
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
             
             // Hide contact form and show results
             document.querySelector('.contact-section').classList.remove('active');
