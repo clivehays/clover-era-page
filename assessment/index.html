@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="/js/header.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Workplace Engagement Assessment | Clover Era</title>
@@ -48,7 +47,7 @@
         /* Assessment Container */
         .assessment-container {
             max-width: 900px;
-            margin: 3rem auto 4rem; /* Increased top margin from 2rem to 3rem */
+            margin: 3rem auto 4rem;
             padding: 0 2rem;
         }
 
@@ -337,7 +336,7 @@
             margin-left: auto;
         }
 
-        .btn-next:hover {
+        .btn-next:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
         }
@@ -345,6 +344,7 @@
         .btn-next:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
 
         /* Contact Form Section */
@@ -626,6 +626,17 @@
             box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
         }
 
+        /* Success Notification */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             body {
@@ -637,7 +648,7 @@
                 margin-top: 2rem;
             }
 
-            .question-section {
+            .question-section, .contact-section {
                 padding: 2rem;
             }
 
@@ -1065,65 +1076,91 @@
     </div>
 
     <script>
+        // IMPORTANT: Replace with your actual Google Apps Script Web App URL
+        // Get this URL after deploying your Google Apps Script
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+        
         // Assessment Logic
         let currentQuestion = 1;
         const totalQuestions = 6;
         const answers = {};
 
-        // Handle single-select answers
-        document.querySelectorAll('.answer-option').forEach(option => {
-            option.addEventListener('click', function() {
-                const section = this.closest('.question-section');
-                section.querySelectorAll('.answer-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                this.classList.add('selected');
-                
-                const questionNum = section.dataset.question;
-                answers[questionNum] = this.dataset.value;
-                
-                // Enable next button
-                section.querySelector('.btn-next').disabled = false;
-            });
+        // Initialize event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
         });
 
-        // Handle scale questions
-        document.querySelectorAll('.scale-option').forEach(option => {
-            option.addEventListener('click', function() {
-                const section = this.closest('.question-section');
-                section.querySelectorAll('.scale-option').forEach(opt => {
-                    opt.classList.remove('selected');
+        function initializeEventListeners() {
+            // Handle single-select answers
+            document.querySelectorAll('.answer-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const section = this.closest('.question-section');
+                    if (!section) return;
+                    
+                    section.querySelectorAll('.answer-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    const questionNum = section.dataset.question;
+                    answers[questionNum] = this.dataset.value;
+                    
+                    // Enable next button
+                    const nextBtn = section.querySelector('.btn-next');
+                    if (nextBtn) nextBtn.disabled = false;
                 });
-                this.classList.add('selected');
-                
-                const questionNum = section.dataset.question;
-                answers[questionNum] = this.dataset.value;
-                
-                // Enable next button
-                section.querySelector('.btn-next').disabled = false;
             });
-        });
 
-        // Handle multi-select questions
-        document.querySelectorAll('.multi-option').forEach(option => {
-            option.addEventListener('click', function() {
-                this.classList.toggle('selected');
-                
-                const section = this.closest('.question-section');
-                const questionNum = section.dataset.question;
-                
-                // Collect all selected values
-                const selected = [];
-                section.querySelectorAll('.multi-option.selected').forEach(opt => {
-                    selected.push(opt.dataset.value);
+            // Handle scale questions
+            document.querySelectorAll('.scale-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const section = this.closest('.question-section');
+                    if (!section) return;
+                    
+                    section.querySelectorAll('.scale-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    const questionNum = section.dataset.question;
+                    answers[questionNum] = this.dataset.value;
+                    
+                    // Enable next button
+                    const nextBtn = section.querySelector('.btn-next');
+                    if (nextBtn) nextBtn.disabled = false;
                 });
-                
-                answers[questionNum] = selected;
-                
-                // Enable next button if at least one is selected
-                section.querySelector('.btn-next').disabled = selected.length === 0;
             });
-        });
+
+            // Handle multi-select questions
+            document.querySelectorAll('.multi-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    
+                    const section = this.closest('.question-section');
+                    if (!section) return;
+                    
+                    const questionNum = section.dataset.question;
+                    
+                    // Collect all selected values
+                    const selected = [];
+                    section.querySelectorAll('.multi-option.selected').forEach(opt => {
+                        selected.push(opt.dataset.value);
+                    });
+                    
+                    answers[questionNum] = selected;
+                    
+                    // Enable next button if at least one is selected
+                    const nextBtn = section.querySelector('.btn-next');
+                    if (nextBtn) nextBtn.disabled = selected.length === 0;
+                });
+            });
+
+            // Handle form submission
+            const form = document.getElementById('assessmentForm');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
+            }
+        }
 
         function updateProgress() {
             const progress = (currentQuestion / totalQuestions) * 100;
@@ -1329,154 +1366,123 @@
             }
         }
 
-        // Handle form submission
-        // Replace this with your actual Web App URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyokddmEucup2KlO29EBYaeC0x9aeUJGmuxZwooWzacLteV8x0-KsG71jQr2ghTrOvH8g/exec';
-
-// Update the form submission handler
-document.getElementById('assessmentForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Processing...';
-    submitBtn.disabled = true;
-    
-    // Calculate results
-    const results = calculateResults();
-    
-    // Prepare data for Google Sheets
-    const formData = new FormData(this);
-    const assessmentData = {
-        // Contact info
-        firstName: formData.get('firstName'),
-        lastName: formData.get('lastName'),
-        email: formData.get('email'),
-        company: formData.get('company'),
-        jobTitle: formData.get('title'),
-        phone: formData.get('phone') || '',
-        
-        // Assessment answers
-        companySize: answers['1'] || '',
-        turnoverRate: answers['2'] || '',
-        engagementLevel: answers['3'] || '',
-        challenges: answers['4'] || [],
-        burnoutPercentage: answers['5'] || '',
-        budgetPriority: answers['6'] || '',
-        
-        // Calculated results
-        riskScore: results.riskScore,
-        riskLevel: getRiskLevel(results.riskScore),
-        annualCost: results.totalCost,
-        turnoverRisk: results.turnoverRisk,
-        productivityGap: results.productivityGap
-    };
-    
-    // Send to Google Sheets
-    try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors', // Important for Google Apps Script
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(assessmentData)
-        });
-        
-        console.log('Data sent successfully to Google Sheets');
-        
-        // Show success message (optional)
-        showSuccessNotification();
-        
-    } catch (error) {
-        console.error('Error sending data to Google Sheets:', error);
-        // Still show results even if sheet update fails
-    }
-    
-    // Update results display
-    animateRiskMeter(results.riskScore);
-    
-    // Animate other metrics
-    setTimeout(() => {
-        document.getElementById('costValue').textContent = formatCurrency(results.totalCost);
-        document.getElementById('turnoverRisk').textContent = results.turnoverRisk + '%';
-        document.getElementById('productivityGap').textContent = results.productivityGap + '%';
-        
-        // Update CTA text based on risk level
-        const ctaText = document.getElementById('ctaText');
-        if (results.riskScore >= 70) {
-            ctaText.textContent = 'Clover Era can reduce your critical risk by 67% and save you ' + 
-                                 formatCurrency(results.totalCost * 0.67) + ' annually';
-        } else if (results.riskScore >= 50) {
-            ctaText.textContent = 'Clover Era can reduce your turnover by 47% and boost engagement, saving ' + 
-                                 formatCurrency(results.totalCost * 0.47) + ' per year';
-        } else {
-            ctaText.textContent = 'Clover Era can help maintain and improve your already good engagement levels';
+        // Helper function to get risk level text
+        function getRiskLevel(score) {
+            if (score < 30) return 'Low Risk';
+            if (score < 50) return 'Moderate Risk';
+            if (score < 70) return 'High Risk';
+            return 'Critical Risk';
         }
-    }, 1000);
-    
-    // Hide contact form and show results
-    document.querySelector('.contact-section').classList.remove('active');
-    document.querySelector('.results-section').classList.add('active');
-    
-    // Hide progress bar
-    document.querySelector('.progress-container').style.display = 'none';
-    document.querySelector('.progress-text').style.display = 'none';
-    
-    // Reset button
-    submitBtn.textContent = originalText;
-    submitBtn.disabled = false;
-});
 
-// Helper function to get risk level text
-function getRiskLevel(score) {
-    if (score < 30) return 'Low Risk';
-    if (score < 50) return 'Moderate Risk';
-    if (score < 70) return 'High Risk';
-    return 'Critical Risk';
-}
+        // Show success notification
+        function showSuccessNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10B981;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = '✓ Assessment data saved successfully';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
 
-// Optional: Show success notification
-function showSuccessNotification() {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #10B981;
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-    `;
-    notification.textContent = '✓ Assessment data saved successfully';
-    
-    document.body.appendChild(notification);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-// Add animation styles
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
+        // Handle form submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+            
+            // Calculate results
+            const results = calculateResults();
+            
+            // Prepare data for Google Sheets
+            const formData = new FormData(this);
+            const assessmentData = {
+                // Contact info
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                company: formData.get('company'),
+                jobTitle: formData.get('title'),
+                phone: formData.get('phone') || '',
+                
+                // Assessment answers
+                companySize: answers['1'] || '',
+                turnoverRate: answers['2'] || '',
+                engagementLevel: answers['3'] || '',
+                challenges: answers['4'] || [],
+                burnoutPercentage: answers['5'] || '',
+                budgetPriority: answers['6'] || '',
+                
+                // Calculated results
+                riskScore: results.riskScore,
+                riskLevel: getRiskLevel(results.riskScore),
+                annualCost: results.totalCost,
+                turnoverRisk: results.turnoverRisk,
+                productivityGap: results.productivityGap
+            };
+            
+            // Send to Google Sheets (only if URL is configured)
+            if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes('YOUR_SCRIPT_ID_HERE')) {
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Important for Google Apps Script
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(assessmentData)
+                    });
+                    
+                    console.log('Data sent successfully to Google Sheets');
+                    showSuccessNotification();
+                    
+                } catch (error) {
+                    console.error('Error sending data to Google Sheets:', error);
+                    // Still show results even if sheet update fails
+                }
+            } else {
+                console.log('Google Sheets URL not configured. Data:', assessmentData);
+            }
+            
+            // Update results display
+            animateRiskMeter(results.riskScore);
+            
+            // Animate other metrics
+            setTimeout(() => {
+                document.getElementById('costValue').textContent = formatCurrency(results.totalCost);
+                document.getElementById('turnoverRisk').textContent = results.turnoverRisk + '%';
+                document.getElementById('productivityGap').textContent = results.productivityGap + '%';
+                
+                // Update CTA text based on risk level
+                const ctaText = document.getElementById('ctaText');
+                if (results.riskScore >= 70) {
+                    ctaText.textContent = 'Clover Era can reduce your critical risk by 67% and save you ' + 
+                                         formatCurrency(results.totalCost * 0.67) + ' annually';
+                } else if (results.riskScore >= 50) {
+                    ctaText.textContent = 'Clover Era can reduce your turnover by 47% and boost engagement, saving ' + 
+                                         formatCurrency(results.totalCost * 0.47) + ' per year';
+                } else {
+                    ctaText.textContent = 'Clover Era can help maintain and improve your already good engagement levels';
+                }
+            }, 1000);
             
             // Hide contact form and show results
             document.querySelector('.contact-section').classList.remove('active');
@@ -1486,14 +1492,10 @@ document.head.appendChild(style);
             document.querySelector('.progress-container').style.display = 'none';
             document.querySelector('.progress-text').style.display = 'none';
             
-            // Log data (in production, this would be an actual API call)
-            const formData = new FormData(this);
-            console.log('Assessment data:', {
-                formData: Object.fromEntries(formData),
-                answers: answers,
-                results: results
-            });
-        });
+            // Reset button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
     </script>
 </body>
 </html>
