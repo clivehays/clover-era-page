@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/js/header.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Workplace Engagement Assessment | Clover Era</title>
@@ -463,26 +464,23 @@
             position: relative;
         }
 
-        .risk-meter-circle {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 20px solid var(--light-gray);
-            position: relative;
+        .risk-meter svg {
+            width: 200px;
+            height: 200px;
+            transform: rotate(-90deg);
+        }
+
+        .risk-meter-bg {
+            fill: none;
+            stroke: var(--light-gray);
+            stroke-width: 20;
         }
 
         .risk-meter-fill {
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 20px solid transparent;
-            border-top-color: var(--danger);
-            border-right-color: var(--danger);
-            transform: rotate(45deg);
-            transition: all 1s ease;
+            fill: none;
+            stroke-width: 20;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.5s ease, stroke 1s ease;
         }
 
         .risk-meter-value {
@@ -492,7 +490,7 @@
             transform: translate(-50%, -50%);
             font-size: 3rem;
             font-weight: 800;
-            color: var(--danger);
+            transition: color 1s ease;
         }
 
         .risk-label {
@@ -631,12 +629,12 @@
         /* Responsive */
         @media (max-width: 768px) {
             body {
-                padding-top: 110px; /* Adjusted for mobile header */
+                padding-top: 110px;
             }
 
             .assessment-container {
                 padding: 0 1rem;
-                margin-top: 2rem; /* Added more space for mobile */
+                margin-top: 2rem;
             }
 
             .question-section {
@@ -1023,39 +1021,41 @@
 
             <div class="risk-score">
                 <div class="risk-meter">
-                    <div class="risk-meter-circle">
-                        <div class="risk-meter-fill"></div>
-                        <div class="risk-meter-value">78</div>
-                    </div>
+                    <svg viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="90" class="risk-meter-bg"></circle>
+                        <circle cx="100" cy="100" r="90" class="risk-meter-fill" id="riskMeterFill"
+                                stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
+                    </svg>
+                    <div class="risk-meter-value" id="riskScore">0</div>
                 </div>
-                <div class="risk-label">HIGH RISK</div>
-                <div class="risk-description">Your organization is at significant risk for turnover and productivity loss</div>
+                <div class="risk-label" id="riskLabel">CALCULATING...</div>
+                <div class="risk-description" id="riskDescription">Analyzing your workplace engagement metrics</div>
             </div>
 
             <div class="insights-grid">
                 <div class="insight-card">
                     <div class="insight-icon">💰</div>
                     <div class="insight-title">Annual Cost of Disengagement</div>
-                    <div class="insight-value">$2.4M</div>
+                    <div class="insight-value" id="costValue">$0</div>
                     <div class="insight-description">Based on your turnover and productivity metrics</div>
                 </div>
                 <div class="insight-card">
                     <div class="insight-icon">🚪</div>
                     <div class="insight-title">Projected Turnover Risk</div>
-                    <div class="insight-value">47%</div>
+                    <div class="insight-value" id="turnoverRisk">0%</div>
                     <div class="insight-description">Employees likely to leave in next 12 months</div>
                 </div>
                 <div class="insight-card">
                     <div class="insight-icon">📉</div>
                     <div class="insight-title">Productivity Gap</div>
-                    <div class="insight-value">31%</div>
+                    <div class="insight-value" id="productivityGap">0%</div>
                     <div class="insight-description">Below optimal performance levels</div>
                 </div>
             </div>
 
             <div class="results-cta">
                 <h3>Ready to Transform Your Workplace?</h3>
-                <p>Clover Era can reduce your turnover by 67% and boost engagement by 47% in just 30 days</p>
+                <p id="ctaText">Clover Era can help improve your workplace engagement metrics</p>
                 <div class="cta-buttons">
                     <a href="/30-day-free-pilot/index.html" class="btn-primary">Start Free 30-Day Trial</a>
                     <a href="/calculator/index.html" class="btn-secondary">See Full ROI Analysis</a>
@@ -1173,15 +1173,190 @@
             updateProgress();
         }
 
+        // Calculate results based on answers
+        function calculateResults() {
+            let riskScore = 0;
+            let turnoverRisk = 0;
+            let productivityGap = 0;
+            let employeeCount = 100; // Default
+            
+            // Q1: Company size - affects cost calculations
+            if (answers['1'] === '10-50') employeeCount = 30;
+            else if (answers['1'] === '51-250') employeeCount = 150;
+            else if (answers['1'] === '251-1000') employeeCount = 500;
+            else if (answers['1'] === '1000+') employeeCount = 2000;
+            
+            // Q2: Turnover rate
+            if (answers['2'] === '0-10') {
+                riskScore += 5;
+                turnoverRisk += 10;
+            } else if (answers['2'] === '10-20') {
+                riskScore += 15;
+                turnoverRisk += 20;
+            } else if (answers['2'] === '20-30') {
+                riskScore += 25;
+                turnoverRisk += 35;
+            } else if (answers['2'] === '30+') {
+                riskScore += 35;
+                turnoverRisk += 50;
+            }
+            
+            // Q3: Engagement level (1-5 scale, inverted for risk)
+            const engagement = parseInt(answers['3'] || 3);
+            riskScore += (6 - engagement) * 8;
+            productivityGap += (6 - engagement) * 10;
+            turnoverRisk += (6 - engagement) * 7;
+            
+            // Q4: Challenges (multi-select)
+            const challenges = answers['4'] || [];
+            const challengeImpact = {
+                'burnout': 8,
+                'retention': 7,
+                'productivity': 6,
+                'culture': 9,
+                'communication': 5,
+                'hybrid': 4,
+                'leadership': 7,
+                'stress': 6
+            };
+            
+            challenges.forEach(challenge => {
+                riskScore += challengeImpact[challenge] || 0;
+                if (challenge === 'burnout' || challenge === 'stress') {
+                    productivityGap += 8;
+                }
+                if (challenge === 'retention' || challenge === 'culture') {
+                    turnoverRisk += 10;
+                }
+            });
+            
+            // Q5: Burnout percentage
+            if (answers['5'] === '0-25') {
+                riskScore += 5;
+                productivityGap += 10;
+            } else if (answers['5'] === '25-50') {
+                riskScore += 15;
+                productivityGap += 20;
+            } else if (answers['5'] === '50-75') {
+                riskScore += 25;
+                productivityGap += 35;
+            } else if (answers['5'] === '75+') {
+                riskScore += 35;
+                productivityGap += 45;
+            }
+            
+            // Normalize scores
+            riskScore = Math.min(Math.max(riskScore, 0), 100);
+            turnoverRisk = Math.min(Math.max(turnoverRisk, 0), 80);
+            productivityGap = Math.min(Math.max(productivityGap, 0), 60);
+            
+            // Calculate cost based on company size and risk factors
+            const avgSalary = 75000;
+            const turnoverCost = (employeeCount * (turnoverRisk / 100) * avgSalary * 0.5);
+            const productivityCost = (employeeCount * avgSalary * (productivityGap / 100) * 0.2);
+            const totalCost = turnoverCost + productivityCost;
+            
+            return {
+                riskScore: Math.round(riskScore),
+                turnoverRisk: Math.round(turnoverRisk),
+                productivityGap: Math.round(productivityGap),
+                totalCost: totalCost
+            };
+        }
+
+        // Animate the risk meter
+        function animateRiskMeter(score) {
+            const circle = document.getElementById('riskMeterFill');
+            const scoreElement = document.getElementById('riskScore');
+            const labelElement = document.getElementById('riskLabel');
+            const descElement = document.getElementById('riskDescription');
+            
+            // Calculate stroke offset (565.48 is the circumference)
+            const circumference = 565.48;
+            const offset = circumference - (score / 100) * circumference;
+            
+            // Determine color and label based on score
+            let color, label, description;
+            if (score < 30) {
+                color = '#10B981'; // Green
+                label = 'LOW RISK';
+                description = 'Your workplace engagement is relatively healthy';
+            } else if (score < 50) {
+                color = '#F59E0B'; // Yellow
+                label = 'MODERATE RISK';
+                description = 'Some areas need attention to prevent issues';
+            } else if (score < 70) {
+                color = '#FF6B6B'; // Coral
+                label = 'HIGH RISK';
+                description = 'Significant risk for turnover and productivity loss';
+            } else {
+                color = '#EF4444'; // Red
+                label = 'CRITICAL RISK';
+                description = 'Immediate action needed to address workplace issues';
+            }
+            
+            // Animate the meter
+            setTimeout(() => {
+                circle.style.stroke = color;
+                circle.style.strokeDashoffset = offset;
+                scoreElement.style.color = color;
+                
+                // Animate the score number
+                let currentScore = 0;
+                const increment = score / 50;
+                const timer = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= score) {
+                        currentScore = score;
+                        clearInterval(timer);
+                    }
+                    scoreElement.textContent = Math.round(currentScore);
+                }, 30);
+                
+                labelElement.textContent = label;
+                descElement.textContent = description;
+            }, 500);
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            if (amount >= 1000000) {
+                return '$' + (amount / 1000000).toFixed(1) + 'M';
+            } else if (amount >= 1000) {
+                return '$' + Math.round(amount / 1000) + 'K';
+            } else {
+                return '$' + Math.round(amount);
+            }
+        }
+
         // Handle form submission
         document.getElementById('assessmentForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Collect form data
-            const formData = new FormData(this);
-            Object.keys(answers).forEach(key => {
-                formData.append(key, answers[key]);
-            });
+            // Calculate results
+            const results = calculateResults();
+            
+            // Update results display
+            animateRiskMeter(results.riskScore);
+            
+            // Animate other metrics
+            setTimeout(() => {
+                document.getElementById('costValue').textContent = formatCurrency(results.totalCost);
+                document.getElementById('turnoverRisk').textContent = results.turnoverRisk + '%';
+                document.getElementById('productivityGap').textContent = results.productivityGap + '%';
+                
+                // Update CTA text based on risk level
+                const ctaText = document.getElementById('ctaText');
+                if (results.riskScore >= 70) {
+                    ctaText.textContent = 'Clover Era can reduce your critical risk by 67% and save you ' + 
+                                         formatCurrency(results.totalCost * 0.67) + ' annually';
+                } else if (results.riskScore >= 50) {
+                    ctaText.textContent = 'Clover Era can reduce your turnover by 47% and boost engagement, saving ' + 
+                                         formatCurrency(results.totalCost * 0.47) + ' per year';
+                } else {
+                    ctaText.textContent = 'Clover Era can help maintain and improve your already good engagement levels';
+                }
+            }, 1000);
             
             // Hide contact form and show results
             document.querySelector('.contact-section').classList.remove('active');
@@ -1191,8 +1366,13 @@
             document.querySelector('.progress-container').style.display = 'none';
             document.querySelector('.progress-text').style.display = 'none';
             
-            // Simulate sending data (in production, this would be an actual API call)
-            console.log('Assessment data:', Object.fromEntries(formData));
+            // Log data (in production, this would be an actual API call)
+            const formData = new FormData(this);
+            console.log('Assessment data:', {
+                formData: Object.fromEntries(formData),
+                answers: answers,
+                results: results
+            });
         });
     </script>
 </body>
