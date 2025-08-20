@@ -814,6 +814,8 @@
             }
         }
     </style>
+    <!-- Add jsPDF library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <script src="/js/header.js"></script>
@@ -885,7 +887,7 @@
 
                 <div class="total-loss">
                     <div class="loss-label">Total Annual Cost</div>
-                    <div class="loss-amount" id="totalLoss">$2,812,500</div>
+                    <div class="loss-amount" id="totalLoss">$0</div>
                     <div class="loss-period">Every Year</div>
                 </div>
 
@@ -895,21 +897,21 @@
                             <div class="breakdown-icon">🚪</div>
                             <span class="breakdown-text">Turnover Costs</span>
                         </div>
-                        <div class="breakdown-value" id="turnoverCost">$1,687,500</div>
+                        <div class="breakdown-value" id="turnoverCost">$0</div>
                     </div>
                     <div class="breakdown-item">
                         <div class="breakdown-label">
                             <div class="breakdown-icon">📉</div>
                             <span class="breakdown-text">Lost Productivity</span>
                         </div>
-                        <div class="breakdown-value" id="productivityCost">$750,000</div>
+                        <div class="breakdown-value" id="productivityCost">$0</div>
                     </div>
                     <div class="breakdown-item">
                         <div class="breakdown-label">
                             <div class="breakdown-icon">🏥</div>
                             <span class="breakdown-text">Absenteeism</span>
                         </div>
-                        <div class="breakdown-value" id="absenteeismCost">$375,000</div>
+                        <div class="breakdown-value" id="absenteeismCost">$0</div>
                     </div>
                 </div>
 
@@ -1142,15 +1144,299 @@
         document.getElementById('employees').addEventListener('input', calculateROI);
         document.getElementById('avgSalary').addEventListener('input', calculateROI);
 
-        // Download report function
+        // Download report function with PDF generation
         function downloadReport() {
             const email = document.getElementById('reportEmail').value;
-            if (email && email.includes('@')) {
-                alert('Thank you! Your detailed ROI report will be sent to ' + email + ' shortly.');
-                document.getElementById('reportEmail').value = '';
-            } else {
+            if (!email || !email.includes('@')) {
                 alert('Please enter a valid email address.');
+                return;
             }
+
+            // Generate PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Set up colors (using RGB values)
+            const tealRGB = [70, 174, 184]; // #46AEB8
+            const coralRGB = [255, 107, 107]; // #FF6B6B
+            const grayRGB = [75, 85, 99]; // #4B5563
+            const darkRGB = [17, 24, 39]; // #111827
+            
+            // Get current values from the calculator
+            const employees = document.getElementById('employees').value;
+            const avgSalary = document.getElementById('avgSalary').value;
+            const turnoverRate = document.getElementById('turnoverRate').value;
+            const engagementRate = document.getElementById('engagementRate').value;
+            const burnoutRate = document.getElementById('burnoutRate').value;
+            
+            // Get calculated values
+            const totalLoss = document.getElementById('totalLoss').innerHTML;
+            const turnoverCost = document.getElementById('turnoverCost').innerHTML;
+            const productivityCost = document.getElementById('productivityCost').innerHTML;
+            const absenteeismCost = document.getElementById('absenteeismCost').innerHTML;
+            const annualSavings = document.getElementById('annualSavings').innerHTML;
+            const roiPercentage = document.getElementById('roiPercentage').innerHTML;
+            const paybackPeriod = document.getElementById('paybackPeriod').innerHTML;
+            const cloverInvestment = document.getElementById('cloverInvestment').innerHTML;
+            const dailyLoss = document.getElementById('dailyLoss').innerHTML;
+            
+            // Page 1 - Header and Executive Summary
+            let yPos = 20;
+            
+            // Add logo/header
+            doc.setFillColor(...tealRGB);
+            doc.rect(0, 0, 210, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text('CLOVER ERA', 20, 20);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text('ROI Analysis Report', 20, 30);
+            
+            // Date and company info
+            yPos = 55;
+            doc.setTextColor(...grayRGB);
+            doc.setFontSize(10);
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            doc.text(`Report Generated: ${today}`, 20, yPos);
+            doc.text(`For: ${email}`, 20, yPos + 5);
+            
+            // Executive Summary Title
+            yPos = 75;
+            doc.setTextColor(...darkRGB);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('Executive Summary', 20, yPos);
+            
+            // Critical Alert Box
+            yPos = 85;
+            doc.setFillColor(...coralRGB);
+            doc.rect(20, yPos, 170, 35, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('CRITICAL BUSINESS IMPACT ALERT', 105, yPos + 10, { align: 'center' });
+            doc.setFontSize(20);
+            doc.text(totalLoss, 105, yPos + 22, { align: 'center' });
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text('Annual losses from disengagement, burnout & turnover', 105, yPos + 30, { align: 'center' });
+            
+            // Key Metrics Section
+            yPos = 130;
+            doc.setTextColor(...darkRGB);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Your Current Situation', 20, yPos);
+            
+            yPos = 140;
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor(...grayRGB);
+            
+            // Current metrics in a grid
+            const metrics = [
+                ['Organization Size:', `${employees} employees`],
+                ['Average Salary:', `${parseInt(avgSalary).toLocaleString()}`],
+                ['Current Turnover Rate:', `${turnoverRate}%`],
+                ['Current Engagement Level:', `${engagementRate}%`],
+                ['Burnout Rate:', `${burnoutRate}%`]
+            ];
+            
+            metrics.forEach(([label, value]) => {
+                doc.setFont(undefined, 'normal');
+                doc.text(label, 25, yPos);
+                doc.setFont(undefined, 'bold');
+                doc.text(value, 100, yPos);
+                yPos += 8;
+            });
+            
+            // Cost Breakdown
+            yPos = 185;
+            doc.setTextColor(...darkRGB);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Annual Cost Breakdown', 20, yPos);
+            
+            yPos = 195;
+            // Draw breakdown boxes
+            const breakdownItems = [
+                ['Turnover Costs', turnoverCost, coralRGB],
+                ['Lost Productivity', productivityCost, coralRGB],
+                ['Absenteeism', absenteeismCost, coralRGB]
+            ];
+            
+            breakdownItems.forEach(([label, value, color]) => {
+                // Draw colored bar
+                doc.setFillColor(...color);
+                doc.rect(25, yPos - 5, 3, 12, 'F');
+                
+                doc.setTextColor(...grayRGB);
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(11);
+                doc.text(label, 35, yPos);
+                
+                doc.setTextColor(...darkRGB);
+                doc.setFont(undefined, 'bold');
+                doc.setFontSize(12);
+                doc.text(value, 150, yPos, { align: 'right' });
+                
+                yPos += 15;
+            });
+            
+            // Daily Impact
+            yPos = 245;
+            doc.setFillColor(255, 249, 245);
+            doc.rect(20, yPos, 170, 20, 'F');
+            doc.setTextColor(...darkRGB);
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.text('Every day you delay costs your organization:', 30, yPos + 12);
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(...coralRGB);
+            doc.text(dailyLoss, 160, yPos + 12, { align: 'right' });
+            
+            // Page 2 - ROI Analysis
+            doc.addPage();
+            yPos = 30;
+            
+            // ROI Header
+            doc.setTextColor(...darkRGB);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('Your ROI with Clover ERA', 20, yPos);
+            
+            // ROI Metrics Grid
+            yPos = 45;
+            doc.setFillColor(...tealRGB);
+            doc.rect(20, yPos, 170, 50, 'F');
+            
+            // ROI Percentage
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(36);
+            doc.setFont(undefined, 'bold');
+            doc.text(roiPercentage, 55, yPos + 25, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text('Return on Investment', 55, yPos + 35, { align: 'center' });
+            
+            // Payback Period
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text(paybackPeriod, 105, yPos + 25, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text('Months to Payback', 105, yPos + 35, { align: 'center' });
+            
+            // Savings
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text(annualSavings, 155, yPos + 25, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text('Annual Savings', 155, yPos + 35, { align: 'center' });
+            
+            // Investment Required
+            yPos = 105;
+            doc.setTextColor(...grayRGB);
+            doc.setFontSize(11);
+            doc.text(`Clover ERA Investment: ${cloverInvestment}/year`, 105, yPos, { align: 'center' });
+            
+            // Before vs After Comparison
+            yPos = 120;
+            doc.setTextColor(...darkRGB);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Transformation Impact', 20, yPos);
+            
+            yPos = 130;
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(10);
+            
+            // Comparison table
+            const comparisons = [
+                ['Metric', 'Current State', 'With Clover ERA'],
+                ['Annual Turnover', `${Math.round(employees * turnoverRate / 100)} employees`, `${Math.round(employees * turnoverRate * 0.5 / 100)} employees`],
+                ['Engagement Score', `${engagementRate}%`, `${Math.min(75, parseInt(engagementRate) + 40)}%`],
+                ['Productivity Loss', '34%', '8%'],
+                ['Annual Cost', totalLoss, `${Math.round(parseInt(totalLoss.replace(/[$,]/g, '')) * 0.3).toLocaleString()}`]
+            ];
+            
+            // Draw table header
+            doc.setFillColor(...tealRGB);
+            doc.rect(20, yPos, 170, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont(undefined, 'bold');
+            doc.text(comparisons[0][0], 25, yPos + 7);
+            doc.text(comparisons[0][1], 85, yPos + 7);
+            doc.text(comparisons[0][2], 140, yPos + 7);
+            
+            yPos += 10;
+            
+            // Draw table rows
+            comparisons.slice(1).forEach((row, index) => {
+                if (index % 2 === 0) {
+                    doc.setFillColor(248, 250, 252);
+                    doc.rect(20, yPos, 170, 10, 'F');
+                }
+                
+                doc.setTextColor(...grayRGB);
+                doc.setFont(undefined, 'normal');
+                doc.text(row[0], 25, yPos + 7);
+                doc.setTextColor(...coralRGB);
+                doc.text(row[1], 85, yPos + 7);
+                doc.setTextColor(16, 185, 129); // Green
+                doc.text(row[2], 140, yPos + 7);
+                
+                yPos += 10;
+            });
+            
+            // Next Steps
+            yPos = 195;
+            doc.setTextColor(...darkRGB);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Recommended Next Steps', 20, yPos);
+            
+            yPos = 205;
+            const steps = [
+                'Schedule a personalized demo to see Clover ERA in action',
+                'Start your 30-day free trial with no commitment',
+                'Get your team onboarded in less than 24 hours',
+                'See measurable results within the first 2 weeks'
+            ];
+            
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor(...grayRGB);
+            
+            steps.forEach((step, index) => {
+                doc.setFillColor(...tealRGB);
+                doc.circle(25, yPos - 2, 2, 'F');
+                doc.text(`${index + 1}. ${step}`, 30, yPos);
+                yPos += 10;
+            });
+            
+            // Footer
+            yPos = 260;
+            doc.setDrawColor(...tealRGB);
+            doc.line(20, yPos, 190, yPos);
+            
+            yPos += 10;
+            doc.setTextColor(...grayRGB);
+            doc.setFontSize(9);
+            doc.text('Clover ERA | Neuroscience-Powered Employee Engagement Platform', 105, yPos, { align: 'center' });
+            doc.text('Contact: hello@clover-era.com | www.cloverera.com', 105, yPos + 5, { align: 'center' });
+            
+            // Save the PDF
+            const fileName = `Clover_ERA_ROI_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+            
+            // Show success message
+            alert(`Thank you! Your ROI report "${fileName}" has been downloaded. A copy will also be sent to ${email}.`);
+            document.getElementById('reportEmail').value = '';
         }
 
         // Initialize calculator on load
