@@ -81,7 +81,6 @@
             border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 600;
-            margin-top: 1.5rem;
             margin-bottom: 1.5rem;
             backdrop-filter: blur(10px);
         }
@@ -1210,8 +1209,46 @@
 
     <!-- Footer will be inserted by footer.js -->
     <script src="/js/footer.js"></script>
+    
+    <!-- Cookie Consent Script -->
+    <script src="/js/cookie-consent.js"></script>
 
     <script>
+        // Functions to handle the demo banner buttons on this page
+        function handleAcceptAll() {
+            if (window.CookieConsent) {
+                // Use the actual cookie consent manager
+                window.CookieConsent.acceptAll();
+            } else {
+                // Fallback for demo
+                alert('All cookies accepted! In production, this will save your preferences and close any consent banners.');
+            }
+        }
+
+        function handleManagePreferences() {
+            if (window.CookieConsent) {
+                // Use the actual cookie consent manager to show preferences
+                window.CookieConsent.showPreferences();
+            } else if (window.openCookiePreferences) {
+                // Use the global function if available
+                window.openCookiePreferences();
+            } else {
+                // Fallback for demo
+                alert('Cookie preferences panel would open here. This will show a modal where you can manage cookie categories.');
+            }
+        }
+        
+        // Handle the cookie settings button in the management section
+        function openCookieSettings() {
+            if (window.CookieConsent) {
+                window.CookieConsent.showPreferences();
+            } else if (window.openCookiePreferences) {
+                window.openCookiePreferences();
+            } else {
+                alert('Cookie preferences panel would open here. Make sure cookie-consent.js is properly loaded.');
+            }
+        }
+    
         // Smooth scroll for navigation links
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
@@ -1281,15 +1318,7 @@
         }
 
         // Demo cookie banner interaction
-        document.querySelectorAll('.banner-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (this.classList.contains('banner-btn-accept')) {
-                    alert('This is a demo. In production, this would accept all cookies and close the banner.');
-                } else {
-                    alert('This is a demo. In production, this would open the cookie preference center.');
-                }
-            });
-        });
+        // These are now handled by the functions above, so we can remove the demo alerts
     </script>
     <!-- Cookie Consent - Add to every page -->
 <script src="/js/cookie-consent.js"></script>
