@@ -818,7 +818,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <script src="/js/header.js"></script>
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">Clover Era</a>
+            <button class="mobile-menu-toggle" id="mobileToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/solutions">Solutions</a>
+                <a href="/resources">Resources</a>
+                <a href="/pilot/index.html" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
 
     <!-- Calculator Hero -->
     <section class="calc-hero">
@@ -1096,16 +1112,16 @@
             const paybackPeriod = (annualCloverCost / (grossSavings / 12)).toFixed(1);
             
             // Update main results with proper formatting
-            document.getElementById('totalLoss').textContent = `${Math.round(totalLoss).toLocaleString()}`;
-            document.getElementById('turnoverCost').textContent = `${Math.round(turnoverCost).toLocaleString()}`;
-            document.getElementById('productivityCost').textContent = `${Math.round(productivityCost).toLocaleString()}`;
-            document.getElementById('absenteeismCost').textContent = `${Math.round(absenteeismCost).toLocaleString()}`;
+            document.getElementById('totalLoss').textContent = `$${Math.round(totalLoss).toLocaleString()}`;
+            document.getElementById('turnoverCost').textContent = `$${Math.round(turnoverCost).toLocaleString()}`;
+            document.getElementById('productivityCost').textContent = `$${Math.round(productivityCost).toLocaleString()}`;
+            document.getElementById('absenteeismCost').textContent = `$${Math.round(absenteeismCost).toLocaleString()}`;
             
             // Update ROI metrics
             document.getElementById('roiPercentage').textContent = `${roi}%`;
             document.getElementById('paybackPeriod').textContent = paybackPeriod;
-            document.getElementById('annualSavings').textContent = `${Math.round(netSavings).toLocaleString()}`;
-            document.getElementById('cloverInvestment').textContent = `${Math.round(annualCloverCost).toLocaleString()}`;
+            document.getElementById('annualSavings').textContent = `$${Math.round(netSavings).toLocaleString()}`;
+            document.getElementById('cloverInvestment').textContent = `$${Math.round(annualCloverCost).toLocaleString()}`;
             
             // Update comparison table
             document.getElementById('currentTurnoverCount').textContent = `${annualTurnoverCount} employees`;
@@ -1116,12 +1132,12 @@
             document.getElementById('projectedProductivityLoss').textContent = `8%`;
             document.getElementById('currentSickDays').textContent = `12 days`;
             document.getElementById('projectedSickDays').textContent = `5 days`;
-            document.getElementById('currentTotalCost').textContent = `${Math.round(totalLoss).toLocaleString()}`;
-            document.getElementById('projectedTotalCost').textContent = `${Math.round(newTotalCost).toLocaleString()}`;
+            document.getElementById('currentTotalCost').textContent = `$${Math.round(totalLoss).toLocaleString()}`;
+            document.getElementById('projectedTotalCost').textContent = `$${Math.round(newTotalCost).toLocaleString()}`;
             
             // Update daily loss
             const dailyLoss = Math.round(totalLoss / 365);
-            document.getElementById('dailyLoss').textContent = `${Math.round(dailyLoss).toLocaleString()}`;
+            document.getElementById('dailyLoss').textContent = `$${Math.round(dailyLoss).toLocaleString()}`;
         }
 
         // Update range displays
@@ -1144,15 +1160,64 @@
         document.getElementById('employees').addEventListener('input', calculateROI);
         document.getElementById('avgSalary').addEventListener('input', calculateROI);
 
-        // Download report function with PDF generation
-        function downloadReport() {
+        // Function to send data to Google Sheets
+        async function sendToGoogleSheets(data) {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzxriWZh5M6zQSNEHMtow_ljXIBMgBVW1ftXB66rHXmyQO_BU_WcSaURnhwalEz34d0/exec';
+            
+            try {
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data)
+                });
+                
+                console.log('Data sent successfully to Google Sheets');
+                return true;
+            } catch (error) {
+                console.error('Error sending data to Google Sheets:', error);
+                return false;
+            }
+        }
+
+        // Modified download report function to also send to Google Sheets
+        async function downloadReport() {
             const email = document.getElementById('reportEmail').value;
             if (!email || !email.includes('@')) {
                 alert('Please enter a valid email address.');
                 return;
             }
 
-            // Generate PDF using jsPDF
+            // Prepare data for Google Sheets
+            const sheetData = {
+                timestamp: new Date().toISOString(),
+                email: email,
+                employees: document.getElementById('employees').value,
+                avgSalary: document.getElementById('avgSalary').value,
+                turnoverRate: document.getElementById('turnoverRate').value,
+                engagementRate: document.getElementById('engagementRate').value,
+                burnoutRate: document.getElementById('burnoutRate').value,
+                totalAnnualLoss: document.getElementById('totalLoss').textContent.replace(/[$,]/g, ''),
+                turnoverCost: document.getElementById('turnoverCost').textContent.replace(/[$,]/g, ''),
+                productivityCost: document.getElementById('productivityCost').textContent.replace(/[$,]/g, ''),
+                absenteeismCost: document.getElementById('absenteeismCost').textContent.replace(/[$,]/g, ''),
+                annualSavings: document.getElementById('annualSavings').textContent.replace(/[$,]/g, ''),
+                roiPercentage: document.getElementById('roiPercentage').textContent.replace('%', ''),
+                paybackPeriod: document.getElementById('paybackPeriod').textContent,
+                cloverInvestment: document.getElementById('cloverInvestment').textContent.replace(/[$,]/g, ''),
+                source: 'ROI Calculator Web'
+            };
+
+            // Send to Google Sheets
+            const sent = await sendToGoogleSheets(sheetData);
+            
+            if (sent) {
+                console.log('Data sent to Google Sheets successfully');
+            }
+
+            // Generate PDF using jsPDF (existing code continues...)
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
@@ -1170,15 +1235,15 @@
             const burnoutRate = document.getElementById('burnoutRate').value;
             
             // Get calculated values
-            const totalLoss = document.getElementById('totalLoss').innerHTML;
-            const turnoverCost = document.getElementById('turnoverCost').innerHTML;
-            const productivityCost = document.getElementById('productivityCost').innerHTML;
-            const absenteeismCost = document.getElementById('absenteeismCost').innerHTML;
-            const annualSavings = document.getElementById('annualSavings').innerHTML;
-            const roiPercentage = document.getElementById('roiPercentage').innerHTML;
-            const paybackPeriod = document.getElementById('paybackPeriod').innerHTML;
-            const cloverInvestment = document.getElementById('cloverInvestment').innerHTML;
-            const dailyLoss = document.getElementById('dailyLoss').innerHTML;
+            const totalLoss = document.getElementById('totalLoss').textContent;
+            const turnoverCost = document.getElementById('turnoverCost').textContent;
+            const productivityCost = document.getElementById('productivityCost').textContent;
+            const absenteeismCost = document.getElementById('absenteeismCost').textContent;
+            const annualSavings = document.getElementById('annualSavings').textContent;
+            const roiPercentage = document.getElementById('roiPercentage').textContent;
+            const paybackPeriod = document.getElementById('paybackPeriod').textContent;
+            const cloverInvestment = document.getElementById('cloverInvestment').textContent;
+            const dailyLoss = document.getElementById('dailyLoss').textContent;
             
             // Page 1 - Header and Executive Summary
             let yPos = 20;
@@ -1238,7 +1303,7 @@
             // Current metrics in a grid
             const metrics = [
                 ['Organization Size:', `${employees} employees`],
-                ['Average Salary:', `${parseInt(avgSalary).toLocaleString()}`],
+                ['Average Salary:', `$${parseInt(avgSalary).toLocaleString()}`],
                 ['Current Turnover Rate:', `${turnoverRate}%`],
                 ['Current Engagement Level:', `${engagementRate}%`],
                 ['Burnout Rate:', `${burnoutRate}%`]
@@ -1306,7 +1371,7 @@
             doc.setTextColor(...darkRGB);
             doc.setFontSize(18);
             doc.setFont(undefined, 'bold');
-            doc.text('Your ROI with Clover ERA', 20, yPos);
+            doc.text('Your ROI with Clover Era', 20, yPos);
             
             // ROI Metrics Grid
             yPos = 45;
@@ -1357,11 +1422,11 @@
             
             // Comparison table
             const comparisons = [
-                ['Metric', 'Current State', 'With Clover ERA'],
+                ['Metric', 'Current State', 'With Clover Era'],
                 ['Annual Turnover', `${Math.round(employees * turnoverRate / 100)} employees`, `${Math.round(employees * turnoverRate * 0.5 / 100)} employees`],
                 ['Engagement Score', `${engagementRate}%`, `${Math.min(75, parseInt(engagementRate) + 40)}%`],
                 ['Productivity Loss', '34%', '8%'],
-                ['Annual Cost', totalLoss, `${Math.round(parseInt(totalLoss.replace(/[$,]/g, '')) * 0.3).toLocaleString()}`]
+                ['Annual Cost', totalLoss, `$${Math.round(parseInt(totalLoss.replace(/[$,]/g, '')) * 0.3).toLocaleString()}`]
             ];
             
             // Draw table header
@@ -1402,7 +1467,7 @@
             
             yPos = 205;
             const steps = [
-                'Schedule a personalized demo to see Clover ERA in action',
+                'Schedule a personalized demo to see Clover Era in action',
                 'Start your 30-day free trial with no commitment',
                 'Get your team onboarded in less than 24 hours',
                 'See measurable results within the first 2 weeks'
@@ -1439,10 +1504,45 @@
             document.getElementById('reportEmail').value = '';
         }
 
+        // Optional: Auto-send data when calculator values change (after a delay)
+        let calculatorTimeout;
+        function trackCalculatorUsage() {
+            clearTimeout(calculatorTimeout);
+            calculatorTimeout = setTimeout(() => {
+                // Send anonymous usage data (no email required)
+                const usageData = {
+                    timestamp: new Date().toISOString(),
+                    email: 'anonymous@calculator.com', // Anonymous tracking
+                    employees: document.getElementById('employees').value,
+                    avgSalary: document.getElementById('avgSalary').value,
+                    turnoverRate: document.getElementById('turnoverRate').value,
+                    engagementRate: document.getElementById('engagementRate').value,
+                    burnoutRate: document.getElementById('burnoutRate').value,
+                    totalAnnualLoss: document.getElementById('totalLoss').textContent.replace(/[$,]/g, ''),
+                    turnoverCost: document.getElementById('turnoverCost').textContent.replace(/[$,]/g, ''),
+                    productivityCost: document.getElementById('productivityCost').textContent.replace(/[$,]/g, ''),
+                    absenteeismCost: document.getElementById('absenteeismCost').textContent.replace(/[$,]/g, ''),
+                    annualSavings: document.getElementById('annualSavings').textContent.replace(/[$,]/g, ''),
+                    roiPercentage: document.getElementById('roiPercentage').textContent.replace('%', ''),
+                    paybackPeriod: document.getElementById('paybackPeriod').textContent,
+                    cloverInvestment: document.getElementById('cloverInvestment').textContent.replace(/[$,]/g, ''),
+                    source: 'ROI Calculator Anonymous'
+                };
+                
+                // Silently send to Google Sheets for analytics
+                sendToGoogleSheets(usageData);
+            }, 5000); // Wait 5 seconds after last change
+        }
+
+        // Add tracking to all inputs (optional - remove if you don't want anonymous tracking)
+        document.getElementById('employees').addEventListener('input', trackCalculatorUsage);
+        document.getElementById('avgSalary').addEventListener('input', trackCalculatorUsage);
+        document.getElementById('turnoverRate').addEventListener('input', trackCalculatorUsage);
+        document.getElementById('engagementRate').addEventListener('input', trackCalculatorUsage);
+        document.getElementById('burnoutRate').addEventListener('input', trackCalculatorUsage);
+
         // Initialize calculator on load
         calculateROI();
     </script>
-    <!-- Cookie Consent - Add to every page -->
-    <script src="/js/cookie-consent.js"></script>
 </body>
 </html>
