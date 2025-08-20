@@ -264,8 +264,6 @@
             display: block;
         }
 
-       
-
         /* Hero Section with Image */
         .hero {
             margin-top: 80px;
@@ -351,6 +349,22 @@
             color: var(--text-secondary);
             margin-bottom: 3rem;
             font-weight: 400;
+        }
+
+        .source-citation {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        .source-citation a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .source-citation a:hover {
+            text-decoration: underline;
         }
 
         /* SEO Content Section */
@@ -499,6 +513,11 @@
             margin-bottom: 0.5rem;
         }
 
+        .stress-cost-period {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
         /* Warning Signs Section */
         .warning-signs-section {
             padding: 4rem 2rem;
@@ -539,6 +558,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            user-select: none;
         }
 
         .sign-card:hover {
@@ -561,6 +581,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            flex-shrink: 0;
         }
 
         .sign-card.selected .sign-checkbox {
@@ -572,6 +593,57 @@
             content: '✓';
             color: var(--white);
             font-weight: bold;
+        }
+
+        .sign-text {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Stress Alert Box */
+        .stress-alert {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
+            border: 2px solid var(--warning);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .alert-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-stat {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--warning);
         }
 
         /* Calculator Section */
@@ -736,6 +808,11 @@
             margin-bottom: 0.75rem;
         }
 
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
         /* Quick Wins Section */
         .quick-wins {
             padding: 4rem 2rem;
@@ -746,6 +823,19 @@
             max-width: 900px;
             margin: 0 auto;
             text-align: center;
+        }
+
+        .quick-wins h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .quick-wins-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
         }
 
         .wins-list {
@@ -762,6 +852,25 @@
             box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
         }
 
+        .win-number {
+            color: var(--primary-teal);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .win-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .win-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
         /* CTA Section */
         .cta-section {
             padding: 6rem 2rem;
@@ -772,6 +881,13 @@
         .cta-content {
             max-width: 800px;
             margin: 0 auto;
+        }
+
+        .cta-content h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
         }
 
         .cta-buttons {
@@ -862,11 +978,20 @@
                 font-size: 4rem;
             }
             
-            .mobile-menu-toggle {
-                display: flex !important;
+            .signs-grid {
+                grid-template-columns: 1fr;
             }
-            
-            
+
+            .stress-levels {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stress-level {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1223,193 +1348,125 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileToggle?.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-        });
-
-        // Warning signs checker
-        let selectedSigns = 0;
-        const stressAlert = document.getElementById('stressAlert');
-        const stressPercentage = document.getElementById('stressPercentage');
-        
-        document.querySelectorAll('.sign-card').forEach(card => {
-            card.addEventListener('click', function() {
-                this.classList.toggle('selected');
-                
-                if (this.classList.contains('selected')) {
-                    selectedSigns++;
-                } else {
-                    selectedSigns--;
-                }
-                
-                const percentage = Math.min(47 + (selectedSigns * 6), 89);
-                
-                if (selectedSigns >= 3) {
-                    stressAlert.style.display = 'block';
-                    stressPercentage.textContent = percentage;
-                } else {
-                    stressAlert.style.display = 'none';
-                }
-            });
-        });
-
-        // Stress cost calculator with formatting
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-        
-        function calculateStressCosts() {
-            const employees = parseInt(document.getElementById('employees').value) || 250;
-            const avgSalary = parseInt(document.getElementById('avgSalary').value) || 55000;
-            const stressDays = parseInt(document.getElementById('stressDays').value) || 10;
+        // Warning signs checker - FIXED VERSION
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedSigns = 0;
+            const stressAlert = document.getElementById('stressAlert');
+            const stressPercentage = document.getElementById('stressPercentage');
             
-            const stressedEmployees = Math.round(employees * 0.47);
-            const productivityLoss = stressedEmployees * avgSalary * 0.34;
-            const dailySalary = avgSalary / 260;
-            const absenteeismCost = employees * stressDays * dailySalary;
-            const healthcareCost = stressedEmployees * 3000;
-            const turnoverRate = 0.23;
-            const turnoverCount = Math.round(stressedEmployees * turnoverRate);
-            const turnoverCost = turnoverCount * avgSalary * 1.5;
-            const totalCost = productivityLoss + absenteeismCost + healthcareCost + turnoverCost;
+            // Add click handlers to all sign cards
+            document.querySelectorAll('.sign-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    
+                    if (this.classList.contains('selected')) {
+                        selectedSigns++;
+                    } else {
+                        selectedSigns--;
+                    }
+                    
+                    // Calculate percentage based on selected signs
+                    const percentage = Math.min(47 + (selectedSigns * 6), 89);
+                    
+                    // Show alert if 3 or more signs selected
+                    if (selectedSigns >= 3) {
+                        stressAlert.style.display = 'block';
+                        stressPercentage.textContent = percentage;
+                    } else {
+                        stressAlert.style.display = 'none';
+                    }
+                });
+            });
+
+            // Stress cost calculator with formatting
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
             
-            document.getElementById('productivityLoss').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(productivityLoss));
-            document.getElementById('absenteeismCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(absenteeismCost));
-            document.getElementById('healthcareCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(healthcareCost));
-            document.getElementById('turnoverCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(turnoverCost));
-            document.getElementById('totalCost').textContent = '
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-</body>
-</html> + formatNumber(Math.round(totalCost));
-        }
-        
-        // Format input fields with commas
-        function formatInputValue(input) {
-            let value = input.value.replace(/,/g, '');
-            if (!isNaN(value) && value !== '') {
-                input.value = formatNumber(value);
+            function calculateStressCosts() {
+                const employees = parseInt(document.getElementById('employees').value.replace(/,/g, '')) || 250;
+                const avgSalary = parseInt(document.getElementById('avgSalary').value.replace(/,/g, '')) || 55000;
+                const stressDays = parseInt(document.getElementById('stressDays').value) || 10;
+                
+                const stressedEmployees = Math.round(employees * 0.47);
+                const productivityLoss = stressedEmployees * avgSalary * 0.34;
+                const dailySalary = avgSalary / 260;
+                const absenteeismCost = employees * stressDays * dailySalary;
+                const healthcareCost = stressedEmployees * 3000;
+                const turnoverRate = 0.23;
+                const turnoverCount = Math.round(stressedEmployees * turnoverRate);
+                const turnoverCost = turnoverCount * avgSalary * 1.5;
+                const totalCost = productivityLoss + absenteeismCost + healthcareCost + turnoverCost;
+                
+                document.getElementById('productivityLoss').textContent = '$' + formatNumber(Math.round(productivityLoss));
+                document.getElementById('absenteeismCost').textContent = '$' + formatNumber(Math.round(absenteeismCost));
+                document.getElementById('healthcareCost').textContent = '$' + formatNumber(Math.round(healthcareCost));
+                document.getElementById('turnoverCost').textContent = '$' + formatNumber(Math.round(turnoverCost));
+                document.getElementById('totalCost').textContent = '$' + formatNumber(Math.round(totalCost));
             }
-        }
-        
-        // Handle input formatting
-        const employeesInput = document.getElementById('employees');
-        const salaryInput = document.getElementById('avgSalary');
-        
-        employeesInput?.addEventListener('input', function(e) {
-            let value = this.value.replace(/,/g, '');
-            if (!isNaN(value)) {
-                calculateStressCosts();
-            }
-        });
-        
-        employeesInput?.addEventListener('blur', function() {
-            formatInputValue(this);
-        });
-        
-        salaryInput?.addEventListener('input', function(e) {
-            let value = this.value.replace(/,/g, '');
-            if (!isNaN(value)) {
-                calculateStressCosts();
-            }
-        });
-        
-        salaryInput?.addEventListener('blur', function() {
-            formatInputValue(this);
-        });
-        
-        document.getElementById('stressDays')?.addEventListener('input', calculateStressCosts);
-
-        // Initialize calculator with formatted values
-        calculateStressCosts();
-        formatInputValue(employeesInput);
-        formatInputValue(salaryInput);
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Format input fields with commas
+            function formatInputValue(input) {
+                let value = input.value.replace(/,/g, '');
+                if (!isNaN(value) && value !== '') {
+                    input.value = formatNumber(value);
                 }
+            }
+            
+            // Handle input formatting
+            const employeesInput = document.getElementById('employees');
+            const salaryInput = document.getElementById('avgSalary');
+            
+            if (employeesInput) {
+                employeesInput.addEventListener('input', function(e) {
+                    let value = this.value.replace(/,/g, '');
+                    if (!isNaN(value)) {
+                        calculateStressCosts();
+                    }
+                });
+                
+                employeesInput.addEventListener('blur', function() {
+                    formatInputValue(this);
+                });
+            }
+            
+            if (salaryInput) {
+                salaryInput.addEventListener('input', function(e) {
+                    let value = this.value.replace(/,/g, '');
+                    if (!isNaN(value)) {
+                        calculateStressCosts();
+                    }
+                });
+                
+                salaryInput.addEventListener('blur', function() {
+                    formatInputValue(this);
+                });
+            }
+            
+            const stressDaysInput = document.getElementById('stressDays');
+            if (stressDaysInput) {
+                stressDaysInput.addEventListener('input', calculateStressCosts);
+            }
+
+            // Initialize calculator with formatted values
+            calculateStressCosts();
+            if (employeesInput) formatInputValue(employeesInput);
+            if (salaryInput) formatInputValue(salaryInput);
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
             });
         });
     </script>
-<!-- Cookie Consent - Add to every page -->
-<script src="/js/cookie-consent.js"></script>
-</body>
-</html>
+    
+    <!-- Cookie Consent - Add to every page -->
+    <script src="/js/cookie-consent.js"></script>
 </body>
 </html>
