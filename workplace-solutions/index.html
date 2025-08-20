@@ -15,8 +15,6 @@
     <!-- GEO Tags -->
     <meta name="geo.region" content="US">
     <meta name="geo.placename" content="United States">
-    <meta name="geo.position" content="40.7128;-74.0060">
-    <meta name="ICBM" content="40.7128, -74.0060">
     
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Workplace Solutions Hub | 30+ Employee Performance Solutions">
@@ -25,25 +23,6 @@
     <meta property="og:url" content="https://cloverera.com/workplace-solutions/">
     <meta property="og:image" content="https://cloverera.com/images/workplace-solutions-hub.jpg">
     <meta property="og:site_name" content="Clover Era">
-    
-    <!-- Schema Markup -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "Workplace Solutions Hub",
-      "description": "Comprehensive workplace solutions for employee wellbeing, performance, and organizational health",
-      "url": "https://cloverera.com/workplace-solutions/",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Clover Era",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://cloverera.com/images/Clover-era-new-logo-1.png"
-        }
-      }
-    }
-    </script>
     
     <style>
         * {
@@ -66,7 +45,6 @@
             --success: #10B981;
             --warning: #F59E0B;
             --danger: #EF4444;
-            --info: #3B82F6;
         }
 
         body {
@@ -142,10 +120,9 @@
         /* Hero Section */
         .hero {
             margin-top: 70px;
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
             text-align: center;
-            border-bottom: 1px solid var(--medium-gray);
         }
 
         .hero h1 {
@@ -159,7 +136,7 @@
             font-size: 1.3rem;
             color: var(--text-secondary);
             max-width: 800px;
-            margin: 0 auto 2rem;
+            margin: 0 auto 3rem;
         }
 
         .stats-bar {
@@ -187,321 +164,245 @@
             letter-spacing: 0.05em;
         }
 
-        /* Main Layout */
-        .main-container {
-            display: flex;
+        /* Filter Section */
+        .filter-section {
+            padding: 2rem;
+            background: var(--off-white);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .filter-container {
             max-width: 1400px;
             margin: 0 auto;
-            min-height: calc(100vh - 70px);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 300px;
-            padding: 2rem 1rem;
-            background: var(--off-white);
-            border-right: 1px solid var(--medium-gray);
-            position: sticky;
-            top: 70px;
-            height: calc(100vh - 70px);
-            overflow-y: auto;
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: var(--text-secondary);
         }
 
-        .sidebar h3 {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--dark-gray);
-            margin-bottom: 1rem;
-            padding: 0 1rem;
+        .filter-btn:hover {
+            border-color: var(--primary-teal);
+            color: var(--primary-teal);
         }
 
-        .solution-category {
-            margin-bottom: 2rem;
+        .filter-btn.active {
+            background: var(--primary-teal);
+            color: var(--white);
+            border-color: var(--primary-teal);
+        }
+
+        /* Solutions Grid */
+        .solutions-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .category-section {
+            margin-bottom: 4rem;
         }
 
         .category-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary-teal);
-            padding: 0.5rem 1rem;
-            margin-bottom: 0.5rem;
-            border-left: 3px solid var(--primary-teal);
-            background: rgba(70, 174, 184, 0.05);
-        }
-
-        .solution-link {
-            display: block;
-            padding: 0.5rem 1rem 0.5rem 2rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        .solution-link:hover {
-            color: var(--primary-teal);
-            background: var(--white);
-            border-left-color: var(--coral);
-        }
-
-        .solution-link.active {
-            color: var(--primary-teal);
-            background: var(--white);
-            border-left-color: var(--primary-teal);
-            font-weight: 600;
-        }
-
-        /* Content Area */
-        .content {
-            flex: 1;
-            padding: 2rem 3rem;
-            max-width: 900px;
-        }
-
-        .solution-section {
-            margin-bottom: 4rem;
-            padding-bottom: 3rem;
-            border-bottom: 1px solid var(--medium-gray);
-            scroll-margin-top: 100px;
-        }
-
-        .solution-section:last-child {
-            border-bottom: none;
-        }
-
-        .solution-header {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 2rem;
+            padding-left: 1rem;
+            border-left: 4px solid var(--primary-teal);
         }
 
-        .solution-icon {
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .solution-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.05), rgba(255, 107, 107, 0.05));
+        }
+
+        .card-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(255, 107, 107, 0.1));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
             margin-bottom: 1rem;
         }
 
-        .solution-title {
-            font-size: 2rem;
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
 
-        .solution-tagline {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            font-style: italic;
-        }
-
-        .problem-statement {
+        .card-problem {
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04));
+            padding: 1rem 2rem;
             border-left: 4px solid var(--danger);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 10px;
         }
 
-        .problem-statement h4 {
-            color: var(--danger);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .solution-content {
-            margin: 2rem 0;
-        }
-
-        .solution-content h4 {
-            color: var(--primary-teal);
-            margin: 1.5rem 0 1rem;
-            font-size: 1.2rem;
-        }
-
-        .solution-content p {
+        .problem-text {
             color: var(--text-secondary);
-            margin-bottom: 1rem;
-            line-height: 1.8;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        .solution-list {
-            margin: 1rem 0 1.5rem 1.5rem;
-        }
-
-        .solution-list li {
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-
-        .solution-list li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--primary-teal);
-            font-weight: bold;
-        }
-
-        .impact-box {
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.08), rgba(70, 174, 184, 0.04));
-            border-left: 4px solid var(--primary-teal);
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 10px;
-        }
-
-        .impact-box h4 {
-            color: var(--primary-teal);
-            margin-bottom: 0.5rem;
-        }
-
-        .metric-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .metric-item {
-            text-align: center;
-            padding: 1rem;
+        .card-stats {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-around;
             background: var(--white);
-            border-radius: 8px;
         }
 
-        .metric-value {
-            font-size: 1.8rem;
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--coral);
         }
 
-        .metric-label {
-            font-size: 0.85rem;
+        .stat-desc {
+            font-size: 0.75rem;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
-        .cta-inline {
+        .card-action {
+            padding: 1.5rem 2rem;
+            background: var(--off-white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .learn-more {
+            color: var(--primary-teal);
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .priority-badge {
             background: var(--coral);
             color: var(--white);
-            padding: 0.75rem 2rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(255, 107, 107, 0.1));
+            text-align: center;
+        }
+
+        .cta-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1rem 2rem;
             border-radius: 50px;
             text-decoration: none;
-            display: inline-block;
             font-weight: 600;
-            margin-top: 1rem;
             transition: all 0.3s;
         }
 
-        .cta-inline:hover {
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
         }
 
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .mobile-menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--primary-teal);
-            border-radius: 2px;
+        .btn-secondary {
+            background: var(--white);
+            color: var(--coral);
+            padding: 1rem 2rem;
+            border: 2px solid var(--coral);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
             transition: all 0.3s;
         }
 
-        /* Quick Access Menu */
-        .quick-access {
-            display: none;
-            padding: 1rem 2rem;
-            background: var(--off-white);
-            border-bottom: 1px solid var(--medium-gray);
-            position: sticky;
-            top: 70px;
-            z-index: 100;
+        .btn-secondary:hover {
+            background: var(--coral);
+            color: var(--white);
         }
 
-        .quick-access select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--medium-gray);
-            border-radius: 8px;
-            font-size: 1rem;
-            background: var(--white);
-            color: var(--text-primary);
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .sidebar {
-                display: none;
-            }
-            
-            .quick-access {
-                display: block;
-            }
-            
-            .content {
-                padding: 2rem;
-            }
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2rem;
             }
             
-            .hero .subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .stats-bar {
-                gap: 2rem;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-            
-            .mobile-menu-toggle {
-                display: flex;
+            .solutions-grid {
+                grid-template-columns: 1fr;
             }
             
             .nav-links {
                 display: none;
-                position: fixed;
-                top: 70px;
-                left: 0;
-                right: 0;
-                background: var(--white);
-                flex-direction: column;
-                padding: 2rem;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            }
-            
-            .nav-links.active {
-                display: flex;
-            }
-            
-            .solution-title {
-                font-size: 1.5rem;
-            }
-            
-            .metric-grid {
-                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -511,17 +412,12 @@
     <nav>
         <div class="nav-container">
             <a href="/" class="logo">CLOVER ERA</a>
-            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <div class="nav-links" id="navLinks">
+            <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="/our-science.html">Science</a>
                 <a href="/workplace-solutions/">Solutions</a>
                 <a href="/calculator/">ROI Calculator</a>
-                <a href="/pilot/" class="nav-cta">Start Free Trial</a>
+                <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="nav-cta">Start Free Trial</a>
             </div>
         </div>
     </nav>
@@ -550,1222 +446,487 @@
         </div>
     </section>
 
-    <!-- Quick Access Menu (Mobile) -->
-    <div class="quick-access">
-        <select onchange="scrollToSection(this.value)">
-            <option value="">Jump to Solution...</option>
-            <optgroup label="Employee Wellbeing">
-                <option value="bad-bosses">Bad Bosses Transformation</option>
-                <option value="change-fatigue">Change Fatigue Solutions</option>
-                <option value="change-management">Change Management Solutions</option>
-                <option value="change-resilience">Change Resilience Solutions</option>
-                <option value="culture-assessment">Culture Assessment Solutions</option>
-                <option value="culture-breakdown">Culture Breakdown Identification</option>
-                <option value="culture-transformation">Culture Transformation Solutions</option>
-                <option value="employee-burnout">Employee Burnout Solutions</option>
-                <option value="employee-stress-assessment">Employee Stress Assessment</option>
-                <option value="employee-stress-management">Employee Stress Management</option>
-                <option value="employee-wellbeing">Employee Wellbeing Programs</option>
-                <option value="focus-optimization">Focus Optimization Solutions</option>
-                <option value="leadership-training">Leadership Training Programs</option>
-                <option value="manager-coaching">Manager Coaching Services</option>
-                <option value="manager-stress">Manager Stress Relief</option>
-                <option value="mental-health">Mental Health Support</option>
-                <option value="organizational-change">Organizational Change Solutions</option>
-                <option value="performance-management">Performance Management</option>
-                <option value="productivity-loss">Productivity Loss Solutions</option>
-                <option value="quiet-quitting">Quiet Quitting Identification</option>
-                <option value="retention-crisis">Retention Crisis Solutions</option>
-                <option value="stress-management-training">Stress Management Training</option>
-                <option value="toxic-behavior">Toxic Behavior Assessment</option>
-                <option value="toxic-management">Toxic Management Solutions</option>
-                <option value="toxic-workplace">Toxic Workplace Culture</option>
-                <option value="transformation-strategy">Transformation Strategy</option>
-                <option value="work-stress">Work Stress Solutions</option>
-                <option value="workplace-anxiety">Workplace Anxiety Solutions</option>
-                <option value="workplace-efficiency">Workplace Efficiency Solutions</option>
-                <option value="workplace-stress-reduction">Workplace Stress Reduction</option>
-                <option value="workplace-wellness">Workplace Wellness Programs</option>
-            </optgroup>
-        </select>
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterSolutions('all')">All Solutions</button>
+            <button class="filter-btn" onclick="filterSolutions('leadership')">Leadership & Management</button>
+            <button class="filter-btn" onclick="filterSolutions('wellbeing')">Employee Wellbeing</button>
+            <button class="filter-btn" onclick="filterSolutions('performance')">Performance & Productivity</button>
+            <button class="filter-btn" onclick="filterSolutions('culture')">Culture & Change</button>
+        </div>
+    </section>
+
+    <!-- Solutions Container -->
+    <div class="solutions-container">
+        
+        <!-- Priority Solutions -->
+        <section class="category-section" data-category="priority">
+            <h2 class="category-title">🔥 High-Priority Solutions</h2>
+            <div class="solutions-grid">
+                
+                <!-- Employee Burnout Solutions -->
+                <a href="/workplace-solutions/employee-burnout/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Burnout-Icon.png" alt="Employee Burnout Solutions">
+                        </div>
+                        <h3 class="card-title">Employee Burnout Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">73% of employees experiencing burnout, costing £38,000 per employee in turnover and lost productivity</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">47%</div>
+                            <div class="stat-desc">Reduction</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">30</div>
+                            <div class="stat-desc">Days</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">£3.8M</div>
+                            <div class="stat-desc">Saved</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                        <span class="priority-badge">Top Priority</span>
+                    </div>
+                </a>
+
+                <!-- Retention Crisis Solutions -->
+                <a href="/workplace-solutions/retention-crisis/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Retention-Crisis.png" alt="Retention Crisis Solutions">
+                        </div>
+                        <h3 class="card-title">Retention Crisis Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">47% turnover rates creating £3.5M annual drain for mid-size companies</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">47%</div>
+                            <div class="stat-desc">Lower Turnover</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">6mo</div>
+                            <div class="stat-desc">Early Warning</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">89%</div>
+                            <div class="stat-desc">Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                        <span class="priority-badge">Critical</span>
+                    </div>
+                </a>
+
+                <!-- Toxic Management Solutions -->
+                <a href="/workplace-solutions/toxic-management/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Toxic-management-Icon.png" alt="Toxic Management Solutions">
+                        </div>
+                        <h3 class="card-title">Toxic Management Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">57% of employees quit because of their manager, costing £750,000 annually</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">68%</div>
+                            <div class="stat-desc">Transform Rate</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">90</div>
+                            <div class="stat-desc">Days</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2x</div>
+                            <div class="stat-desc">Performance</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                        <span class="priority-badge">High Impact</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Leadership & Management -->
+        <section class="category-section" data-category="leadership">
+            <h2 class="category-title">Leadership & Management</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/bad-bosses-transformation/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-360-degree-leadership.png" alt="Bad Bosses Transformation">
+                        </div>
+                        <h3 class="card-title">Bad Bosses Transformation</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">Transform toxic managers into inspiring leaders in 90 days</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">73%</div>
+                            <div class="stat-desc">Behavior Change</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">45%</div>
+                            <div class="stat-desc">Less Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/leadership-training/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-servant-leader.png" alt="Leadership Training">
+                        </div>
+                        <h3 class="card-title">Leadership Training Programs</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">85% of leadership training fails to change behavior</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">92%</div>
+                            <div class="stat-desc">Success Rate</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">10x</div>
+                            <div class="stat-desc">Team Performance</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/manager-coaching/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Intensive-manager-coaching.png" alt="Manager Coaching">
+                        </div>
+                        <h3 class="card-title">Manager Coaching Services</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">70% of team engagement depends on the manager</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">70%</div>
+                            <div class="stat-desc">Engagement Boost</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">50%</div>
+                            <div class="stat-desc">Less Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Employee Wellbeing -->
+        <section class="category-section" data-category="wellbeing">
+            <h2 class="category-title">Employee Wellbeing</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/employee-stress-management/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Stress-Icon.png" alt="Stress Management">
+                        </div>
+                        <h3 class="card-title">Employee Stress Management</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">83% of workers affected by chronic stress</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">40%</div>
+                            <div class="stat-desc">Stress Reduction</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2.8x</div>
+                            <div class="stat-desc">Fewer Sick Days</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/workplace-anxiety/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Workplace-Anxiety-Icon.png" alt="Workplace Anxiety">
+                        </div>
+                        <h3 class="card-title">Workplace Anxiety Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">40% experience anxiety, reducing performance by 56%</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">56%</div>
+                            <div class="stat-desc">Less Anxiety</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">3x</div>
+                            <div class="stat-desc">Lower Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/mental-health-support/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Empathy-first.png" alt="Mental Health Support">
+                        </div>
+                        <h3 class="card-title">Mental Health Support</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">1 in 4 employees struggle with mental health</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">65%</div>
+                            <div class="stat-desc">Utilization</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">£1.3k</div>
+                            <div class="stat-desc">Saved</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Performance & Productivity -->
+        <section class="category-section" data-category="performance">
+            <h2 class="category-title">Performance & Productivity</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/productivity-loss/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Productivity-loss-Icon.png" alt="Productivity Loss">
+                        </div>
+                        <h3 class="card-title">Productivity Loss Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">Workers productive only 2.5 hours per day, costing £45k annually</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">34%</div>
+                            <div class="stat-desc">Output Gain</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">£45k</div>
+                            <div class="stat-desc">Recovered</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/quiet-quitting/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Lower-Engagement.png" alt="Quiet Quitting">
+                        </div>
+                        <h3 class="card-title">Quiet Quitting Identification</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">50% doing bare minimum, costing £28k per employee</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">89%</div>
+                            <div class="stat-desc">Detection</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">67%</div>
+                            <div class="stat-desc">Re-engaged</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/focus-optimization/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Focus-Optimization.png" alt="Focus Optimization">
+                        </div>
+                        <h3 class="card-title">Focus Optimization</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">11 minutes on tasks before interruption</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">3hrs</div>
+                            <div class="stat-desc">Daily Focus</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">73%</div>
+                            <div class="stat-desc">Less Distraction</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Culture & Change -->
+        <section class="category-section" data-category="culture">
+            <h2 class="category-title">Culture & Change</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/culture-transformation/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-culture-growth.png" alt="Culture Transformation">
+                        </div>
+                        <h3 class="card-title">Culture Transformation</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">Only 23% of culture initiatives succeed</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">87%</div>
+                            <div class="stat-desc">Success Rate</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">5x</div>
+                            <div class="stat-desc">ROI</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/change-management/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-change-optimization.png" alt="Change Management">
+                        </div>
+                        <h3 class="card-title">Change Management</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">70% of change initiatives fail</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">95%</div>
+                            <div class="stat-desc">Adoption</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">70%</div>
+                            <div class="stat-desc">Faster</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/toxic-workplace-culture/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-culture-breakdown.webp" alt="Toxic Workplace">
+                        </div>
+                        <h3 class="card-title">Toxic Workplace Culture</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">25% work in toxic cultures, 48% higher turnover</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">96%</div>
+                            <div class="stat-desc">Detection</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">48%</div>
+                            <div class="stat-desc">Less Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
     </div>
 
-    <!-- Main Container -->
-    <div class="main-container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <h3>Solutions Directory</h3>
-            
-            <div class="solution-category">
-                <div class="category-title">Leadership & Management</div>
-                <a href="#bad-bosses" class="solution-link">Bad Bosses Transformation</a>
-                <a href="#leadership-training" class="solution-link">Leadership Training Programs</a>
-                <a href="#manager-coaching" class="solution-link">Manager Coaching Services</a>
-                <a href="#manager-stress" class="solution-link">Manager Stress Relief</a>
-                <a href="#toxic-management" class="solution-link">Toxic Management Solutions</a>
-            </div>
-
-            <div class="solution-category">
-                <div class="category-title">Employee Wellbeing</div>
-                <a href="#employee-burnout" class="solution-link">Employee Burnout Solutions</a>
-                <a href="#employee-stress-assessment" class="solution-link">Employee Stress Assessment</a>
-                <a href="#employee-stress-management" class="solution-link">Employee Stress Management</a>
-                <a href="#employee-wellbeing" class="solution-link">Employee Wellbeing Programs</a>
-                <a href="#mental-health" class="solution-link">Mental Health Support</a>
-                <a href="#work-stress" class="solution-link">Work Stress Solutions</a>
-                <a href="#workplace-anxiety" class="solution-link">Workplace Anxiety Solutions</a>
-            </div>
-
-            <div class="solution-category">
-                <div class="category-title">Performance & Productivity</div>
-                <a href="#focus-optimization" class="solution-link">Focus Optimization</a>
-                <a href="#performance-management" class="solution-link">Performance Management</a>
-                <a href="#productivity-loss" class="solution-link">Productivity Loss Solutions</a>
-                <a href="#quiet-quitting" class="solution-link">Quiet Quitting Identification</a>
-                <a href="#workplace-efficiency" class="solution-link">Workplace Efficiency</a>
-            </div>
-
-            <div class="solution-category">
-                <div class="category-title">Culture & Change</div>
-                <a href="#change-fatigue" class="solution-link">Change Fatigue Solutions</a>
-                <a href="#change-management" class="solution-link">Change Management</a>
-                <a href="#change-resilience" class="solution-link">Change Resilience</a>
-                <a href="#culture-assessment" class="solution-link">Culture Assessment</a>
-                <a href="#culture-breakdown" class="solution-link">Culture Breakdown Identification</a>
-                <a href="#culture-transformation" class="solution-link">Culture Transformation</a>
-                <a href="#organizational-change" class="solution-link">Organizational Change</a>
-                <a href="#toxic-behavior" class="solution-link">Toxic Behavior Assessment</a>
-                <a href="#toxic-workplace" class="solution-link">Toxic Workplace Culture</a>
-                <a href="#transformation-strategy" class="solution-link">Transformation Strategy</a>
-            </div>
-
-            <div class="solution-category">
-                <div class="category-title">Retention & Engagement</div>
-                <a href="#retention-crisis" class="solution-link">Retention Crisis Solutions</a>
-            </div>
-
-            <div class="solution-category">
-                <div class="category-title">Training & Development</div>
-                <a href="#stress-management-training" class="solution-link">Stress Management Training</a>
-                <a href="#workplace-stress-reduction" class="solution-link">Workplace Stress Reduction</a>
-                <a href="#workplace-wellness" class="solution-link">Workplace Wellness Programs</a>
-            </div>
-        </aside>
-
-        <!-- Content Area -->
-        <main class="content">
-            <!-- Bad Bosses Transformation Solutions -->
-            <section id="bad-bosses" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">👔</div>
-                    <h2 class="solution-title">Bad Bosses Transformation Solutions</h2>
-                    <p class="solution-tagline">Transform toxic managers into inspiring leaders in 90 days</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>57% of employees quit because of their manager. Bad bosses cost organizations £750,000 annually through turnover, decreased productivity, and team dysfunction.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Our Neuroscience-Based Approach</h4>
-                    <p>We transform toxic management behaviors by addressing the neurological patterns that drive them. Our approach combines behavioral assessment, targeted coaching, and measurable accountability.</p>
-                    
-                    <ul class="solution-list">
-                        <li>360-degree behavioral assessment identifying toxic patterns</li>
-                        <li>Personalized neuroscience-based coaching interventions</li>
-                        <li>Real-time feedback systems for behavior modification</li>
-                        <li>Team impact monitoring and adjustment protocols</li>
-                        <li>90-day transformation roadmap with milestones</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Proven Impact</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">73%</div>
-                                <div class="metric-label">Behavior Change</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">45%</div>
-                                <div class="metric-label">Turnover Reduction</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">90 Days</div>
-                                <div class="metric-label">Transformation Time</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a href="/pilot/" class="cta-inline">Start Manager Transformation</a>
-            </section>
-
-            <!-- Change Fatigue Solutions -->
-            <section id="change-fatigue" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🔄</div>
-                    <h2 class="solution-title">Change Fatigue Solutions</h2>
-                    <p class="solution-tagline">Build resilience against constant organizational change</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Employees experience 10+ major changes annually. 65% report change fatigue, leading to resistance, burnout, and 34% productivity loss.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Adaptive Resilience Framework</h4>
-                    <p>Our change fatigue solutions build neurological resilience, helping teams maintain performance through continuous transformation.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Change capacity assessment and monitoring</li>
-                        <li>Resilience training based on neuroplasticity principles</li>
-                        <li>Change communication optimization strategies</li>
-                        <li>Recovery protocols between major initiatives</li>
-                        <li>Leadership alignment on change prioritization</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Results Delivered</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">52%</div>
-                                <div class="metric-label">Fatigue Reduction</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">3x</div>
-                                <div class="metric-label">Change Success Rate</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">28%</div>
-                                <div class="metric-label">Productivity Gain</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Change Management Solutions -->
-            <section id="change-management" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">📊</div>
-                    <h2 class="solution-title">Change Management Solutions</h2>
-                    <p class="solution-tagline">Execute transformations with 95% adoption rates</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>70% of change initiatives fail. Poor change management costs organizations millions in failed implementations and employee disengagement.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Neuroscience-Driven Change Model</h4>
-                    <p>We leverage brain science to create change strategies that work with human psychology, not against it.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Stakeholder neural mapping for resistance points</li>
-                        <li>Phased implementation aligned with cognitive load capacity</li>
-                        <li>Behavioral reinforcement protocols</li>
-                        <li>Communication strategies optimized for retention</li>
-                        <li>Success metrics tied to adoption behaviors</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Change Resilience Solutions -->
-            <section id="change-resilience" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">💪</div>
-                    <h2 class="solution-title">Change Resilience Solutions</h2>
-                    <p class="solution-tagline">Build unshakeable adaptability in your workforce</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Teams lacking change resilience experience 40% more stress, 55% higher burnout, and 3x more resistance to necessary transformations.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Resilience Building Program</h4>
-                    <p>Develop mental and emotional flexibility that turns change from threat to opportunity.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Individual resilience assessments and profiling</li>
-                        <li>Cognitive flexibility training exercises</li>
-                        <li>Stress inoculation protocols</li>
-                        <li>Growth mindset development workshops</li>
-                        <li>Peer support network creation</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Culture Assessment Solutions -->
-            <section id="culture-assessment" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🔍</div>
-                    <h2 class="solution-title">Culture Assessment Solutions</h2>
-                    <p class="solution-tagline">Diagnose cultural health with scientific precision</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>88% of employees believe their company culture needs improvement, but only 19% of organizations accurately assess their cultural health.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Multi-Dimensional Culture Analysis</h4>
-                    <p>Our assessment goes beyond surveys to measure actual behaviors, neural engagement patterns, and cultural alignment.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Behavioral observation and pattern analysis</li>
-                        <li>Values alignment measurement</li>
-                        <li>Communication network mapping</li>
-                        <li>Psychological safety assessment</li>
-                        <li>Innovation capacity evaluation</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Assessment Outcomes</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">15</div>
-                                <div class="metric-label">Culture Dimensions</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">95%</div>
-                                <div class="metric-label">Accuracy Rate</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">48hr</div>
-                                <div class="metric-label">Results Delivery</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Culture Breakdown Identification -->
-            <section id="culture-breakdown" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">⚠️</div>
-                    <h2 class="solution-title">Culture Breakdown Identification</h2>
-                    <p class="solution-tagline">Detect cultural erosion before it becomes crisis</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Cultural breakdowns cost organizations £2.3M annually through turnover, decreased innovation, and brand damage - often detected too late.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Early Warning System</h4>
-                    <p>AI-powered monitoring identifies cultural degradation signals 6 months before traditional methods.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Real-time sentiment analysis across communications</li>
-                        <li>Behavioral deviation tracking</li>
-                        <li>Trust erosion indicators</li>
-                        <li>Silo formation detection</li>
-                        <li>Values-behavior misalignment alerts</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Culture Transformation Solutions -->
-            <section id="culture-transformation" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🚀</div>
-                    <h2 class="solution-title">Culture Transformation Solutions</h2>
-                    <p class="solution-tagline">Reshape organizational DNA for sustained excellence</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Failed culture transformations waste £5M+ and leave organizations worse off. Only 23% of culture change initiatives succeed.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Systematic Culture Evolution</h4>
-                    <p>We transform culture through targeted behavioral interventions, not just aspirational statements.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Current state cultural mapping</li>
-                        <li>Future state design workshops</li>
-                        <li>Behavioral change protocols</li>
-                        <li>Leadership alignment processes</li>
-                        <li>Cultural ambassador programs</li>
-                        <li>Progress measurement dashboards</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Employee Burnout Solutions -->
-            <section id="employee-burnout" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🔥</div>
-                    <h2 class="solution-title">Employee Burnout Solutions</h2>
-                    <p class="solution-tagline">Eliminate burnout driving 73% of your workforce to exhaustion</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>73% of employees experience burnout, causing £38,000 per employee in turnover costs, productivity loss, and healthcare expenses. Burnout is the #1 driver of the Great Resignation.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>The Clover Era Burnout Prevention System</h4>
-                    <p>Our neuroscience-based approach addresses burnout at its neurological roots, restoring energy and engagement through targeted interventions.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Individual burnout risk assessment using HRV and cortisol markers</li>
-                        <li>Workload optimization aligned with ultradian rhythms</li>
-                        <li>Recovery protocol implementation (90-20 rule)</li>
-                        <li>Autonomy restoration frameworks</li>
-                        <li>Purpose reconnection workshops</li>
-                        <li>Manager training on burnout prevention</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Proven Results</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">47%</div>
-                                <div class="metric-label">Burnout Reduction</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">34%</div>
-                                <div class="metric-label">Productivity Gain</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">£3.8M</div>
-                                <div class="metric-label">Saved Annually</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a href="/pilot/" class="cta-inline">Start Burnout Prevention</a>
-            </section>
-
-            <!-- Employee Stress Assessment Solutions -->
-            <section id="employee-stress-assessment" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">📈</div>
-                    <h2 class="solution-title">Employee Stress Assessment Solutions</h2>
-                    <p class="solution-tagline">Measure stress before it becomes crisis</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Undetected stress costs £450 per employee monthly. Traditional assessments miss 60% of stress indicators until breakdown occurs.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Multi-Modal Stress Detection</h4>
-                    <p>Comprehensive stress assessment combining physiological, behavioral, and psychological markers.</p>
-                    
-                    <ul class="solution-list">
-                        <li>HRV (Heart Rate Variability) monitoring</li>
-                        <li>Behavioral pattern analysis</li>
-                        <li>Cognitive load assessment</li>
-                        <li>Sleep quality tracking</li>
-                        <li>Social connection mapping</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Employee Stress Management Solutions -->
-            <section id="employee-stress-management" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🧘</div>
-                    <h2 class="solution-title">Employee Stress Management Solutions</h2>
-                    <p class="solution-tagline">Transform stress from destroyer to enhancer</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Chronic stress affects 83% of workers, reducing performance by 40% and increasing sick days by 2.8x.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Stress Optimization Framework</h4>
-                    <p>Convert destructive stress into productive energy through neuroscience-based interventions.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Stress reframing techniques (threat to challenge)</li>
-                        <li>Breathing protocols for immediate relief</li>
-                        <li>Cognitive restructuring exercises</li>
-                        <li>Time-boxing and priority management</li>
-                        <li>Recovery ritual implementation</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Employee Wellbeing Program Solutions -->
-            <section id="employee-wellbeing" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">❤️</div>
-                    <h2 class="solution-title">Employee Wellbeing Program Solutions</h2>
-                    <p class="solution-tagline">Holistic wellbeing that drives 10x ROI</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Generic wellbeing programs have 11% participation. Poor wellbeing costs £2,500 per employee annually in lost productivity.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Personalized Wellbeing Ecosystem</h4>
-                    <p>Tailored wellbeing interventions based on individual needs, preferences, and neurological profiles.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Individual wellbeing assessment and profiling</li>
-                        <li>Customized intervention pathways</li>
-                        <li>Physical, mental, emotional, and social support</li>
-                        <li>Gamified engagement systems</li>
-                        <li>Manager wellbeing conversation training</li>
-                        <li>ROI tracking and optimization</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Program Impact</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">78%</div>
-                                <div class="metric-label">Participation Rate</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">10:1</div>
-                                <div class="metric-label">ROI Ratio</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">42%</div>
-                                <div class="metric-label">Sick Day Reduction</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Focus Optimization Solutions -->
-            <section id="focus-optimization" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🎯</div>
-                    <h2 class="solution-title">Focus Optimization Solutions</h2>
-                    <p class="solution-tagline">Reclaim 3 hours of productive focus daily</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Knowledge workers spend only 11 minutes on tasks before interruption. Context switching costs 23 minutes per interruption, destroying £45,000 in productivity annually.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Deep Work Enablement</h4>
-                    <p>Create conditions for sustained focus using neuroscience principles and environmental design.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Attention restoration protocols</li>
-                        <li>Digital distraction elimination</li>
-                        <li>Focus block scheduling optimization</li>
-                        <li>Cognitive load management</li>
-                        <li>Environmental design for concentration</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Leadership Training Program Solutions -->
-            <section id="leadership-training" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🎓</div>
-                    <h2 class="solution-title">Leadership Training Program Solutions</h2>
-                    <p class="solution-tagline">Develop leaders who inspire 10x performance</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>85% of leadership training fails to change behavior. Poor leadership costs £32,000 per employee in lost engagement and productivity.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Neuroscience-Based Leadership Development</h4>
-                    <p>Transform leadership capabilities through brain-based learning and behavioral reinforcement.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Leadership neuroscience foundations</li>
-                        <li>Emotional regulation mastery</li>
-                        <li>Influence and persuasion psychology</li>
-                        <li>Team dynamics optimization</li>
-                        <li>Decision-making frameworks</li>
-                        <li>360-degree feedback integration</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Manager Coaching Services Solutions -->
-            <section id="manager-coaching" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🤝</div>
-                    <h2 class="solution-title">Manager Coaching Services Solutions</h2>
-                    <p class="solution-tagline">Transform managers into multipliers of talent</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>70% of team engagement depends on the manager. Untrained managers reduce team performance by 27% and increase turnover by 50%.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Personalized Manager Development</h4>
-                    <p>One-on-one coaching that addresses specific management challenges and builds essential capabilities.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Individual management style assessment</li>
-                        <li>Weekly coaching sessions with expert facilitators</li>
-                        <li>Real-situation problem-solving</li>
-                        <li>Team feedback integration</li>
-                        <li>Progress tracking and accountability</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Manager Stress Relief Solutions -->
-            <section id="manager-stress" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">😰</div>
-                    <h2 class="solution-title">Manager Stress Relief Solutions</h2>
-                    <p class="solution-tagline">Protect your leadership pipeline from burnout</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Managers experience 40% more stress than individual contributors. Manager burnout cascades to entire teams, multiplying organizational damage.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Manager Resilience Program</h4>
-                    <p>Specialized support for the unique stressors of management roles.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Manager-specific stress assessment</li>
-                        <li>Delegation optimization training</li>
-                        <li>Boundary setting protocols</li>
-                        <li>Peer support groups</li>
-                        <li>Executive coaching for stress management</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Mental Health Support Solutions -->
-            <section id="mental-health" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🧠</div>
-                    <h2 class="solution-title">Mental Health Support Solutions</h2>
-                    <p class="solution-tagline">Comprehensive mental health that removes stigma and barriers</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>1 in 4 employees struggle with mental health. Untreated mental health issues cost £1,300 per employee annually in lost productivity.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Integrated Mental Health Ecosystem</h4>
-                    <p>Remove barriers to mental health support through accessible, stigma-free interventions.</p>
-                    
-                    <ul class="solution-list">
-                        <li>24/7 mental health helpline</li>
-                        <li>On-demand therapy sessions</li>
-                        <li>Mental health first-aider training</li>
-                        <li>Preventive mental wellness programs</li>
-                        <li>Manager mental health conversation training</li>
-                        <li>Crisis intervention protocols</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Organizational Change Solutions -->
-            <section id="organizational-change" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🏢</div>
-                    <h2 class="solution-title">Organizational Change Solutions</h2>
-                    <p class="solution-tagline">Navigate transformation without losing your soul</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Organizational changes fail 70% of the time, wasting millions and destroying employee trust.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Human-Centered Change Approach</h4>
-                    <p>Design and execute organizational changes that preserve culture and enhance performance.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Change readiness assessment</li>
-                        <li>Stakeholder impact analysis</li>
-                        <li>Communication strategy development</li>
-                        <li>Resistance management protocols</li>
-                        <li>Success measurement frameworks</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Performance Management Solutions -->
-            <section id="performance-management" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">📊</div>
-                    <h2 class="solution-title">Performance Management Solutions</h2>
-                    <p class="solution-tagline">Performance systems that actually improve performance</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>95% of managers are dissatisfied with performance reviews. Traditional systems decrease performance by 14% through demotivation.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Continuous Performance Enablement</h4>
-                    <p>Replace annual reviews with ongoing development that drives real improvement.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Real-time feedback systems</li>
-                        <li>Goal alignment frameworks</li>
-                        <li>Strengths-based development</li>
-                        <li>Peer recognition platforms</li>
-                        <li>Growth conversation protocols</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Productivity Loss Solutions -->
-            <section id="productivity-loss" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">📉</div>
-                    <h2 class="solution-title">Productivity Loss Solutions</h2>
-                    <p class="solution-tagline">Recover £45,000 per employee in lost productivity</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>The average knowledge worker is productive only 2.5 hours per day. Productivity loss costs organizations £45,000 per employee annually.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Productivity Restoration System</h4>
-                    <p>Identify and eliminate productivity drains while optimizing work patterns for peak performance.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Time audit and waste identification</li>
-                        <li>Meeting optimization protocols</li>
-                        <li>Email and communication efficiency</li>
-                        <li>Task prioritization frameworks</li>
-                        <li>Energy management strategies</li>
-                        <li>Technology stack optimization</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Productivity Gains</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">34%</div>
-                                <div class="metric-label">Output Increase</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">2.5hrs</div>
-                                <div class="metric-label">Daily Time Saved</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">£45k</div>
-                                <div class="metric-label">Value Recovered</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Quiet Quitting Identification Solutions -->
-            <section id="quiet-quitting" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🤫</div>
-                    <h2 class="solution-title">Quiet Quitting Identification Solutions</h2>
-                    <p class="solution-tagline">Detect and reverse silent disengagement</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>50% of workers are quiet quitting - doing the bare minimum while checked out. This hidden crisis costs £28,000 per disengaged employee.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Early Detection & Re-engagement</h4>
-                    <p>AI-powered systems identify quiet quitting patterns 3 months before traditional methods.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Behavioral pattern analysis for disengagement</li>
-                        <li>Output quality tracking</li>
-                        <li>Communication frequency monitoring</li>
-                        <li>Initiative participation metrics</li>
-                        <li>Predictive risk scoring</li>
-                        <li>Targeted re-engagement protocols</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Retention Crisis Solutions -->
-            <section id="retention-crisis" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🚪</div>
-                    <h2 class="solution-title">Retention Crisis Solutions</h2>
-                    <p class="solution-tagline">Stop the exodus before it bankrupts your organization</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Average turnover rates hit 47% in 2024. Each departure costs 150% of salary, creating a £3.5M annual drain for mid-size companies.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Retention Transformation Program</h4>
-                    <p>Address root causes of turnover through predictive analytics and targeted interventions.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Flight risk prediction 6 months in advance</li>
-                        <li>Stay interview protocols</li>
-                        <li>Career pathway development</li>
-                        <li>Compensation equity analysis</li>
-                        <li>Manager relationship improvement</li>
-                        <li>Purpose and meaning initiatives</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Retention Results</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">47%</div>
-                                <div class="metric-label">Turnover Reduction</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">£3.5M</div>
-                                <div class="metric-label">Annual Savings</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">89%</div>
-                                <div class="metric-label">Prediction Accuracy</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a href="/pilot/" class="cta-inline">Start Retention Program</a>
-            </section>
-
-            <!-- Stress Management Training Solutions -->
-            <section id="stress-management-training" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🎯</div>
-                    <h2 class="solution-title">Stress Management Training Solutions</h2>
-                    <p class="solution-tagline">Build organizational immunity to stress</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>One-time stress training has 8% retention after 30 days. Continuous stress costs £2,300 per employee in healthcare and productivity loss.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Embedded Stress Mastery</h4>
-                    <p>Continuous stress management training that creates lasting behavioral change.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Micro-learning modules (5 minutes daily)</li>
-                        <li>Practical stress-reduction techniques</li>
-                        <li>Peer learning groups</li>
-                        <li>Manager stress coaching certification</li>
-                        <li>Real-time stress management tools</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Toxic Behavior Assessment Solutions -->
-            <section id="toxic-behavior" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">☠️</div>
-                    <h2 class="solution-title">Toxic Behavior Assessment Solutions</h2>
-                    <p class="solution-tagline">Identify and eliminate behaviors poisoning your culture</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>One toxic employee costs £8,400 in decreased team productivity. 5% of employees account for 50% of workplace toxicity.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Toxicity Detection & Intervention</h4>
-                    <p>Scientific assessment of toxic behaviors with clear intervention pathways.</p>
-                    
-                    <ul class="solution-list">
-                        <li>360-degree toxicity assessment</li>
-                        <li>Behavioral pattern identification</li>
-                        <li>Impact measurement on team performance</li>
-                        <li>Intervention protocol development</li>
-                        <li>Progress monitoring systems</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Toxic Management Solutions -->
-            <section id="toxic-management" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">⚡</div>
-                    <h2 class="solution-title">Toxic Management Solutions</h2>
-                    <p class="solution-tagline">Transform destructive leaders or remove them strategically</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Toxic managers drive away 2 employees for every 1 they manage. 60% of workplace stress comes directly from bad management.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Manager Detoxification Program</h4>
-                    <p>Intensive intervention for managers exhibiting toxic behaviors, with clear success metrics.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Comprehensive behavioral assessment</li>
-                        <li>90-day improvement plan</li>
-                        <li>Weekly coaching sessions</li>
-                        <li>Team feedback integration</li>
-                        <li>Alternative placement strategies</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Toxic Workplace Culture Identification -->
-            <section id="toxic-workplace" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🏭</div>
-                    <h2 class="solution-title">Toxic Workplace Culture Identification</h2>
-                    <p class="solution-tagline">Diagnose cultural toxicity before it metastasizes</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>25% of employees work in toxic cultures. Toxicity increases turnover by 48% and reduces productivity by 40%.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Cultural Health Diagnostic</h4>
-                    <p>Comprehensive assessment revealing hidden toxicity patterns and their sources.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Anonymous culture surveys</li>
-                        <li>Behavioral observation studies</li>
-                        <li>Communication pattern analysis</li>
-                        <li>Power dynamic mapping</li>
-                        <li>Psychological safety measurement</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Transformation Strategy Solutions -->
-            <section id="transformation-strategy" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🎯</div>
-                    <h2 class="solution-title">Transformation Strategy Solutions</h2>
-                    <p class="solution-tagline">Design transformations that actually transform</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>70% of transformations fail to achieve their goals. Failed transformations waste £5M+ and destroy employee trust.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Strategic Transformation Design</h4>
-                    <p>Evidence-based transformation strategies with built-in success factors and risk mitigation.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Current state analysis and future state visioning</li>
-                        <li>Transformation roadmap development</li>
-                        <li>Change capacity assessment</li>
-                        <li>Resource allocation optimization</li>
-                        <li>Risk identification and mitigation</li>
-                        <li>Success metrics and KPI development</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Work Stress Solutions -->
-            <section id="work-stress" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">💼</div>
-                    <h2 class="solution-title">Work Stress Solutions</h2>
-                    <p class="solution-tagline">Transform workplace pressure into sustainable performance</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Work stress affects 94% of employees, causing £300B in annual costs through healthcare, absenteeism, and reduced productivity.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Systematic Stress Reduction</h4>
-                    <p>Address organizational sources of stress while building individual resilience.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Workload assessment and redistribution</li>
-                        <li>Role clarity initiatives</li>
-                        <li>Control and autonomy enhancement</li>
-                        <li>Support system development</li>
-                        <li>Work-life integration strategies</li>
-                        <li>Stress recovery protocols</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Stress Reduction Impact</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">42%</div>
-                                <div class="metric-label">Stress Reduction</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">28%</div>
-                                <div class="metric-label">Productivity Gain</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">35%</div>
-                                <div class="metric-label">Sick Day Reduction</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Workplace Anxiety Solutions -->
-            <section id="workplace-anxiety" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">😟</div>
-                    <h2 class="solution-title">Workplace Anxiety Solutions</h2>
-                    <p class="solution-tagline">Create psychologically safe environments where talent thrives</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>40% of employees experience workplace anxiety, reducing performance by 56% and increasing turnover by 3x.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Anxiety Elimination Framework</h4>
-                    <p>Remove anxiety triggers while building confidence and psychological safety.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Psychological safety assessment and improvement</li>
-                        <li>Clear expectation setting</li>
-                        <li>Feedback culture development</li>
-                        <li>Mistake tolerance protocols</li>
-                        <li>Support network creation</li>
-                        <li>Anxiety management skill building</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Workplace Efficiency Solutions -->
-            <section id="workplace-efficiency" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">⚙️</div>
-                    <h2 class="solution-title">Workplace Efficiency Solutions</h2>
-                    <p class="solution-tagline">Eliminate waste and friction from every process</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>Organizations waste 30% of time on inefficient processes. Poor efficiency costs £67,000 per employee annually.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Efficiency Optimization System</h4>
-                    <p>Streamline operations through process improvement and technology optimization.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Process mapping and analysis</li>
-                        <li>Bottleneck identification and removal</li>
-                        <li>Automation opportunity assessment</li>
-                        <li>Tool and technology optimization</li>
-                        <li>Communication streamlining</li>
-                        <li>Decision-making acceleration</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Workplace Stress Reduction Solutions -->
-            <section id="workplace-stress-reduction" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🌿</div>
-                    <h2 class="solution-title">Workplace Stress Reduction Solutions</h2>
-                    <p class="solution-tagline">Create calm, focused environments for peak performance</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>High-stress workplaces have 50% higher healthcare costs and 40% more accidents. Stress is the #1 health concern for employees.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Environmental Stress Reduction</h4>
-                    <p>Design physical and cultural environments that naturally reduce stress.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Workspace design for calm</li>
-                        <li>Noise reduction strategies</li>
-                        <li>Natural light optimization</li>
-                        <li>Break space creation</li>
-                        <li>Meeting reduction initiatives</li>
-                        <li>Email and notification management</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Workplace Wellness Program Solutions -->
-            <section id="workplace-wellness" class="solution-section">
-                <div class="solution-header">
-                    <div class="solution-icon">🏃</div>
-                    <h2 class="solution-title">Workplace Wellness Program Solutions</h2>
-                    <p class="solution-tagline">Wellness programs that actually get used and deliver ROI</p>
-                </div>
-                
-                <div class="problem-statement">
-                    <h4>The Problem</h4>
-                    <p>87% of employees don't participate in wellness programs. Poor wellness costs £2,500 per employee in lost productivity and healthcare.</p>
-                </div>
-
-                <div class="solution-content">
-                    <h4>Integrated Wellness Ecosystem</h4>
-                    <p>Create wellness programs employees actually want, with measurable health and business outcomes.</p>
-                    
-                    <ul class="solution-list">
-                        <li>Personalized wellness assessments</li>
-                        <li>Gamified engagement platforms</li>
-                        <li>On-site and virtual offerings</li>
-                        <li>Social wellness challenges</li>
-                        <li>Manager wellness integration</li>
-                        <li>ROI measurement and optimization</li>
-                    </ul>
-
-                    <div class="impact-box">
-                        <h4>Wellness Program ROI</h4>
-                        <div class="metric-grid">
-                            <div class="metric-item">
-                                <div class="metric-value">6:1</div>
-                                <div class="metric-label">ROI Ratio</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">68%</div>
-                                <div class="metric-label">Participation Rate</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">£2.5k</div>
-                                <div class="metric-label">Saved Per Employee</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Call to Action Section -->
-            <section style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(255, 107, 107, 0.1)); padding: 3rem; border-radius: 20px; text-align: center; margin-top: 4rem;">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Transform Your Workplace?</h2>
-                <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;">Start with our free assessment to identify your biggest opportunities for improvement.</p>
-                <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="/assessment/" class="cta-inline">Free Workplace Assessment</a>
-                    <a href="/calculator/" style="background: var(--white); color: var(--coral); padding: 0.75rem 2rem; border-radius: 50px; text-decoration: none; display: inline-block; font-weight: 600; border: 2px solid var(--coral);">Calculate Your ROI</a>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Footer -->
-    <footer style="background: var(--charcoal); padding: 3rem 2rem; margin-top: 4rem;">
-        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">© 2025 Clover Era | Comprehensive Workplace Solutions</p>
-            <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-                <a href="/privacy-policy/" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Privacy Policy</a>
-                <a href="/terms/" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Terms of Service</a>
-                <a href="/contact/" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Contact Us</a>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Transform Your Workplace?</h2>
+            <p>Start with our free assessment to identify your biggest opportunities</p>
+            <div class="cta-buttons">
+                <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="btn-primary">Start 30-Day Free Trial</a>
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-secondary">Book Demo</a>
             </div>
         </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Clover Era | Comprehensive Workplace Solutions</p>
+        <p style="margin-top: 1rem;">
+            <a href="/privacy-policy/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Privacy</a> | 
+            <a href="/terms/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Terms</a> | 
+            <a href="/contact/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Contact</a>
+        </p>
     </footer>
 
     <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
+        function filterSolutions(category) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter logic would go here
+            console.log('Filtering by:', category);
         }
-
-        // Smooth scroll to section
-        function scrollToSection(sectionId) {
-            if (sectionId) {
-                const element = document.getElementById(sectionId);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }
-        }
-
-        // Update active state in sidebar based on scroll position
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('.solution-section');
-            const sidebarLinks = document.querySelectorAll('.solution-link');
-            
-            let currentSection = '';
-            
-            sections.forEach(section => {
-                const rect = section.getBoundingClientRect();
-                if (rect.top <= 150 && rect.bottom >= 150) {
-                    currentSection = section.id;
-                }
-            });
-            
-            sidebarLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + currentSection) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        // Smooth scroll for all anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Add entrance animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe solution sections for animation
-        document.querySelectorAll('.solution-section').forEach(section => {
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(20px)';
-            section.style.transition = 'all 0.6s ease';
-            observer.observe(section);
-        });
     </script>
 </body>
 </html>
