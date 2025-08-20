@@ -1094,16 +1094,16 @@
             const paybackPeriod = (annualCloverCost / (grossSavings / 12)).toFixed(1);
             
             // Update main results with proper formatting
-            document.getElementById('totalLoss').textContent = `$${totalLoss.toLocaleString()}`;
-            document.getElementById('turnoverCost').textContent = `$${turnoverCost.toLocaleString()}`;
-            document.getElementById('productivityCost').textContent = `$${productivityCost.toLocaleString()}`;
-            document.getElementById('absenteeismCost').textContent = `$${absenteeismCost.toLocaleString()}`;
+            document.getElementById('totalLoss').textContent = `${Math.round(totalLoss).toLocaleString()}`;
+            document.getElementById('turnoverCost').textContent = `${Math.round(turnoverCost).toLocaleString()}`;
+            document.getElementById('productivityCost').textContent = `${Math.round(productivityCost).toLocaleString()}`;
+            document.getElementById('absenteeismCost').textContent = `${Math.round(absenteeismCost).toLocaleString()}`;
             
             // Update ROI metrics
             document.getElementById('roiPercentage').textContent = `${roi}%`;
             document.getElementById('paybackPeriod').textContent = paybackPeriod;
-            document.getElementById('annualSavings').textContent = `$${netSavings.toLocaleString()}`;
-            document.getElementById('cloverInvestment').textContent = `$${annualCloverCost.toLocaleString()}`;
+            document.getElementById('annualSavings').textContent = `${Math.round(netSavings).toLocaleString()}`;
+            document.getElementById('cloverInvestment').textContent = `${Math.round(annualCloverCost).toLocaleString()}`;
             
             // Update comparison table
             document.getElementById('currentTurnoverCount').textContent = `${annualTurnoverCount} employees`;
@@ -1114,12 +1114,12 @@
             document.getElementById('projectedProductivityLoss').textContent = `8%`;
             document.getElementById('currentSickDays').textContent = `12 days`;
             document.getElementById('projectedSickDays').textContent = `5 days`;
-            document.getElementById('currentTotalCost').textContent = `$${totalLoss.toLocaleString()}`;
-            document.getElementById('projectedTotalCost').textContent = `$${newTotalCost.toLocaleString()}`;
+            document.getElementById('currentTotalCost').textContent = `${Math.round(totalLoss).toLocaleString()}`;
+            document.getElementById('projectedTotalCost').textContent = `${Math.round(newTotalCost).toLocaleString()}`;
             
             // Update daily loss
             const dailyLoss = Math.round(totalLoss / 365);
-            document.getElementById('dailyLoss').textContent = `$${dailyLoss.toLocaleString()}`;
+            document.getElementById('dailyLoss').textContent = `${Math.round(dailyLoss).toLocaleString()}`;
         }
 
         // Update range displays
