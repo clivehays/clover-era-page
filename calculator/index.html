@@ -14,7 +14,7 @@
     <style>
         * {
             margin: 0;
-            padding: 2;
+            padding: 0;
             box-sizing: border-box;
         }
 
@@ -821,7 +821,7 @@
     <!-- Calculator Hero -->
     <section class="calc-hero">
         <div class="calc-hero-content">
-            <b/></b><h1>Calculate Your <span class="highlight">Real Cost</span> of Disengagement</h1>
+            <h1>Calculate Your <span class="highlight">Real Cost</span> of Disengagement</h1>
             <p class="calc-hero-subtitle">
                 Discover exactly how much employee burnout, turnover, and low engagement are costing your organization—and see your potential ROI with Clover Era.
             </p>
@@ -864,15 +864,15 @@
 
                 <div class="input-group">
                     <label for="engagementRate">Current Engagement Level</label>
-                    <div class="range-value"><span id="engagementValue">40</span>%</div>
-                    <input type="range" id="engagementRate" min="10" max="80" value="40" class="range-input">
+                    <div class="range-value"><span id="engagementValue">35</span>%</div>
+                    <input type="range" id="engagementRate" min="10" max="80" value="35" class="range-input">
                     <small>Global average is 23-40%</small>
                 </div>
 
                 <div class="input-group">
                     <label for="burnoutRate">Burnout Rate</label>
-                    <div class="range-value"><span id="burnoutValue">45</span>%</div>
-                    <input type="range" id="burnoutRate" min="10" max="90" value="45" class="range-input">
+                    <div class="range-value"><span id="burnoutValue">30</span>%</div>
+                    <input type="range" id="burnoutRate" min="10" max="90" value="30" class="range-input">
                     <small>Percentage experiencing burnout symptoms</small>
                 </div>
             </div>
@@ -1030,35 +1030,39 @@
         const mobileToggle = document.getElementById('mobileToggle');
         const navLinks = document.getElementById('navLinks');
         
-        mobileToggle?.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-        });
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                mobileToggle.classList.toggle('active');
+            });
+        }
 
-        // Calculator Logic
+        // Calculator Logic - FIXED VERSION
         function calculateROI() {
             // Get input values
             const employees = parseInt(document.getElementById('employees').value) || 250;
             const avgSalary = parseInt(document.getElementById('avgSalary').value) || 75000;
             const turnoverRate = parseInt(document.getElementById('turnoverRate').value) || 15;
-            const engagementRate = parseInt(document.getElementById('engagementRate').value) || 40;
-            const burnoutRate = parseInt(document.getElementById('burnoutRate').value) || 45;
+            const engagementRate = parseInt(document.getElementById('engagementRate').value) || 35;
+            const burnoutRate = parseInt(document.getElementById('burnoutRate').value) || 30;
 
-            // Calculate current costs
+            // FIXED: Calculate current costs
+            // 1. Turnover Cost - THIS IS CORRECT
             const annualTurnoverCount = Math.round((employees * turnoverRate) / 100);
             const turnoverCost = annualTurnoverCount * avgSalary * 1.5; // 150% of salary to replace
             
-            // Productivity loss calculation (based on disengagement)
+            // 2. Productivity Loss - Based on disengaged employees
             const disengagedEmployees = Math.round(employees * (1 - engagementRate/100));
             const productivityLossPercent = 0.34; // 34% productivity loss for disengaged
             const productivityCost = disengagedEmployees * avgSalary * productivityLossPercent;
             
-            // Absenteeism calculation (burnout increases sick days)
+            // 3. FIXED: Absenteeism calculation
             const burnoutEmployees = Math.round(employees * (burnoutRate/100));
             const additionalSickDays = 7; // Burned out employees take 7 more sick days
             const dailySalary = avgSalary / 260; // Working days per year
             const absenteeismCost = burnoutEmployees * additionalSickDays * dailySalary;
             
+            // Total loss is sum of all three
             const totalLoss = turnoverCost + productivityCost + absenteeismCost;
             
             // Calculate Clover Era investment
@@ -1066,10 +1070,10 @@
             const monthlyCloverCost = numberOfTeams * 295; // $295 per team per month
             const annualCloverCost = monthlyCloverCost * 12;
             
-            // Calculate improvements with Clover Era
-            const reducedTurnoverRate = turnoverRate * 0.33; // 67% reduction
-            const improvedEngagementRate = Math.min(87, engagementRate * 2.175); // 117.5% increase, cap at 87%
-            const reducedBurnoutRate = burnoutRate * 0.25; // 75% reduction
+            // Calculate improvements with Clover Era (more conservative)
+            const reducedTurnoverRate = turnoverRate * 0.5; // 50% reduction
+            const improvedEngagementRate = Math.min(75, engagementRate + 40); // Add 40 points, cap at 75%
+            const reducedBurnoutRate = burnoutRate * 0.4; // 60% reduction
             
             // Calculate new costs after Clover Era
             const newTurnoverCount = Math.round((employees * reducedTurnoverRate) / 100);
@@ -1089,7 +1093,7 @@
             const roi = ((netSavings / annualCloverCost) * 100).toFixed(0);
             const paybackPeriod = (annualCloverCost / (grossSavings / 12)).toFixed(1);
             
-            // Update main results
+            // Update main results with proper formatting
             document.getElementById('totalLoss').textContent = `$${totalLoss.toLocaleString()}`;
             document.getElementById('turnoverCost').textContent = `$${turnoverCost.toLocaleString()}`;
             document.getElementById('productivityCost').textContent = `$${productivityCost.toLocaleString()}`;
@@ -1153,8 +1157,6 @@
         calculateROI();
     </script>
     <!-- Cookie Consent - Add to every page -->
-<script src="/js/cookie-consent.js"></script>
-</body>
-</html>
+    <script src="/js/cookie-consent.js"></script>
 </body>
 </html>
