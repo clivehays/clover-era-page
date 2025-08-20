@@ -1434,43 +1434,6 @@
             document.getElementById('reportEmail').value = '';
         }
 
-        // Optional: Auto-send data when calculator values change (after a delay)
-        let calculatorTimeout;
-        function trackCalculatorUsage() {
-            clearTimeout(calculatorTimeout);
-            calculatorTimeout = setTimeout(() => {
-                // Send anonymous usage data (no email required)
-                const usageData = {
-                    timestamp: new Date().toISOString(),
-                    email: 'anonymous@calculator.com', // Anonymous tracking
-                    employees: document.getElementById('employees').value,
-                    avgSalary: document.getElementById('avgSalary').value,
-                    turnoverRate: document.getElementById('turnoverRate').value,
-                    engagementRate: document.getElementById('engagementRate').value,
-                    burnoutRate: document.getElementById('burnoutRate').value,
-                    totalAnnualLoss: document.getElementById('totalLoss').textContent.replace(/[$,]/g, ''),
-                    turnoverCost: document.getElementById('turnoverCost').textContent.replace(/[$,]/g, ''),
-                    productivityCost: document.getElementById('productivityCost').textContent.replace(/[$,]/g, ''),
-                    absenteeismCost: document.getElementById('absenteeismCost').textContent.replace(/[$,]/g, ''),
-                    annualSavings: document.getElementById('annualSavings').textContent.replace(/[$,]/g, ''),
-                    roiPercentage: document.getElementById('roiPercentage').textContent.replace('%', ''),
-                    paybackPeriod: document.getElementById('paybackPeriod').textContent,
-                    cloverInvestment: document.getElementById('cloverInvestment').textContent.replace(/[$,]/g, ''),
-                    source: 'ROI Calculator Anonymous'
-                };
-                
-                // Silently send to Google Sheets for analytics
-                sendToGoogleSheets(usageData);
-            }, 5000); // Wait 5 seconds after last change
-        }
-
-        // Add tracking to all inputs (optional - remove if you don't want anonymous tracking)
-        document.getElementById('employees').addEventListener('input', trackCalculatorUsage);
-        document.getElementById('avgSalary').addEventListener('input', trackCalculatorUsage);
-        document.getElementById('turnoverRate').addEventListener('input', trackCalculatorUsage);
-        document.getElementById('engagementRate').addEventListener('input', trackCalculatorUsage);
-        document.getElementById('burnoutRate').addEventListener('input', trackCalculatorUsage);
-
         // Initialize calculator on load
         calculateROI();
     </script>
