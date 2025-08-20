@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="/js/header.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROI Calculator | Calculate Your Employee Engagement Losses | Clover Era</title>
@@ -49,117 +48,18 @@
             overflow-x: hidden;
         }
 
-        /* Navigation (same as main page) */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            padding: 1rem 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            text-decoration: none;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 30px;
-            height: 24px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            z-index: 1001;
-        }
-
-        .mobile-menu-toggle span {
-            display: block;
-            width: 100%;
-            height: 3px;
-            background: var(--primary-teal);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
-        }
-
-        .mobile-menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .mobile-menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            margin-left: auto;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-teal);
-        }
-
-        .nav-cta {
-            background: var(--coral);
-            color: var(--white) !important;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
-
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
-            color: var(--white) !important;
-        }
-
-        /* Calculator Hero */
+        /* Calculator Hero - Adjusted for dynamic header */
         .calc-hero {
-            margin-top: 80px;
-            padding: 6rem 2rem 4rem 2rem;  /* Increased top padding from 4rem to 6rem */
+            padding: 8rem 2rem 4rem 2rem;  /* Increased padding to account for header */
             background: linear-gradient(135deg, rgba(250, 251, 252, 0.9) 0%, rgba(245, 247, 250, 0.9) 100%), 
                         url('/images/Employee-Disengagement-Cost.jpg') center/cover no-repeat;
             text-align: center;
             position: relative;
             overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .calc-hero::before {
@@ -820,23 +720,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="logo">Clover Era</a>
-            <button class="mobile-menu-toggle" id="mobileToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="nav-links" id="navLinks">
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/solutions">Solutions</a>
-                <a href="/resources">Resources</a>
-                <a href="/pilot/index.html" class="nav-cta">Start Free Trial</a>
-            </div>
-        </div>
-    </nav>
+    <!-- Header will be inserted by header.js -->
+    <script src="/js/header.js"></script>
 
     <!-- Calculator Hero -->
     <section class="calc-hero">
@@ -1063,17 +948,6 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        
-        if (mobileToggle) {
-            mobileToggle.addEventListener('click', function() {
-                navLinks.classList.toggle('active');
-                mobileToggle.classList.toggle('active');
-            });
-        }
-
         // Calculator Logic - FIXED VERSION
         function calculateROI() {
             // Get input values
@@ -1600,10 +1474,8 @@
         // Initialize calculator on load
         calculateROI();
     </script>
- <!-- Cookie Consent - Add to every page -->
-<script src="/js/cookie-consent.js"></script>
-</body>
-</html>
-  
+    
+    <!-- Cookie Consent - Add to every page -->
+    <script src="/js/cookie-consent.js"></script>
 </body>
 </html>
