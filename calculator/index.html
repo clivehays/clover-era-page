@@ -1040,6 +1040,17 @@
                 <button class="btn-primary" onclick="downloadReport()">GET REPORT</button>
             </div>
             
+            <!-- Simple Math CAPTCHA -->
+            <div id="captchaSection" style="display: none; margin-top: 1rem;">
+                <div style="padding: 1rem; background: var(--light-gray); border-radius: 10px;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">
+                        Verify you're human: What is <span id="captchaQuestion"></span>?
+                    </label>
+                    <input type="number" id="captchaAnswer" style="padding: 0.5rem; border: 2px solid var(--medium-gray); border-radius: 5px; width: 100px;">
+                    <button class="btn-primary" onclick="verifyCaptcha()" style="margin-left: 0.5rem; padding: 0.5rem 1.5rem;">Verify & Download</button>
+                </div>
+            </div>
+            
             <small style="color: var(--text-secondary);">We'll email you the full analysis instantly</small>
         </div>
     </section>
@@ -1189,13 +1200,49 @@
             }
         }
 
-        // Modified download report function to also send to Google Sheets
+        // Simple Math CAPTCHA variables
+        let captchaNum1, captchaNum2, captchaCorrectAnswer;
+
+        // Generate random math question
+        function generateCaptcha() {
+            captchaNum1 = Math.floor(Math.random() * 10) + 1;
+            captchaNum2 = Math.floor(Math.random() * 10) + 1;
+            captchaCorrectAnswer = captchaNum1 + captchaNum2;
+            document.getElementById('captchaQuestion').textContent = `${captchaNum1} + ${captchaNum2}`;
+        }
+
+        // Modified download report function with CAPTCHA
         async function downloadReport() {
             const email = document.getElementById('reportEmail').value;
             if (!email || !email.includes('@')) {
                 alert('Please enter a valid email address.');
                 return;
             }
+
+            // Show CAPTCHA section and generate question
+            document.getElementById('captchaSection').style.display = 'block';
+            generateCaptcha();
+            document.getElementById('captchaAnswer').value = '';
+            document.getElementById('captchaAnswer').focus();
+        }
+
+        // Verify CAPTCHA and proceed with download
+        async function verifyCaptcha() {
+            const userAnswer = parseInt(document.getElementById('captchaAnswer').value);
+            
+            if (userAnswer !== captchaCorrectAnswer) {
+                alert('Incorrect answer. Please try again.');
+                generateCaptcha();
+                document.getElementById('captchaAnswer').value = '';
+                document.getElementById('captchaAnswer').focus();
+                return;
+            }
+
+            // CAPTCHA verified - proceed with original download logic
+            const email = document.getElementById('reportEmail').value;
+            
+            // Hide CAPTCHA section
+            document.getElementById('captchaSection').style.display = 'none';
 
             // Prepare data for Google Sheets
             const sheetData = {
@@ -1214,7 +1261,8 @@
                 roiPercentage: document.getElementById('roiPercentage').textContent.replace('%', ''),
                 paybackPeriod: document.getElementById('paybackPeriod').textContent,
                 cloverInvestment: document.getElementById('cloverInvestment').textContent.replace(/[$,]/g, ''),
-                source: 'ROI Calculator Web'
+                source: 'ROI Calculator Web',
+                captchaVerified: 'true' // Track that CAPTCHA was completed
             };
 
             // Send to Google Sheets
