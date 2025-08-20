@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         RESOURCES <span style="font-size: 0.8rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
-                        <a href="/case-studies" class="featured-link">📊 Success Stories</a>
+                        <a href="/clover-framework.html" class="featured-link">🍀 Clover Framework</a>
                         <a href="/what-is-employee-engagement/">What Is Engagement?</a>
                         <a href="/#calculator">ROI Calculator</a>
                         <a href="/assessment/index.html">Free Assessment</a>
