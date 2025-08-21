@@ -1,1 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/js/header.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation Guide | 15-Minute Setup | Zero IT Required | Start Transforming Today | Clover Era</title>
+    
+    <!-- Essential SEO Meta Tags -->
+    <meta name="description" content="Set up Clover Era in 15 minutes with zero IT involvement. Simple 5-step process gets you identifying burnout, toxicity, and flight risks immediately. No integration needed.">
+    <meta name="keywords" content="implementation guide, quick setup, no IT required, easy deployment, workplace analytics, employee wellbeing platform, 15 minute setup, zero integration, immediate results">
+    <meta name="author" content="Clover Era">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://cloverera.com/implementation-guide/">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Implementation Guide - 15 Minutes to Workplace Transformation | Clover Era">
+    <meta property="og:description" content="Zero IT involvement. 15-minute setup. Immediate insights. Start preventing burnout and turnover today.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://cloverera.com/implementation-guide/">
+    <meta property="og:image" content="https://cloverera.com/images/implementation-hero.jpg">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "Clover Era Implementation Guide",
+      "description": "Complete guide to implementing Clover Era's AI-powered workplace wellbeing platform in 15 minutes with zero IT involvement",
+      "totalTime": "PT15M",
+      "supply": "None",
+      "tool": "Web browser",
+      "author": {
+        "@type": "Organization",
+        "name": "Clover Era"
+      }
+    }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary-teal: #46AEB8;
+            --coral: #FF6B6B;
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F5F7FA;
+            --medium-gray: #E5E9ED;
+            --dark-gray: #6B7280;
+            --charcoal: #1F2937;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --setup-green: #059669;
+            --quick-blue: #0EA5E9;
+            --simple-purple: #8B5CF6;
+            --ready-gold: #F59E0B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--white);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-teal);
+        }
+
+        .nav-cta {
+            background: var(--coral);
+            color: var(--white) !important;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 70px;
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(14, 165, 233, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '15';
+            position: absolute;
+            top: -50px;
+            right: 10%;
+            font-size: 300px;
+            font-weight: 900;
+            color: rgba(5, 150, 105, 0.05);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .setup-badge {
+            background: var(--setup-green);
+            color: var(--white);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+            animation: setupPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes setupPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 800px;
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero-feature {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .hero-feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-text {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .feature-subtext {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-teal);
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--primary-teal);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        /* Timer Section */
+        .timer-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+            text-align: center;
+        }
+
+        .timer-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .timer-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.05), rgba(245, 158, 11, 0.02));
+            border-radius: 20px;
+        }
+
+        .timer-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--setup-green), #047857);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            box-shadow: 0 10px 40px rgba(5, 150, 105, 0.3);
+            animation: timerPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .timer-number {
+            font-size: 4rem;
+            font-weight: 900;
+        }
+
+        .timer-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .timer-benefits {
+            text-align: left;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--setup-green);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .benefit-text {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        /* Steps Section */
+        .steps-section {
+            padding: 5rem 2rem;
+            background: var(--off-white);
+        }
+
+        .section-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .section-intro {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .setup-steps {
+            display: grid;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .step-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 2rem;
+            align-items: start;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .step-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--setup-green), #047857);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .step-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .step-time {
+            color: var(--setup-green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .step-actions {
+            list-style: none;
+        }
+
+        .step-actions li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .step-actions li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--setup-green);
+            font-weight: 700;
+        }
+
+        /* No IT Section */
+        .no-it-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05), rgba(139, 92, 246, 0.02));
+        }
+
+        .no-it-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .no-it-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+            border-top: 4px solid var(--quick-blue);
+        }
+
+        .no-it-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-it-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-it-title {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-it-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+
+        .dashboard-preview {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: var(--off-white);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            border-bottom: 2px solid var(--medium-gray);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .metric-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-high {
+            color: var(--danger);
+        }
+
+        .metric-medium {
+            color: var(--warning);
+        }
+
+        .metric-good {
+            color: var(--success);
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            padding: 5rem 2rem;
+            background: var(--off-white);
+        }
+
+        .timeline-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--setup-green), var(--ready-gold));
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 45%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--setup-green);
+            border-radius: 50%;
+            border: 4px solid var(--white);
+        }
+
+        .timeline-time {
+            color: var(--setup-green);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+        }
+
+        /* Support Section */
+        .support-section {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .support-card {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.05), rgba(70, 174, 184, 0.02));
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--primary-teal);
+        }
+
+        .support-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .support-title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .support-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .support-link {
+            color: var(--primary-teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .support-link:hover {
+            text-decoration: underline;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 5rem 2rem;
+            background: var(--off-white);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--white);
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: var(--off-white);
+        }
+
+        .faq-icon {
+            font-size: 1.5rem;
+            color: var(--setup-green);
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--setup-green), #047857);
+            text-align: center;
+            color: var(--white);
+        }
+
+        .cta-section h2 {
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-section .btn-primary {
+            background: var(--white);
+            color: var(--setup-green);
+        }
+
+        .cta-section .btn-primary:hover {
+            background: var(--off-white);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .hero-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .timer-visual {
+                flex-direction: column;
+            }
+            
+            .step-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .step-number {
+                margin: 0 auto;
+            }
+            
+            .timeline-line {
+                left: 20px;
+            }
+            
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                flex-direction: row;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 60px);
+                margin-left: 60px;
+            }
+            
+            .timeline-dot {
+                left: 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">CLOVER ERA</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/workplace-solutions/">Solutions</a>
+                <a href="/our-science.html">Science</a>
+                <a href="/implementation-guide/">Implementation</a>
+                <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="breadcrumb">
+                <a href="/">Home</a> > Implementation Guide
+            </div>
+            
+            <div class="setup-badge">⚡ ZERO IT REQUIRED • 15 MINUTE SETUP</div>
+            
+            <h1>From Sign-Up to Saving Lives in 15 Minutes</h1>
+            
+            <p class="hero-subtitle">
+                No IT department. No integration hassles. No consultants. No training required. 
+                Just sign up, invite your team, and start preventing burnout, stopping turnover, 
+                and transforming culture immediately. Seriously—15 minutes is all it takes.
+            </p>
+            
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <div class="feature-icon">🚫</div>
+                    <div class="feature-text">Zero IT Involvement</div>
+                    <div class="feature-subtext">Cloud-based, instant</div>
+                </div>
+                <div class="hero-feature">
+                    <div class="feature-icon">⏱️</div>
+                    <div class="feature-text">15 Minutes Total</div>
+                    <div class="feature-subtext">Faster than lunch</div>
+                </div>
+                <div class="hero-feature">
+                    <div class="feature-icon">💡</div>
+                    <div class="feature-text">Instant Insights</div>
+                    <div class="feature-subtext">Results immediately</div>
+                </div>
+                <div class="hero-feature">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-text">100% Secure</div>
+                    <div class="feature-subtext">Bank-level encryption</div>
+                </div>
+            </div>
+            
+            <div class="hero-cta">
+                <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="btn-primary">Start Your 15-Minute Setup Now</a>
+                <a href="#setup-steps" class="btn-secondary">See The 5 Simple Steps</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timer Section -->
+    <section class="timer-section">
+        <div class="timer-container">
+            <h2>Your 15-Minute Investment Returns Millions</h2>
+            
+            <div class="timer-visual">
+                <div class="timer-circle">
+                    <div class="timer-number">15</div>
+                    <div class="timer-text">MINUTES</div>
+                </div>
+                
+                <div class="timer-benefits">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🔍</div>
+                        <div class="benefit-text">Identify 76% experiencing burnout</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🚨</div>
+                        <div class="benefit-text">Detect flight risks 6 months early</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">☠️</div>
+                        <div class="benefit-text">Expose toxic managers destroying teams</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">💰</div>
+                        <div class="benefit-text">Save £3-5M annually in prevented losses</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="steps-section" id="setup-steps">
+        <div class="section-content">
+            <h2>5 Simple Steps to Transform Your Workplace</h2>
+            <p class="section-intro">
+                No technical knowledge required. If you can send an email, you can set up Clover Era.
+                Your HR team, executives, or even assistants can complete this in one coffee break.
+            </p>
+            
+            <div class="setup-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Create Your Account</h3>
+                        <div class="step-time">⏱️ 2 minutes</div>
+                        <p class="step-description">
+                            Visit our sign-up page, enter your company details, and create your admin account. 
+                            That's it—you're in. No credit card required for the 30-day trial.
+                        </p>
+                        <ul class="step-actions">
+                            <li>Enter company name and size</li>
+                            <li>Create admin email and password</li>
+                            <li>Select your industry</li>
+                            <li>Choose your timezone</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Customize Your Settings</h3>
+                        <div class="step-time">⏱️ 3 minutes</div>
+                        <p class="step-description">
+                            Choose what to monitor and how to get alerts. Pre-configured templates for your 
+                            industry mean you can use defaults or customize in seconds.
+                        </p>
+                        <ul class="step-actions">
+                            <li>Select monitoring priorities (burnout, turnover, culture)</li>
+                            <li>Set alert thresholds (or use smart defaults)</li>
+                            <li>Choose notification preferences</li>
+                            <li>Configure privacy settings</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Upload Your Team List</h3>
+                        <div class="step-time">⏱️ 3 minutes</div>
+                        <p class="step-description">
+                            Simply upload a CSV with employee emails and departments, or manually add teams. 
+                            No complex data mapping, no IT integration, no API connections needed.
+                        </p>
+                        <ul class="step-actions">
+                            <li>Download our simple CSV template</li>
+                            <li>Add employee emails and departments</li>
+                            <li>Upload file or copy-paste</li>
+                            <li>System auto-organizes teams</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Send Welcome Invites</h3>
+                        <div class="step-time">⏱️ 2 minutes</div>
+                        <p class="step-description">
+                            Click one button to invite your entire organization. Employees receive a friendly 
+                            email explaining the wellbeing focus and confidentiality. No app downloads required.
+                        </p>
+                        <ul class="step-actions">
+                            <li>Review pre-written invitation message</li>
+                            <li>Customize if desired (optional)</li>
+                            <li>Click "Send Invitations"</li>
+                            <li>Employees join with one click</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>View Your First Insights</h3>
+                        <div class="step-time">⏱️ 5 minutes</div>
+                        <p class="step-description">
+                            Within minutes of employees joining, AI begins identifying patterns. Your dashboard 
+                            shows burnout risks, flight risks, and culture health immediately.
+                        </p>
+                        <ul class="step-actions">
+                            <li>Access real-time dashboard</li>
+                            <li>See initial risk assessments</li>
+                            <li>Identify urgent interventions needed</li>
+                            <li>Start saving your workforce</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- No IT Section -->
+    <section class="no-it-section">
+        <div class="section-content">
+            <h2>Why Zero IT Involvement?</h2>
+            <p class="section-intro">
+                We built Clover Era for HR leaders and executives, not IT departments. 
+                Everything runs in your browser—no software, no servers, no hassle.
+            </p>
+            
+            <div class="no-it-grid">
+                <div class="no-it-card">
+                    <div class="no-it-icon">☁️</div>
+                    <div class="no-it-title">100% Cloud-Based</div>
+                    <div class="no-it-desc">
+                        No installation, no servers, no maintenance. Access from any device, anywhere.
+                    </div>
+                </div>
+                
+                <div class="no-it-card">
+                    <div class="no-it-icon">🔌</div>
+                    <div class="no-it-title">No Integrations</div>
+                    <div class="no-it-desc">
+                        Works independently. No HRIS connection, no API setup, no data warehouse access.
+                    </div>
+                </div>
+                
+                <div class="no-it-card">
+                    <div class="no-it-icon">🛡️</div>
+                    <div class="no-it-title">Enterprise Security</div>
+                    <div class="no-it-desc">
+                        Bank-level encryption, SOC 2 compliant, GDPR ready. Security without complexity.
+                    </div>
+                </div>
+                
+                <div class="no-it-card">
+                    <div class="no-it-icon">📱</div>
+                    <div class="no-it-title">Any Device Works</div>
+                    <div class="no-it-desc">
+                        Desktop, laptop, tablet, phone. If it has a browser, Clover Era works perfectly.
+                    </div>
+                </div>
+                
+                <div class="no-it-card">
+                    <div class="no-it-icon">🚀</div>
+                    <div class="no-it-title">Instant Updates</div>
+                    <div class="no-it-desc">
+                        New features and improvements appear automatically. No downtime, no disruption.
+                    </div>
+                </div>
+                
+                <div class="no-it-card">
+                    <div class="no-it-icon">🎯</div>
+                    <div class="no-it-title">HR-Friendly Design</div>
+                    <div class="no-it-desc">
+                        Built for people leaders, not tech experts. Intuitive interface anyone can master.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview Section -->
+    <section class="dashboard-section">
+        <div class="section-content">
+            <h2>Your Dashboard After 15 Minutes</h2>
+            <p class="section-intro">
+                The moment setup completes, you'll see exactly who needs help, where problems hide, 
+                and what actions to take. No waiting, no processing—instant intelligence.
+            </p>
+            
+            <div class="dashboard-preview">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">🎯 Clover Era Command Center</div>
+                </div>
+                
+                <div class="dashboard-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value metric-high">76%</div>
+                        <div class="metric-label">Experiencing Burnout</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-high">47</div>
+                        <div class="metric-label">Flight Risks Detected</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-medium">12</div>
+                        <div class="metric-label">Toxic Managers</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-good">89%</div>
+                        <div class="metric-label">Prediction Accuracy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section">
+        <div class="timeline-container">
+            <h2>Your First 24 Hours with Clover Era</h2>
+            
+            <div class="timeline">
+                <div class="timeline-line"></div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">0-15 Minutes</div>
+                        <div class="timeline-title">Setup Complete</div>
+                        <div class="timeline-desc">Account created, team invited, dashboard live</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">1 Hour</div>
+                        <div class="timeline-title">First Insights</div>
+                        <div class="timeline-desc">Initial risk assessments and burnout indicators visible</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">4 Hours</div>
+                        <div class="timeline-title">Pattern Recognition</div>
+                        <div class="timeline-desc">AI identifies team dynamics and cultural hotspots</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">24 Hours</div>
+                        <div class="timeline-title">Action Plan Ready</div>
+                        <div class="timeline-desc">Prioritized interventions and recommendations delivered</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section class="support-section">
+        <div class="section-content">
+            <h2>We're Here Every Step (All 5 of Them)</h2>
+            <p class="section-intro">
+                Though setup is simple, we're here if you need us. Real humans, real help, really fast.
+            </p>
+            
+            <div class="support-grid">
+                <div class="support-card">
+                    <div class="support-icon">💬</div>
+                    <div class="support-title">Live Chat Support</div>
+                    <div class="support-desc">
+                        Click the chat bubble for instant help during setup. Average response: 30 seconds.
+                    </div>
+                    <a href="#" class="support-link">Start Chat →</a>
+                </div>
+                
+                <div class="support-card">
+                    <div class="support-icon">📞</div>
+                    <div class="support-title">Setup Hotline</div>
+                    <div class="support-desc">
+                        Prefer talking? Call our setup specialists who'll walk you through everything.
+                    </div>
+                    <a href="tel:+44-XXX-XXXX" class="support-link">Call Now →</a>
+                </div>
+                
+                <div class="support-card">
+                    <div class="support-icon">🎥</div>
+                    <div class="support-title">Video Walkthrough</div>
+                    <div class="support-desc">
+                        Watch our 10-minute setup video showing every click from start to finish.
+                    </div>
+                    <a href="#" class="support-link">Watch Video →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="faq-container">
+            <h2>Common Setup Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    Do we really need zero IT involvement?
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely zero. Clover Era is 100% cloud-based and requires no integration with your existing systems. HR or executive teams can complete setup without any technical assistance. If you can use email, you can set up Clover Era.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    What if we have 10,000+ employees?
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Large organizations can still set up in 15 minutes. Simply upload your employee CSV (we handle files with 100,000+ rows instantly), and our system auto-organizes everything. The process is identical whether you have 50 or 50,000 employees.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    How does it work without accessing our systems?
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Our AI analyzes patterns through employee engagement with the platform, survey responses, and behavioral indicators—all collected with explicit consent. No access to your email, Slack, or internal systems required. Complete insights without invasion.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    Is the data secure without our IT security?
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. We use bank-level AES-256 encryption, are SOC 2 Type II certified, GDPR compliant, and undergo regular third-party security audits. Your data is likely more secure with us than on your own servers.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    Can employees use it without training?
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. Employees simply click the invitation link and answer occasional wellbeing check-ins (takes 30 seconds). No app download, no login hassles, no training needed. It's designed to be invisible yet impactful.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    What if we need to add/remove employees?
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Changes take seconds. Add new employees individually or bulk upload. Remove departing employees with one click. Set up auto-sync with your HRIS later if desired, but it's never required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Every Hour You Wait, Another Employee Burns Out</h2>
+        <p>15 minutes from now, you could be preventing crisis. What are you waiting for?</p>
+        <div class="hero-cta">
+            <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="btn-primary">Start Your 15-Minute Setup</a>
+            <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-secondary" style="background: transparent; border: 2px solid white; color: white;">Schedule Guided Setup</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Clover Era | Zero IT, Maximum Impact</p>
+        <p style="margin-top: 1rem;">
+            <a href="/privacy-policy/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Privacy</a> | 
+            <a href="/terms/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Terms</a> | 
+            <a href="/contact/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Contact</a>
+        </p>
+    </footer>
+
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                faqItem.classList.toggle('active');
+            });
+        });
+
+        // Smooth scroll to setup steps
+        document.querySelector('a[href="#setup-steps"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#setup-steps').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Animated elements
+        window.addEventListener('load', () => {
+            // Animate step cards on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '0';
+                        entry.target.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            entry.target.style.transition = 'all 0.5s ease';
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateX(0)';
+                        }, 100);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.step-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+    <!-- Cookie Consent - Add to every page -->
+<script src="/js/cookie-consent.js"></script>
+</body>
+</html>
