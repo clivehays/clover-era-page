@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </button>
             <div class="nav-links" id="navLinks">
                 <a href="/how-it-works.html">HOW IT WORKS</a>
-                <a href="https://www.cloverera.com/calculator/index.html">ROI CALCULATOR</a>
+                <a href="calculator/index.html">ROI CALCULATOR</a>
                 <a href="https://www.cloverera.com/pricing/index.html">PRICING</a>
                 <div class="nav-dropdown">
                     <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
