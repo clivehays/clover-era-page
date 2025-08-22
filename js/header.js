@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="nav-dropdown-menu">
                         <a href="/clover-framework.html" class="featured-link">🍀 Clover Framework</a>
                         <a href="/what-is-employee-engagement/">What Is Engagement?</a>
-                        <a href="/#calculator">ROI Calculator</a>
+                        <a href="/https://www.cloverera.com/calculator/index.html">ROI Calculator</a>
                         <a href="/assessment/index.html">Free Assessment</a>
                         <a href="/implementation-guide.html">Implementation Guide</a>
                         <a href="https://www.amazon.com/Trillion-Dollar-Problem-Employee-Engagement-ebook/dp/B0CYMC3ST1/ref=sr_1_1?crid=FIA8QK3LNQZ0&dib=eyJ2IjoiMSJ9.QImYjq6qcRR5M5fzSbzy1IVu2_5CiJxenm3uMu8aUcl0Zm3J_AVdoIA1WJCmWs-yufPlRkezuhnJurayQOLazLuWTn1XIlAntqSjdWmn-5yL0PHv6F6l-kA8t0O6EalS.nP4OcL7TscInMWUb8AW18JAlsmsQXTD-oY71REz59EU&dib_tag=se&keywords=The+trillion+Dollar+Problem&qid=1755545687&sprefix=the+trillion+dollar+problem%2Caps%2C258&sr=8-1" class="featured-link">
