@@ -316,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <span style="color: #6B7280; display: inline-flex; align-items: center; gap: 0.5rem;">
             <img src="https://www.cloverera.com/images/Employee-resilience-training.png" alt="Beta" style="width: 16px; height: 16px; vertical-align: middle;">
             <strong style="color: #46AEB8;">Fresh from beta</strong> - Limited spots
+            <strong style="color: #46AEB8;">1% Better</strong> - Everyday
         </span>
     `;
 
