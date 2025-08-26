@@ -1307,7 +1307,50 @@
             }
 
             // CAPTCHA verified - generate and download PDF
-            alert('Report download starting...');
+            async function verifyCaptcha() {
+    const userAnswer = parseInt(document.getElementById('captchaAnswer').value);
+    
+    if (userAnswer !== captchaCorrectAnswer) {
+        alert('Incorrect answer. Please try again.');
+        generateCaptcha();
+        document.getElementById('captchaAnswer').value = '';
+        document.getElementById('captchaAnswer').focus();
+        return;
+    }
+
+    // CAPTCHA verified - generate and download PDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Get current values
+    const employees = document.getElementById('employees').value;
+    const totalLoss = document.getElementById('totalLoss').textContent;
+    const annualSavings = document.getElementById('annualSavings').textContent;
+    const roiPercentage = document.getElementById('roiPercentage').textContent;
+    
+    // Add content to PDF
+    doc.setFontSize(20);
+    doc.text('CloverERA ROI Report', 20, 20);
+    
+    doc.setFontSize(12);
+    doc.text(`Company Size: ${employees} employees`, 20, 40);
+    doc.text(`Current Annual Loss: ${totalLoss}`, 20, 50);
+    doc.text(`Projected Annual Savings: ${annualSavings}`, 20, 60);
+    doc.text(`Return on Investment: ${roiPercentage}`, 20, 70);
+    
+    // Add breakdown
+    doc.text('Cost Breakdown:', 20, 90);
+    doc.text(`- Turnover Costs: ${document.getElementById('turnoverCost').textContent}`, 30, 100);
+    doc.text(`- Lost Productivity: ${document.getElementById('productivityCost').textContent}`, 30, 110);
+    doc.text(`- Absenteeism: ${document.getElementById('absenteeismCost').textContent}`, 30, 120);
+    
+    // Save the PDF
+    doc.save('CloverERA_ROI_Report.pdf');
+    
+    // Reset form
+    document.getElementById('captchaSection').style.display = 'none';
+    document.getElementById('reportEmail').value = '';
+}
             document.getElementById('captchaSection').style.display = 'none';
             document.getElementById('reportEmail').value = '';
         }
