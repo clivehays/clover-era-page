@@ -1308,90 +1308,235 @@
                 return;
             }
 
-            // CAPTCHA verified - generate and download PDF
+            // CAPTCHA verified - generate styled PDF
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
-                
-                // Use stored calculator data
                 const data = window.calculatorData;
+                const email = document.getElementById('reportEmail').value;
                 
-                // Add header
-                doc.setFontSize(24);
-                doc.setTextColor(70, 174, 184);
-                doc.text('CLOVER ERA', 105, 20, { align: 'center' });
+                // Page 1 - Executive Summary
+                // Teal header background
+                doc.setFillColor(70, 174, 184);
+                doc.rect(0, 0, 210, 50, 'F');
                 
+                // White text on teal
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(28);
+                doc.text('CLOVER ERA', 105, 25, { align: 'center' });
                 doc.setFontSize(16);
-                doc.setTextColor(0, 0, 0);
-                doc.text('Employee Engagement ROI Analysis', 105, 30, { align: 'center' });
+                doc.text('ROI Analysis Report', 105, 38, { align: 'center' });
                 
-                // Add date
+                // Report details
+                doc.setTextColor(100, 100, 100);
                 doc.setFontSize(10);
                 const today = new Date().toLocaleDateString();
-                doc.text(`Generated: ${today}`, 20, 45);
+                doc.text(`Report Generated: ${today}`, 20, 65);
+                doc.text(`For: ${email}`, 20, 72);
                 
-                // Company Overview Section
-                doc.setFontSize(14);
-                doc.setTextColor(255, 107, 107);
-                doc.text('Company Overview', 20, 60);
-                
-                doc.setFontSize(11);
+                // Executive Summary title
                 doc.setTextColor(0, 0, 0);
-                doc.text(`Total Employees: ${data.employees}`, 20, 70);
-                doc.text(`Average Annual Salary: $${data.avgSalary.toLocaleString()}`, 20, 78);
-                doc.text(`Current Engagement Level: ${data.engagementRate}%`, 20, 86);
-                doc.text(`Annual Turnover Rate: ${data.turnoverRate}%`, 20, 94);
-                doc.text(`Burnout Rate: ${data.burnoutRate}%`, 20, 102);
+                doc.setFontSize(20);
+                doc.text('Executive Summary', 20, 90);
                 
-                // Current Costs Section
-                doc.setFontSize(14);
-                doc.setTextColor(255, 107, 107);
-                doc.text('Current Annual Costs', 20, 120);
+                // Critical Alert Box - Coral background
+                doc.setFillColor(255, 107, 107);
+                doc.rect(20, 100, 170, 35, 'F');
                 
+                doc.setTextColor(255, 255, 255);
                 doc.setFontSize(12);
-                doc.setTextColor(239, 68, 68);
-                doc.text(`Total Annual Loss: $${Math.round(data.totalLoss).toLocaleString()}`, 20, 130);
+                doc.text('CRITICAL BUSINESS IMPACT ALERT', 105, 110, { align: 'center' });
+                doc.setFontSize(24);
+                doc.text(`${Math.round(data.totalLoss).toLocaleString()}`, 105, 123, { align: 'center' });
+                doc.setFontSize(10);
+                doc.text('Annual losses from disengagement, burnout & turnover', 105, 130, { align: 'center' });
                 
-                doc.setFontSize(11);
+                // Your Current Situation
                 doc.setTextColor(0, 0, 0);
-                doc.text(`- Turnover Costs: $${Math.round(data.turnoverCost).toLocaleString()}`, 30, 140);
-                doc.text(`- Lost Productivity: $${Math.round(data.productivityCost).toLocaleString()}`, 30, 148);
-                doc.text(`- Absenteeism: $${Math.round(data.absenteeismCost).toLocaleString()}`, 30, 156);
-                doc.text(`- Daily Loss: $${Math.round(data.totalLoss / 365).toLocaleString()}`, 30, 164);
-                
-                // ROI with Clover ERA Section
                 doc.setFontSize(14);
-                doc.setTextColor(70, 174, 184);
-                doc.text('Projected Results with Clover ERA', 20, 182);
+                doc.text('Your Current Situation', 20, 150);
                 
                 doc.setFontSize(11);
-                doc.setTextColor(0, 0, 0);
-                doc.text(`Return on Investment: ${data.roi}%`, 20, 192);
-                doc.text(`Payback Period: ${data.paybackPeriod} months`, 20, 200);
-                doc.text(`Annual Savings: $${Math.round(data.netSavings).toLocaleString()}`, 20, 208);
-                doc.text(`Clover ERA Investment: $${Math.round(data.annualCloverCost).toLocaleString()}/year`, 20, 216);
+                doc.setTextColor(80, 80, 80);
+                const leftCol = 25;
+                const rightCol = 120;
+                let y = 162;
                 
-                // Key Benefits Section
+                doc.text('Organization Size:', leftCol, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${data.employees} employees`, rightCol, y);
+                
+                doc.setFont(undefined, 'normal');
+                y += 8;
+                doc.text('Average Salary:', leftCol, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${data.avgSalary.toLocaleString()}`, rightCol, y);
+                
+                doc.setFont(undefined, 'normal');
+                y += 8;
+                doc.text('Current Turnover Rate:', leftCol, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${data.turnoverRate}%`, rightCol, y);
+                
+                doc.setFont(undefined, 'normal');
+                y += 8;
+                doc.text('Current Engagement Level:', leftCol, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${data.engagementRate}%`, rightCol, y);
+                
+                doc.setFont(undefined, 'normal');
+                y += 8;
+                doc.text('Burnout Rate:', leftCol, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${data.burnoutRate}%`, rightCol, y);
+                
+                // Annual Cost Breakdown
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(0, 0, 0);
                 doc.setFontSize(14);
-                doc.setTextColor(16, 185, 129);
-                doc.text('Expected Improvements', 20, 234);
+                doc.text('Annual Cost Breakdown', 20, 215);
+                
+                // Cost items with colored bars
+                y = 227;
+                doc.setFontSize(11);
+                
+                // Turnover bar
+                doc.setFillColor(255, 107, 107);
+                doc.rect(25, y-5, 3, 6, 'F');
+                doc.setTextColor(80, 80, 80);
+                doc.text('Turnover Costs', 32, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${Math.round(data.turnoverCost).toLocaleString()}`, 150, y, { align: 'right' });
+                
+                // Productivity bar
+                doc.setFont(undefined, 'normal');
+                y += 10;
+                doc.rect(25, y-5, 3, 6, 'F');
+                doc.text('Lost Productivity', 32, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${Math.round(data.productivityCost).toLocaleString()}`, 150, y, { align: 'right' });
+                
+                // Absenteeism bar
+                doc.setFont(undefined, 'normal');
+                y += 10;
+                doc.rect(25, y-5, 3, 6, 'F');
+                doc.text('Absenteeism', 32, y);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${Math.round(data.absenteeismCost).toLocaleString()}`, 150, y, { align: 'right' });
+                
+                // Daily loss
+                doc.setFont(undefined, 'normal');
+                y += 20;
+                doc.setFontSize(11);
+                doc.text('Every day you delay costs your organization:', 55, y);
+                doc.setTextColor(255, 107, 107);
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${Math.round(data.totalLoss / 365).toLocaleString()}`, 150, y);
+                
+                // Page 2
+                doc.addPage();
+                
+                // Your ROI section
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(20);
+                doc.text('Your ROI with Clover Era', 20, 30);
+                
+                // ROI Box - Teal background
+                doc.setFillColor(70, 174, 184);
+                doc.rect(20, 40, 170, 45, 'F');
+                
+                // ROI metrics in white
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(28);
+                doc.setFont(undefined, 'bold');
+                doc.text(`${data.roi}%`, 50, 60, { align: 'center' });
+                doc.text(`${data.paybackPeriod}`, 105, 60, { align: 'center' });
+                doc.text(`${Math.round(data.netSavings).toLocaleString()}`, 145, 60, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.text('Return on Investment', 50, 72, { align: 'center' });
+                doc.text('Months to Payback', 105, 72, { align: 'center' });
+                doc.text('Annual Savings', 145, 72, { align: 'center' });
+                
+                // Investment amount
+                doc.setTextColor(80, 80, 80);
+                doc.setFontSize(11);
+                doc.text(`Clover ERA Investment: ${Math.round(data.annualCloverCost).toLocaleString()}/year`, 105, 95, { align: 'center' });
+                
+                // Transformation Impact table
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(16);
+                doc.text('Transformation Impact', 20, 115);
+                
+                // Table header - teal background
+                doc.setFillColor(70, 174, 184);
+                doc.rect(20, 125, 170, 10, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(11);
+                doc.setFont(undefined, 'bold');
+                doc.text('Metric', 30, 131);
+                doc.text('Current State', 90, 131);
+                doc.text('With Clover Era', 140, 131);
+                
+                // Table rows
+                doc.setTextColor(80, 80, 80);
+                doc.setFont(undefined, 'normal');
+                y = 145;
+                
+                const rows = [
+                    ['Annual Turnover', `${Math.round(data.employees * data.turnoverRate / 100)} employees`, `${Math.round(data.employees * data.turnoverRate * 0.5 / 100)} employees`],
+                    ['Engagement Score', `${data.engagementRate}%`, `${Math.min(75, data.engagementRate + 40)}%`],
+                    ['Productivity Loss', '34%', '8%'],
+                    ['Annual Cost', `${Math.round(data.totalLoss).toLocaleString()}`, `${Math.round(data.totalLoss * 0.3).toLocaleString()}`]
+                ];
+                
+                rows.forEach(row => {
+                    doc.text(row[0], 30, y);
+                    doc.setTextColor(239, 68, 68); // Red for current
+                    doc.text(row[1], 90, y);
+                    doc.setTextColor(16, 185, 129); // Green for improved
+                    doc.text(row[2], 140, y);
+                    doc.setTextColor(80, 80, 80);
+                    y += 10;
+                });
+                
+                // Recommended Next Steps
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(16);
+                doc.text('Recommended Next Steps', 20, 200);
                 
                 doc.setFontSize(11);
-                doc.setTextColor(0, 0, 0);
-                doc.text(`• 50% reduction in turnover rate`, 20, 244);
-                doc.text(`• 40% increase in engagement levels`, 20, 252);
-                doc.text(`• 60% reduction in burnout symptoms`, 20, 260);
-                doc.text(`• Improved team productivity and morale`, 20, 268);
+                doc.setTextColor(80, 80, 80);
+                y = 212;
+                
+                const steps = [
+                    '1. Schedule a personalized demo to see Clover Era in action',
+                    '2. Start your 30-day free trial with no commitment',
+                    '3. Get your team onboarded in less than 24 hours',
+                    '4. See measurable results within the first 2 weeks'
+                ];
+                
+                steps.forEach(step => {
+                    // Teal bullet
+                    doc.setFillColor(70, 174, 184);
+                    doc.circle(25, y-2, 2, 'F');
+                    doc.text(step, 30, y);
+                    y += 10;
+                });
                 
                 // Footer
                 doc.setFontSize(9);
                 doc.setTextColor(128, 128, 128);
-                doc.text('© 2025 Clover ERA | www.cloverera.com | contact@cloverera.com', 105, 280, { align: 'center' });
+                doc.text('Clover ERA | Neuroscience-Powered Employee Engagement Platform', 105, 270, { align: 'center' });
+                doc.text('Contact: contact@cloverera.com | www.cloverera.com', 105, 276, { align: 'center' });
                 
-                // Save the PDF
+                // Save PDF
                 doc.save('CloverERA_ROI_Report.pdf');
                 
-                // Success message and reset
                 alert('Your personalized ROI report has been downloaded successfully!');
                 document.getElementById('captchaSection').style.display = 'none';
                 document.getElementById('reportEmail').value = '';
