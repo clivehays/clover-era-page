@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span></span>
             </button>
             <div class="nav-links" id="navLinks">
-                <a href="/app.cloverera.com/">SIGN IN</a>
+                <a href="/https://app.cloverera.com/login/">SIGN IN</a>
                 <a href="/how-it-works.html">HOW IT WORKS</a>
                 <a href="/calculator/index.html">ROI CALCULATOR</a>
                 <a href="https://www.cloverera.com/pricing/index.html">PRICING</a>
