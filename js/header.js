@@ -293,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="nav-dropdown-menu">
                         <a href="/clover-framework.html" class="featured-link">🍀 Clover Framework</a>
                         <a href="/what-is-employee-engagement/">What Is Engagement?</a>
+                        <a href="/research-insights/index.html">Research Insights</a>
                         <a href="/calculator/index.html">ROI Calculator</a>
                         <a href="/assessment/index.html">Free Assessment</a>
                         <a href="/implementation-guide.html">Implementation Guide</a>
