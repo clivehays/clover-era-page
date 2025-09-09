@@ -316,9 +316,10 @@ document.addEventListener('DOMContentLoaded', function() {
     trustBar.className = 'trust-bar';
     trustBar.innerHTML = `
         <span style="color: #6B7280; display: inline-flex; align-items: center; gap: 0.5rem;">
-            <strong style="color: #46AEB8;">Fresh from beta</strong> - Limited spots || 
-           <a href="https://cloverera.com/active-employee-engagement-management/index.html" style="text-decoration: none; color: inherit;">
-    <strong style="color: #46AEB8;">1% Better</strong> - Everyday
+            <a href="https://cloverera.com/active-employee-engagement-management/index.html" style="text-decoration: none; color: inherit;">
+    <strong style="color: #46AEB8;">1% Better</strong> - Everyday  || 
+           <a href="https://cloverera.com/30-day-free-pilot/index.html" style="text-decoration: none; color: inherit;">
+    <strong style="color: #46AEB8;">FREE</strong> - 30 Day Trial
 </a>
         </span>
     `;
