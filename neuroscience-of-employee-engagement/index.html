@@ -412,6 +412,11 @@
             box-shadow: 0 8px 30px rgba(70, 174, 184, 0.4);
         }
 
+        .btn-download:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .privacy-notice {
             font-size: 0.85rem;
             color: var(--text-secondary);
@@ -421,6 +426,25 @@
         .privacy-notice a {
             color: var(--primary-teal);
             text-decoration: none;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: var(--success);
+            color: var(--white);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message {
+            background: var(--danger);
+            color: var(--white);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
         }
 
         /* What's Inside Section */
@@ -689,6 +713,15 @@
                     <h3 class="form-title">Download Your Free Chapters</h3>
                     <p class="form-description">Enter your details to receive instant access</p>
                 </div>
+                
+                <!-- Success/Error Messages -->
+                <div id="successMessage" class="success-message">
+                    ✓ Success! Your download is starting...
+                </div>
+                <div id="errorMessage" class="error-message">
+                    ✗ Something went wrong. Please try again or contact support.
+                </div>
+                
                 <form class="download-form" id="bookPreviewForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -712,15 +745,15 @@
                         <label class="form-label" for="role">Your Role</label>
                         <select id="role" name="role" class="form-input">
                             <option value="">Select your role</option>
-                            <option value="ceo">CEO/President</option>
-                            <option value="hr">HR Leader</option>
-                            <option value="manager">Manager/Team Lead</option>
-                            <option value="executive">Other Executive</option>
-                            <option value="consultant">Consultant</option>
-                            <option value="other">Other</option>
+                            <option value="CEO/President">CEO/President</option>
+                            <option value="HR Leader">HR Leader</option>
+                            <option value="Manager/Team Lead">Manager/Team Lead</option>
+                            <option value="Other Executive">Other Executive</option>
+                            <option value="Consultant">Consultant</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn-download">GET YOUR FREE PREVIEW →</button>
+                    <button type="submit" class="btn-download" id="submitBtn">GET YOUR FREE PREVIEW →</button>
                     <p class="privacy-notice">
                         We respect your privacy. Your information will never be shared.
                         <br>By downloading, you'll also receive updates about the book launch.
@@ -795,9 +828,28 @@
     </footer>
 
     <script>
+        // Google Apps Script Web App URL for form submission
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwa2s_o-UQAyTHRTTPmNm5TEIIhvgcts4nDzkFpwIwnTF5KmGmSOCjskHHM1Rf252gi/exec';
+        
+        // PDF download URL - Your actual PDF file location
+        const PDF_URL = '/The Neuroscience of Employee Engagement - Preview.pdf';
+
         // Form submission handler
-        document.getElementById('bookPreviewForm').addEventListener('submit', function(e) {
+        document.getElementById('bookPreviewForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // Get form elements
+            const submitBtn = document.getElementById('submitBtn');
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            // Hide any previous messages
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'PROCESSING...';
             
             // Collect form data
             const formData = {
@@ -808,20 +860,101 @@
                 role: document.getElementById('role').value
             };
             
-            // Here you would typically send this to your backend
-            console.log('Form submitted:', formData);
-            
-            // Show success message
-            alert('Thank you! Check your email for your free book preview. You should receive it within 5 minutes.');
-            
-            // In production, you would:
-            // 1. Send data to your email service (MailChimp, ConvertKit, etc.)
-            // 2. Trigger an automated email with the PDF download link
-            // 3. Redirect to a thank you page or show a success modal
-            
-            // Reset form
-            this.reset();
+            try {
+                // Send data to Google Sheets
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                // Since we're using no-cors, we won't get response data
+                // Assume success if no error thrown
+                
+                // Show success message
+                successMsg.style.display = 'block';
+                
+                // Trigger PDF download
+                downloadPDF();
+                
+                // Reset form after a delay
+                setTimeout(() => {
+                    this.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'GET YOUR FREE PREVIEW →';
+                    successMsg.style.display = 'none';
+                }, 3000);
+                
+                // Optional: Send to email service (if you have one set up)
+                // sendToEmailService(formData);
+                
+                // Optional: Track in Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'download', {
+                        'event_category': 'Book Preview',
+                        'event_label': 'Neuroscience Book Preview Download'
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Show error message
+                errorMsg.style.display = 'block';
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'GET YOUR FREE PREVIEW →';
+                
+                // Hide error message after 5 seconds
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 5000);
+            }
         });
+
+        // Function to trigger PDF download
+        function downloadPDF() {
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = PDF_URL;
+            link.download = 'The-Neuroscience-of-Employee-Engagement-Preview.pdf';
+            link.target = '_blank';
+            
+            // Append to body, click, and remove
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Alternative method if the above doesn't work
+            // window.open(PDF_URL, '_blank');
+        }
+
+        // Optional: Function to send data to email service
+        function sendToEmailService(data) {
+            // Example for Mailchimp, ConvertKit, etc.
+            // This would be your email service API endpoint
+            /*
+            fetch('YOUR_EMAIL_SERVICE_ENDPOINT', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer YOUR_API_KEY'
+                },
+                body: JSON.stringify({
+                    email: data.email,
+                    first_name: data.firstName,
+                    last_name: data.lastName,
+                    company: data.company,
+                    role: data.role,
+                    tags: ['book-preview-download']
+                })
+            });
+            */
+        }
 
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -861,8 +994,6 @@
         });
     </script>
     <!-- Cookie Consent - Add to every page -->
-<script src="/js/cookie-consent.js"></script>
-</body>
-</html>
+    <script src="/js/cookie-consent.js"></script>
 </body>
 </html>
