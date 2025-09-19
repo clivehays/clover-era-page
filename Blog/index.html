@@ -1,1 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/js/header.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog & Resources | Evidence-Based Workplace Insights | Clover ERA</title>
+    <meta name="description" content="Explore research-backed articles on employee engagement, workplace burnout, and organizational psychology. Evidence-based insights from the CLOVER Framework.">
+    <meta name="keywords" content="employee engagement blog, workplace research, burnout prevention, organizational psychology, CLOVER Framework">
+    <meta property="og:title" content="Clover ERA Blog - Evidence-Based Workplace Insights">
+    <meta property="og:description" content="Research-backed articles on employee engagement, burnout prevention, and workplace transformation.">
+    
+    <style>
+        :root {
+            --clover-green: #46AEB8;
+            --clover-accent: #7FE5DB;
+            --clover-dark: #2C6F74;
+            --clover-gray: #6B7280;
+            --coral: #FF6B6B;
+            --white: #FFFFFF;
+            --light-bg: #F8FAFB;
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --border-light: #E5E7EB;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--white);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Hero Section */
+        .blog-hero {
+            background: linear-gradient(135deg, var(--clover-green) 0%, var(--clover-dark) 100%);
+            padding: 5rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .blog-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(127,229,219,0.2) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: var(--white);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-content h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+        
+        /* Search and Filter Section */
+        .search-filter-section {
+            background: var(--white);
+            padding: 2rem;
+            margin: -2rem auto 3rem;
+            max-width: 1200px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 50px;
+            transition: all 0.3s;
+            background: var(--white);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--clover-green);
+            box-shadow: 0 0 0 3px rgba(70,174,184,0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--clover-gray);
+            pointer-events: none;
+        }
+        
+        /* Category Filters */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--light-bg);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .filter-btn:hover {
+            background: var(--clover-accent);
+            color: var(--clover-dark);
+        }
+        
+        .filter-btn.active {
+            background: var(--clover-green);
+            color: var(--white);
+            border-color: var(--clover-green);
+        }
+        
+        /* Stats Bar */
+        .blog-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--clover-green);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Featured Article */
+        .featured-section {
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(70,174,184,0.03), rgba(127,229,219,0.03));
+        }
+        
+        .featured-label {
+            display: inline-block;
+            background: var(--coral);
+            color: var(--white);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        
+        .featured-article {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+        
+        .featured-image {
+            height: 400px;
+            background: linear-gradient(135deg, var(--clover-green), var(--clover-dark));
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .featured-content {
+            padding: 2rem 3rem 2rem 0;
+        }
+        
+        .featured-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .featured-category {
+            color: var(--clover-green);
+            font-weight: 600;
+        }
+        
+        .featured-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        
+        .featured-content h2 a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .featured-content h2 a:hover {
+            color: var(--clover-green);
+        }
+        
+        .featured-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .read-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--clover-green);
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap 0.3s;
+        }
+        
+        .read-more-btn:hover {
+            gap: 1rem;
+        }
+        
+        /* Articles Grid */
+        .articles-section {
+            padding: 4rem 2rem;
+        }
+        
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .article-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+        }
+        
+        .article-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--clover-green), var(--clover-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: rgba(255,255,255,0.3);
+            position: relative;
+        }
+        
+        .article-category-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--white);
+            color: var(--clover-green);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .article-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .article-date {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .article-reading-time {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .article-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+            flex-grow: 1;
+        }
+        
+        .article-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .article-title a:hover {
+            color: var(--clover-green);
+        }
+        
+        .article-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .tag {
+            background: var(--light-bg);
+            color: var(--text-secondary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Load More Button */
+        .load-more-container {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .load-more-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--clover-green);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .load-more-btn:hover {
+            background: var(--clover-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(70,174,184,0.3);
+        }
+        
+        /* Newsletter Section */
+        .newsletter-section {
+            background: linear-gradient(135deg, var(--clover-green), var(--clover-dark));
+            padding: 4rem 2rem;
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter-content p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-btn {
+            padding: 1rem 2rem;
+            background: var(--white);
+            color: var(--clover-green);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--clover-dark);
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        /* No Results Message */
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .no-results h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .blog-hero {
+                padding: 4rem 1rem 3rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .search-filter-section {
+                margin: -1rem 1rem 2rem;
+                padding: 1.5rem;
+            }
+            
+            .blog-stats {
+                gap: 1.5rem;
+            }
+            
+            .featured-article {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-image {
+                height: 200px;
+            }
+            
+            .featured-content {
+                padding: 2rem;
+            }
+            
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .filter-container {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                flex-wrap: nowrap;
+            }
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid var(--light-bg);
+            border-top: 3px solid var(--clover-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hidden class for filtering */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be inserted by script -->
+    <script src="/js/header.js"></script>
+    
+    <!-- Hero Section -->
+    <section class="blog-hero">
+        <div class="hero-content">
+            <h1>Evidence-Based Insights</h1>
+            <p class="hero-subtitle">Research-backed articles on employee engagement, workplace wellbeing, and organizational transformation</p>
+        </div>
+    </section>
+    
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="searchInput"
+                placeholder="Search articles by title, topic, or keyword..."
+            >
+            <span class="search-icon">🔍</span>
+        </div>
+        
+        <div class="filter-container">
+            <button class="filter-btn active" data-category="all">All Articles</button>
+            <button class="filter-btn" data-category="burnout">Burnout Prevention</button>
+            <button class="filter-btn" data-category="engagement">Employee Engagement</button>
+            <button class="filter-btn" data-category="leadership">Leadership</button>
+            <button class="filter-btn" data-category="neuroscience">Neuroscience</button>
+            <button class="filter-btn" data-category="research">Research</button>
+            <button class="filter-btn" data-category="productivity">Productivity</button>
+            <button class="filter-btn" data-category="mental-health">Mental Health</button>
+        </div>
+        
+        <div class="blog-stats">
+            <div class="stat">
+                <div class="stat-number" id="articleCount">24</div>
+                <div class="stat-label">Articles</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3.2M</div>
+                <div class="stat-label">Readers</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Featured Article -->
+    <section class="featured-section">
+        <div class="container">
+            <span class="featured-label">Featured Article</span>
+            <div class="featured-article">
+                <div class="featured-image">📊</div>
+                <div class="featured-content">
+                    <div class="featured-meta">
+                        <span class="featured-category">Workplace Research</span>
+                        <span>September 18, 2025</span>
+                        <span>12 min read</span>
+                    </div>
+                    <h2><a href="/blog/workplace-quietly-cracking/">The Workplace is Quietly Cracking Under Pressure</a></h2>
+                    <p class="featured-excerpt">
+                        Employee burnout has reached unprecedented levels in 2025, with 82% of workers at risk and a new phenomenon called "quiet cracking" affecting 54% of the workforce. Discover the $8.8 trillion impact and evidence-based solutions generating 71% burnout reduction.
+                    </p>
+                    <a href="/blog/workplace-quietly-cracking/" class="read-more-btn">
+                        Read Full Article →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Articles Grid -->
+    <section class="articles-section">
+        <div class="container">
+            <div class="articles-grid" id="articlesGrid">
+                
+                <!-- Article 1 -->
+                <article class="article-card" data-category="neuroscience" data-tags="clover,framework,brain-science">
+                    <div class="article-image">
+                        🧠
+                        <span class="article-category-badge">Neuroscience</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Sep 15, 2025</span>
+                            <span class="article-reading-time">⏱️ 8 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/neuroscience-of-engagement/">The Neuroscience Behind the CLOVER Framework</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            How understanding dopamine, oxytocin, and cortisol pathways can transform your approach to employee engagement and reduce burnout by 67%.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">CLOVER</span>
+                            <span class="tag">Brain Science</span>
+                            <span class="tag">Dopamine</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 2 -->
+                <article class="article-card" data-category="productivity" data-tags="four-day,workweek,innovation">
+                    <div class="article-image">
+                        ⏰
+                        <span class="article-category-badge">Productivity</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Sep 12, 2025</span>
+                            <span class="article-reading-time">⏱️ 10 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/four-day-workweek-results/">Four-Day Workweek: 71% Burnout Reduction With No Revenue Loss</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            Comprehensive analysis of 100+ companies implementing four-day workweeks shows dramatic improvements in employee wellbeing while maintaining or increasing productivity.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">Work-Life Balance</span>
+                            <span class="tag">Innovation</span>
+                            <span class="tag">Case Studies</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 3 -->
+                <article class="article-card" data-category="leadership" data-tags="management,toxic,culture">
+                    <div class="article-image">
+                        👥
+                        <span class="article-category-badge">Leadership</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Sep 10, 2025</span>
+                            <span class="article-reading-time">⏱️ 7 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/manager-behavior-burnout/">Manager Behavior Explains 60% of Employee Burnout</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            McKinsey's global survey reveals toxic management as the primary driver of workplace burnout. Learn the five critical behaviors destroying your team.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">Management</span>
+                            <span class="tag">Toxic Culture</span>
+                            <span class="tag">Research</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 4 -->
+                <article class="article-card" data-category="engagement" data-tags="millennials,gen-z,retention">
+                    <div class="article-image">
+                        🎯
+                        <span class="article-category-badge">Employee Engagement</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Sep 8, 2025</span>
+                            <span class="article-reading-time">⏱️ 9 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/gen-z-burnout-crisis/">Why Gen Z Hits Peak Burnout 17 Years Earlier</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            New research shows Gen Z reaches peak burnout at age 25. Discover the unique factors driving early-career exhaustion and proven retention strategies.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">Gen Z</span>
+                            <span class="tag">Millennials</span>
+                            <span class="tag">Retention</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 5 -->
+                <article class="article-card" data-category="mental-health" data-tags="wellbeing,roi,investment">
+                    <div class="article-image">
+                        💚
+                        <span class="article-category-badge">Mental Health</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Sep 5, 2025</span>
+                            <span class="article-reading-time">⏱️ 6 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/mental-health-roi/">$4.70 Return for Every Dollar Invested in Mental Health</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            Deloitte research proves mental health programs deliver exceptional ROI. Learn which interventions generate the highest returns and implementation strategies.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">ROI</span>
+                            <span class="tag">Wellbeing</span>
+                            <span class="tag">Investment</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 6 -->
+                <article class="article-card" data-category="research" data-tags="gallup,statistics,trends">
+                    <div class="article-image">
+                        📈
+                        <span class="article-category-badge">Research</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Sep 3, 2025</span>
+                            <span class="article-reading-time">⏱️ 11 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/global-engagement-crisis/">Global Engagement Hits Decade Low at 21%</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            Gallup's 2025 State of the Global Workplace reveals engagement crisis. Europe at 13%, UK at just 10%. Comprehensive analysis of causes and solutions.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">Gallup</span>
+                            <span class="tag">Global Trends</span>
+                            <span class="tag">Statistics</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 7 -->
+                <article class="article-card" data-category="burnout" data-tags="healthcare,nursing,crisis">
+                    <div class="article-image">
+                        🏥
+                        <span class="article-category-badge">Burnout Prevention</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Aug 30, 2025</span>
+                            <span class="article-reading-time">⏱️ 8 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/healthcare-burnout-crisis/">82% of Healthcare Workers Face Burnout: Solutions That Work</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            Healthcare leads all industries in burnout rates. Discover evidence-based interventions reducing burnout while maintaining patient care quality.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">Healthcare</span>
+                            <span class="tag">Nursing</span>
+                            <span class="tag">Crisis Response</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 8 -->
+                <article class="article-card" data-category="neuroscience" data-tags="ai,technology,innovation">
+                    <div class="article-image">
+                        🤖
+                        <span class="article-category-badge">Neuroscience</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Aug 28, 2025</span>
+                            <span class="article-reading-time">⏱️ 7 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/ai-burnout-prevention/">AI-Powered Burnout Prevention: Predictive Analytics in Action</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            How artificial intelligence identifies burnout risk before symptoms appear, enabling proactive interventions that reduce turnover by 43%.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">AI</span>
+                            <span class="tag">Technology</span>
+                            <span class="tag">Innovation</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 9 -->
+                <article class="article-card" data-category="engagement" data-tags="remote,hybrid,culture">
+                    <div class="article-image">
+                        💻
+                        <span class="article-category-badge">Employee Engagement</span>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-date">📅 Aug 25, 2025</span>
+                            <span class="article-reading-time">⏱️ 10 min</span>
+                        </div>
+                        <h3 class="article-title">
+                            <a href="/blog/remote-engagement-strategies/">Remote Work Engagement: Beyond Video Calls</a>
+                        </h3>
+                        <p class="article-excerpt">
+                            Revolutionary approaches to remote employee engagement that go beyond traditional video meetings. Real strategies from companies achieving 89% remote satisfaction.
+                        </p>
+                        <div class="article-tags">
+                            <span class="tag">Remote Work</span>
+                            <span class="tag">Hybrid</span>
+                            <span class="tag">Culture</span>
+                        </div>
+                    </div>
+                </article>
+                
+            </div>
+            
+            <!-- Load More Button -->
+            <div class="load-more-container">
+                <button class="load-more-btn" id="loadMoreBtn">Load More Articles</button>
+            </div>
+            
+            <!-- No Results Message (Hidden by default) -->
+            <div class="no-results hidden" id="noResults">
+                <h3>No articles found</h3>
+                <p>Try adjusting your search terms or browse all categories</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="newsletter-content">
+            <h2>Get Evidence-Based Insights</h2>
+            <p>Weekly research summaries and practical strategies for building better workplaces</p>
+            <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+                <input 
+                    type="email" 
+                    class="newsletter-input" 
+                    placeholder="Enter your email"
+                    required
+                >
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Clover Era | Evidence-Based Employee Engagement Solutions</p>
+            <p>Transform your workplace with the neuroscience-backed CLOVER Framework</p>
+        </div>
+    </footer>
+    
+    <!-- Cookie Consent -->
+    <script src="/js/cookie-consent.js"></script>
+    
+    <!-- Blog Functionality Script -->
+    <script>
+        // Sample article data (in production, this would come from a database/API)
+        const additionalArticles = [
+            {
+                title: "The Science of Psychological Safety in Teams",
+                excerpt: "Google's Project Aristotle revealed psychological safety as the #1 factor in team performance. Learn how to build it.",
+                category: "leadership",
+                tags: ["psychological-safety", "teams", "google"],
+                date: "Aug 22, 2025",
+                readTime: "9 min",
+                url: "/blog/psychological-safety-teams/"
+            },
+            {
+                title: "Micro-Recognition: Small Gestures, Massive Impact",
+                excerpt: "Why frequent, small recognitions outperform annual bonuses in driving engagement and retention.",
+                category: "engagement",
+                tags: ["recognition", "retention", "culture"],
+                date: "Aug 20, 2025",
+                readTime: "6 min",
+                url: "/blog/micro-recognition-impact/"
+            },
+            {
+                title: "The Hidden Cost of Context Switching",
+                excerpt: "Employees lose 23 minutes per interruption. Calculate your organization's productivity drain and solutions.",
+                category: "productivity",
+                tags: ["focus", "deep-work", "efficiency"],
+                date: "Aug 18, 2025",
+                readTime: "7 min",
+                url: "/blog/context-switching-cost/"
+            }
+        ];
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const articlesGrid = document.getElementById('articlesGrid');
+        const noResults = document.getElementById('noResults');
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(e.target.value.toLowerCase());
+            }, 300);
+        });
+        
+        function performSearch(query) {
+            const articles = articlesGrid.querySelectorAll('.article-card');
+            let hasResults = false;
+            
+            articles.forEach(article => {
+                const title = article.querySelector('.article-title').textContent.toLowerCase();
+                const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
+                const tags = article.getAttribute('data-tags');
+                const category = article.getAttribute('data-category');
+                
+                if (query === '' || 
+                    title.includes(query) || 
+                    excerpt.includes(query) || 
+                    tags.includes(query) || 
+                    category.includes(query)) {
+                    article.classList.remove('hidden');
+                    hasResults = true;
+                } else {
+                    article.classList.add('hidden');
+                }
+            });
+            
+            // Show/hide no results message
+            if (hasResults) {
+                noResults.classList.add('hidden');
+            } else {
+                noResults.classList.remove('hidden');
+            }
+            
+            // Update article count
+            updateArticleCount();
+        }
+        
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                const category = button.getAttribute('data-category');
+                filterByCategory(category);
+            });
+        });
+        
+        function filterByCategory(category) {
+            const articles = articlesGrid.querySelectorAll('.article-card');
+            let hasResults = false;
+            
+            articles.forEach(article => {
+                const articleCategory = article.getAttribute('data-category');
+                
+                if (category === 'all' || articleCategory === category) {
+                    article.classList.remove('hidden');
+                    hasResults = true;
+                } else {
+                    article.classList.add('hidden');
+                }
+            });
+            
+            // Show/hide no results message
+            if (hasResults) {
+                noResults.classList.add('hidden');
+            } else {
+                noResults.classList.remove('hidden');
+            }
+            
+            // Update article count
+            updateArticleCount();
+            
+            // Clear search when filtering
+            searchInput.value = '';
+        }
+        
+        // Update article count
+        function updateArticleCount() {
+            const visibleArticles = articlesGrid.querySelectorAll('.article-card:not(.hidden)');
+            document.getElementById('articleCount').textContent = visibleArticles.length;
+        }
+        
+        // Load more articles
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        let articlesLoaded = 0;
+        
+        loadMoreBtn.addEventListener('click', () => {
+            // Show loading state
+            loadMoreBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; display: inline-block; margin: 0;"></div>';
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                // Add new articles
+                additionalArticles.slice(articlesLoaded, articlesLoaded + 3).forEach(article => {
+                    const articleCard = createArticleCard(article);
+                    articlesGrid.appendChild(articleCard);
+                });
+                
+                articlesLoaded += 3;
+                
+                // Update button
+                if (articlesLoaded >= additionalArticles.length) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    loadMoreBtn.textContent = 'Load More Articles';
+                }
+                
+                // Update count
+                updateArticleCount();
+            }, 800);
+        });
+        
+        // Create article card element
+        function createArticleCard(article) {
+            const card = document.createElement('article');
+            card.className = 'article-card fade-in';
+            card.setAttribute('data-category', article.category);
+            card.setAttribute('data-tags', article.tags.join(','));
+            
+            const emoji = getCategoryEmoji(article.category);
+            const categoryName = getCategoryName(article.category);
+            
+            card.innerHTML = `
+                <div class="article-image">
+                    ${emoji}
+                    <span class="article-category-badge">${categoryName}</span>
+                </div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span class="article-date">📅 ${article.date}</span>
+                        <span class="article-reading-time">⏱️ ${article.readTime}</span>
+                    </div>
+                    <h3 class="article-title">
+                        <a href="${article.url}">${article.title}</a>
+                    </h3>
+                    <p class="article-excerpt">
+                        ${article.excerpt}
+                    </p>
+                    <div class="article-tags">
+                        ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Helper functions
+        function getCategoryEmoji(category) {
+            const emojis = {
+                'leadership': '👥',
+                'engagement': '🎯',
+                'productivity': '⏰',
+                'mental-health': '💚',
+                'burnout': '🔥',
+                'neuroscience': '🧠',
+                'research': '📊'
+            };
+            return emojis[category] || '📝';
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                'leadership': 'Leadership',
+                'engagement': 'Employee Engagement',
+                'productivity': 'Productivity',
+                'mental-health': 'Mental Health',
+                'burnout': 'Burnout Prevention',
+                'neuroscience': 'Neuroscience',
+                'research': 'Research'
+            };
+            return names[category] || 'Article';
+        }
+        
+        // Newsletter form handler
+        function handleNewsletterSubmit(e) {
+            e.preventDefault();
+            const email = e.target.querySelector('input[type="email"]').value;
+            
+            // Show success message (in production, this would send to your backend)
+            const btn = e.target.querySelector('.newsletter-btn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Subscribed! ✓';
+            btn.style.background = '#10B981';
+            
+            // Reset form
+            e.target.reset();
+            
+            // Reset button after delay
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 3000);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateArticleCount();
+        });
+    </script>
+  </script>
+    <!-- Cookie Consent - Add to every page -->
+<script src="/js/cookie-consent.js"></script>
 
+</body>
+</html>
