@@ -227,11 +227,9 @@
             height: 400px;
             background: linear-gradient(135deg, var(--clover-green), var(--clover-dark));
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: rgba(255,255,255,0.3);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         
         .featured-content {
@@ -327,6 +325,15 @@
             font-size: 3rem;
             color: rgba(255,255,255,0.3);
             position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .article-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(70,174,184,0.3), rgba(44,111,116,0.3));
         }
         
         .article-category-badge {
@@ -339,6 +346,7 @@
             border-radius: 15px;
             font-size: 0.8rem;
             font-weight: 600;
+            z-index: 2;
         }
         
         .article-content {
@@ -659,7 +667,9 @@
         <div class="container">
             <span class="featured-label">Featured Article</span>
             <div class="featured-article">
-                <div class="featured-image">📊</div>
+                <div class="featured-image" style="background-image: url('/images/Workplace-quietly-cracking.png'); background-size: cover; background-position: center;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(70,174,184,0.3), rgba(44,111,116,0.3));"></div>
+                </div>
                 <div class="featured-content">
                     <div class="featured-meta">
                         <span class="featured-category">Workplace Research</span>
@@ -685,8 +695,8 @@
                 
                 <!-- Article 1 -->
                 <article class="article-card" data-category="neuroscience" data-tags="clover,framework,brain-science">
-                    <div class="article-image">
-                        🧠
+                    <div class="article-image" style="background-image: url('/images/neuroscience-of-engagement.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Neuroscience</span>
                     </div>
                     <div class="article-content">
@@ -710,8 +720,8 @@
                 
                 <!-- Article 2 -->
                 <article class="article-card" data-category="productivity" data-tags="four-day,workweek,innovation">
-                    <div class="article-image">
-                        ⏰
+                    <div class="article-image" style="background-image: url('/images/four-day-workweek.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Productivity</span>
                     </div>
                     <div class="article-content">
@@ -735,8 +745,8 @@
                 
                 <!-- Article 3 -->
                 <article class="article-card" data-category="leadership" data-tags="management,toxic,culture">
-                    <div class="article-image">
-                        👥
+                    <div class="article-image" style="background-image: url('/images/manager-behavior-burnout.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Leadership</span>
                     </div>
                     <div class="article-content">
@@ -760,8 +770,8 @@
                 
                 <!-- Article 4 -->
                 <article class="article-card" data-category="engagement" data-tags="millennials,gen-z,retention">
-                    <div class="article-image">
-                        🎯
+                    <div class="article-image" style="background-image: url('/images/gen-z-burnout.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Employee Engagement</span>
                     </div>
                     <div class="article-content">
@@ -785,8 +795,8 @@
                 
                 <!-- Article 5 -->
                 <article class="article-card" data-category="mental-health" data-tags="wellbeing,roi,investment">
-                    <div class="article-image">
-                        💚
+                    <div class="article-image" style="background-image: url('/images/mental-health-roi.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Mental Health</span>
                     </div>
                     <div class="article-content">
@@ -810,8 +820,8 @@
                 
                 <!-- Article 6 -->
                 <article class="article-card" data-category="research" data-tags="gallup,statistics,trends">
-                    <div class="article-image">
-                        📈
+                    <div class="article-image" style="background-image: url('/images/global-engagement-crisis.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Research</span>
                     </div>
                     <div class="article-content">
@@ -835,8 +845,8 @@
                 
                 <!-- Article 7 -->
                 <article class="article-card" data-category="burnout" data-tags="healthcare,nursing,crisis">
-                    <div class="article-image">
-                        🏥
+                    <div class="article-image" style="background-image: url('/images/healthcare-burnout.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Burnout Prevention</span>
                     </div>
                     <div class="article-content">
@@ -860,8 +870,8 @@
                 
                 <!-- Article 8 -->
                 <article class="article-card" data-category="neuroscience" data-tags="ai,technology,innovation">
-                    <div class="article-image">
-                        🤖
+                    <div class="article-image" style="background-image: url('/images/ai-burnout-prevention.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Neuroscience</span>
                     </div>
                     <div class="article-content">
@@ -885,8 +895,8 @@
                 
                 <!-- Article 9 -->
                 <article class="article-card" data-category="engagement" data-tags="remote,hybrid,culture">
-                    <div class="article-image">
-                        💻
+                    <div class="article-image" style="background-image: url('/images/remote-engagement.png');">
+                        <div class="article-image-overlay"></div>
                         <span class="article-category-badge">Employee Engagement</span>
                     </div>
                     <div class="article-content">
@@ -962,7 +972,8 @@
                 tags: ["psychological-safety", "teams", "google"],
                 date: "Aug 22, 2025",
                 readTime: "9 min",
-                url: "/blog/psychological-safety-teams/"
+                url: "/blog/psychological-safety-teams/",
+                image: "/images/psychological-safety-teams.png"
             },
             {
                 title: "Micro-Recognition: Small Gestures, Massive Impact",
@@ -971,7 +982,8 @@
                 tags: ["recognition", "retention", "culture"],
                 date: "Aug 20, 2025",
                 readTime: "6 min",
-                url: "/blog/micro-recognition-impact/"
+                url: "/blog/micro-recognition-impact/",
+                image: "/images/micro-recognition-impact.png"
             },
             {
                 title: "The Hidden Cost of Context Switching",
@@ -980,7 +992,8 @@
                 tags: ["focus", "deep-work", "efficiency"],
                 date: "Aug 18, 2025",
                 readTime: "7 min",
-                url: "/blog/context-switching-cost/"
+                url: "/blog/context-switching-cost/",
+                image: "/images/context-switching-cost.png"
             }
         ];
         
@@ -1117,12 +1130,12 @@
             card.setAttribute('data-category', article.category);
             card.setAttribute('data-tags', article.tags.join(','));
             
-            const emoji = getCategoryEmoji(article.category);
             const categoryName = getCategoryName(article.category);
+            const backgroundImage = article.image ? `background-image: url('${article.image}');` : '';
             
             card.innerHTML = `
-                <div class="article-image">
-                    ${emoji}
+                <div class="article-image" style="${backgroundImage}">
+                    <div class="article-image-overlay"></div>
                     <span class="article-category-badge">${categoryName}</span>
                 </div>
                 <div class="article-content">
@@ -1146,19 +1159,6 @@
         }
         
         // Helper functions
-        function getCategoryEmoji(category) {
-            const emojis = {
-                'leadership': '👥',
-                'engagement': '🎯',
-                'productivity': '⏰',
-                'mental-health': '💚',
-                'burnout': '🔥',
-                'neuroscience': '🧠',
-                'research': '📊'
-            };
-            return emojis[category] || '📝';
-        }
-        
         function getCategoryName(category) {
             const names = {
                 'leadership': 'Leadership',
