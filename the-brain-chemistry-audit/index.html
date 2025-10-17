@@ -1,709 +1,671 @@
-import React, { useState } from 'react';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Chemistry Audit - Team Engagement Assessment | Clover ERA</title>
+    <meta name="description" content="Discover what's really driving or killing your team's engagement with our neuroscience-backed assessment. Get personalized insights in 5 minutes.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-teal-50 via-white to-blue-50">
+    <div id="app"></div>
 
-const BrainChemistryAudit = () => {
-  const [currentStep, setCurrentStep] = useState('intro');
-  const [answers, setAnswers] = useState({});
-  const [email, setEmail] = useState('');
-  const [results, setResults] = useState(null);
+    <script>
+        const appState = {
+            currentStep: 'intro',
+            currentQuestion: 0,
+            answers: {},
+            email: '',
+            results: null
+        };
 
-  const questions = [
-    {
-      id: 'q1',
-      category: 'dopamine',
-      clover: 'Learning',
-      text: 'How often do team members celebrate small wins or progress milestones?',
-      options: [
-        { value: 1, label: 'Rarely or never' },
-        { value: 2, label: 'Occasionally (monthly)' },
-        { value: 3, label: 'Regularly (weekly)' },
-        { value: 4, label: 'Frequently (daily)' }
-      ]
-    },
-    {
-      id: 'q2',
-      category: 'dopamine',
-      clover: 'Opportunities',
-      text: 'How clear are goals and success metrics for your team?',
-      options: [
-        { value: 1, label: 'Unclear or constantly changing' },
-        { value: 2, label: 'Somewhat clear but not well-defined' },
-        { value: 3, label: 'Clear with some ambiguity' },
-        { value: 4, label: 'Crystal clear and well-documented' }
-      ]
-    },
-    {
-      id: 'q3',
-      category: 'dopamine',
-      clover: 'Learning',
-      text: 'How frequently do team members receive recognition for their contributions?',
-      options: [
-        { value: 1, label: 'Almost never' },
-        { value: 2, label: 'Quarterly or less' },
-        { value: 3, label: 'Monthly' },
-        { value: 4, label: 'Weekly or more' }
-      ]
-    },
-    {
-      id: 'q4',
-      category: 'oxytocin',
-      clover: 'Vulnerability',
-      text: 'How comfortable are team members admitting mistakes or asking for help?',
-      options: [
-        { value: 1, label: 'Very uncomfortable - mistakes are hidden' },
-        { value: 2, label: 'Somewhat uncomfortable' },
-        { value: 3, label: 'Fairly comfortable' },
-        { value: 4, label: 'Very comfortable - mistakes are learning opportunities' }
-      ]
-    },
-    {
-      id: 'q5',
-      category: 'oxytocin',
-      clover: 'Communication',
-      text: 'How would you describe communication transparency in your team?',
-      options: [
-        { value: 1, label: 'Information is siloed and guarded' },
-        { value: 2, label: 'Some transparency but limited' },
-        { value: 3, label: 'Generally transparent' },
-        { value: 4, label: 'Completely open and transparent' }
-      ]
-    },
-    {
-      id: 'q6',
-      category: 'oxytocin',
-      clover: 'Vulnerability',
-      text: 'How often do team members collaborate across departments or teams?',
-      options: [
-        { value: 1, label: 'Rarely - work in silos' },
-        { value: 2, label: 'Occasionally' },
-        { value: 3, label: 'Regularly' },
-        { value: 4, label: 'Constantly - high collaboration' }
-      ]
-    },
-    {
-      id: 'q7',
-      category: 'serotonin',
-      clover: 'Opportunities',
-      text: 'How clearly can team members see their impact on company goals?',
-      options: [
-        { value: 1, label: 'No connection visible' },
-        { value: 2, label: 'Vague connection' },
-        { value: 3, label: 'Moderate connection' },
-        { value: 4, label: 'Direct, visible impact' }
-      ]
-    },
-    {
-      id: 'q8',
-      category: 'serotonin',
-      clover: 'Reflection',
-      text: 'How often do team members receive meaningful feedback on their performance?',
-      options: [
-        { value: 1, label: 'Annual reviews only' },
-        { value: 2, label: 'Quarterly' },
-        { value: 3, label: 'Monthly' },
-        { value: 4, label: 'Weekly or more' }
-      ]
-    },
-    {
-      id: 'q9',
-      category: 'serotonin',
-      clover: 'Communication',
-      text: 'How valued do team members feel for their unique contributions?',
-      options: [
-        { value: 1, label: 'Undervalued or replaceable' },
-        { value: 2, label: 'Somewhat valued' },
-        { value: 3, label: 'Generally valued' },
-        { value: 4, label: 'Highly valued and irreplaceable' }
-      ]
-    },
-    {
-      id: 'q10',
-      category: 'cortisol',
-      clover: 'Enablement',
-      text: 'How manageable is the workload for your team?',
-      options: [
-        { value: 4, label: 'Consistently overwhelming' },
-        { value: 3, label: 'Often too much' },
-        { value: 2, label: 'Occasionally stressful' },
-        { value: 1, label: 'Well-balanced and manageable' }
-      ]
-    },
-    {
-      id: 'q11',
-      category: 'cortisol',
-      clover: 'Enablement',
-      text: 'How often do organizational processes block or slow down work?',
-      options: [
-        { value: 4, label: 'Constantly - major frustration' },
-        { value: 3, label: 'Frequently' },
-        { value: 2, label: 'Sometimes' },
-        { value: 1, label: 'Rarely - systems support work' }
-      ]
-    },
-    {
-      id: 'q12',
-      category: 'cortisol',
-      clover: 'Reflection',
-      text: 'How much time do team members have for reflection and strategic thinking?',
-      options: [
-        { value: 4, label: 'None - always firefighting' },
-        { value: 3, label: 'Very little' },
-        { value: 2, label: 'Some time' },
-        { value: 1, label: 'Regular protected time' }
-      ]
-    }
-  ];
+        const questions = [
+            {
+                id: 'q1',
+                category: 'dopamine',
+                clover: 'Learning',
+                text: 'How often do team members celebrate small wins or progress milestones?',
+                options: [
+                    { value: 1, label: 'Rarely or never' },
+                    { value: 2, label: 'Occasionally (monthly)' },
+                    { value: 3, label: 'Regularly (weekly)' },
+                    { value: 4, label: 'Frequently (daily)' }
+                ]
+            },
+            {
+                id: 'q2',
+                category: 'dopamine',
+                clover: 'Opportunities',
+                text: 'How clear are goals and success metrics for your team?',
+                options: [
+                    { value: 1, label: 'Unclear or constantly changing' },
+                    { value: 2, label: 'Somewhat clear but not well-defined' },
+                    { value: 3, label: 'Clear with some ambiguity' },
+                    { value: 4, label: 'Crystal clear and well-documented' }
+                ]
+            },
+            {
+                id: 'q3',
+                category: 'dopamine',
+                clover: 'Learning',
+                text: 'How frequently do team members receive recognition for their contributions?',
+                options: [
+                    { value: 1, label: 'Almost never' },
+                    { value: 2, label: 'Quarterly or less' },
+                    { value: 3, label: 'Monthly' },
+                    { value: 4, label: 'Weekly or more' }
+                ]
+            },
+            {
+                id: 'q4',
+                category: 'oxytocin',
+                clover: 'Vulnerability',
+                text: 'How comfortable are team members admitting mistakes or asking for help?',
+                options: [
+                    { value: 1, label: 'Very uncomfortable - mistakes are hidden' },
+                    { value: 2, label: 'Somewhat uncomfortable' },
+                    { value: 3, label: 'Fairly comfortable' },
+                    { value: 4, label: 'Very comfortable - mistakes are learning opportunities' }
+                ]
+            },
+            {
+                id: 'q5',
+                category: 'oxytocin',
+                clover: 'Communication',
+                text: 'How would you describe communication transparency in your team?',
+                options: [
+                    { value: 1, label: 'Information is siloed and guarded' },
+                    { value: 2, label: 'Some transparency but limited' },
+                    { value: 3, label: 'Generally transparent' },
+                    { value: 4, label: 'Completely open and transparent' }
+                ]
+            },
+            {
+                id: 'q6',
+                category: 'oxytocin',
+                clover: 'Vulnerability',
+                text: 'How often do team members collaborate across departments or teams?',
+                options: [
+                    { value: 1, label: 'Rarely - work in silos' },
+                    { value: 2, label: 'Occasionally' },
+                    { value: 3, label: 'Regularly' },
+                    { value: 4, label: 'Constantly - high collaboration' }
+                ]
+            },
+            {
+                id: 'q7',
+                category: 'serotonin',
+                clover: 'Opportunities',
+                text: 'How clearly can team members see their impact on company goals?',
+                options: [
+                    { value: 1, label: 'No connection visible' },
+                    { value: 2, label: 'Vague connection' },
+                    { value: 3, label: 'Moderate connection' },
+                    { value: 4, label: 'Direct, visible impact' }
+                ]
+            },
+            {
+                id: 'q8',
+                category: 'serotonin',
+                clover: 'Reflection',
+                text: 'How often do team members receive meaningful feedback on their performance?',
+                options: [
+                    { value: 1, label: 'Annual reviews only' },
+                    { value: 2, label: 'Quarterly' },
+                    { value: 3, label: 'Monthly' },
+                    { value: 4, label: 'Weekly or more' }
+                ]
+            },
+            {
+                id: 'q9',
+                category: 'serotonin',
+                clover: 'Communication',
+                text: 'How valued do team members feel for their unique contributions?',
+                options: [
+                    { value: 1, label: 'Undervalued or replaceable' },
+                    { value: 2, label: 'Somewhat valued' },
+                    { value: 3, label: 'Generally valued' },
+                    { value: 4, label: 'Highly valued and irreplaceable' }
+                ]
+            },
+            {
+                id: 'q10',
+                category: 'cortisol',
+                clover: 'Enablement',
+                text: 'How manageable is the workload for your team?',
+                options: [
+                    { value: 4, label: 'Consistently overwhelming' },
+                    { value: 3, label: 'Often too much' },
+                    { value: 2, label: 'Occasionally stressful' },
+                    { value: 1, label: 'Well-balanced and manageable' }
+                ]
+            },
+            {
+                id: 'q11',
+                category: 'cortisol',
+                clover: 'Enablement',
+                text: 'How often do organizational processes block or slow down work?',
+                options: [
+                    { value: 4, label: 'Constantly - major frustration' },
+                    { value: 3, label: 'Frequently' },
+                    { value: 2, label: 'Sometimes' },
+                    { value: 1, label: 'Rarely - systems support work' }
+                ]
+            },
+            {
+                id: 'q12',
+                category: 'cortisol',
+                clover: 'Reflection',
+                text: 'How much time do team members have for reflection and strategic thinking?',
+                options: [
+                    { value: 4, label: 'None - always firefighting' },
+                    { value: 3, label: 'Very little' },
+                    { value: 2, label: 'Some time' },
+                    { value: 1, label: 'Regular protected time' }
+                ]
+            }
+        ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+        const neurochemInsights = {
+            'Dopamine': 'Low dopamine indicates your team lacks clear goals, recognition, or visible progress. This kills motivation and makes work feel pointless.',
+            'Oxytocin': 'Low oxytocin means trust is broken. Your team operates in silos, withholds information, and avoids collaboration.',
+            'Serotonin': 'Low serotonin shows team members do not feel valued or see how their work matters. This breeds disengagement.',
+            'Cortisol': 'High cortisol means chronic stress is damaging your team. Burnout, turnover, and poor decisions are likely.'
+        };
 
-  const calculateResults = () => {
-    const scores = {
-      dopamine: 0,
-      oxytocin: 0,
-      serotonin: 0,
-      cortisol: 0
-    };
+        const neurochemActions = {
+            'Dopamine': 'Implement weekly wins celebrations, create clear milestones, and establish a recognition system.',
+            'Oxytocin': 'Foster psychological safety through vulnerability practices, improve transparency, and create collaboration opportunities.',
+            'Serotonin': 'Connect individual work to company impact, provide regular meaningful feedback, and recognize unique contributions.',
+            'Cortisol': 'Reduce workload, eliminate process barriers, and protect time for reflection and strategic thinking.'
+        };
 
-    const cloverScores = {
-      Communication: 0,
-      Learning: 0,
-      Opportunities: 0,
-      Vulnerability: 0,
-      Enablement: 0,
-      Reflection: 0
-    };
+        const cloverInsights = {
+            'Communication': 'Communication breakdowns create confusion, duplicate work, and erode trust. Information silos are killing productivity.',
+            'Learning': 'Without learning opportunities, your team stagnates. Top performers will leave for growth elsewhere.',
+            'Opportunities': 'Lack of clear opportunities for advancement creates ceiling anxiety and drives talent away.',
+            'Vulnerability': 'Without psychological safety, innovation dies. People hide mistakes instead of learning from them.',
+            'Enablement': 'Your team lacks the tools, authority, or support to succeed. They are working with one hand tied behind their backs.',
+            'Reflection': 'Without reflection time, your team repeats mistakes and misses learning opportunities. Busy does not mean effective.'
+        };
 
-    const counts = {
-      dopamine: 0,
-      oxytocin: 0,
-      serotonin: 0,
-      cortisol: 0
-    };
+        const cloverActions = {
+            'Communication': 'Establish weekly team huddles, create feedback loops, and implement transparent decision-making processes.',
+            'Learning': 'Create learning budgets, dedicate time for skill development, and build knowledge-sharing systems.',
+            'Opportunities': 'Map career paths, create stretch assignments, and involve team members in strategic initiatives.',
+            'Vulnerability': 'Model vulnerability from leadership, celebrate failures as learning, and establish no-blame problem-solving.',
+            'Enablement': 'Conduct process audits, remove barriers, provide necessary tools, and delegate decision-making authority.',
+            'Reflection': 'Block calendar time for reflection, conduct regular retrospectives, and reward strategic thinking.'
+        };
 
-    const cloverCounts = {
-      Communication: 0,
-      Learning: 0,
-      Opportunities: 0,
-      Vulnerability: 0,
-      Enablement: 0,
-      Reflection: 0
-    };
+        function calculateResults() {
+            const scores = { dopamine: 0, oxytocin: 0, serotonin: 0, cortisol: 0 };
+            const cloverScores = { Communication: 0, Learning: 0, Opportunities: 0, Vulnerability: 0, Enablement: 0, Reflection: 0 };
+            const counts = { dopamine: 0, oxytocin: 0, serotonin: 0, cortisol: 0 };
+            const cloverCounts = { Communication: 0, Learning: 0, Opportunities: 0, Vulnerability: 0, Enablement: 0, Reflection: 0 };
 
-    questions.forEach(q => {
-      const answer = answers[q.id] || 0;
-      scores[q.category] += answer;
-      counts[q.category]++;
-      cloverScores[q.clover] += answer;
-      cloverCounts[q.clover]++;
-    });
+            questions.forEach(q => {
+                const answer = appState.answers[q.id] || 0;
+                scores[q.category] += answer;
+                counts[q.category]++;
+                cloverScores[q.clover] += answer;
+                cloverCounts[q.clover]++;
+            });
 
-    const neurochemData = [
-      {
-        name: 'Dopamine',
-        score: Math.round((scores.dopamine / (counts.dopamine * 4)) * 100),
-        description: 'Motivation & Reward',
-        color: '#FF6B6B'
-      },
-      {
-        name: 'Oxytocin',
-        score: Math.round((scores.oxytocin / (counts.oxytocin * 4)) * 100),
-        description: 'Trust & Connection',
-        color: '#4ECDC4'
-      },
-      {
-        name: 'Serotonin',
-        score: Math.round((scores.serotonin / (counts.serotonin * 4)) * 100),
-        description: 'Status & Belonging',
-        color: '#95E1D3'
-      },
-      {
-        name: 'Cortisol',
-        score: Math.round(100 - (scores.cortisol / (counts.cortisol * 4)) * 100),
-        description: 'Stress Management',
-        color: '#F38181'
-      }
-    ];
+            const neurochemData = [
+                { name: 'Dopamine', score: Math.round((scores.dopamine / (counts.dopamine * 4)) * 100), description: 'Motivation & Reward', color: '#FF6B6B' },
+                { name: 'Oxytocin', score: Math.round((scores.oxytocin / (counts.oxytocin * 4)) * 100), description: 'Trust & Connection', color: '#4ECDC4' },
+                { name: 'Serotonin', score: Math.round((scores.serotonin / (counts.serotonin * 4)) * 100), description: 'Status & Belonging', color: '#95E1D3' },
+                { name: 'Cortisol', score: Math.round(100 - (scores.cortisol / (counts.cortisol * 4)) * 100), description: 'Stress Management', color: '#F38181' }
+            ];
 
-    const cloverData = Object.keys(cloverScores).map(key => ({
-      subject: key,
-      score: Math.round((cloverScores[key] / (cloverCounts[key] * 4)) * 100),
-      fullMark: 100
-    }));
+            const cloverData = Object.keys(cloverScores).map(key => ({
+                subject: key,
+                score: Math.round((cloverScores[key] / (cloverCounts[key] * 4)) * 100)
+            }));
 
-    const overallScore = Math.round(
-      neurochemData.reduce((acc, curr) => acc + curr.score, 0) / neurochemData.length
-    );
+            const overallScore = Math.round(neurochemData.reduce((acc, curr) => acc + curr.score, 0) / neurochemData.length);
 
-    return {
-      neurochemData,
-      cloverData,
-      overallScore,
-      insights: generateInsights(neurochemData, cloverData, overallScore)
-    };
-  };
+            return {
+                neurochemData,
+                cloverData,
+                overallScore,
+                insights: generateInsights(neurochemData, cloverData, overallScore)
+            };
+        }
 
-  const generateInsights = (neurochemData, cloverData, overallScore) => {
-    const insights = [];
-    
-    const lowestNeuro = [...neurochemData].sort((a, b) => a.score - b.score)[0];
-    const lowestClover = [...cloverData].sort((a, b) => a.score - b.score)[0];
+        function generateInsights(neurochemData, cloverData, overallScore) {
+            const insights = [];
+            const lowestNeuro = [...neurochemData].sort((a, b) => a.score - b.score)[0];
+            const lowestClover = [...cloverData].sort((a, b) => a.score - b.score)[0];
 
-    if (overallScore < 50) {
-      insights.push({
-        type: 'critical',
-        title: 'Critical Engagement Gap Detected',
-        description: 'Your team shows significant engagement challenges across multiple dimensions. Immediate action is needed to prevent talent loss and productivity decline.',
-        priority: 'high'
-      });
-    } else if (overallScore < 70) {
-      insights.push({
-        type: 'warning',
-        title: 'Moderate Engagement Risk',
-        description: 'Your team has room for improvement. Addressing key gaps now can prevent future disengagement.',
-        priority: 'medium'
-      });
-    } else {
-      insights.push({
-        type: 'success',
-        title: 'Strong Engagement Foundation',
-        description: 'Your team shows good engagement levels. Focus on maintaining strengths and addressing specific gaps.',
-        priority: 'low'
-      });
-    }
+            if (overallScore < 50) {
+                insights.push({
+                    type: 'critical',
+                    title: 'Critical Engagement Gap Detected',
+                    description: 'Your team shows significant engagement challenges across multiple dimensions. Immediate action is needed to prevent talent loss and productivity decline.',
+                    priority: 'high'
+                });
+            } else if (overallScore < 70) {
+                insights.push({
+                    type: 'warning',
+                    title: 'Moderate Engagement Risk',
+                    description: 'Your team has room for improvement. Addressing key gaps now can prevent future disengagement.',
+                    priority: 'medium'
+                });
+            } else {
+                insights.push({
+                    type: 'success',
+                    title: 'Strong Engagement Foundation',
+                    description: 'Your team shows good engagement levels. Focus on maintaining strengths and addressing specific gaps.',
+                    priority: 'low'
+                });
+            }
 
-    if (lowestNeuro.score < 60) {
-      insights.push({
-        type: 'neurochemical',
-        title: lowestNeuro.name + ' Deficiency',
-        description: getNeurochemInsight(lowestNeuro.name),
-        action: getNeurochemAction(lowestNeuro.name),
-        priority: 'high'
-      });
-    }
+            if (lowestNeuro.score < 60) {
+                insights.push({
+                    type: 'neurochemical',
+                    title: lowestNeuro.name + ' Deficiency',
+                    description: neurochemInsights[lowestNeuro.name],
+                    action: neurochemActions[lowestNeuro.name],
+                    priority: 'high'
+                });
+            }
 
-    if (lowestClover.score < 60) {
-      insights.push({
-        type: 'clover',
-        title: lowestClover.subject + ' Needs Attention',
-        description: getCloverInsight(lowestClover.subject),
-        action: getCloverAction(lowestClover.subject),
-        priority: 'high'
-      });
-    }
+            if (lowestClover.score < 60) {
+                insights.push({
+                    type: 'clover',
+                    title: lowestClover.subject + ' Needs Attention',
+                    description: cloverInsights[lowestClover.subject],
+                    action: cloverActions[lowestClover.subject],
+                    priority: 'high'
+                });
+            }
 
-    return insights;
-  };
+            return insights;
+        }
 
-  const getNeurochemInsight = (chem) => {
-    const insights = {
-      'Dopamine': 'Low dopamine indicates your team lacks clear goals, recognition, or visible progress. This kills motivation and makes work feel pointless.',
-      'Oxytocin': 'Low oxytocin means trust is broken. Your team operates in silos, withholds information, and avoids collaboration.',
-      'Serotonin': 'Low serotonin shows team members do not feel valued or see how their work matters. This breeds disengagement.',
-      'Cortisol': 'High cortisol means chronic stress is damaging your team. Burnout, turnover, and poor decisions are likely.'
-    };
-    return insights[chem];
-  };
+        function getScoreColor(score) {
+            if (score >= 75) return 'text-green-600';
+            if (score >= 50) return 'text-yellow-600';
+            return 'text-red-600';
+        }
 
-  const getNeurochemAction = (chem) => {
-    const actions = {
-      'Dopamine': 'Implement weekly wins celebrations, create clear milestones, and establish a recognition system.',
-      'Oxytocin': 'Foster psychological safety through vulnerability practices, improve transparency, and create collaboration opportunities.',
-      'Serotonin': 'Connect individual work to company impact, provide regular meaningful feedback, and recognize unique contributions.',
-      'Cortisol': 'Reduce workload, eliminate process barriers, and protect time for reflection and strategic thinking.'
-    };
-    return actions[chem];
-  };
+        function getScoreLabel(score) {
+            if (score >= 75) return 'Strong';
+            if (score >= 50) return 'Moderate';
+            return 'Critical';
+        }
 
-  const getCloverInsight = (element) => {
-    const insights = {
-      'Communication': 'Communication breakdowns create confusion, duplicate work, and erode trust. Information silos are killing productivity.',
-      'Learning': 'Without learning opportunities, your team stagnates. Top performers will leave for growth elsewhere.',
-      'Opportunities': 'Lack of clear opportunities for advancement creates ceiling anxiety and drives talent away.',
-      'Vulnerability': 'Without psychological safety, innovation dies. People hide mistakes instead of learning from them.',
-      'Enablement': 'Your team lacks the tools, authority, or support to succeed. They are working with one hand tied behind their backs.',
-      'Reflection': 'Without reflection time, your team repeats mistakes and misses learning opportunities. Busy does not mean effective.'
-    };
-    return insights[element];
-  };
+        function handleAnswer(value) {
+            appState.answers[questions[appState.currentQuestion].id] = value;
+            
+            if (appState.currentQuestion < questions.length - 1) {
+                appState.currentQuestion++;
+                render();
+            } else {
+                appState.results = calculateResults();
+                appState.currentStep = 'email';
+                render();
+            }
+        }
 
-  const getCloverAction = (element) => {
-    const actions = {
-      'Communication': 'Establish weekly team huddles, create feedback loops, and implement transparent decision-making processes.',
-      'Learning': 'Create learning budgets, dedicate time for skill development, and build knowledge-sharing systems.',
-      'Opportunities': 'Map career paths, create stretch assignments, and involve team members in strategic initiatives.',
-      'Vulnerability': 'Model vulnerability from leadership, celebrate failures as learning, and establish no-blame problem-solving.',
-      'Enablement': 'Conduct process audits, remove barriers, provide necessary tools, and delegate decision-making authority.',
-      'Reflection': 'Block calendar time for reflection, conduct regular retrospectives, and reward strategic thinking.'
-    };
-    return actions[element];
-  };
+        function handleEmailSubmit() {
+            if (appState.email && appState.email.includes('@')) {
+                appState.currentStep = 'results';
+                render();
+                setTimeout(createRadarChart, 100);
+            }
+        }
 
-  const handleAnswer = (value) => {
-    setAnswers({ ...answers, [questions[currentQuestion].id]: value });
-    
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      const calculatedResults = calculateResults();
-      setResults(calculatedResults);
-      setCurrentStep('email');
-    }
-  };
+        function resetAudit() {
+            appState.currentStep = 'intro';
+            appState.currentQuestion = 0;
+            appState.answers = {};
+            appState.email = '';
+            appState.results = null;
+            render();
+        }
 
-  const handleEmailSubmit = () => {
-    if (email && email.includes('@')) {
-      setCurrentStep('results');
-    }
-  };
+        function createRadarChart() {
+            const canvas = document.getElementById('radarChart');
+            if (!canvas || !appState.results) return;
 
-  const resetAudit = () => {
-    setCurrentStep('intro');
-    setCurrentQuestion(0);
-    setAnswers({});
-    setEmail('');
-    setResults(null);
-  };
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: appState.results.cloverData.map(d => d.subject),
+                    datasets: [{
+                        label: 'Your Team',
+                        data: appState.results.cloverData.map(d => d.score),
+                        backgroundColor: 'rgba(20, 184, 166, 0.2)',
+                        borderColor: 'rgba(20, 184, 166, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(20, 184, 166, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(20, 184, 166, 1)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
 
-  const getScoreColor = (score) => {
-    if (score >= 75) return 'text-green-600';
-    if (score >= 50) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+        function renderIntro() {
+            return `
+                <div class="min-h-screen p-8">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="bg-white rounded-2xl shadow-xl p-12">
+                            <div class="text-center mb-8">
+                                <div class="inline-block bg-teal-100 text-teal-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                                    Neuroscience-Backed Assessment
+                                </div>
+                                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                                    The Brain Chemistry Audit
+                                </h1>
+                                <p class="text-xl text-gray-600 mb-2">
+                                    What's Really Driving (or Killing) Your Team's Engagement
+                                </p>
+                            </div>
 
-  const getScoreLabel = (score) => {
-    if (score >= 75) return 'Strong';
-    if (score >= 50) return 'Moderate';
-    return 'Critical';
-  };
+                            <div class="bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl p-8 text-white mb-8">
+                                <h2 class="text-2xl font-bold mb-4">Discover In 5 Minutes:</h2>
+                                <div class="space-y-3">
+                                    <div class="flex items-start">
+                                        <span class="mr-3 text-2xl">🧠</span>
+                                        <span>Which brain chemicals are out of balance in your team</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <span class="mr-3 text-2xl">📊</span>
+                                        <span>Your specific engagement gaps across the CLOVER framework</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <span class="mr-3 text-2xl">🎯</span>
+                                        <span>Prioritized action steps based on neuroscience</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <span class="mr-3 text-2xl">💰</span>
+                                        <span>The hidden cost of your current engagement gaps</span>
+                                    </div>
+                                </div>
+                            </div>
 
-  if (currentStep === 'intro') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50 p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-12">
-            <div className="text-center mb-8">
-              <div className="inline-block bg-teal-100 text-teal-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Neuroscience-Backed Assessment
-              </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                The Brain Chemistry Audit
-              </h1>
-              <p className="text-xl text-gray-600 mb-2">
-                What's Really Driving (or Killing) Your Team's Engagement
-              </p>
-            </div>
+                            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                                <div class="bg-red-50 rounded-lg p-6">
+                                    <h3 class="font-bold text-gray-900 mb-2">The Problem:</h3>
+                                    <p class="text-gray-700">85% of employees worldwide are disengaged, costing businesses $8.9 trillion annually. Is your team part of this statistic?</p>
+                                </div>
+                                <div class="bg-green-50 rounded-lg p-6">
+                                    <h3 class="font-bold text-gray-900 mb-2">The Solution:</h3>
+                                    <p class="text-gray-700">Understanding the neuroscience behind engagement lets you fix the root cause, not just symptoms.</p>
+                                </div>
+                            </div>
 
-            <div className="bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl p-8 text-white mb-8">
-              <h2 className="text-2xl font-bold mb-4">Discover In 5 Minutes:</h2>
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <span className="mr-3 text-2xl">🧠</span>
-                  <span>Which brain chemicals are out of balance in your team</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="mr-3 text-2xl">📊</span>
-                  <span>Your specific engagement gaps across the CLOVER framework</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="mr-3 text-2xl">🎯</span>
-                  <span>Prioritized action steps based on neuroscience</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="mr-3 text-2xl">💰</span>
-                  <span>The hidden cost of your current engagement gaps</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-red-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-2">The Problem:</h3>
-                <p className="text-gray-700">85% of employees worldwide are disengaged, costing businesses $8.9 trillion annually. Is your team part of this statistic?</p>
-              </div>
-              <div className="bg-green-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-2">The Solution:</h3>
-                <p className="text-gray-700">Understanding the neuroscience behind engagement lets you fix the root cause, not just symptoms.</p>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <button
-                onClick={() => setCurrentStep('assessment')}
-                className="bg-gradient-to-r from-teal-500 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl"
-              >
-                Start Your Free Assessment
-              </button>
-              <p className="text-sm text-gray-500 mt-4">Takes 5 minutes • No credit card required</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'assessment') {
-    const progress = ((currentQuestion + 1) / questions.length) * 100;
-    const q = questions[currentQuestion];
-
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50 p-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-semibold text-gray-600">
-                  Question {currentQuestion + 1} of {questions.length}
-                </span>
-                <span className="text-sm font-semibold text-teal-600">
-                  {Math.round(progress)}% Complete
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-gradient-to-r from-teal-500 to-blue-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <div className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mb-4">
-                {q.clover} • {q.category.charAt(0).toUpperCase() + q.category.slice(1)}
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                {q.text}
-              </h2>
-
-              <div className="space-y-3">
-                {q.options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswer(option.value)}
-                    className="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 transition-all"
-                  >
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-4 font-semibold text-gray-600">
-                        {index + 1}
-                      </div>
-                      <span className="text-gray-800">{option.label}</span>
+                            <div class="text-center">
+                                <button onclick="appState.currentStep='assessment'; render();" class="bg-gradient-to-r from-teal-500 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl">
+                                    Start Your Free Assessment
+                                </button>
+                                <p class="text-sm text-gray-500 mt-4">Takes 5 minutes • No credit card required</p>
+                            </div>
+                        </div>
                     </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {currentQuestion > 0 && (
-              <button
-                onClick={() => setCurrentQuestion(currentQuestion - 1)}
-                className="text-gray-600 hover:text-gray-900 text-sm font-semibold"
-              >
-                ← Previous Question
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'email') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50 p-8 flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">✓</span>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Assessment Complete!
-              </h2>
-              <p className="text-gray-600">
-                Get your personalized Brain Chemistry Audit results
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-teal-500 focus:outline-none"
-                />
-              </div>
-
-              <div className="bg-teal-50 rounded-lg p-4 text-sm text-gray-700">
-                <p className="font-semibold mb-1">You will receive:</p>
-                <div className="space-y-1 ml-4">
-                  <p>• Your full detailed report</p>
-                  <p>• Prioritized action plan</p>
-                  <p>• Access to implementation resources</p>
                 </div>
-              </div>
+            `;
+        }
 
-              <button
-                onClick={handleEmailSubmit}
-                className="w-full bg-gradient-to-r from-teal-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg"
-              >
-                View My Results
-              </button>
+        function renderAssessment() {
+            const progress = ((appState.currentQuestion + 1) / questions.length) * 100;
+            const q = questions[appState.currentQuestion];
 
-              <p className="text-xs text-gray-500 text-center">
-                We respect your privacy. Unsubscribe anytime.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+            return `
+                <div class="min-h-screen p-8">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="bg-white rounded-2xl shadow-xl p-8">
+                            <div class="mb-8">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-semibold text-gray-600">
+                                        Question ${appState.currentQuestion + 1} of ${questions.length}
+                                    </span>
+                                    <span class="text-sm font-semibold text-teal-600">
+                                        ${Math.round(progress)}% Complete
+                                    </span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-teal-500 to-blue-500 h-2 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
+                                </div>
+                            </div>
 
-  if (currentStep === 'results' && results) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50 p-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Your Brain Chemistry Audit Results
-              </h1>
-              <p className="text-gray-600">Team Engagement Analysis for {email}</p>
-            </div>
+                            <div class="mb-8">
+                                <div class="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mb-4">
+                                    ${q.clover} • ${q.category.charAt(0).toUpperCase() + q.category.slice(1)}
+                                </div>
+                                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                    ${q.text}
+                                </h2>
 
-            <div className="bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl p-8 text-white text-center mb-8">
-              <div className="text-6xl font-bold mb-2">{results.overallScore}%</div>
-              <div className="text-xl">Overall Engagement Score</div>
-              <div className="text-sm opacity-90 mt-2">
-                {getScoreLabel(results.overallScore)} Level
-              </div>
-            </div>
+                                <div class="space-y-3">
+                                    ${q.options.map((option, index) => `
+                                        <button onclick="handleAnswer(${option.value})" class="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 transition-all">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-4 font-semibold text-gray-600">
+                                                    ${index + 1}
+                                                </div>
+                                                <span class="text-gray-800">${option.label}</span>
+                                            </div>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
 
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Key Insights</h2>
-              <div className="space-y-4">
-                {results.insights.map((insight, index) => (
-                  <div
-                    key={index}
-                    className={`p-6 rounded-lg border-l-4 ${
-                      insight.priority === 'high'
-                        ? 'bg-red-50 border-red-500'
-                        : insight.priority === 'medium'
-                        ? 'bg-yellow-50 border-yellow-500'
-                        : 'bg-green-50 border-green-500'
-                    }`}
-                  >
-                    <h3 className="font-bold text-gray-900 mb-2">{insight.title}</h3>
-                    <p className="text-gray-700 mb-3">{insight.description}</p>
-                    {insight.action && (
-                      <div className="bg-white bg-opacity-50 rounded p-3 mt-2">
-                        <p className="font-semibold text-sm text-gray-900 mb-1">Recommended Action:</p>
-                        <p className="text-sm text-gray-700">{insight.action}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Brain Chemistry Balance</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {results.neurochemData.map((neuro, index) => (
-                  <div key={index} className="bg-gray-50 rounded-lg p-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h3 className="font-bold text-lg text-gray-900">{neuro.name}</h3>
-                        <p className="text-sm text-gray-600">{neuro.description}</p>
-                      </div>
-                      <div className={`text-2xl font-bold ${getScoreColor(neuro.score)}`}>
-                        {neuro.score}%
-                      </div>
+                            ${appState.currentQuestion > 0 ? `
+                                <button onclick="appState.currentQuestion--; render();" class="text-gray-600 hover:text-gray-900 text-sm font-semibold">
+                                    ← Previous Question
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className="h-3 rounded-full transition-all"
-                        style={{
-                          width: `${neuro.score}%`,
-                          backgroundColor: neuro.color
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">CLOVER Framework Analysis</h2>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <ResponsiveContainer width="100%" height={400}>
-                  <RadarChart data={results.cloverData}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="subject" />
-                    <PolarRadiusAxis angle={90} domain={[0, 100]} />
-                    <Radar
-                      name="Your Team"
-                      dataKey="score"
-                      stroke="#14B8A6"
-                      fill="#14B8A6"
-                      fillOpacity={0.6}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-                  {results.cloverData.map((item, index) => (
-                    <div key={index} className="text-center">
-                      <div className={`text-2xl font-bold ${getScoreColor(item.score)}`}>
-                        {item.score}%
-                      </div>
-                      <div className="text-sm text-gray-600">{item.subject}</div>
-                    </div>
-                  ))}
                 </div>
-              </div>
-            </div>
+            `;
+        }
 
-            <div className="bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                Would you like help with the above and access to real-time insights on your team?
-              </h2>
-              <p className="text-center text-gray-700 text-lg mb-6">
-                Book a 30-minute call with one of our Engagement Experts and we will show you how.
-              </p>
-              <div className="text-center">
-                <button className="bg-gradient-to-r from-teal-500 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl">
-                  Book Your Free 30-Minute Consultation
-                </button>
-                <p className="text-sm text-gray-600 mt-4">
-                  Discover how Clover ERA delivers real-time engagement insights for your team
-                </p>
-              </div>
-            </div>
+        function renderEmail() {
+            return `
+                <div class="min-h-screen p-8 flex items-center justify-center">
+                    <div class="max-w-md w-full">
+                        <div class="bg-white rounded-2xl shadow-xl p-8">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-3xl">✓</span>
+                                </div>
+                                <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                                    Assessment Complete!
+                                </h2>
+                                <p class="text-gray-600">
+                                    Get your personalized Brain Chemistry Audit results
+                                </p>
+                            </div>
 
-            <div className="text-center mt-8">
-              <button
-                onClick={resetAudit}
-                className="text-gray-600 hover:text-gray-900 text-sm font-semibold"
-              >
-                Take Assessment Again
-              </button>
-            </div>
-          </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Email Address
+                                    </label>
+                                    <input type="email" id="emailInput" value="${appState.email}" oninput="appState.email=this.value" placeholder="you@company.com" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-teal-500 focus:outline-none">
+                                </div>
 
-          <div className="text-center text-sm text-gray-600">
-            <p>Powered by Clover ERA • Based on neuroscience research</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+                                <div class="bg-teal-50 rounded-lg p-4 text-sm text-gray-700">
+                                    <p class="font-semibold mb-1">You will receive:</p>
+                                    <div class="space-y-1 ml-4">
+                                        <p>• Your full detailed report</p>
+                                        <p>• Prioritized action plan</p>
+                                        <p>• Access to implementation resources</p>
+                                    </div>
+                                </div>
 
-  return null;
-};
+                                <button onclick="handleEmailSubmit()" class="w-full bg-gradient-to-r from-teal-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg">
+                                    View My Results
+                                </button>
 
-export default BrainChemistryAudit;
+                                <p class="text-xs text-gray-500 text-center">
+                                    We respect your privacy. Unsubscribe anytime.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderResults() {
+            if (!appState.results) return '';
+
+            const priorityColors = {
+                high: 'bg-red-50 border-red-500',
+                medium: 'bg-yellow-50 border-yellow-500',
+                low: 'bg-green-50 border-green-500'
+            };
+
+            return `
+                <div class="min-h-screen p-8">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
+                            <div class="text-center mb-8">
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                                    Your Brain Chemistry Audit Results
+                                </h1>
+                                <p class="text-gray-600">Team Engagement Analysis for ${appState.email}</p>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl p-8 text-white text-center mb-8">
+                                <div class="text-6xl font-bold mb-2">${appState.results.overallScore}%</div>
+                                <div class="text-xl">Overall Engagement Score</div>
+                                <div class="text-sm opacity-90 mt-2">
+                                    ${getScoreLabel(appState.results.overallScore)} Level
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-4">Key Insights</h2>
+                                <div class="space-y-4">
+                                    ${appState.results.insights.map(insight => `
+                                        <div class="p-6 rounded-lg border-l-4 ${priorityColors[insight.priority]}">
+                                            <h3 class="font-bold text-gray-900 mb-2">${insight.title}</h3>
+                                            <p class="text-gray-700 mb-3">${insight.description}</p>
+                                            ${insight.action ? `
+                                                <div class="bg-white bg-opacity-50 rounded p-3 mt-2">
+                                                    <p class="font-semibold text-sm text-gray-900 mb-1">Recommended Action:</p>
+                                                    <p class="text-sm text-gray-700">${insight.action}</p>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-4">Brain Chemistry Balance</h2>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    ${appState.results.neurochemData.map(neuro => `
+                                        <div class="bg-gray-50 rounded-lg p-6">
+                                            <div class="flex justify-between items-start mb-3">
+                                                <div>
+                                                    <h3 class="font-bold text-lg text-gray-900">${neuro.name}</h3>
+                                                    <p class="text-sm text-gray-600">${neuro.description}</p>
+                                                </div>
+                                                <div class="text-2xl font-bold ${getScoreColor(neuro.score)}">
+                                                    ${neuro.score}%
+                                                </div>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                                <div class="h-3 rounded-full transition-all" style="width: ${neuro.score}%; background-color: ${neuro.color}"></div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-4">CLOVER Framework Analysis</h2>
+                                <div class="bg-gray-50 rounded-lg p-6">
+                                    <canvas id="radarChart" width="400" height="400"></canvas>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                                        ${appState.results.cloverData.map(item => `
+                                            <div class="text-center">
+                                                <div class="text-2xl font-bold ${getScoreColor(item.score)}">
+                                                    ${item.score}%
+                                                </div>
+                                                <div class="text-sm text-gray-600">${item.subject}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl p-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+                                    Would you like help with the above and access to real-time insights on your team?
+                                </h2>
+                                <p class="text-center text-gray-700 text-lg mb-6">
+                                    Book a 30-minute call with one of our Engagement Experts and we will show you how.
+                                </p>
+                                <div class="text-center">
+                                    <button class="bg-gradient-to-r from-teal-500 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl">
+                                        Book Your Free 30-Minute Consultation
+                                    </button>
+                                    <p class="text-sm text-gray-600 mt-4">
+                                        Discover how Clover ERA delivers real-time engagement insights for your team
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-8">
+                                <button onclick="resetAudit()" class="text-gray-600 hover:text-gray-900 text-sm font-semibold">
+                                    Take Assessment Again
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-center text-sm text-gray-600">
+                            <p>Powered by Clover ERA • Based on neuroscience research</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (appState.currentStep === 'intro') {
+                app.innerHTML = renderIntro();
+            } else if (appState.currentStep === 'assessment') {
+                app.innerHTML = renderAssessment();
+            } else if (appState.currentStep === 'email') {
+                app.innerHTML = renderEmail();
+            } else if (appState.currentStep === 'results') {
+                app.innerHTML = renderResults();
+            }
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
