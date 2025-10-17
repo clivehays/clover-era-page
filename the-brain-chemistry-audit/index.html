@@ -5,19 +5,144 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brain Chemistry Audit - Team Engagement Assessment | Clover ERA</title>
     <meta name="description" content="Discover what's really driving or killing your team's engagement with our neuroscience-backed assessment. Get personalized insights in 5 minutes.">
+    <link rel="icon" type="image/png" href="https://www.cloverera.com/images/Clover-era-new-logo-1.png">
+    <link rel="shortcut icon" type="image/png" href="https://www.cloverera.com/images/Clover-era-new-logo-1.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 50%, #eff6ff 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-shadow-lg {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(20, 184, 166, 0.4);
+        }
+        
+        .progress-bar {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .option-card {
+            transition: all 0.2s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .option-card:hover {
+            border-color: #14b8a6;
+            background-color: #f0fdfa;
+            transform: translateX(4px);
+        }
+        
+        .insight-card {
+            transition: all 0.3s ease;
+        }
+        
+        .insight-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .neuro-card {
+            background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .neuro-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .checkmark {
+            animation: checkmark-pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes checkmark-pop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .stat-number {
+            background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feature-icon {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+
+        .logo-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-header img {
+            height: 60px;
+            width: auto;
+        }
+
+        @media (max-width: 640px) {
+            .logo-header img {
+                height: 45px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-teal-50 via-white to-blue-50">
+<body class="gradient-bg min-h-screen">
     <div id="app"></div>
 
     <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKvBzkdo7X0v6nU2vOdqCciT-T_fXYveJJr-r3AzdSsLxPvU4huF27KMZRjcDVajrf/exec';
+        
         const appState = {
             currentStep: 'intro',
             currentQuestion: 0,
             answers: {},
             email: '',
-            results: null
+            results: null,
+            isSubmitting: false
         };
 
         const questions = [
@@ -311,11 +436,50 @@
             }
         }
 
-        function handleEmailSubmit() {
-            if (appState.email && appState.email.includes('@')) {
+        async function handleEmailSubmit() {
+            if (!appState.email || !appState.email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            if (appState.isSubmitting) return;
+            
+            appState.isSubmitting = true;
+            render();
+
+            try {
+                const formData = new FormData();
+                formData.append('email', appState.email);
+                formData.append('overallScore', appState.results.overallScore);
+                formData.append('timestamp', new Date().toISOString());
+                
+                appState.results.neurochemData.forEach(neuro => {
+                    formData.append(neuro.name, neuro.score);
+                });
+                
+                appState.results.cloverData.forEach(clover => {
+                    formData.append(clover.subject, clover.score);
+                });
+
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    appState.currentStep = 'results';
+                    render();
+                    setTimeout(createRadarChart, 100);
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                console.error('Error submitting to Google Sheets:', error);
                 appState.currentStep = 'results';
                 render();
                 setTimeout(createRadarChart, 100);
+            } finally {
+                appState.isSubmitting = false;
             }
         }
 
@@ -325,6 +489,7 @@
             appState.answers = {};
             appState.email = '';
             appState.results = null;
+            appState.isSubmitting = false;
             render();
         }
 
@@ -346,7 +511,9 @@
                         pointBackgroundColor: 'rgba(20, 184, 166, 1)',
                         pointBorderColor: '#fff',
                         pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(20, 184, 166, 1)'
+                        pointHoverBorderColor: 'rgba(20, 184, 166, 1)',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
                     }]
                 },
                 options: {
@@ -355,7 +522,16 @@
                             beginAtZero: true,
                             max: 100,
                             ticks: {
-                                stepSize: 20
+                                stepSize: 20,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    weight: '600'
+                                }
                             }
                         }
                     },
@@ -370,59 +546,73 @@
 
         function renderIntro() {
             return `
-                <div class="min-h-screen p-8">
+                <div class="min-h-screen p-4 sm:p-8">
                     <div class="max-w-4xl mx-auto">
-                        <div class="bg-white rounded-2xl shadow-xl p-12">
+                        <div class="logo-header">
+                            <img src="https://www.cloverera.com/images/Clover-era-new-logo-1.png" alt="Clover ERA Logo">
+                        </div>
+                        <div class="bg-white rounded-3xl card-shadow-lg p-8 sm:p-12">
                             <div class="text-center mb-8">
-                                <div class="inline-block bg-teal-100 text-teal-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                                    Neuroscience-Backed Assessment
+                                <div class="inline-block badge bg-teal-100 text-teal-600 px-6 py-2 rounded-full text-sm font-semibold mb-6">
+                                    ✨ Neuroscience-Backed Assessment
                                 </div>
-                                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                                     The Brain Chemistry Audit
                                 </h1>
-                                <p class="text-xl text-gray-600 mb-2">
+                                <p class="text-xl sm:text-2xl text-gray-600 font-medium">
                                     What's Really Driving (or Killing) Your Team's Engagement
                                 </p>
                             </div>
 
-                            <div class="bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl p-8 text-white mb-8">
-                                <h2 class="text-2xl font-bold mb-4">Discover In 5 Minutes:</h2>
-                                <div class="space-y-3">
+                            <div class="bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl p-8 sm:p-10 text-white mb-8 card-shadow">
+                                <h2 class="text-2xl sm:text-3xl font-bold mb-6">Discover In 5 Minutes:</h2>
+                                <div class="space-y-4">
                                     <div class="flex items-start">
-                                        <span class="mr-3 text-2xl">🧠</span>
-                                        <span>Which brain chemicals are out of balance in your team</span>
+                                        <div class="feature-icon flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center mr-4">
+                                            <span class="text-2xl">🧠</span>
+                                        </div>
+                                        <span class="text-lg font-medium">Which brain chemicals are out of balance in your team</span>
                                     </div>
                                     <div class="flex items-start">
-                                        <span class="mr-3 text-2xl">📊</span>
-                                        <span>Your specific engagement gaps across the CLOVER framework</span>
+                                        <div class="feature-icon flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center mr-4">
+                                            <span class="text-2xl">📊</span>
+                                        </div>
+                                        <span class="text-lg font-medium">Your specific engagement gaps across the CLOVER framework</span>
                                     </div>
                                     <div class="flex items-start">
-                                        <span class="mr-3 text-2xl">🎯</span>
-                                        <span>Prioritized action steps based on neuroscience</span>
+                                        <div class="feature-icon flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center mr-4">
+                                            <span class="text-2xl">🎯</span>
+                                        </div>
+                                        <span class="text-lg font-medium">Prioritized action steps based on neuroscience</span>
                                     </div>
                                     <div class="flex items-start">
-                                        <span class="mr-3 text-2xl">💰</span>
-                                        <span>The hidden cost of your current engagement gaps</span>
+                                        <div class="feature-icon flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center mr-4">
+                                            <span class="text-2xl">💰</span>
+                                        </div>
+                                        <span class="text-lg font-medium">The hidden cost of your current engagement gaps</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="grid md:grid-cols-2 gap-6 mb-8">
-                                <div class="bg-red-50 rounded-lg p-6">
-                                    <h3 class="font-bold text-gray-900 mb-2">The Problem:</h3>
-                                    <p class="text-gray-700">85% of employees worldwide are disengaged, costing businesses $8.9 trillion annually. Is your team part of this statistic?</p>
+                            <div class="grid md:grid-cols-2 gap-6 mb-10">
+                                <div class="bg-red-50 rounded-2xl p-6 sm:p-8 border-2 border-red-100">
+                                    <h3 class="font-bold text-xl text-gray-900 mb-3">⚠️ The Problem:</h3>
+                                    <p class="text-gray-700 leading-relaxed"><strong>85% of employees worldwide</strong> are disengaged, costing businesses <strong>$8.9 trillion annually</strong>. Is your team part of this statistic?</p>
                                 </div>
-                                <div class="bg-green-50 rounded-lg p-6">
-                                    <h3 class="font-bold text-gray-900 mb-2">The Solution:</h3>
-                                    <p class="text-gray-700">Understanding the neuroscience behind engagement lets you fix the root cause, not just symptoms.</p>
+                                <div class="bg-green-50 rounded-2xl p-6 sm:p-8 border-2 border-green-100">
+                                    <h3 class="font-bold text-xl text-gray-900 mb-3">✅ The Solution:</h3>
+                                    <p class="text-gray-700 leading-relaxed">Understanding the <strong>neuroscience behind engagement</strong> lets you fix the root cause, not just symptoms.</p>
                                 </div>
                             </div>
 
                             <div class="text-center">
-                                <button onclick="appState.currentStep='assessment'; render();" class="bg-gradient-to-r from-teal-500 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl">
+                                <button onclick="appState.currentStep='assessment'; render();" class="btn-primary text-white px-10 py-5 rounded-xl text-lg sm:text-xl font-bold hover-lift inline-flex items-center">
                                     Start Your Free Assessment
+                                    <svg class="ml-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
                                 </button>
-                                <p class="text-sm text-gray-500 mt-4">Takes 5 minutes • No credit card required</p>
+                                <p class="text-sm text-gray-500 mt-4 font-medium">⏱️ Takes 5 minutes • 🔒 No credit card required</p>
                             </div>
                         </div>
                     </div>
@@ -435,39 +625,42 @@
             const q = questions[appState.currentQuestion];
 
             return `
-                <div class="min-h-screen p-8">
+                <div class="min-h-screen p-4 sm:p-8">
                     <div class="max-w-3xl mx-auto">
-                        <div class="bg-white rounded-2xl shadow-xl p-8">
+                        <div class="logo-header">
+                            <img src="https://www.cloverera.com/images/Clover-era-new-logo-1.png" alt="Clover ERA Logo">
+                        </div>
+                        <div class="bg-white rounded-3xl card-shadow-lg p-6 sm:p-10">
                             <div class="mb-8">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-sm font-semibold text-gray-600">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-sm font-bold text-gray-700">
                                         Question ${appState.currentQuestion + 1} of ${questions.length}
                                     </span>
-                                    <span class="text-sm font-semibold text-teal-600">
+                                    <span class="text-sm font-bold text-teal-600">
                                         ${Math.round(progress)}% Complete
                                     </span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-gradient-to-r from-teal-500 to-blue-500 h-2 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                                    <div class="progress-bar bg-gradient-to-r from-teal-500 to-blue-500 h-3 rounded-full" style="width: ${progress}%"></div>
                                 </div>
                             </div>
 
-                            <div class="mb-8">
-                                <div class="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mb-4">
+                            <div class="mb-10">
+                                <div class="inline-block bg-gradient-to-r from-blue-100 to-teal-100 text-blue-700 px-4 py-2 rounded-full text-xs font-bold mb-6">
                                     ${q.clover} • ${q.category.charAt(0).toUpperCase() + q.category.slice(1)}
                                 </div>
-                                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 leading-tight">
                                     ${q.text}
                                 </h2>
 
-                                <div class="space-y-3">
+                                <div class="space-y-4">
                                     ${q.options.map((option, index) => `
-                                        <button onclick="handleAnswer(${option.value})" class="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 transition-all">
+                                        <button onclick="handleAnswer(${option.value})" class="option-card w-full text-left p-5 sm:p-6 rounded-xl">
                                             <div class="flex items-center">
-                                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-4 font-semibold text-gray-600">
+                                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-teal-100 to-blue-100 flex items-center justify-center mr-4 font-bold text-teal-700 flex-shrink-0">
                                                     ${index + 1}
                                                 </div>
-                                                <span class="text-gray-800">${option.label}</span>
+                                                <span class="text-gray-800 font-medium text-base sm:text-lg">${option.label}</span>
                                             </div>
                                         </button>
                                     `).join('')}
@@ -475,8 +668,11 @@
                             </div>
 
                             ${appState.currentQuestion > 0 ? `
-                                <button onclick="appState.currentQuestion--; render();" class="text-gray-600 hover:text-gray-900 text-sm font-semibold">
-                                    ← Previous Question
+                                <button onclick="appState.currentQuestion--; render();" class="text-gray-600 hover:text-gray-900 font-semibold flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                    </svg>
+                                    Previous Question
                                 </button>
                             ` : ''}
                         </div>
@@ -487,44 +683,61 @@
 
         function renderEmail() {
             return `
-                <div class="min-h-screen p-8 flex items-center justify-center">
+                <div class="min-h-screen p-4 sm:p-8 flex items-center justify-center">
                     <div class="max-w-md w-full">
-                        <div class="bg-white rounded-2xl shadow-xl p-8">
-                            <div class="text-center mb-6">
-                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <span class="text-3xl">✓</span>
+                        <div class="logo-header">
+                            <img src="https://www.cloverera.com/images/Clover-era-new-logo-1.png" alt="Clover ERA Logo">
+                        </div>
+                        <div class="bg-white rounded-3xl card-shadow-lg p-8 sm:p-10">
+                            <div class="text-center mb-8">
+                                <div class="checkmark w-20 h-20 bg-gradient-to-br from-green-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                    </svg>
                                 </div>
-                                <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                                <h2 class="text-3xl font-bold text-gray-900 mb-3">
                                     Assessment Complete!
                                 </h2>
-                                <p class="text-gray-600">
+                                <p class="text-lg text-gray-600">
                                     Get your personalized Brain Chemistry Audit results
                                 </p>
                             </div>
 
-                            <div class="space-y-4">
+                            <div class="space-y-6">
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Email Address
+                                    <label class="block text-sm font-bold text-gray-700 mb-3">
+                                        📧 Email Address
                                     </label>
-                                    <input type="email" id="emailInput" value="${appState.email}" oninput="appState.email=this.value" placeholder="you@company.com" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-teal-500 focus:outline-none">
+                                    <input 
+                                        type="email" 
+                                        id="emailInput" 
+                                        value="${appState.email}" 
+                                        oninput="appState.email=this.value" 
+                                        placeholder="you@company.com" 
+                                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none text-lg"
+                                        ${appState.isSubmitting ? 'disabled' : ''}
+                                    >
                                 </div>
 
-                                <div class="bg-teal-50 rounded-lg p-4 text-sm text-gray-700">
-                                    <p class="font-semibold mb-1">You will receive:</p>
-                                    <div class="space-y-1 ml-4">
-                                        <p>• Your full detailed report</p>
-                                        <p>• Prioritized action plan</p>
-                                        <p>• Access to implementation resources</p>
+                                <div class="bg-gradient-to-r from-teal-50 to-blue-50 rounded-xl p-6 text-sm">
+                                    <p class="font-bold text-gray-900 mb-3">✨ You will receive:</p>
+                                    <div class="space-y-2 ml-1">
+                                        <p class="flex items-center text-gray-700"><span class="mr-2">📊</span> Your full detailed report</p>
+                                        <p class="flex items-center text-gray-700"><span class="mr-2">🎯</span> Prioritized action plan</p>
+                                        <p class="flex items-center text-gray-700"><span class="mr-2">🔑</span> Access to implementation resources</p>
                                     </div>
                                 </div>
 
-                                <button onclick="handleEmailSubmit()" class="w-full bg-gradient-to-r from-teal-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg">
-                                    View My Results
+                                <button 
+                                    onclick="handleEmailSubmit()" 
+                                    class="btn-primary w-full text-white py-4 rounded-xl text-lg font-bold hover-lift ${appState.isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}"
+                                    ${appState.isSubmitting ? 'disabled' : ''}
+                                >
+                                    ${appState.isSubmitting ? 'Submitting...' : 'View My Results →'}
                                 </button>
 
                                 <p class="text-xs text-gray-500 text-center">
-                                    We respect your privacy. Unsubscribe anytime.
+                                    🔒 We respect your privacy. Unsubscribe anytime.
                                 </p>
                             </div>
                         </div>
@@ -543,35 +756,38 @@
             };
 
             return `
-                <div class="min-h-screen p-8">
+                <div class="min-h-screen p-4 sm:p-8">
                     <div class="max-w-6xl mx-auto">
-                        <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
-                            <div class="text-center mb-8">
-                                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                        <div class="logo-header">
+                            <img src="https://www.cloverera.com/images/Clover-era-new-logo-1.png" alt="Clover ERA Logo">
+                        </div>
+                        <div class="bg-white rounded-3xl card-shadow-lg p-6 sm:p-10 mb-6">
+                            <div class="text-center mb-10">
+                                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
                                     Your Brain Chemistry Audit Results
                                 </h1>
-                                <p class="text-gray-600">Team Engagement Analysis for ${appState.email}</p>
+                                <p class="text-lg text-gray-600">Team Engagement Analysis for <strong>${appState.email}</strong></p>
                             </div>
 
-                            <div class="bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl p-8 text-white text-center mb-8">
-                                <div class="text-6xl font-bold mb-2">${appState.results.overallScore}%</div>
-                                <div class="text-xl">Overall Engagement Score</div>
-                                <div class="text-sm opacity-90 mt-2">
+                            <div class="bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl p-10 sm:p-12 text-white text-center mb-10 card-shadow">
+                                <div class="stat-number text-7xl sm:text-8xl font-extrabold mb-3">${appState.results.overallScore}%</div>
+                                <div class="text-2xl font-semibold">Overall Engagement Score</div>
+                                <div class="text-base opacity-90 mt-3 bg-white bg-opacity-20 inline-block px-6 py-2 rounded-full">
                                     ${getScoreLabel(appState.results.overallScore)} Level
                                 </div>
                             </div>
 
-                            <div class="mb-8">
-                                <h2 class="text-2xl font-bold text-gray-900 mb-4">Key Insights</h2>
-                                <div class="space-y-4">
+                            <div class="mb-10">
+                                <h2 class="text-3xl font-bold text-gray-900 mb-6">🔍 Key Insights</h2>
+                                <div class="space-y-5">
                                     ${appState.results.insights.map(insight => `
-                                        <div class="p-6 rounded-lg border-l-4 ${priorityColors[insight.priority]}">
-                                            <h3 class="font-bold text-gray-900 mb-2">${insight.title}</h3>
-                                            <p class="text-gray-700 mb-3">${insight.description}</p>
+                                        <div class="insight-card p-6 sm:p-8 rounded-2xl border-l-4 ${priorityColors[insight.priority]}">
+                                            <h3 class="font-bold text-xl text-gray-900 mb-3">${insight.title}</h3>
+                                            <p class="text-gray-700 mb-4 leading-relaxed">${insight.description}</p>
                                             ${insight.action ? `
-                                                <div class="bg-white bg-opacity-50 rounded p-3 mt-2">
-                                                    <p class="font-semibold text-sm text-gray-900 mb-1">Recommended Action:</p>
-                                                    <p class="text-sm text-gray-700">${insight.action}</p>
+                                                <div class="bg-white bg-opacity-60 rounded-xl p-4 mt-4">
+                                                    <p class="font-bold text-sm text-gray-900 mb-2">💡 Recommended Action:</p>
+                                                    <p class="text-sm text-gray-700 leading-relaxed">${insight.action}</p>
                                                 </div>
                                             ` : ''}
                                         </div>
@@ -579,71 +795,79 @@
                                 </div>
                             </div>
 
-                            <div class="mb-8">
-                                <h2 class="text-2xl font-bold text-gray-900 mb-4">Brain Chemistry Balance</h2>
+                            <div class="mb-10">
+                                <h2 class="text-3xl font-bold text-gray-900 mb-6">🧠 Brain Chemistry Balance</h2>
                                 <div class="grid md:grid-cols-2 gap-6">
                                     ${appState.results.neurochemData.map(neuro => `
-                                        <div class="bg-gray-50 rounded-lg p-6">
-                                            <div class="flex justify-between items-start mb-3">
+                                        <div class="neuro-card rounded-2xl p-6 sm:p-8">
+                                            <div class="flex justify-between items-start mb-4">
                                                 <div>
-                                                    <h3 class="font-bold text-lg text-gray-900">${neuro.name}</h3>
-                                                    <p class="text-sm text-gray-600">${neuro.description}</p>
+                                                    <h3 class="font-bold text-xl text-gray-900 mb-1">${neuro.name}</h3>
+                                                    <p class="text-sm text-gray-600 font-medium">${neuro.description}</p>
                                                 </div>
-                                                <div class="text-2xl font-bold ${getScoreColor(neuro.score)}">
+                                                <div class="text-3xl font-extrabold ${getScoreColor(neuro.score)}">
                                                     ${neuro.score}%
                                                 </div>
                                             </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-3">
-                                                <div class="h-3 rounded-full transition-all" style="width: ${neuro.score}%; background-color: ${neuro.color}"></div>
+                                            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                                                <div class="h-4 rounded-full transition-all duration-1000" style="width: ${neuro.score}%; background-color: ${neuro.color}"></div>
                                             </div>
                                         </div>
                                     `).join('')}
                                 </div>
                             </div>
 
-                            <div class="mb-8">
-                                <h2 class="text-2xl font-bold text-gray-900 mb-4">CLOVER Framework Analysis</h2>
-                                <div class="bg-gray-50 rounded-lg p-6">
-                                    <canvas id="radarChart" width="400" height="400"></canvas>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                            <div class="mb-10">
+                                <h2 class="text-3xl font-bold text-gray-900 mb-6">🍀 CLOVER Framework Analysis</h2>
+                                <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 border-2 border-gray-100">
+                                    <div class="flex justify-center mb-8">
+                                        <canvas id="radarChart" class="max-w-full" width="500" height="500"></canvas>
+                                    </div>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
                                         ${appState.results.cloverData.map(item => `
-                                            <div class="text-center">
-                                                <div class="text-2xl font-bold ${getScoreColor(item.score)}">
+                                            <div class="text-center bg-white rounded-xl p-4 border-2 border-gray-100">
+                                                <div class="text-3xl font-extrabold ${getScoreColor(item.score)} mb-2">
                                                     ${item.score}%
                                                 </div>
-                                                <div class="text-sm text-gray-600">${item.subject}</div>
+                                                <div class="text-sm font-bold text-gray-700">${item.subject}</div>
                                             </div>
                                         `).join('')}
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl p-8">
-                                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+                            <div class="bg-gradient-to-r from-blue-50 to-teal-50 rounded-2xl p-8 sm:p-10 border-2 border-teal-100">
+                                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 text-center">
                                     Would you like help with the above and access to real-time insights on your team?
                                 </h2>
-                                <p class="text-center text-gray-700 text-lg mb-6">
+                                <p class="text-center text-gray-700 text-lg sm:text-xl mb-8 font-medium">
                                     Book a 30-minute call with one of our Engagement Experts and we will show you how.
                                 </p>
                                 <div class="text-center">
-                                    <button class="bg-gradient-to-r from-teal-500 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-teal-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl">
+                                    <button class="btn-primary text-white px-10 py-5 rounded-xl text-lg sm:text-xl font-bold hover-lift inline-flex items-center">
                                         Book Your Free 30-Minute Consultation
+                                        <svg class="ml-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
                                     </button>
-                                    <p class="text-sm text-gray-600 mt-4">
-                                        Discover how Clover ERA delivers real-time engagement insights for your team
+                                    <p class="text-sm text-gray-600 mt-4 font-medium">
+                                        🚀 Discover how Clover ERA delivers real-time engagement insights for your team
                                     </p>
                                 </div>
                             </div>
 
                             <div class="text-center mt-8">
-                                <button onclick="resetAudit()" class="text-gray-600 hover:text-gray-900 text-sm font-semibold">
+                                <button onclick="resetAudit()" class="text-gray-600 hover:text-gray-900 font-semibold inline-flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
                                     Take Assessment Again
                                 </button>
                             </div>
                         </div>
 
-                        <div class="text-center text-sm text-gray-600">
-                            <p>Powered by Clover ERA • Based on neuroscience research</p>
+                        <div class="text-center text-sm text-gray-600 font-medium">
+                            <p>⚡ Powered by Clover ERA • 🧬 Based on neuroscience research</p>
                         </div>
                     </div>
                 </div>
@@ -664,7 +888,6 @@
             }
         }
 
-        // Initial render
         render();
     </script>
 </body>
