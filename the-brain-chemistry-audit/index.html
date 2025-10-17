@@ -424,15 +424,17 @@
         }
 
         function handleAnswer(value) {
-            appState.answers[questions[appState.currentQuestion].id] = value;
+            const currentQuestionId = questions[appState.currentQuestion].id;
+            appState.answers[currentQuestionId] = value;
             
             if (appState.currentQuestion < questions.length - 1) {
                 appState.currentQuestion++;
                 render();
             } else {
+                // Last question - calculate results and move to email
                 appState.results = calculateResults();
                 appState.currentStep = 'email';
-                render();
+                setTimeout(() => render(), 0);
             }
         }
 
@@ -803,6 +805,11 @@
 
                             <div class="mb-10">
                                 <h2 class="text-3xl font-bold text-gray-900 mb-6">🧠 Brain Chemistry Balance</h2>
+                                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg">
+                                    <p class="text-sm text-gray-700 leading-relaxed">
+                                        <strong>Note:</strong> These brain chemistry indicators are derived from team behavior patterns and workplace practices, not direct biological measurements. They represent relative engagement levels based on your responses and should be interpreted as directional insights rather than medical or scientific assessments. Use these results as a conversation starter for improving team dynamics.
+                                    </p>
+                                </div>
                                 <div class="grid md:grid-cols-2 gap-6">
                                     ${appState.results.neurochemData.map(neuro => `
                                         <div class="neuro-card rounded-2xl p-6 sm:p-8">
