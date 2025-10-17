@@ -134,7 +134,7 @@
     <div id="app"></div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKvBzkdo7X0v6nU2vOdqCciT-T_fXYveJJr-r3AzdSsLxPvU4huF27KMZRjcDVajrf/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQjMf7IGEkuObqoGl85yJH8MgkxD4FvaGzVHhv2T_v0TmPnlerEIl4i_K8hMRVx0I7/exec';
         
         const appState = {
             currentStep: 'intro',
@@ -453,28 +453,29 @@
                 formData.append('overallScore', appState.results.overallScore);
                 formData.append('timestamp', new Date().toISOString());
                 
+                // Add neurochem scores
                 appState.results.neurochemData.forEach(neuro => {
                     formData.append(neuro.name, neuro.score);
                 });
                 
+                // Add CLOVER scores
                 appState.results.cloverData.forEach(clover => {
                     formData.append(clover.subject, clover.score);
                 });
 
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    mode: 'no-cors'
                 });
 
-                if (response.ok) {
-                    appState.currentStep = 'results';
-                    render();
-                    setTimeout(createRadarChart, 100);
-                } else {
-                    throw new Error('Submission failed');
-                }
+                // With no-cors mode, we can't read the response, so just proceed
+                appState.currentStep = 'results';
+                render();
+                setTimeout(createRadarChart, 100);
             } catch (error) {
                 console.error('Error submitting to Google Sheets:', error);
+                // Still show results even if submission fails
                 appState.currentStep = 'results';
                 render();
                 setTimeout(createRadarChart, 100);
@@ -867,7 +868,8 @@
                         </div>
 
                         <div class="text-center text-sm text-gray-600 font-medium">
-                            <p>⚡ Powered by Clover ERA • 🧬 Based on neuroscience research</p>
+                            <p class="mb-2">⚡ Powered by Clover ERA • 🧬 Based on neuroscience research</p>
+                            <p><a href="https://cloverera.com" target="_blank" class="hover:opacity-80 transition-opacity" style="color: #46AEB8;">cloverera.com</a></p>
                         </div>
                     </div>
                 </div>
