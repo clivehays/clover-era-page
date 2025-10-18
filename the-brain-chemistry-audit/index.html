@@ -158,17 +158,19 @@
     <div id="app"></div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQjMf7IGEkuObqoGl85yJH8MgkxD4FvaGzVHhv2T_v0TmPnlerEIl4i_K8hMRVx0I7/exec';
-        
-        const appState = {
-            currentStep: 'intro',
-            currentQuestion: 0,
-            answers: {},
-            email: '',
-            results: null,
-            isSubmitting: false,
-            showSampleReport: false
-        };
+        // Wrap everything in IIFE to avoid conflicts
+        (function() {
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQjMf7IGEkuObqoGl85yJH8MgkxD4FvaGzVHhv2T_v0TmPnlerEIl4i_K8hMRVx0I7/exec';
+            
+            const appState = {
+                currentStep: 'intro',
+                currentQuestion: 0,
+                answers: {},
+                email: '',
+                results: null,
+                isSubmitting: false,
+                showSampleReport: false
+            };
 
         const questions = [
             {
@@ -621,7 +623,7 @@
                                     Discover which brain chemistry deficiencies are destroying your team's performance - before your best people update their LinkedIn profiles.
                                 </p>
                                 
-                                <button onclick="appState.currentStep='assessment'; render();" class="btn-primary text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-base sm:text-xl font-bold hover-lift inline-flex items-center mb-4">
+                                <button onclick="window.brainAudit.setCurrentStep('assessment')" class="btn-primary text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-base sm:text-xl font-bold hover-lift inline-flex items-center mb-4">
                                     Get My Team's Brain Chemistry Report
                                     <svg class="ml-2 w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -732,7 +734,7 @@
                             </div>
 
                             <div class="text-center">
-                                <button onclick="appState.currentStep='assessment'; render();" class="btn-primary text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-base sm:text-xl font-bold hover-lift inline-flex items-center mb-4">
+                                <button onclick="window.brainAudit.setCurrentStep('assessment')" class="btn-primary text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-base sm:text-xl font-bold hover-lift inline-flex items-center mb-4">
                                     Get My Team's Report - Takes 5 Minutes
                                     <svg class="ml-2 w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -745,7 +747,7 @@
                                     <p>✓ Completely confidential</p>
                                 </div>
                                 <p class="text-sm text-gray-500">
-                                    <a href="javascript:void(0)" onclick="showSampleReport()" class="underline hover:text-teal-600 transition-colors">Not ready yet? See a sample report first →</a>
+                                    <a href="javascript:void(0)" onclick="window.brainAudit.showSampleReport()" class="underline hover:text-teal-600 transition-colors">Not ready yet? See a sample report first →</a>
                                 </p>
                             </div>
                         </div>
@@ -794,7 +796,7 @@
 
                                 <div class="space-y-4">
                                     ${q.options.map((option, index) => `
-                                        <button onclick="handleAnswer(${option.value})" class="option-card w-full text-left p-5 sm:p-6 rounded-xl">
+                                        <button onclick="window.brainAudit.handleAnswer(${option.value})" class="option-card w-full text-left p-5 sm:p-6 rounded-xl">
                                             <div class="flex items-center">
                                                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-teal-100 to-blue-100 flex items-center justify-center mr-4 font-bold text-teal-700 flex-shrink-0">
                                                     ${index + 1}
@@ -807,7 +809,7 @@
                             </div>
 
                             ${appState.currentQuestion > 0 ? `
-                                <button onclick="appState.currentQuestion--; render();" class="text-gray-600 hover:text-gray-900 font-semibold flex items-center">
+                                <button onclick="window.brainAudit.setCurrentStep('assessment'); appState.currentQuestion--; render();" class="text-gray-600 hover:text-gray-900 font-semibold flex items-center">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                                     </svg>
@@ -868,7 +870,7 @@
                                 </div>
 
                                 <button 
-                                    onclick="handleEmailSubmit()" 
+                                    onclick="window.brainAudit.handleEmailSubmit()" 
                                     class="btn-primary w-full text-white py-4 rounded-xl text-lg font-bold hover-lift ${appState.isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}"
                                     ${appState.isSubmitting ? 'disabled' : ''}
                                 >
@@ -1001,7 +1003,7 @@
                             </div>
 
                             <div class="text-center mt-8">
-                                <button onclick="resetAudit()" class="text-gray-600 hover:text-gray-900 font-semibold inline-flex items-center">
+                                <button onclick="window.brainAudit.resetAudit()" class="text-gray-600 hover:text-gray-900 font-semibold inline-flex items-center">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                     </svg>
