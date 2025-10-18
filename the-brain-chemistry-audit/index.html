@@ -142,7 +142,8 @@
             answers: {},
             email: '',
             results: null,
-            isSubmitting: false
+            isSubmitting: false,
+            showSampleReport: false
         };
 
         const questions = [
@@ -493,6 +494,17 @@
             appState.email = '';
             appState.results = null;
             appState.isSubmitting = false;
+            appState.showSampleReport = false;
+            render();
+        }
+
+        function showSampleReport() {
+            appState.showSampleReport = true;
+            render();
+        }
+
+        function closeSampleReport() {
+            appState.showSampleReport = false;
             render();
         }
 
@@ -690,7 +702,7 @@
                                     <p>✓ Completely confidential</p>
                                 </div>
                                 <p class="text-sm text-gray-500">
-                                    <a href="#sample-report" class="underline hover:text-teal-600 transition-colors">Not ready yet? See a sample report first →</a>
+                                    <a href="javascript:void(0)" onclick="showSampleReport()" class="underline hover:text-teal-600 transition-colors">Not ready yet? See a sample report first →</a>
                                 </p>
                             </div>
                         </div>
@@ -975,6 +987,10 @@
                 app.innerHTML = renderEmail();
             } else if (appState.currentStep === 'results') {
                 app.innerHTML = renderResults();
+            }
+
+            if (appState.showSampleReport) {
+                app.innerHTML += renderSampleReportModal();
             }
         }
 
