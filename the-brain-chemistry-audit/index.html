@@ -128,6 +128,30 @@
                 height: 45px;
             }
         }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1.5rem;
+            max-width: 56rem;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
@@ -501,6 +525,18 @@
         function showSampleReport() {
             appState.showSampleReport = true;
             render();
+            
+            // Add click listener to overlay after render
+            setTimeout(() => {
+                const modal = document.getElementById('sampleModal');
+                if (modal) {
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            closeSampleReport();
+                        }
+                    });
+                }
+            }, 10);
         }
 
         function closeSampleReport() {
@@ -979,19 +1015,23 @@
         function render() {
             const app = document.getElementById('app');
             
+            let content = '';
+            
             if (appState.currentStep === 'intro') {
-                app.innerHTML = renderIntro();
+                content = renderIntro();
             } else if (appState.currentStep === 'assessment') {
-                app.innerHTML = renderAssessment();
+                content = renderAssessment();
             } else if (appState.currentStep === 'email') {
-                app.innerHTML = renderEmail();
+                content = renderEmail();
             } else if (appState.currentStep === 'results') {
-                app.innerHTML = renderResults();
+                content = renderResults();
             }
 
             if (appState.showSampleReport) {
-                app.innerHTML += renderSampleReportModal();
+                content += renderSampleReportModal();
             }
+            
+            app.innerHTML = content;
         }
 
         render();
