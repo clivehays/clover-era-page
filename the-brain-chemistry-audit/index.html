@@ -456,7 +456,6 @@
                 appState.currentQuestion++;
                 render();
             } else {
-                // Last question - calculate results and move to email
                 appState.results = calculateResults();
                 appState.currentStep = 'email';
                 setTimeout(() => render(), 0);
@@ -480,12 +479,10 @@
                 formData.append('overallScore', appState.results.overallScore);
                 formData.append('timestamp', new Date().toISOString());
                 
-                // Add neurochem scores
                 appState.results.neurochemData.forEach(neuro => {
                     formData.append(neuro.name, neuro.score);
                 });
                 
-                // Add CLOVER scores
                 appState.results.cloverData.forEach(clover => {
                     formData.append(clover.subject, clover.score);
                 });
@@ -496,13 +493,11 @@
                     mode: 'no-cors'
                 });
 
-                // With no-cors mode, we can't read the response, so just proceed
                 appState.currentStep = 'results';
                 render();
                 setTimeout(createRadarChart, 100);
             } catch (error) {
                 console.error('Error submitting to Google Sheets:', error);
-                // Still show results even if submission fails
                 appState.currentStep = 'results';
                 render();
                 setTimeout(createRadarChart, 100);
@@ -526,7 +521,6 @@
             appState.showSampleReport = true;
             render();
             
-            // Add click listener to overlay after render
             setTimeout(() => {
                 const modal = document.getElementById('sampleModal');
                 if (modal) {
@@ -544,7 +538,6 @@
             render();
         }
 
-        // Make functions globally accessible
         window.showSampleReport = showSampleReport;
         window.closeSampleReport = closeSampleReport;
         window.handleAnswer = handleAnswer;
@@ -600,6 +593,145 @@
                     }
                 }
             });
+        }
+
+        function renderSampleReportModal() {
+            const sampleResults = {
+                overallScore: 58,
+                neurochemData: [
+                    { name: 'Dopamine', score: 52, description: 'Motivation & Reward', color: '#FF6B6B' },
+                    { name: 'Oxytocin', score: 68, description: 'Trust & Connection', color: '#4ECDC4' },
+                    { name: 'Serotonin', score: 45, description: 'Status & Belonging', color: '#95E1D3' },
+                    { name: 'Cortisol', score: 67, description: 'Stress Management', color: '#F38181' }
+                ],
+                cloverData: [
+                    { subject: 'Communication', score: 72 },
+                    { subject: 'Learning', score: 48 },
+                    { subject: 'Opportunities', score: 53 },
+                    { subject: 'Vulnerability', score: 61 },
+                    { subject: 'Enablement', score: 44 },
+                    { subject: 'Reflection', score: 59 }
+                ],
+                insights: [
+                    {
+                        type: 'warning',
+                        title: 'Moderate Engagement Risk',
+                        description: 'Your team has room for improvement. Addressing key gaps now can prevent future disengagement.',
+                        priority: 'medium'
+                    },
+                    {
+                        type: 'neurochemical',
+                        title: 'Serotonin Deficiency',
+                        description: 'Low serotonin shows team members do not feel valued or see how their work matters. This breeds disengagement.',
+                        action: 'Connect individual work to company impact, provide regular meaningful feedback, and recognize unique contributions.',
+                        priority: 'high'
+                    },
+                    {
+                        type: 'clover',
+                        title: 'Enablement Needs Attention',
+                        description: 'Your team lacks the tools, authority, or support to succeed. They are working with one hand tied behind their backs.',
+                        action: 'Conduct process audits, remove barriers, provide necessary tools, and delegate decision-making authority.',
+                        priority: 'high'
+                    }
+                ]
+            };
+
+            const priorityColors = {
+                high: 'bg-red-50 border-red-500',
+                medium: 'bg-yellow-50 border-yellow-500',
+                low: 'bg-green-50 border-green-500'
+            };
+
+            return `
+                <div id="sampleModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="p-6 sm:p-10">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Sample Report Preview</h2>
+                                <button onclick="closeSampleReport()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl p-8 sm:p-10 text-white text-center mb-8 card-shadow">
+                                <div class="text-6xl sm:text-7xl font-extrabold mb-3">${sampleResults.overallScore}%</div>
+                                <div class="text-xl sm:text-2xl font-semibold">Overall Engagement Score</div>
+                                <div class="text-sm opacity-90 mt-3 bg-white bg-opacity-20 inline-block px-6 py-2 rounded-full">
+                                    Moderate Level - Action Needed
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3 class="text-2xl font-bold text-gray-900 mb-4">Key Insights</h3>
+                                <div class="space-y-4">
+                                    ${sampleResults.insights.map(insight => `
+                                        <div class="p-6 rounded-2xl border-l-4 ${priorityColors[insight.priority]}">
+                                            <h4 class="font-bold text-lg text-gray-900 mb-2">${insight.title}</h4>
+                                            <p class="text-gray-700 mb-3 leading-relaxed">${insight.description}</p>
+                                            ${insight.action ? `
+                                                <div class="bg-white bg-opacity-60 rounded-xl p-4 mt-3">
+                                                    <p class="font-bold text-sm text-gray-900 mb-1">💡 Recommended Action:</p>
+                                                    <p class="text-sm text-gray-700 leading-relaxed">${insight.action}</p>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h3 class="text-2xl font-bold text-gray-900 mb-4">Brain Chemistry Balance</h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    ${sampleResults.neurochemData.map(neuro => `
+                                        <div class="neuro-card rounded-2xl p-6">
+                                            <div class="flex justify-between items-start mb-4">
+                                                <div>
+                                                    <h4 class="font-bold text-lg text-gray-900 mb-1">${neuro.name}</h4>
+                                                    <p class="text-sm text-gray-600 font-medium">${neuro.description}</p>
+                                                </div>
+                                                <div class="text-2xl font-extrabold ${getScoreColor(neuro.score)}">
+                                                    ${neuro.score}%
+                                                </div>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                                                <div class="h-3 rounded-full" style="width: ${neuro.score}%; background-color: ${neuro.color}"></div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="text-2xl font-bold text-gray-900 mb-4">CLOVER Framework Scores</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    ${sampleResults.cloverData.map(item => `
+                                        <div class="text-center bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border-2 border-gray-100">
+                                            <div class="text-2xl font-extrabold ${getScoreColor(item.score)} mb-2">
+                                                ${item.score}%
+                                            </div>
+                                            <div class="text-sm font-bold text-gray-700">${item.subject}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-teal-50 to-blue-50 rounded-2xl p-6 sm:p-8 border-2 border-teal-100 text-center">
+                                <p class="text-lg text-gray-900 font-bold mb-4">
+                                    This is what your detailed report will look like!
+                                </p>
+                                <button onclick="closeSampleReport(); appState.currentStep='assessment'; render();" class="btn-primary text-white px-8 py-4 rounded-xl text-lg font-bold hover-lift inline-flex items-center">
+                                    Get My Team's Actual Report
+                                    <svg class="ml-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         function renderIntro() {
