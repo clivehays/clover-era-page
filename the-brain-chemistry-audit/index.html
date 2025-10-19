@@ -445,6 +445,13 @@
             return 'Critical';
         }
 
+        function getOverallScoreColor(score) {
+            if (score >= 85) return { bg: '#3b82f6', label: 'Excellent' }; // Blue
+            if (score >= 65) return { bg: '#22c55e', label: 'Good' }; // Green
+            if (score >= 35) return { bg: '#eab308', label: 'Needs Work' }; // Yellow
+            return { bg: '#ef4444', label: 'Urgent Attention' }; // Red
+        }
+
         function handleAnswer(value) {
             const currentQuestionId = questions[appState.currentQuestion].id;
             appState.answers[currentQuestionId] = value;
@@ -554,12 +561,12 @@
                         label: 'Your Team',
                         data: appState.results.cloverData.map(d => d.score),
                         backgroundColor: 'rgba(20, 184, 166, 0.2)',
-                        borderColor: 'rgba(20, 184, 166, 1)',
+                        borderColor: '#14b8a6',
                         borderWidth: 2,
-                        pointBackgroundColor: 'rgba(20, 184, 166, 1)',
+                        pointBackgroundColor: '#14b8a6',
                         pointBorderColor: '#fff',
                         pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(20, 184, 166, 1)',
+                        pointHoverBorderColor: '#14b8a6',
                         pointRadius: 5,
                         pointHoverRadius: 7
                     }]
@@ -639,6 +646,8 @@
                 low: 'bg-green-50 border-green-500'
             };
 
+            const scoreColor = getOverallScoreColor(sampleResults.overallScore);
+
             return `
                 <div id="sampleModal" class="modal-overlay">
                     <div class="modal-content">
@@ -652,11 +661,11 @@
                                 </button>
                             </div>
 
-                            <div class="bg-teal-500 rounded-2xl p-8 sm:p-10 text-white text-center mb-8 card-shadow">
+                            <div class="rounded-2xl p-8 sm:p-10 text-white text-center mb-8 card-shadow" style="background-color: ${scoreColor.bg}">
                                 <div class="text-6xl sm:text-7xl font-extrabold mb-3">${sampleResults.overallScore}%</div>
                                 <div class="text-xl sm:text-2xl font-semibold">Overall Engagement Score</div>
                                 <div class="text-sm opacity-90 mt-3 bg-white bg-opacity-20 inline-block px-6 py-2 rounded-full">
-                                    Moderate Level - Action Needed
+                                    ${scoreColor.label}
                                 </div>
                             </div>
 
@@ -719,7 +728,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-gradient-to-r from-teal-50 to-blue-50 rounded-2xl p-6 sm:p-8 border-2 border-teal-100 text-center">
+                            <div class="bg-teal-50 rounded-2xl p-6 sm:p-8 border-2 border-teal-100 text-center">
                                 <p class="text-lg text-gray-900 font-bold mb-4">
                                     This is what your detailed report will look like!
                                 </p>
@@ -992,7 +1001,7 @@
                                     >
                                 </div>
 
-                                <div class="bg-teal-50 rounded-xl p-6 text-sm">">
+                                <div class="bg-teal-50 rounded-xl p-6 text-sm">
                                     <p class="font-bold text-gray-900 mb-3">✨ You will receive:</p>
                                     <div class="space-y-2 ml-1">
                                         <p class="flex items-center text-gray-700"><span class="mr-2">📊</span> Your full detailed report</p>
@@ -1028,6 +1037,8 @@
                 low: 'bg-green-50 border-green-500'
             };
 
+            const scoreColor = getOverallScoreColor(appState.results.overallScore);
+
             return `
                 <div class="min-h-screen p-4 sm:p-8">
                     <div class="max-w-6xl mx-auto">
@@ -1042,11 +1053,11 @@
                                 <p class="text-lg text-gray-600">Team Engagement Analysis for <strong>${appState.email}</strong></p>
                             </div>
 
-                            <div class="bg-teal-500 rounded-2xl p-10 sm:p-12 text-white text-center mb-10 card-shadow">
+                            <div class="rounded-2xl p-10 sm:p-12 text-white text-center mb-10 card-shadow" style="background-color: ${scoreColor.bg}">
                                 <div class="text-7xl sm:text-8xl font-extrabold mb-3" style="color: white;">${appState.results.overallScore}%</div>
                                 <div class="text-2xl font-semibold">Overall Engagement Score</div>
                                 <div class="text-base opacity-90 mt-3 bg-white bg-opacity-20 inline-block px-6 py-2 rounded-full">
-                                    ${getScoreLabel(appState.results.overallScore)} Level
+                                    ${scoreColor.label}
                                 </div>
                             </div>
 
@@ -1114,7 +1125,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-gradient-to-r from-blue-50 to-teal-50 rounded-2xl p-8 sm:p-10 border-2 border-teal-100">
+                            <div class="bg-teal-50 rounded-2xl p-8 sm:p-10 border-2 border-teal-100">
                                 <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 text-center">
                                     Would you like help with the above and access to real-time insights on your team?
                                 </h2>
