@@ -55,12 +55,28 @@
         .option-card {
             transition: all 0.2s ease;
             border: 2px solid #e5e7eb;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         
-        .option-card:hover {
-            border-color: #14b8a6;
+        /* Remove any focus outline */
+        .option-card:focus {
+            outline: none;
+        }
+        
+        /* Only apply hover effects on devices that support hover (not touch) */
+        @media (hover: hover) and (pointer: fine) {
+            .option-card:hover {
+                border-color: #14b8a6;
+                background-color: #f0fdfa;
+                transform: translateX(4px);
+            }
+        }
+        
+        /* Active state for touch feedback - brief visual feedback only */
+        .option-card:active {
             background-color: #f0fdfa;
-            transform: translateX(4px);
+            border-color: #14b8a6;
         }
         
         .insight-card {
@@ -456,14 +472,22 @@
             const currentQuestionId = questions[appState.currentQuestion].id;
             appState.answers[currentQuestionId] = value;
             
-            if (appState.currentQuestion < questions.length - 1) {
-                appState.currentQuestion++;
-                render();
-            } else {
-                appState.results = calculateResults();
-                appState.currentStep = 'email';
-                setTimeout(() => render(), 0);
+            // Remove focus from any active element to prevent hover state persistence
+            if (document.activeElement) {
+                document.activeElement.blur();
             }
+            
+            // Small delay to ensure state clears before moving to next question
+            setTimeout(() => {
+                if (appState.currentQuestion < questions.length - 1) {
+                    appState.currentQuestion++;
+                    render();
+                } else {
+                    appState.results = calculateResults();
+                    appState.currentStep = 'email';
+                    render();
+                }
+            }, 50);
         }
 
         async function handleEmailSubmit() {
