@@ -51,72 +51,9 @@
             background: var(--white);
         }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-teal);
-        }
-
-        .nav-cta {
-            background: var(--coral);
-            color: var(--white) !important;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
-        }
-
         /* Hero Section */
         .hero {
-            margin-top: 70px;
+            margin-top: 120px;
             padding: 5rem 2rem;
             background: linear-gradient(135deg, rgba(70, 174, 184, 0.08) 0%, rgba(99, 102, 241, 0.05) 100%);
             text-align: center;
@@ -697,10 +634,6 @@
                 width: 100%;
                 max-width: 300px;
             }
-            
-            .nav-links {
-                display: none;
-            }
         }
 
         /* Animations */
@@ -742,20 +675,8 @@
         }
     </style>
 </head>
+<script src="/js/header.js"></script>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="logo">CLOVER ERA</a>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/solutions/">Solutions</a>
-                <a href="/resources/">Resources</a>
-                <a href="/calculator/">ROI Calculator</a>
-                <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="nav-cta">Start Free Trial</a>
-            </div>
-        </div>
-    </nav>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -1104,7 +1025,7 @@
                     <div class="insight-text">
                         Despite high salaries, tech workers report only 32% engagement and 42% burnout. 
                         The "always-on" culture and rapid change create sustained stress, leading to 
-                        21.5% annual turnover—costing companies $150,000+ per developer.
+                        21.5% annual turnover costing companies $150,000+ per developer.
                     </div>
                 </div>
                 <div class="insight-card">
@@ -1241,36 +1162,21 @@
 
         industryButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // Remove active class from all buttons
                 industryButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Add active class to clicked button
                 this.classList.add('active');
-                
-                // Get selected industry
                 currentIndustry = this.dataset.industry;
-                
-                // Update metrics
                 updateMetrics(currentIndustry);
-                
-                // Update table highlight
                 updateTableHighlight(currentIndustry);
             });
         });
 
         function updateMetrics(industry) {
             const data = industryData[industry];
-            
-            // Update selected industry badge
             document.getElementById('selectedIndustry').textContent = `${data.name} Industry`;
-            
-            // Update metric values with animation
             animateValue('engagementScore', data.engagement);
             animateValue('turnoverRate', data.turnover);
             animateValue('productivityIndex', data.productivity);
             animateValue('burnoutRate', data.burnout);
-            
-            // Update metric colors based on performance
             updateMetricColors(data);
         }
 
@@ -1285,7 +1191,6 @@
         }
 
         function updateMetricColors(data) {
-            // Update engagement color
             const engagementEl = document.getElementById('engagementScore');
             const engagementValue = parseInt(data.engagement);
             if (engagementValue >= 40) {
@@ -1296,7 +1201,6 @@
                 engagementEl.style.color = 'var(--danger)';
             }
             
-            // Update turnover color
             const turnoverEl = document.getElementById('turnoverRate');
             const turnoverValue = parseFloat(data.turnover);
             if (turnoverValue <= 15) {
@@ -1315,18 +1219,11 @@
                 const industryCell = row.querySelector('.industry-row');
                 if (industryCell && industryCell.textContent.toLowerCase() === industry) {
                     row.classList.add('highlight-row');
-                    // Scroll to highlighted row
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });
         }
 
-        // Download report function
-        function downloadReport() {
-            alert('Industry Benchmarks Report 2025 downloading...\n\nThis would trigger a PDF download with comprehensive industry data, trends, and recommendations.');
-        }
-
-        // Animate charts on scroll
         const observerOptions = {
             threshold: 0.3,
             rootMargin: '0px 0px -100px 0px'
@@ -1337,7 +1234,6 @@
                 if (entry.isIntersecting) {
                     const bars = entry.target.querySelectorAll('.bar-fill');
                     bars.forEach((bar, index) => {
-                        // Get the target width from data attribute
                         const targetWidth = bar.dataset.width;
                         setTimeout(() => {
                             bar.style.width = targetWidth;
@@ -1348,22 +1244,16 @@
             });
         }, observerOptions);
 
-        // Initialize charts on page load
         window.addEventListener('DOMContentLoaded', () => {
-            // Setup all bar charts for animation
             document.querySelectorAll('.bar-chart').forEach(chart => {
                 chart.querySelectorAll('.bar-fill').forEach(bar => {
-                    // Set initial width to 0
                     bar.style.width = '0%';
-                    // Add smooth transition
                     bar.style.transition = 'width 1s ease';
                 });
-                // Start observing for animation trigger
                 observer.observe(chart);
             });
         });
 
-        // Add fade-in animation to cards
         const cards = document.querySelectorAll('.metric-card, .insight-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
@@ -1376,5 +1266,7 @@
             }, index * 100);
         });
     </script>
+    <!-- Cookie Consent -->
+    <script src="/js/cookie-consent.js"></script>
 </body>
 </html>
