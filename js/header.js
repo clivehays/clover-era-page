@@ -305,7 +305,14 @@ document.addEventListener('DOMContentLoaded', function() {
     </a>
                     </div>
                 </div>
-                <a href="/#problems">SOLUTIONS</a>
+                <div class="nav-dropdown">
+                    <a href="/#problems" class="nav-dropdown-toggle">
+                        SOLUTIONS <span style="font-size: 0.8rem;">▼</span>
+                    </a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/locations/" class="featured-link">🌍 UK & Ireland Engagement Solutions</a>
+                    </div>
+                </div>
                 <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">BOOK DEMO</a>
             </div>
         </div>
