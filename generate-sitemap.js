@@ -33,6 +33,9 @@ const getPriority = (filePath) => {
       filePath.includes('/quiet-cracking/') ||
       filePath.includes('/the-quiet-crack/') ||
       filePath.includes('/the-brain-chemistry-audit/')) return 0.7;
+  // GEO/Location pages
+  if (filePath.includes('/locations/') && filePath.endsWith('locations/')) return 0.8; // Main locations hub
+  if (filePath.includes('/locations/') && !filePath.endsWith('locations/')) return 0.7; // Individual city pages
   return 0.8; // Default priority
 };
 
