@@ -1,0 +1,74 @@
+name: Update Sitemap & Submit to IndexNow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.html'
+      - 'generate-sitemap.js'
+  workflow_dispatch:
+
+jobs:
+  update-sitemap-and-submit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate sitemap
+        run: |
+          echo "🔨 Generating sitemap.xml..."
+          node generate-sitemap.js
+
+      - name: Check if sitemap changed
+        id: check_changes
+        run: |
+          git diff --exit-code sitemap.xml || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit updated sitemap
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add sitemap.xml
+          git commit -m "🤖 Auto-update sitemap.xml
+
+          Generated from HTML files on $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+
+          Co-Authored-By: GitHub Actions <github-actions[bot]@users.noreply.github.com>"
+          git push
+
+      - name: Submit to IndexNow
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          echo "📡 Submitting URLs to IndexNow..."
+
+          # Extract all URLs from sitemap.xml
+          URLS=$(grep -oP '(?<=<loc>)[^<]+' sitemap.xml | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          # Submit to IndexNow API
+          curl -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"host\": \"cloverera.com\",
+              \"key\": \"29e170e767b14e50acbf4d24e7c21d8c\",
+              \"keyLocation\": \"https://cloverera.com/29e170e767b14e50acbf4d24e7c21d8c.txt\",
+              \"urlList\": $URLS
+            }"
+
+          echo "✅ Successfully submitted $(echo $URLS | jq 'length') URLs to IndexNow"
+
+      - name: Summary
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          echo "✅ Sitemap updated and submitted to search engines!"
+          echo "📊 Total URLs in sitemap: $(grep -c '<loc>' sitemap.xml)"
