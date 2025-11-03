@@ -1,0 +1,45 @@
+name: IndexNow Auto-Submit
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.html'
+      - 'sitemap.xml'
+  workflow_dispatch:
+
+jobs:
+  submit-to-indexnow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract URLs from sitemap
+        id: extract
+        run: |
+          # Extract all URLs from sitemap.xml
+          grep -oP '(?<=<loc>)[^<]+' sitemap.xml > urls.txt
+          echo "Found $(wc -l < urls.txt) URLs"
+
+      - name: Submit to IndexNow
+        run: |
+          # Read URLs and create JSON array
+          URLS=$(jq -R -s -c 'split("\n") | map(select(length > 0))' urls.txt)
+
+          # Submit to IndexNow API
+          curl -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"host\": \"cloverera.com\",
+              \"key\": \"29e170e767b14e50acbf4d24e7c21d8c\",
+              \"keyLocation\": \"https://cloverera.com/29e170e767b14e50acbf4d24e7c21d8c.txt\",
+              \"urlList\": $URLS
+            }"
+
+          echo "✅ Successfully submitted $(echo $URLS | jq 'length') URLs to IndexNow"
+
+      - name: Cleanup
+        run: rm -f urls.txt
