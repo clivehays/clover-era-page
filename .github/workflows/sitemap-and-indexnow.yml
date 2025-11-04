@@ -47,13 +47,6 @@ jobs:
           Co-Authored-By: GitHub Actions <github-actions[bot]@users.noreply.github.com>"
           git push
 
-      - name: Notify Google
-        if: steps.check_changes.outputs.changed == 'true'
-        run: |
-          echo "🔔 Pinging Google about sitemap update..."
-          curl -s "https://www.google.com/ping?sitemap=https://cloverera.com/sitemap.xml"
-          echo "✅ Google notified"
-
       - name: Submit to IndexNow
         if: steps.check_changes.outputs.changed == 'true'
         run: |
@@ -79,6 +72,6 @@ jobs:
         run: |
           echo "✅ Sitemap updated and submitted to search engines!"
           echo "📊 Total URLs in sitemap: $(grep -c '<loc>' sitemap.xml)"
-          echo "🔍 Search engines notified:"
-          echo "   • Google (via sitemap ping)"
-          echo "   • Bing, Yandex, Naver, Seznam (via IndexNow)"
+          echo "🔍 Search engines notified via IndexNow:"
+          echo "   • Bing, Yandex, Naver, Seznam"
+          echo "   • Google will discover via Search Console"
