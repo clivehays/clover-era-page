@@ -1,0 +1,503 @@
+/*
+ * Clover ERA Corporate Design System
+ * Version: 1.0
+ * Last Updated: 2025
+ *
+ * This stylesheet provides the corporate/sleek design system
+ * for the Clover ERA website. Include this file on all pages.
+ */
+
+/* ========================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   ======================================== */
+
+:root {
+    /* Corporate color palette */
+    --primary-teal: #46AEB8;
+    --deep-teal: #0D7C88;
+    --charcoal: #1F2937;
+    --bronze: #C9A667;
+
+    /* Neutral colors - refined */
+    --white: #FFFFFF;
+    --off-white: #FAFBFC;
+    --light-gray: #F8F9FA;
+    --medium-gray: #E5E7EB;
+    --dark-gray: #6B7280;
+    --text-primary: #111827;
+    --text-secondary: #4B5563;
+
+    /* Legacy color support (for gradual migration) */
+    --coral: #FF6B6B;
+    --indigo: #6366F1;
+    --purple: #8B5CF6;
+
+    /* Spacing system (8px base) */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 32px;
+    --spacing-xl: 48px;
+    --spacing-2xl: 64px;
+    --spacing-3xl: 96px;
+
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --line-height-base: 1.75;
+    --letter-spacing-tight: 0.01em;
+    --letter-spacing-normal: 0.02em;
+
+    /* Border radius system */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-full: 50%;
+
+    /* Shadow system */
+    --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+    /* Corporate shadows (charcoal-based) */
+    --shadow-primary: 0 2px 8px rgba(31, 41, 55, 0.15);
+    --shadow-primary-hover: 0 4px 16px rgba(31, 41, 55, 0.25);
+
+    /* Teal shadows */
+    --shadow-teal: 0 2px 8px rgba(70, 174, 184, 0.15);
+    --shadow-teal-hover: 0 4px 12px rgba(70, 174, 184, 0.25);
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.2s ease;
+    --transition-slow: 0.3s ease;
+}
+
+/* ========================================
+   BASE TYPOGRAPHY
+   ======================================== */
+
+body {
+    font-family: var(--font-family);
+    line-height: var(--line-height-base);
+    color: var(--text-primary);
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+/* ========================================
+   BUTTONS - CORPORATE STYLE
+   ======================================== */
+
+.btn-primary {
+    background: var(--charcoal);
+    color: var(--white);
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: var(--letter-spacing-tight);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: var(--shadow-primary);
+    text-transform: none; /* Remove uppercase */
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-primary-hover);
+}
+
+.btn-secondary {
+    background: var(--white);
+    color: var(--charcoal);
+    padding: 1rem 2.5rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: var(--letter-spacing-tight);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    display: inline-block;
+    text-transform: none; /* Remove uppercase */
+}
+
+.btn-secondary:hover {
+    background: var(--light-gray);
+    color: var(--charcoal);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--dark-gray);
+}
+
+.btn-teal {
+    background: var(--primary-teal);
+    color: var(--white);
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: var(--letter-spacing-tight);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: var(--shadow-teal);
+    text-transform: none;
+}
+
+.btn-teal:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-teal-hover);
+}
+
+/* Button group */
+.btn-group {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   BADGES
+   ======================================== */
+
+.badge {
+    background: var(--primary-teal);
+    color: var(--white);
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-md);
+    display: inline-block;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+    letter-spacing: var(--letter-spacing-tight);
+    box-shadow: var(--shadow-xs);
+    text-transform: none; /* Remove uppercase */
+}
+
+.badge-subtle {
+    background: rgba(70, 174, 184, 0.08);
+    color: var(--deep-teal);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--primary-teal);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: var(--letter-spacing-tight);
+    text-transform: none;
+}
+
+.badge-priority {
+    background: var(--primary-teal);
+    color: var(--white);
+    padding: 0.3rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: var(--letter-spacing-tight);
+    border-radius: var(--radius-md);
+    text-transform: none; /* Changed from uppercase */
+}
+
+/* ========================================
+   CARDS - CORPORATE STYLE
+   ======================================== */
+
+.card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--medium-gray);
+    transition: all var(--transition-base);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-teal);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.card-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.9375rem;
+}
+
+/* Stats cards */
+.stat-card {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    text-align: center;
+    border: 1px solid var(--medium-gray);
+    transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--primary-teal);
+}
+
+.stat-number,
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-teal);
+    margin-bottom: var(--spacing-xs);
+    display: block;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: var(--letter-spacing-tight);
+    text-transform: none; /* Remove uppercase */
+}
+
+/* ========================================
+   FORMS - CORPORATE STYLE
+   ======================================== */
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: var(--letter-spacing-tight);
+    display: block;
+    text-transform: none; /* Remove uppercase */
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    background: var(--white);
+    border: 2px solid var(--medium-gray);
+    color: var(--text-primary);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all var(--transition-base);
+    width: 100%;
+    font-family: var(--font-family);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary-teal);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+}
+
+/* ========================================
+   SECTIONS
+   ======================================== */
+
+.section {
+    padding: 6rem 2rem;
+}
+
+.section-light {
+    background: var(--white);
+}
+
+.section-gray {
+    background: var(--light-gray);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.section-header p {
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Text transforms - override with sentence case */
+.text-normal {
+    text-transform: none !important;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-lowercase {
+    text-transform: lowercase;
+}
+
+.text-capitalize {
+    text-transform: capitalize;
+}
+
+/* Spacing utilities */
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-3 { margin-top: var(--spacing-md); }
+.mt-4 { margin-top: var(--spacing-lg); }
+.mt-5 { margin-top: var(--spacing-xl); }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-3 { margin-bottom: var(--spacing-md); }
+.mb-4 { margin-bottom: var(--spacing-lg); }
+.mb-5 { margin-bottom: var(--spacing-xl); }
+
+/* Shadow utilities */
+.shadow-none { box-shadow: none !important; }
+.shadow-xs { box-shadow: var(--shadow-xs) !important; }
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }
+
+/* Border radius utilities */
+.radius-none { border-radius: 0 !important; }
+.radius-sm { border-radius: var(--radius-sm) !important; }
+.radius-md { border-radius: var(--radius-md) !important; }
+.radius-lg { border-radius: var(--radius-lg) !important; }
+.radius-full { border-radius: var(--radius-full) !important; }
+
+/* Color utilities */
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-teal { color: var(--primary-teal) !important; }
+.text-charcoal { color: var(--charcoal) !important; }
+
+.bg-white { background: var(--white) !important; }
+.bg-light { background: var(--light-gray) !important; }
+.bg-teal { background: var(--primary-teal) !important; }
+.bg-charcoal { background: var(--charcoal) !important; }
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+
+@media (max-width: 768px) {
+    :root {
+        --spacing-3xl: 48px; /* Reduce for mobile */
+        --spacing-2xl: 48px;
+        --spacing-xl: 32px;
+    }
+
+    .section {
+        padding: 3rem 1.5rem;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-teal {
+        padding: 0.875rem 2rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group .btn-primary,
+    .btn-group .btn-secondary,
+    .btn-group .btn-teal {
+        width: 100%;
+    }
+
+    .stat-number,
+    .stat-value {
+        font-size: 2rem;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Focus styles for keyboard navigation */
+*:focus {
+    outline: 2px solid var(--primary-teal);
+    outline-offset: 2px;
+}
+
+button:focus,
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid var(--primary-teal);
+    outline-offset: 2px;
+}
+
+/* Skip to content link */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--charcoal);
+    color: var(--white);
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 0 0 var(--radius-md) 0;
+    z-index: 100;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+    .btn-primary,
+    .btn-secondary,
+    .btn-teal {
+        border: 1px solid var(--charcoal);
+        box-shadow: none;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid var(--medium-gray);
+    }
+}
