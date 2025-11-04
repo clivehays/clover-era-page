@@ -168,15 +168,15 @@ document.addEventListener('DOMContentLoaded', function() {
         .nav-cta {
             background: #46AEB8;
             color: #FFFFFF !important;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
+            padding: 0.6rem 1.75rem;
+            border-radius: 8px;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(70, 174, 184, 0.3);
+            box-shadow: 0 2px 8px rgba(70, 174, 184, 0.15);
         }
 
         .nav-cta:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(70, 174, 184, 0.4);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.25);
         }
 
         .mobile-menu-toggle {
