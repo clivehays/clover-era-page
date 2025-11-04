@@ -191,13 +191,178 @@
             margin: 30px 0;
         }
 
-        .matrix-box {
-            background: #f0f7ff;
-            border: 2px solid #0066cc;
+        /* Priority Matrix Styles */
+        .matrix-container {
+            position: relative;
+            width: 100%;
+            height: 700px;
+            margin: 40px 0;
+        }
+
+        .matrix {
+            position: relative;
+            width: calc(100% - 100px);
+            height: calc(100% - 100px);
+            margin: 50px 0 0 100px;
+            border: 2px solid #cbd5e0;
+        }
+
+        .quadrant {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            opacity: 0.15;
+        }
+
+        .q1 { top: 0; left: 0; background: #fbbf24; }
+        .q2 { top: 0; right: 0; background: #ef4444; }
+        .q3 { bottom: 0; left: 0; background: #94a3b8; }
+        .q4 { bottom: 0; right: 0; background: #3b82f6; }
+
+        .axis-label {
+            position: absolute;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.1em;
+        }
+
+        .y-axis-top {
+            left: 10px;
+            top: 60px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        .y-axis-bottom {
+            left: 10px;
+            bottom: 60px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        .x-axis-left { left: 120px; bottom: 10px; }
+        .x-axis-right { right: 20px; bottom: 10px; }
+
+        .center-line-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #cbd5e0;
+            z-index: 1;
+        }
+
+        .center-line-v {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: #cbd5e0;
+            z-index: 1;
+        }
+
+        .trend {
+            position: absolute;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            border: 2px solid transparent;
+        }
+
+        .trend:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            z-index: 20;
+        }
+
+        .trend.urgent { border-color: #ef4444; color: #991b1b; }
+        .trend.strategic { border-color: #fbbf24; color: #92400e; }
+        .trend.monitor { border-color: #3b82f6; color: #1e40af; }
+
+        .trend.regional::after {
+            content: '*';
+            color: #8b5cf6;
+            font-size: 1.2em;
+            margin-left: 2px;
+        }
+
+        .quadrant-label {
+            position: absolute;
+            font-weight: 700;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.5;
+            z-index: 5;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .ql-urgent { top: 10px; right: 10px; color: #991b1b; background: rgba(239, 68, 68, 0.1); }
+        .ql-strategic { top: 10px; left: 10px; color: #92400e; background: rgba(251, 191, 36, 0.1); }
+        .ql-low { bottom: 10px; left: 10px; color: #475569; background: rgba(148, 163, 184, 0.1); }
+        .ql-monitor { bottom: 10px; right: 10px; color: #1e40af; background: rgba(59, 130, 246, 0.1); }
+
+        .matrix-legend {
+            margin-top: 30px;
             padding: 20px;
-            margin: 30px 0;
-            font-family: monospace;
-            white-space: pre-wrap;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .legend-title {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 40px;
+            height: 25px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+
+        .legend-urgent { background: white; border-color: #ef4444; }
+        .legend-strategic { background: white; border-color: #fbbf24; }
+        .legend-monitor { background: white; border-color: #3b82f6; }
+
+        .regional-note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f3e8ff;
+            border-radius: 8px;
+            color: #6b21a8;
+            font-size: 0.95em;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        @media (max-width: 768px) {
+            .matrix-container { height: 600px; }
+            .trend { font-size: 0.75em; padding: 8px 12px; }
+            .legend-items { grid-template-columns: 1fr; }
         }
 
         .sidebar {
@@ -291,25 +456,81 @@
 
             <h2>2026 Priority Matrix: Business Impact × Likelihood</h2>
 
-            <div class="matrix-box">
-HIGH IMPACT ↑
+            <div class="matrix-container">
+                <div class="matrix">
+                    <!-- Quadrant backgrounds -->
+                    <div class="quadrant q1"></div>
+                    <div class="quadrant q2"></div>
+                    <div class="quadrant q3"></div>
+                    <div class="quadrant q4"></div>
 
-[Manager Crash]           [AI Readiness Gap]
-[Quarter-Life Burnout]    [Skills Half-Life]
-[Psych Safety Gap]        [Feeling Valued]
-[Trust Chasm]             [Wage Squeeze]
-[UK Employment Bill*]
+                    <!-- Center lines -->
+                    <div class="center-line-h"></div>
+                    <div class="center-line-v"></div>
 
+                    <!-- Quadrant labels -->
+                    <div class="quadrant-label ql-urgent">Urgent Priorities</div>
+                    <div class="quadrant-label ql-strategic">Strategic Bets</div>
+                    <div class="quadrant-label ql-low">Low Priority</div>
+                    <div class="quadrant-label ql-monitor">Monitor & Prepare</div>
 
-[Four-Day Week]           [Hybrid Loneliness]
-[EAP Efficacy Gap]        [Cognitive Overload]
-                          [Surveillance Backlash]
-                          [EU AI Act*]
+                    <!-- HIGH IMPACT, LOW LIKELIHOOD (Top Left - Strategic Bets) -->
+                    <div class="trend strategic" style="top: 8%; left: 15%;">Four-Day Week</div>
+                    <div class="trend strategic" style="top: 25%; left: 8%;">EAP Efficacy Gap</div>
 
-LOW IMPACT ↓
-    LOW LIKELIHOOD ←                  → HIGH LIKELIHOOD
+                    <!-- HIGH IMPACT, HIGH LIKELIHOOD (Top Right - URGENT PRIORITIES) -->
+                    <div class="trend urgent" style="top: 5%; right: 25%;">Manager Crash</div>
+                    <div class="trend urgent" style="top: 5%; right: 5%;">AI Readiness Gap</div>
+                    <div class="trend urgent" style="top: 18%; right: 28%;">Quarter-Life Burnout</div>
+                    <div class="trend urgent" style="top: 18%; right: 5%;">Skills Half-Life</div>
+                    <div class="trend urgent" style="top: 31%; right: 15%;">Psych Safety Gap</div>
+                    <div class="trend urgent" style="top: 31%; right: 42%;">Feeling Valued</div>
+                    <div class="trend urgent" style="top: 44%; right: 28%;">Trust Chasm</div>
+                    <div class="trend urgent" style="top: 44%; right: 5%;">Wage Squeeze</div>
+                    <div class="trend urgent regional" style="top: 57%; right: 15%;">UK Employment Bill</div>
 
-*Regional (UK/EU specific but high impact within those geographies)
+                    <!-- LOW IMPACT, HIGH LIKELIHOOD (Bottom Right - Monitor & Prepare) -->
+                    <div class="trend monitor" style="bottom: 28%; right: 5%;">Hybrid Loneliness</div>
+                    <div class="trend monitor" style="bottom: 15%; right: 28%;">Cognitive Overload</div>
+                    <div class="trend monitor" style="bottom: 15%; right: 5%;">Surveillance Backlash</div>
+                    <div class="trend monitor regional" style="bottom: 5%; right: 15%;">EU AI Act</div>
+                </div>
+
+                <!-- Axis Labels -->
+                <div class="axis-label y-axis-top">HIGH IMPACT ↑</div>
+                <div class="axis-label y-axis-bottom">LOW IMPACT ↓</div>
+                <div class="axis-label x-axis-left">LOW LIKELIHOOD ←</div>
+                <div class="axis-label x-axis-right">→ HIGH LIKELIHOOD</div>
+            </div>
+
+            <div class="matrix-legend">
+                <div class="legend-title">Priority Categories</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color legend-urgent"></div>
+                        <div>
+                            <strong>Urgent Priorities</strong><br>
+                            <small>High Impact × High Likelihood</small>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-strategic"></div>
+                        <div>
+                            <strong>Strategic Bets</strong><br>
+                            <small>High Impact × Low-Medium Likelihood</small>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-monitor"></div>
+                        <div>
+                            <strong>Monitor & Prepare</strong><br>
+                            <small>Medium Impact × High Likelihood</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="regional-note">
+                    <strong>* Regional Specificity:</strong> Items marked with asterisk are UK/EU specific but represent high impact within those geographies (UK Employment Rights Bill, EU AI Act).
+                </div>
             </div>
 
             <h2>The 7 Big Calls for 2026</h2>
