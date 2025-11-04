@@ -246,11 +246,17 @@
     }
 
     /* Responsive images and media */
-    img:not(.logo img),
+    img:not(.logo):not(.logo img),
     video,
     iframe,
     embed {
         max-width: 100% !important;
+    }
+
+    /* Protect logo size */
+    .logo img {
+        max-width: none !important;
+        height: 35px !important;
     }
 
     /* Fix grid overflow issues */
@@ -420,7 +426,7 @@
     }
 
     /* Responsive images */
-    img {
+    img:not(.logo):not(.logo img) {
         max-width: 100% !important;
         height: auto !important;
     }
