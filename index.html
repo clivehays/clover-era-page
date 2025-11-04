@@ -1270,34 +1270,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileToggle = document.querySelector('.mobile-menu-toggle');
-            const navLinks = document.querySelector('.nav-links');
-            
-            if (mobileToggle && navLinks) {
-                mobileToggle.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
-                    mobileToggle.classList.toggle('active');
-                    mobileToggle.setAttribute('aria-expanded', 
-                        navLinks.classList.contains('active') ? 'true' : 'false');
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
-                        navLinks.classList.remove('active');
-                        mobileToggle.classList.remove('active');
-                        mobileToggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
-
-                document.querySelectorAll('.nav-links a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        navLinks.classList.remove('active');
-                        mobileToggle.classList.remove('active');
-                        mobileToggle.setAttribute('aria-expanded', 'false');
-                    });
-                });
-            }
-        });
+            // Mobile menu functionality is now handled by header.js
+            // Removed duplicate code to prevent conflicts
         
         function calculateROI() {
             const employees = parseInt(document.getElementById('employees').value) || 250;
