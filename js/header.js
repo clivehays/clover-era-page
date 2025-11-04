@@ -351,9 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.getElementById('navLinks');
 
     if (mobileToggle && navLinks) {
-        mobileToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        mobileToggle.addEventListener('click', function() {
             navLinks.classList.toggle('active');
         });
     }
