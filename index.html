@@ -152,27 +152,34 @@
         }
 
         :root {
+            /* Corporate color palette */
             --primary-teal: #46AEB8;
-            --coral: #FF6B6B;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --bronze: #C9A667;
+
+            /* Neutral colors - refined */
             --white: #FFFFFF;
             --off-white: #FAFBFC;
-            --light-gray: #F5F7FA;
-            --medium-gray: #E5E9ED;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
             --dark-gray: #6B7280;
-            --charcoal: #1F2937;
             --text-primary: #111827;
             --text-secondary: #4B5563;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --info: #3B82F6;
-            --purple: #8B5CF6;
-            --indigo: #6366F1;
+
+            /* Spacing system (8px base) */
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --spacing-xl: 48px;
+            --spacing-2xl: 64px;
+            --spacing-3xl: 96px;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
+            line-height: 1.75;
             color: var(--text-primary);
             background: var(--white);
             overflow-x: hidden;
@@ -223,17 +230,14 @@
             background: var(--primary-teal);
             color: var(--white);
             padding: 0.75rem 2rem;
-            border-radius: 50px;
+            border-radius: 8px;
             display: inline-block;
             font-weight: 600;
             margin-bottom: 4rem;
             margin-top: 4rem;
             font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            box-shadow: 0 4px 15px rgba(70, 174, 184, 0.4);
-            backdrop-filter: blur(10px);
-            background: rgba(70, 174, 184, 0.95);
+            letter-spacing: 0.01em;
+            box-shadow: 0 1px 3px rgba(31, 41, 55, 0.1);
         }
 
         h1 {
@@ -283,56 +287,52 @@
         }
 
         .btn-primary {
-            background: var(--coral);
+            background: var(--charcoal);
             color: var(--white);
-            padding: 1.2rem 3rem;
+            padding: 1rem 2.5rem;
             border: none;
-            border-radius: 50px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 0.9375rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.01em;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.15);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.5);
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.25);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.95);
-            color: var(--coral);
-            padding: 1.2rem 3rem;
-            border: 2px solid rgba(255, 255, 255, 0.95);
-            border-radius: 50px;
-            font-size: 1rem;
+            background: var(--white);
+            color: var(--charcoal);
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 0.9375rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.01em;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
-            backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover {
-            background: var(--white);
-            color: var(--coral);
-            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
-            border-color: var(--white);
+            background: var(--light-gray);
+            color: var(--charcoal);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-color: var(--dark-gray);
         }
 
         .stats-bar {
             background: var(--white);
             padding: 4rem 2rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .stats-container {
@@ -351,7 +351,7 @@
         }
 
         .stat-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-2px);
         }
 
         .stat-value {
@@ -365,15 +365,16 @@
         .stat-label {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.01em;
             font-weight: 500;
         }
 
         .engagement-cta-bar {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(70, 174, 184, 0.08));
+            background: var(--light-gray);
             padding: 3rem 2rem;
             text-align: center;
+            border-top: 1px solid var(--medium-gray);
+            border-bottom: 1px solid var(--medium-gray);
         }
 
         .engagement-cta-content {
@@ -393,20 +394,20 @@
         }
 
         .btn-learn-more {
-            background: var(--indigo);
+            background: var(--primary-teal);
             color: var(--white);
             padding: 1rem 2.5rem;
-            border-radius: 50px;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             display: inline-block;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 2px 8px rgba(70, 174, 184, 0.15);
         }
 
         .btn-learn-more:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.25);
         }
 
         .problems-section {
@@ -438,23 +439,24 @@
 
         .problem-card {
             background: var(--white);
-            border-radius: 15px;
-            padding: 2.5rem;
+            border-radius: 8px;
+            padding: 2rem;
             text-decoration: none;
             color: var(--text-primary);
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--medium-gray);
         }
 
         .problem-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.15);
         }
 
         .problem-card.urgent::before {
-            content: 'HIGH PRIORITY';
+            content: 'High Priority';
             position: absolute;
             top: 15px;
             right: 15px;
@@ -463,14 +465,14 @@
             padding: 0.3rem 1rem;
             font-size: 0.7rem;
             font-weight: 600;
-            letter-spacing: 0.05em;
-            border-radius: 50px;
+            letter-spacing: 0.01em;
+            border-radius: 8px;
         }
 
         .problem-icon {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(255, 107, 107, 0.1));
+            background: rgba(70, 174, 184, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -504,7 +506,7 @@
         }
 
         .calculator-section {
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.08), rgba(255, 107, 107, 0.08));
+            background: var(--white);
             padding: 6rem 2rem;
         }
 
@@ -515,11 +517,12 @@
         }
 
         .calculator-form {
-            background: var(--white);
+            background: var(--light-gray);
             padding: 3rem;
-            border-radius: 20px;
+            border-radius: 8px;
             margin-bottom: 3rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--medium-gray);
         }
 
         .calc-grid {
@@ -540,16 +543,15 @@
             margin-bottom: 0.75rem;
             font-size: 0.9rem;
             font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.01em;
         }
 
         .calc-input input {
-            background: var(--off-white);
+            background: var(--white);
             border: 2px solid var(--medium-gray);
             color: var(--text-primary);
             padding: 1rem;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 1.1rem;
             font-weight: 500;
             transition: all 0.3s;
@@ -563,12 +565,10 @@
         }
 
         .calc-result {
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.05), rgba(255, 107, 107, 0.05));
-            border: 2px solid transparent;
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
+            background: var(--light-gray);
+            border: 2px solid var(--primary-teal);
             padding: 3rem;
-            border-radius: 15px;
+            border-radius: 8px;
             margin-top: 3rem;
         }
 
@@ -586,10 +586,10 @@
 
         .trial-box {
             background: var(--primary-teal);
-            border-radius: 20px;
+            border-radius: 8px;
             padding: 4rem;
             color: var(--white);
-            box-shadow: 0 15px 50px rgba(70, 174, 184, 0.3);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.3);
         }
 
         .trial-box h3 {
@@ -640,16 +640,17 @@
         }
 
         .science-item {
-            padding: 2.5rem;
+            padding: 2rem;
             background: var(--white);
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s;
+            border: 1px solid var(--medium-gray);
         }
 
         .science-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.15);
         }
 
         .science-number {
@@ -717,7 +718,7 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            box-shadow: 0 5px 20px rgba(70, 174, 184, 0.3);
+            box-shadow: 0 2px 8px rgba(70, 174, 184, 0.3);
         }
 
         .step h3 {
@@ -733,28 +734,16 @@
         }
 
         .step:hover .step-number {
-            transform: scale(1.1);
-            box-shadow: 0 8px 30px rgba(70, 174, 184, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.4);
             transition: all 0.3s ease;
         }
 
         .cta-section {
-            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            background: var(--off-white);
             padding: 6rem 2rem;
             text-align: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -10%;
-            width: 60%;
-            height: 200%;
-            background: linear-gradient(135deg, rgba(70, 174, 184, 0.05) 0%, rgba(255, 107, 107, 0.05) 100%);
-            transform: rotate(-45deg);
         }
 
         .cta-section h2 {
@@ -789,9 +778,8 @@
         .footer-section h4 {
             color: var(--primary-teal);
             margin-bottom: 1.5rem;
-            text-transform: uppercase;
             font-size: 0.9rem;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.01em;
             font-weight: 600;
         }
 
@@ -885,7 +873,7 @@
     <section class="hero" id="main">
         <div class="hero-content">
             <div class="hero-badge">
-                <span>AI-POWERED EMPLOYEE ENGAGEMENT • FRESH FROM SUCCESSFUL BETA</span>
+                <span>AI-powered employee engagement • Fresh from successful beta</span>
             </div>
             
             <h1>The <span class="highlight">AI-Powered</span> Employee Engagement<br> Platform for Managers</h1>
@@ -895,8 +883,8 @@
             </p>
             
             <div class="hero-cta-group">
-                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" aria-label="Book a 15-minute demo" rel="noopener noreferrer">SEE AI IN ACTION</a>
-                <a href="#calculator" class="btn-secondary" aria-label="Calculate your ROI">CALCULATE YOUR ROI</a>
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" aria-label="Book a 15-minute demo" rel="noopener noreferrer">See AI in action</a>
+                <a href="#calculator" class="btn-secondary" aria-label="Calculate your ROI">Calculate your ROI</a>
             </div>
         </div>
     </section>
@@ -940,20 +928,20 @@
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin: 2rem 0;">
                     <div>
-                        <div style="color: var(--purple); font-size: 2rem; font-weight: 800;">100%</div>
+                        <div style="color: var(--primary-teal); font-size: 2rem; font-weight: 800;">100%</div>
                         <div style="color: var(--text-secondary); font-size: 0.9rem;">Beta clients continued post-trial</div>
                     </div>
                     <div>
-                        <div style="color: var(--purple); font-size: 2rem; font-weight: 800;">Apr-Sept 2025</div>
+                        <div style="color: var(--primary-teal); font-size: 2rem; font-weight: 800;">Apr-Sept 2025</div>
                         <div style="color: var(--text-secondary); font-size: 0.9rem;">Beta program timeline</div>
                     </div>
                     <div>
-                        <div style="color: var(--purple); font-size: 2rem; font-weight: 800;">20 Spots</div>
+                        <div style="color: var(--primary-teal); font-size: 2rem; font-weight: 800;">20 Spots</div>
                         <div style="color: var(--text-secondary); font-size: 0.9rem;">Q4 2025 early adopters</div>
                     </div>
                 </div>
                 
-                <p style="background: var(--light-gray); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                <p style="background: var(--light-gray); padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
                     <strong>Early Adopter Benefits:</strong> AI-powered insights • Founder support • Preferred pricing locked for 3 years • Direct product input
                 </p>
                 
@@ -961,8 +949,8 @@
                     ⚠️ Employee turnover costs are rising 12% annually. Without AI-powered employee engagement, every month costs you.
                 </p>
                 
-                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" style="background: var(--purple); box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);" rel="noopener noreferrer">
-                    CLAIM YOUR AI EARLY ADOPTER SPOT
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" rel="noopener noreferrer">
+                    Claim your AI early adopter spot
                 </a>
             </div>
         </div>
@@ -976,7 +964,7 @@
                 driving 6% higher profits and 5x shareholder returns through proactive intervention.
             </p>
             <a href="/what-is-employee-engagement/" class="btn-learn-more">
-                LEARN HOW AI CHANGES EMPLOYEE ENGAGEMENT →
+                Learn how AI changes employee engagement →
             </a>
         </div>
     </section>
@@ -1143,7 +1131,7 @@
                     <li>Understand AI implementation timeline and support</li>
                     <li>No pushy sales tactics, just AI innovation</li>
                 </ul>
-                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" style="background: var(--white); color: var(--primary-teal);" aria-label="Book your AI demo" rel="noopener noreferrer">BOOK YOUR AI DEMO →</a>
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" style="background: var(--white); color: var(--primary-teal);" aria-label="Book your AI demo" rel="noopener noreferrer">Book your AI demo →</a>
                 <p style="margin-top: 1.5rem; opacity: 0.9;">
                     Prefer to explore on your own? 
                     <a href="/30-day-free-pilot/index.html" style="color: var(--white); text-decoration: underline;">Start a free 30-day AI trial</a>
@@ -1208,10 +1196,10 @@
         <p>Join companies using AI to predict turnover and prevent burnout</p>
         <div class="hero-cta-group" style="position: relative; z-index: 1;">
             <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-primary" aria-label="Book an AI demo" rel="noopener noreferrer">
-                BOOK YOUR AI DEMO
+                Book your AI demo
             </a>
             <a href="/assessment/index.html" class="btn-secondary" aria-label="Take free AI assessment">
-                FREE AI ASSESSMENT
+                Free AI assessment
             </a>
         </div>
         <p style="color: var(--text-secondary); margin-top: 2rem; font-size: 0.95rem; position: relative; z-index: 1;">
