@@ -95,30 +95,34 @@
         }
 
         :root {
-            /* Brand colors matching burnout page */
+            /* Corporate color palette */
             --primary-teal: #46AEB8;
-            --coral: #FF6B6B;
-            
-            /* Neutral colors */
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --bronze: #C9A667;
+
+            /* Neutral colors - refined */
             --white: #FFFFFF;
             --off-white: #FAFBFC;
-            --light-gray: #F5F7FA;
-            --medium-gray: #E5E9ED;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
             --dark-gray: #6B7280;
-            --charcoal: #1F2937;
             --text-primary: #111827;
             --text-secondary: #4B5563;
-            
-            /* Functional colors */
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --info: #3B82F6;
+
+            /* Spacing system (8px base) */
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --spacing-xl: 48px;
+            --spacing-2xl: 64px;
+            --spacing-3xl: 96px;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
+            line-height: 1.75;
             color: var(--text-primary);
             background: var(--white);
             overflow-x: hidden;
@@ -194,11 +198,10 @@
         .nav-links a {
             text-decoration: none;
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: color 0.3s;
+            letter-spacing: 0.01em;
+            transition: color 0.2s;
         }
 
         .nav-links a:hover {
@@ -206,19 +209,19 @@
         }
 
         .nav-cta {
-            background: var(--coral);
+            background: var(--charcoal);
             color: var(--white) !important;
             padding: 0.75rem 2rem;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.15);
         }
 
         .nav-cta:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 4px 16px rgba(31, 41, 55, 0.25);
             color: var(--white) !important;
         }
 
@@ -243,38 +246,38 @@
         }
 
         .crisis-badge {
-            background: #FF6B6B;
-            color: var(--white);
-            padding: 0.75rem 2rem;
+            background: rgba(70, 174, 184, 0.08);
+            color: var(--deep-teal);
+            padding: var(--spacing-sm) var(--spacing-lg);
             border-radius: 8px;
+            border-left: 3px solid var(--primary-teal);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            font-weight: 500;
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            font-size: 0.9rem;
+            letter-spacing: 0.01em;
         }
 
         h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
-            line-height: 1.3;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.2;
             color: var(--text-primary);
         }
 
         .hero-subtitle {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: var(--text-secondary);
-            margin-bottom: 3rem;
+            margin-bottom: var(--spacing-xl);
             font-weight: 400;
-            max-width: 900px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.6;
         }
 
         /* Stats Grid */
@@ -286,32 +289,31 @@
         }
 
         .stat-card {
-            background: var(--off-white);
-            padding: 2rem;
-            border-radius: 12px;
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
             text-align: center;
-            border: 2px solid var(--medium-gray);
-            transition: all 0.3s;
+            border: 1px solid var(--medium-gray);
+            transition: all 0.2s;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(70, 174, 184, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             border-color: var(--primary-teal);
         }
 
         .stat-number {
             font-size: 2.5rem;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--primary-teal);
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--spacing-xs);
         }
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
 
         /* Process Section */
@@ -326,15 +328,16 @@
         }
 
         .section-header h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
         }
 
         .section-header p {
             color: var(--text-secondary);
-            font-size: 1.2rem;
+            font-size: 1.125rem;
+            line-height: 1.6;
         }
 
         /* Timeline */
@@ -395,11 +398,11 @@
         }
 
         .timeline-content {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-            border-left: 4px solid var(--primary-teal);
+            background: var(--light-gray);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            box-shadow: none;
+            border-left: 3px solid var(--primary-teal);
         }
 
         .timeline-title {
@@ -448,30 +451,32 @@
 
         .feature-card {
             background: var(--white);
-            border-radius: 15px;
-            padding: 2.5rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s;
-            border-top: 4px solid var(--primary-teal);
+            border-radius: 8px;
+            padding: var(--spacing-lg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            border: 1px solid var(--medium-gray);
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(70, 174, 184, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-teal);
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, 
-                rgba(70, 174, 184, 0.1), 
-                rgba(255, 107, 107, 0.1));
+            width: 56px;
+            height: 56px;
+            background: transparent;
+            border: 2px solid var(--primary-teal);
+            color: var(--primary-teal);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
+            margin-bottom: var(--spacing-md);
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         .feature-title {
@@ -609,9 +614,10 @@
 
         /* Benefits Section */
         .benefits-section {
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, var(--primary-teal), #3A8F98);
-            color: var(--white);
+            padding: var(--spacing-3xl) 2rem;
+            background: var(--white);
+            color: var(--text-primary);
+            border-top: 1px solid var(--medium-gray);
         }
 
         .benefits-grid {
@@ -623,31 +629,36 @@
         }
 
         .benefit-item {
-            text-align: center;
-            padding: 2rem;
+            text-align: left;
+            padding: var(--spacing-lg);
+            background: var(--light-gray);
+            border-radius: 8px;
+            border: 1px solid var(--medium-gray);
         }
 
         .benefit-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            display: none;
         }
 
         .benefit-title {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
+            font-size: 1.125rem;
+            margin-bottom: var(--spacing-sm);
             font-weight: 600;
+            color: var(--text-primary);
         }
 
         .benefit-description {
-            opacity: 0.95;
+            color: var(--text-secondary);
             line-height: 1.6;
+            font-size: 0.9375rem;
         }
 
         /* CTA Section */
         .cta-section {
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            padding: var(--spacing-3xl) 2rem;
+            background: var(--light-gray);
             text-align: center;
+            border-top: 1px solid var(--medium-gray);
         }
 
         .cta-content {
@@ -656,28 +667,26 @@
         }
 
         .cta-content h2 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
         }
 
         .cta-warning {
-            background: linear-gradient(135deg,
-                rgba(255, 107, 107, 0.1),
-                rgba(70, 174, 184, 0.05));
-            border-left: 4px solid #FF6B6B;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin: 2rem auto;
+            background: rgba(70, 174, 184, 0.05);
+            border-left: 3px solid var(--primary-teal);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            margin: var(--spacing-lg) auto;
             text-align: left;
             max-width: 600px;
         }
 
         .cta-warning-icon {
-            color: #FF6B6B;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            color: var(--primary-teal);
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-xs);
         }
 
         .cta-warning-text {
@@ -694,47 +703,44 @@
         }
 
         .btn-primary {
-            background: var(--coral);
+            background: var(--charcoal);
             color: var(--white);
-            padding: 1.2rem 3rem;
+            padding: 1rem 2.5rem;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.9375rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.01em;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.15);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 4px 16px rgba(31, 41, 55, 0.25);
         }
 
         .btn-secondary {
             background: var(--white);
-            color: var(--coral);
-            padding: 1.2rem 3rem;
-            border: 2px solid var(--coral);
+            color: var(--charcoal);
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--charcoal);
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.9375rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.01em;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-decoration: none;
             display: inline-block;
         }
 
         .btn-secondary:hover {
-            background: var(--coral);
+            background: var(--charcoal);
             color: var(--white);
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
         }
 
         /* Footer */
@@ -923,11 +929,11 @@
     <section class="hero" style="margin-top: 0;">
         <div class="hero-content">
             <div class="crisis-badge">
-                TRANSFORM ENGAGEMENT IN 30 SECONDS DAILY
+                Transform engagement in 30 seconds daily
             </div>
             <h1>
                 Transform <span style="color: var(--primary-teal);">Employee Engagement</span><br>
-                in Just <span style="color: var(--coral);">30 Seconds</span> a Day
+                in Just <span style="color: var(--charcoal);">30 Seconds</span> a Day
             </h1>
             <p class="hero-subtitle">
                 Clover ERA combines anonymous daily pulse checks with the proven CLOVER framework to create workplaces where people thrive. Simple for employees, powerful for leaders.
@@ -1145,9 +1151,9 @@
 
     <!-- Benefits Section -->
     <section class="benefits-section">
-        <div class="section-header" style="color: white;">
-            <h2 style="color: white;">Why Teams Love <span style="color: white;">Clover ERA</span></h2>
-            <p style="color: white; opacity: 0.9;">The engagement solution that actually works</p>
+        <div class="section-header">
+            <h2>Why Teams Choose <span style="color: var(--primary-teal);">Clover ERA</span></h2>
+            <p>The engagement solution built for modern workplaces</p>
         </div>
         
         <div class="benefits-grid">
@@ -1203,8 +1209,8 @@
             </div>
             
             <div class="cta-buttons">
-                <a href="https://cloverera.com/30-day-free-pilot/index.html" class="btn-primary">START FREE PILOT</a>
-                <a href="/calculator/index.html" class="btn-secondary">CALCULATE ROI</a>
+                <a href="https://cloverera.com/30-day-free-pilot/index.html" class="btn-primary">Start Free Pilot</a>
+                <a href="/calculator/index.html" class="btn-secondary">Calculate ROI</a>
             </div>
             
             <p style="margin-top: 2rem; font-size: 0.9rem; color: var(--text-secondary);">
