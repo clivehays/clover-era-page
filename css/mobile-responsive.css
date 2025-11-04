@@ -1,0 +1,592 @@
+/**
+ * Mobile Responsive Design System
+ * Comprehensive mobile optimization for all pages
+ * Apply this to any page to fix mobile responsiveness issues
+ */
+
+/* ============================================
+   MOBILE BREAKPOINTS
+   ============================================ */
+
+/* Very Small Devices (< 375px) - iPhone SE, older Android */
+@media (max-width: 374px) {
+    body {
+        font-size: 14px !important;
+    }
+
+    h1 {
+        font-size: 1.5rem !important;
+        line-height: 1.3 !important;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    h3 {
+        font-size: 1.1rem !important;
+    }
+
+    h4 {
+        font-size: 1rem !important;
+    }
+
+    /* Hero sections */
+    .hero,
+    .hero-section,
+    section.hero {
+        min-height: 400px !important;
+        padding: 2rem 1rem 3rem !important;
+    }
+
+    .hero-subtitle,
+    .hero-description {
+        font-size: 1rem !important;
+    }
+
+    /* Stats and cards */
+    .stats-container,
+    .stat-grid,
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    .stat-value,
+    .stat-number {
+        font-size: 2rem !important;
+    }
+
+    /* Problem/solution cards */
+    .problems-grid,
+    .solutions-grid,
+    .features-grid,
+    .benefits-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    /* Buttons */
+    .btn-primary,
+    .btn-secondary,
+    .btn-cta,
+    button {
+        width: 100% !important;
+        padding: 0.9rem 1.5rem !important;
+        font-size: 0.85rem !important;
+        min-height: 44px !important;
+    }
+
+    /* Forms */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important; /* Prevent zoom on iOS */
+    }
+}
+
+/* Small Mobile (375px - 480px) - iPhone 12/13, most modern phones */
+@media (min-width: 375px) and (max-width: 480px) {
+    h1 {
+        font-size: 1.75rem !important;
+        line-height: 1.3 !important;
+    }
+
+    h2 {
+        font-size: 1.75rem !important;
+    }
+
+    .hero,
+    .hero-section,
+    section.hero {
+        min-height: 420px !important;
+        padding: 3rem 1.25rem 4rem !important;
+    }
+
+    .hero-subtitle,
+    .hero-description {
+        font-size: 1.1rem !important;
+    }
+
+    .stats-container,
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem !important;
+    }
+
+    .stat-value,
+    .stat-number {
+        font-size: 2.25rem !important;
+    }
+
+    .problems-grid,
+    .solutions-grid,
+    .features-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-cta {
+        width: 100% !important;
+        max-width: 280px !important;
+        padding: 0.95rem 1.75rem !important;
+        font-size: 0.875rem !important;
+    }
+}
+
+/* Standard Mobile (481px - 767px) - Larger phones, small tablets */
+@media (min-width: 481px) and (max-width: 767px) {
+    h1 {
+        font-size: 2rem !important;
+        line-height: 1.25 !important;
+    }
+
+    h2 {
+        font-size: 1.85rem !important;
+    }
+
+    .hero,
+    .hero-section,
+    section.hero {
+        min-height: 450px !important;
+        padding: 3.5rem 1.5rem 4.5rem !important;
+    }
+
+    .hero-subtitle,
+    .hero-description {
+        font-size: 1.2rem !important;
+    }
+
+    .stats-container,
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 2rem !important;
+    }
+
+    .stat-value,
+    .stat-number {
+        font-size: 2.5rem !important;
+    }
+
+    .problems-grid,
+    .solutions-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-cta {
+        width: 100% !important;
+        max-width: 300px !important;
+        padding: 1rem 2rem !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+/* Tablet Portrait (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    h1 {
+        font-size: 2.5rem !important;
+    }
+
+    h2 {
+        font-size: 2.25rem !important;
+    }
+
+    .hero,
+    .hero-section,
+    section.hero {
+        padding: 4rem 2rem 5rem !important;
+    }
+
+    .stats-container,
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 2rem !important;
+    }
+
+    .problems-grid,
+    .solutions-grid,
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem !important;
+    }
+}
+
+/* ============================================
+   UNIVERSAL MOBILE/TABLET FIXES (< 1024px)
+   ============================================ */
+
+@media (max-width: 1023px) {
+    /* Prevent horizontal overflow */
+    html,
+    body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+
+    * {
+        max-width: 100% !important;
+    }
+
+    /* Fix grid overflow issues */
+    .stats-container,
+    .stat-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+    }
+
+    .problems-grid,
+    .solutions-grid,
+    .features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+    }
+
+    .pricing-grid,
+    .pricing-cards {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    .categories-grid,
+    .category-cards {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    .tools-grid,
+    .tool-cards {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Calculator grids */
+    .calc-grid,
+    .calculator-grid,
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Science/feature grids */
+    .science-grid,
+    .benefits-grid,
+    .timeline-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Steps grid */
+    .steps-grid,
+    .process-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    .steps-grid::before,
+    .process-grid::before {
+        display: none !important;
+    }
+
+    /* Section padding reduction */
+    section,
+    .section {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+
+    .stats-bar,
+    .trust-bar-section {
+        padding: 3rem 1.5rem !important;
+    }
+
+    .engagement-cta-bar,
+    .cta-bar {
+        padding: 2.5rem 1.5rem !important;
+    }
+
+    .problems-section,
+    .solutions-section,
+    .calculator-section,
+    .trust-section,
+    .science-section,
+    .how-it-works,
+    .cta-section,
+    .features-section {
+        padding: 4rem 1.5rem !important;
+    }
+
+    /* Button groups */
+    .hero-cta-group,
+    .cta-buttons,
+    .button-group {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+
+    /* Touch targets (WCAG AA compliance) */
+    .btn-primary,
+    .btn-secondary,
+    .btn-cta,
+    .btn-learn-more,
+    .btn-teal,
+    button,
+    a.button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        padding: 0.9rem 2rem !important;
+    }
+
+    /* Calculator improvements */
+    .calc-amount,
+    .calculator-result {
+        font-size: 2rem !important;
+        word-break: break-word !important;
+    }
+
+    .calculator-form,
+    .calc-form {
+        padding: 2rem 1.5rem !important;
+    }
+
+    /* Trial/signup boxes */
+    .trial-box,
+    .signup-box,
+    .featured-card {
+        padding: 2rem 1.5rem !important;
+    }
+
+    .trial-box h3,
+    .signup-box h3 {
+        font-size: 1.6rem !important;
+    }
+
+    .trial-box ul,
+    .signup-box ul {
+        padding-left: 0 !important;
+    }
+
+    /* CTA sections */
+    .cta-section h2,
+    .final-cta h2 {
+        font-size: 2rem !important;
+    }
+
+    .cta-section p,
+    .final-cta p {
+        font-size: 1.1rem !important;
+    }
+
+    /* Footer */
+    .footer-content,
+    footer .content {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    /* Improve readability */
+    .problem-description,
+    .solution-description,
+    .science-description,
+    .feature-description,
+    .step p,
+    .card-description {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+
+    /* Responsive images */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Hero background */
+    .hero,
+    .hero-section,
+    section.hero {
+        background-position: center center !important;
+        background-size: cover !important;
+    }
+
+    /* Tables */
+    table {
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+    }
+
+    /* Search bars */
+    .search-container,
+    .search-bar {
+        width: 100% !important;
+    }
+
+    .search-input,
+    .search-bar input {
+        width: 100% !important;
+        font-size: 16px !important; /* Prevent iOS zoom */
+    }
+
+    /* Forms */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important; /* Prevent iOS zoom */
+        width: 100% !important;
+    }
+
+    /* Modals */
+    .modal,
+    .popup {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        margin: 1rem !important;
+    }
+
+    /* Cards */
+    .card,
+    .problem-card,
+    .solution-card,
+    .feature-card,
+    .pricing-card {
+        padding: 1.5rem !important;
+    }
+
+    /* Remove unnecessary spacing */
+    .spacer-large {
+        height: 2rem !important;
+    }
+
+    .spacer-medium {
+        height: 1.5rem !important;
+    }
+
+    /* Fix featured card scale on mobile */
+    .pricing-card.featured,
+    .card.featured {
+        transform: scale(1) !important;
+    }
+
+    /* Navigation dropdowns */
+    .nav-dropdown-menu {
+        position: static !important;
+        width: 100% !important;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb {
+        font-size: 0.85rem !important;
+        overflow-x: auto !important;
+    }
+
+    /* Stats labels */
+    .stat-label {
+        font-size: 0.85rem !important;
+    }
+
+    /* Matrix/charts on mobile */
+    .matrix-container {
+        height: 500px !important;
+        overflow-x: auto !important;
+    }
+
+    .trend,
+    .chart-item {
+        font-size: 0.75em !important;
+        padding: 8px 12px !important;
+    }
+
+    /* Legend grids */
+    .legend-items {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE OPTIMIZATION
+   ============================================ */
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero,
+    .hero-section,
+    section.hero {
+        min-height: 300px !important;
+        padding: 2rem 1.5rem !important;
+    }
+
+    h1 {
+        font-size: 1.75rem !important;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+
+@media (max-width: 1023px) {
+    /* Increase tap target size for mobile */
+    a,
+    button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Improve focus states */
+    *:focus {
+        outline: 2px solid var(--primary-teal, #46AEB8) !important;
+        outline-offset: 2px !important;
+    }
+
+    /* Better contrast for small text */
+    small,
+    .small-text {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* ============================================
+   PRINT STYLES (BONUS)
+   ============================================ */
+
+@media print {
+    .nav,
+    nav,
+    .navigation,
+    .header,
+    header,
+    .footer,
+    footer,
+    .trust-bar,
+    .cta-section,
+    .btn-primary,
+    .btn-secondary,
+    button {
+        display: none !important;
+    }
+
+    body {
+        font-size: 12pt !important;
+        line-height: 1.5 !important;
+    }
+
+    h1 {
+        font-size: 18pt !important;
+    }
+
+    h2 {
+        font-size: 16pt !important;
+    }
+
+    * {
+        background: white !important;
+        color: black !important;
+    }
+}
