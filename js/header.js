@@ -242,8 +242,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             .nav-dropdown-menu {
                 position: static;
-                opacity: 1;
-                visibility: visible;
+                opacity: 0;
+                visibility: hidden;
+                max-height: 0;
+                overflow: hidden;
                 transform: none;
                 box-shadow: none;
                 border: none;
@@ -252,6 +254,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: 100%;
                 background: #F5F7FA;
                 border-radius: 0;
+                transition: all 0.3s ease;
+            }
+
+            .nav-dropdown.active .nav-dropdown-menu {
+                opacity: 1;
+                visibility: visible;
+                max-height: 500px;
+                padding: 0.5rem 0;
             }
             
             /* Hide trust bar on mobile */
@@ -339,12 +349,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu functionality
     const mobileToggle = document.getElementById('mobileToggle');
     const navLinks = document.getElementById('navLinks');
-    
+
     if (mobileToggle && navLinks) {
-        mobileToggle.addEventListener('click', function() {
+        mobileToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             navLinks.classList.toggle('active');
         });
     }
+
+    // Mobile dropdown functionality
+    const dropdownToggles = document.querySelectorAll('.nav-dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            // Only prevent default on mobile (when hamburger is visible)
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                dropdown.classList.toggle('active');
+            }
+        });
+    });
 
     console.log('Header loaded successfully');
 });
