@@ -301,19 +301,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         RESOURCES <span style="font-size: 0.8rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
-                        <a href="/clover-framework.html" class="featured-link">🍀 Clover Framework</a>
-                        <a href="/research/index.html" class="featured-link">🔬 Research Hub</a>
+                        <a href="/clover-framework.html" class="featured-link">Clover Framework</a>
+                        <a href="/research/index.html" class="featured-link">Research Hub</a>
                         <a href="/what-is-employee-engagement/">What Is Engagement?</a>
                         <a href="/research-insights/index.html">Research Insights</a>
                         <a href="/calculator/index.html">ROI Calculator</a>
                         <a href="/assessment/index.html">Free Assessment</a>
                         <a href="/implementation-guide.html">Implementation Guide</a>
-                        <a href="https://www.amazon.com/Trillion-Dollar-Problem-Employee-Engagement-ebook/dp/B0CYMC3ST1/ref=sr_1_1?crid=FIA8QK3LNQZ0&dib=eyJ2IjoiMSJ9.QImYjq6qcRR5M5fzSbzy1IVu2_5CiJxenm3uMu8aUcl0Zm3J_AVdoIA1WJCmWs-yufPlRkezuhnJurayQOLazLuWTn1XIlAntqSjdWmn-5yL0PHv6F6l-kA8t0O6EalS.nP4OcL7TscInMWUb8AW18JAlsmsQXTD-oY71REz59EU&dib_tag=se&keywords=The+trillion+Dollar+Problem&qid=1755545687&sprefix=the+trillion+dollar+problem%2Caps%2C258&sr=8-1" class="featured-link">
-        📚 The Trillion Dollar Problem Book
-    </a>
-    <a href="https://www.cloverera.com/neuroscience-of-employee-engagement/index.html">
-        🧠 New - Neuroscience of Employee Engagement: Preview Chapter
-    </a>
+                        <a href="https://www.amazon.com/Trillion-Dollar-Problem-Employee-Engagement-ebook/dp/B0CYMC3ST1/ref=sr_1_1?crid=FIA8QK3LNQZ0&dib=eyJ2IjoiMSJ9.QImYjq6qcRR5M5fzSbzy1IVu2_5CiJxenm3uMu8aUcl0Zm3J_AVdoIA1WJCmWs-yufPlRkezuhnJurayQOLazLuWTn1XIlAntqSjdWmn-5yL0PHv6F6l-kA8t0O6EalS.nP4OcL7TscInMWUb8AW18JAlsmsQXTD-oY71REz59EU&dib_tag=se&keywords=The+trillion+Dollar+Problem&qid=1755545687&sprefix=the+trillion+dollar+problem%2Caps%2C258&sr=8-1" class="featured-link">The Trillion Dollar Problem Book</a>
+                        <a href="https://www.cloverera.com/neuroscience-of-employee-engagement/index.html">New: Neuroscience of Employee Engagement Preview</a>
                     </div>
                 </div>
                 <div class="nav-dropdown">
@@ -321,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         SOLUTIONS <span style="font-size: 0.8rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
-                        <a href="/locations/" class="featured-link">🌍 UK & Ireland Engagement Solutions</a>
+                        <a href="/locations/" class="featured-link">UK & Ireland Engagement Solutions</a>
                     </div>
                 </div>
                 <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">BOOK DEMO</a>
