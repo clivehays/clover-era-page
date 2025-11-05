@@ -144,17 +144,7 @@ const generateSitemap = () => {
 // Run
 try {
   const urls = generateSitemap();
-
-  // Automatically submit to IndexNow
-  console.log('\n🔔 Submitting to IndexNow...');
-  const { exec } = require('child_process');
-  exec('node submit-indexnow.js', (error, stdout, stderr) => {
-    if (error) {
-      console.error('⚠️  IndexNow submission failed:', error.message);
-      return;
-    }
-    console.log(stdout);
-  });
+  console.log('\n✅ Sitemap generation complete!');
 } catch (error) {
   console.error('❌ Error generating sitemap:', error);
   process.exit(1);
