@@ -6,7 +6,7 @@ const https = require('https');
 // Configuration
 const DOMAIN = 'https://cloverera.com';
 const SITEMAP_FILE = './sitemap.xml';
-const KEY = 'ddb6186e20603c8ef624f45991f1e04c7070ebf38e3fbbf0e3d8db35035ecc3c';
+const KEY = '06df42ece6db4d3e824d304653bb7a47';
 
 // IndexNow endpoint (Bing receives and shares with Yandex, Seznam, Naver)
 const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow';
@@ -36,7 +36,7 @@ const submitToIndexNow = (urls) => {
   const payload = JSON.stringify({
     host: 'cloverera.com',
     key: KEY,
-    keyLocation: `${DOMAIN}/${KEY}.html`,
+    keyLocation: `${DOMAIN}/${KEY}.txt`,
     urlList: urls
   });
 
