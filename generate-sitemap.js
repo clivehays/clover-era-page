@@ -8,7 +8,7 @@ const DOMAIN = 'https://cloverera.com';
 const OUTPUT_FILE = 'sitemap.xml';
 
 // Directories and files to exclude
-const EXCLUDE_DIRS = ['node_modules', '.git', '.github', 'london'];
+const EXCLUDE_DIRS = ['node_modules', '.git', '.github', 'london', 'backups'];
 const EXCLUDE_FILES = ['404.html'];
 
 // Priority mapping based on file location/type
