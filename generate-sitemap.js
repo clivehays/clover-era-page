@@ -136,11 +136,25 @@ const generateSitemap = () => {
     .forEach(priority => {
       console.log(`   ${priority}: ${priorityCounts[priority]} URLs`);
     });
+
+  // Return URLs for IndexNow submission
+  return urls.map(u => u.loc);
 };
 
 // Run
 try {
-  generateSitemap();
+  const urls = generateSitemap();
+
+  // Automatically submit to IndexNow
+  console.log('\n🔔 Submitting to IndexNow...');
+  const { exec } = require('child_process');
+  exec('node submit-indexnow.js', (error, stdout, stderr) => {
+    if (error) {
+      console.error('⚠️  IndexNow submission failed:', error.message);
+      return;
+    }
+    console.log(stdout);
+  });
 } catch (error) {
   console.error('❌ Error generating sitemap:', error);
   process.exit(1);
