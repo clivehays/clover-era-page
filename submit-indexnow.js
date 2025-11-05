@@ -36,7 +36,7 @@ const submitToIndexNow = (urls) => {
   const payload = JSON.stringify({
     host: 'cloverera.com',
     key: KEY,
-    keyLocation: `${DOMAIN}/${KEY}.txt`,
+    keyLocation: `${DOMAIN}/${KEY}.html`,
     urlList: urls
   });
 
