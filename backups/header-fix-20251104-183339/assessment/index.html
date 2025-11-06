@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/js/header.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Workplace Engagement Assessment | Clover Era</title>
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+    <meta name="description" content="Get your free personalized workplace engagement report. Discover hidden costs of burnout, turnover risks, and get actionable recommendations in 2 minutes.">
+    <link rel="canonical" href="https://cloverera.com/assessment/">
+
+    <!-- Corporate Design System -->
+    <link rel="stylesheet" href="/css/corporate-design.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Brand colors */
+            --primary-teal: #46AEB8;
+            --coral: #FF6B6B;
+            
+            /* Neutral colors */
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F5F7FA;
+            --medium-gray: #E5E9ED;
+            --dark-gray: #6B7280;
+            --charcoal: #1F2937;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            
+            /* Functional colors */
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--white);
+            overflow-x: hidden;
+            padding-top: 120px; /* Space for header + breadcrumb */
+        }
+
+        /* Assessment Container */
+        .assessment-container {
+            max-width: 900px;
+            margin: 3rem auto 4rem;
+            padding: 0 2rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--light-gray);
+            border-radius: 8px;
+            height: 8px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-teal), #3A8F98);
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+            box-shadow: 0 2px 10px rgba(70, 174, 184, 0.3);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Question Section */
+        .question-section {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            min-height: 500px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            margin-bottom: 2rem;
+        }
+
+        .question-number {
+            color: var(--primary-teal);
+            font-size: 0.9rem;
+            font-weight: 600;
+            
+            letter-spacing: 0.01em;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .question-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Answer Options */
+        .answer-options {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .answer-option {
+            background: var(--off-white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .answer-option:hover {
+            border-color: var(--primary-teal);
+            background: var(--white);
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(70, 174, 184, 0.1);
+        }
+
+        .answer-option.selected {
+            border-color: var(--primary-teal);
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.05), 
+                rgba(70, 174, 184, 0.02));
+            box-shadow: 0 5px 20px rgba(70, 174, 184, 0.15);
+        }
+
+        .answer-radio {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .answer-option.selected .answer-radio {
+            border-color: var(--primary-teal);
+            background: var(--primary-teal);
+        }
+
+        .answer-option.selected .answer-radio::after {
+            content: '✓';
+            color: var(--white);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .answer-text {
+            flex: 1;
+        }
+
+        .answer-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .answer-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Scale Questions */
+        .scale-container {
+            margin: 3rem 0;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .scale-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+        }
+
+        .scale-option {
+            background: var(--off-white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .scale-option:hover {
+            border-color: var(--primary-teal);
+            background: var(--white);
+            transform: translateY(-5px);
+        }
+
+        .scale-option.selected {
+            border-color: var(--primary-teal);
+            background: var(--primary-teal);
+            color: var(--white);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(70, 174, 184, 0.3);
+        }
+
+        .scale-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Multi-select Questions */
+        .multi-select-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .multi-option {
+            background: var(--off-white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .multi-option:hover {
+            border-color: var(--primary-teal);
+            background: var(--white);
+        }
+
+        .multi-option.selected {
+            border-color: var(--primary-teal);
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.08), 
+                rgba(70, 174, 184, 0.02));
+        }
+
+        .multi-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .multi-option.selected .multi-checkbox {
+            border-color: var(--primary-teal);
+            background: var(--primary-teal);
+        }
+
+        .multi-option.selected .multi-checkbox::after {
+            content: '✓';
+            color: var(--white);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-back {
+            background: var(--white);
+            color: var(--text-primary);
+            border: 2px solid var(--medium-gray);
+        }
+
+        .btn-back:hover {
+            border-color: var(--primary-teal);
+            color: var(--primary-teal);
+        }
+
+        .btn-next {
+            background: var(--charcoal);
+            color: var(--white);
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.15);
+            margin-left: auto;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(31, 41, 55, 0.25);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Contact Form Section */
+        .contact-section {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            display: none;
+        }
+
+        .contact-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            padding: 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: var(--off-white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-hero {
+            background: linear-gradient(135deg, var(--primary-teal), #3A8F98);
+            border-radius: 8px;
+            padding: 3rem;
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 50px rgba(70, 174, 184, 0.3);
+        }
+
+        .results-hero h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .results-hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .risk-score {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .risk-meter {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .risk-meter svg {
+            width: 200px;
+            height: 200px;
+            transform: rotate(-90deg);
+        }
+
+        .risk-meter-bg {
+            fill: none;
+            stroke: var(--light-gray);
+            stroke-width: 20;
+        }
+
+        .risk-meter-fill {
+            fill: none;
+            stroke-width: 20;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.5s ease, stroke 1s ease;
+        }
+
+        .risk-meter-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 800;
+            transition: color 1s ease;
+        }
+
+        .risk-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .insight-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .insight-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.1), 
+                rgba(255, 107, 107, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .insight-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--coral);
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .results-cta {
+            background: linear-gradient(135deg, 
+                rgba(70, 174, 184, 0.08), 
+                rgba(255, 107, 107, 0.08));
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .results-cta h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .results-cta p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(31, 41, 55, 0.25);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--charcoal);
+            padding: 1.2rem 3rem;
+            border: 2px solid var(--charcoal);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--charcoal);
+            color: var(--white);
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.15);
+        }
+
+        /* Success Notification */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 110px;
+            }
+
+            .assessment-container {
+                padding: 0 1rem;
+                margin-top: 2rem;
+            }
+
+            .question-section, .contact-section {
+                padding: 2rem;
+            }
+
+            .question-title {
+                font-size: 1.5rem;
+            }
+
+            .scale-options {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0.5rem;
+            }
+
+            .scale-option {
+                padding: 1rem 0.5rem;
+            }
+
+            .multi-select-options {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .btn-back, .btn-next {
+                width: 100%;
+                margin: 0;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- The header will be inserted by header.js -->
+    <script src="/js/header.js"></script>
+
+    <!-- Assessment Container -->
+    <div class="assessment-container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 16.67%"></div>
+        </div>
+        <div class="progress-text" id="progressText">Question 1 of 6</div>
+
+        <!-- Question 1: Company Size -->
+        <div class="question-section active" data-question="1">
+            <div class="question-header">
+                <div class="question-number">Question 1 of 6</div>
+                <h2 class="question-title">How many employees does your organization have?</h2>
+                <p class="question-subtitle">This helps us customize your assessment results</p>
+            </div>
+            
+            <div class="answer-options">
+                <div class="answer-option" data-value="10-50">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">10-50 employees</div>
+                        <div class="answer-description">Small team, high impact</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="51-250">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">51-250 employees</div>
+                        <div class="answer-description">Growing organization</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="251-1000">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">251-1,000 employees</div>
+                        <div class="answer-description">Mid-size enterprise</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="1000+">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">1,000+ employees</div>
+                        <div class="answer-description">Large enterprise</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-next" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
+
+        <!-- Question 2: Turnover Rate -->
+        <div class="question-section" data-question="2">
+            <div class="question-header">
+                <div class="question-number">Question 2 of 6</div>
+                <h2 class="question-title">What's your annual employee turnover rate?</h2>
+                <p class="question-subtitle">Industry average is 15-20%</p>
+            </div>
+            
+            <div class="answer-options">
+                <div class="answer-option" data-value="0-10">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Less than 10%</div>
+                        <div class="answer-description">Well below average</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="10-20">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">10-20%</div>
+                        <div class="answer-description">Industry average</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="20-30">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">20-30%</div>
+                        <div class="answer-description">Above average</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="30+">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Over 30%</div>
+                        <div class="answer-description">Critical level</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-back" onclick="previousQuestion()">← Back</button>
+                <button class="btn btn-next" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
+
+        <!-- Question 3: Engagement Level -->
+        <div class="question-section" data-question="3">
+            <div class="question-header">
+                <div class="question-number">Question 3 of 6</div>
+                <h2 class="question-title">Rate your overall employee engagement level</h2>
+                <p class="question-subtitle">1 = Very disengaged, 5 = Highly engaged</p>
+            </div>
+            
+            <div class="scale-container">
+                <div class="scale-labels">
+                    <span>Very Low</span>
+                    <span>Low</span>
+                    <span>Moderate</span>
+                    <span>High</span>
+                    <span>Very High</span>
+                </div>
+                <div class="scale-options">
+                    <div class="scale-option" data-value="1">
+                        <div class="scale-number">1</div>
+                    </div>
+                    <div class="scale-option" data-value="2">
+                        <div class="scale-number">2</div>
+                    </div>
+                    <div class="scale-option" data-value="3">
+                        <div class="scale-number">3</div>
+                    </div>
+                    <div class="scale-option" data-value="4">
+                        <div class="scale-number">4</div>
+                    </div>
+                    <div class="scale-option" data-value="5">
+                        <div class="scale-number">5</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-back" onclick="previousQuestion()">← Back</button>
+                <button class="btn btn-next" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
+
+        <!-- Question 4: Top Challenges -->
+        <div class="question-section" data-question="4">
+            <div class="question-header">
+                <div class="question-number">Question 4 of 6</div>
+                <h2 class="question-title">What are your top workplace challenges?</h2>
+                <p class="question-subtitle">Select all that apply</p>
+            </div>
+            
+            <div class="multi-select-options">
+                <div class="multi-option" data-value="burnout">
+                    <div class="multi-checkbox"></div>
+                    <span>Employee Burnout</span>
+                </div>
+                <div class="multi-option" data-value="retention">
+                    <div class="multi-checkbox"></div>
+                    <span>High Turnover</span>
+                </div>
+                <div class="multi-option" data-value="productivity">
+                    <div class="multi-checkbox"></div>
+                    <span>Low Productivity</span>
+                </div>
+                <div class="multi-option" data-value="culture">
+                    <div class="multi-checkbox"></div>
+                    <span>Poor Culture</span>
+                </div>
+                <div class="multi-option" data-value="communication">
+                    <div class="multi-checkbox"></div>
+                    <span>Communication Issues</span>
+                </div>
+                <div class="multi-option" data-value="hybrid">
+                    <div class="multi-checkbox"></div>
+                    <span>Hybrid Work Challenges</span>
+                </div>
+                <div class="multi-option" data-value="leadership">
+                    <div class="multi-checkbox"></div>
+                    <span>Leadership Gaps</span>
+                </div>
+                <div class="multi-option" data-value="stress">
+                    <div class="multi-checkbox"></div>
+                    <span>Workplace Stress</span>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-back" onclick="previousQuestion()">← Back</button>
+                <button class="btn btn-next" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
+
+        <!-- Question 5: Burnout Level -->
+        <div class="question-section" data-question="5">
+            <div class="question-header">
+                <div class="question-number">Question 5 of 6</div>
+                <h2 class="question-title">What percentage of your employees show signs of burnout?</h2>
+                <p class="question-subtitle">Consider fatigue, cynicism, and decreased performance</p>
+            </div>
+            
+            <div class="answer-options">
+                <div class="answer-option" data-value="0-25">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Less than 25%</div>
+                        <div class="answer-description">Manageable level</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="25-50">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">25-50%</div>
+                        <div class="answer-description">Growing concern</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="50-75">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">50-75%</div>
+                        <div class="answer-description">Serious issue</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="75+">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Over 75%</div>
+                        <div class="answer-description">Crisis level</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-back" onclick="previousQuestion()">← Back</button>
+                <button class="btn btn-next" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
+
+        <!-- Question 6: Budget Priority -->
+        <div class="question-section" data-question="6">
+            <div class="question-header">
+                <div class="question-number">Question 6 of 6</div>
+                <h2 class="question-title">How much of a priority is employee engagement in your budget?</h2>
+                <p class="question-subtitle">This helps us recommend appropriate solutions</p>
+            </div>
+            
+            <div class="answer-options">
+                <div class="answer-option" data-value="high">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">High Priority</div>
+                        <div class="answer-description">Significant budget allocated</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="medium">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Medium Priority</div>
+                        <div class="answer-description">Some budget available</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="low">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Low Priority</div>
+                        <div class="answer-description">Limited budget</div>
+                    </div>
+                </div>
+                <div class="answer-option" data-value="exploring">
+                    <div class="answer-radio"></div>
+                    <div class="answer-text">
+                        <div class="answer-label">Exploring Options</div>
+                        <div class="answer-description">Evaluating potential investment</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-back" onclick="previousQuestion()">← Back</button>
+                <button class="btn btn-next" onclick="nextQuestion()" disabled>Next →</button>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-section" data-question="contact">
+            <div class="form-header">
+                <h2>Almost Done! Get Your Personalized Report</h2>
+                <p>We'll send your detailed assessment results and recommendations instantly</p>
+            </div>
+            
+            <form id="assessmentForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">First Name *</label>
+                        <input type="text" class="form-input" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name *</label>
+                        <input type="text" class="form-input" name="lastName" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Work Email *</label>
+                        <input type="email" class="form-input" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Company Name *</label>
+                        <input type="text" class="form-input" name="company" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Job Title *</label>
+                        <input type="text" class="form-input" name="title" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Phone Number (Optional)</label>
+                        <input type="tel" class="form-input" name="phone">
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-back" type="button" onclick="previousQuestion()">← Back</button>
+                    <button class="btn btn-next" type="submit">Get My Results →</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" data-question="results">
+            <div class="results-hero">
+                <h2>Your Workplace Engagement Assessment</h2>
+                <p>Based on your responses, here's your personalized analysis</p>
+            </div>
+
+            <div class="risk-score">
+                <div class="risk-meter">
+                    <svg viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="90" class="risk-meter-bg"></circle>
+                        <circle cx="100" cy="100" r="90" class="risk-meter-fill" id="riskMeterFill"
+                                stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
+                    </svg>
+                    <div class="risk-meter-value" id="riskScore">0</div>
+                </div>
+                <div class="risk-label" id="riskLabel">CALCULATING...</div>
+                <div class="risk-description" id="riskDescription">Analyzing your workplace engagement metrics</div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">💰</div>
+                    <div class="insight-title">Annual Cost of Disengagement</div>
+                    <div class="insight-value" id="costValue">$0</div>
+                    <div class="insight-description">Based on your turnover and productivity metrics</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🚪</div>
+                    <div class="insight-title">Projected Turnover Risk</div>
+                    <div class="insight-value" id="turnoverRisk">0%</div>
+                    <div class="insight-description">Employees likely to leave in next 12 months</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">📉</div>
+                    <div class="insight-title">Productivity Gap</div>
+                    <div class="insight-value" id="productivityGap">0%</div>
+                    <div class="insight-description">Below optimal performance levels</div>
+                </div>
+            </div>
+
+            <div class="results-cta">
+                <h3>Ready to Transform Your Workplace?</h3>
+                <p id="ctaText">Clover Era can help improve your workplace engagement metrics</p>
+                <div class="cta-buttons">
+                    <a href="/30-day-free-pilot/index.html" class="btn-primary">Start Free 30-Day Trial</a>
+                    <a href="/calculator/index.html" class="btn-secondary">See Full ROI Analysis</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // IMPORTANT: Replace with your actual Google Apps Script Web App URL
+        // Get this URL after deploying your Google Apps Script
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyI_fg3yXPRJzv0Fg5HzysjWes1P2zdx5mKSV42zApdcIHve2GkN9TWpifF1n3wtbn5mw/exec';
+        
+        // Assessment Logic
+        let currentQuestion = 1;
+        const totalQuestions = 6;
+        const answers = {};
+
+        // Initialize event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+        });
+
+        function initializeEventListeners() {
+            // Handle single-select answers
+            document.querySelectorAll('.answer-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const section = this.closest('.question-section');
+                    if (!section) return;
+                    
+                    section.querySelectorAll('.answer-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    const questionNum = section.dataset.question;
+                    answers[questionNum] = this.dataset.value;
+                    
+                    // Enable next button
+                    const nextBtn = section.querySelector('.btn-next');
+                    if (nextBtn) nextBtn.disabled = false;
+                });
+            });
+
+            // Handle scale questions
+            document.querySelectorAll('.scale-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const section = this.closest('.question-section');
+                    if (!section) return;
+                    
+                    section.querySelectorAll('.scale-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    const questionNum = section.dataset.question;
+                    answers[questionNum] = this.dataset.value;
+                    
+                    // Enable next button
+                    const nextBtn = section.querySelector('.btn-next');
+                    if (nextBtn) nextBtn.disabled = false;
+                });
+            });
+
+            // Handle multi-select questions
+            document.querySelectorAll('.multi-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    
+                    const section = this.closest('.question-section');
+                    if (!section) return;
+                    
+                    const questionNum = section.dataset.question;
+                    
+                    // Collect all selected values
+                    const selected = [];
+                    section.querySelectorAll('.multi-option.selected').forEach(opt => {
+                        selected.push(opt.dataset.value);
+                    });
+                    
+                    answers[questionNum] = selected;
+                    
+                    // Enable next button if at least one is selected
+                    const nextBtn = section.querySelector('.btn-next');
+                    if (nextBtn) nextBtn.disabled = selected.length === 0;
+                });
+            });
+
+            // Handle form submission
+            const form = document.getElementById('assessmentForm');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 
+                currentQuestion <= totalQuestions ? 
+                `Question ${currentQuestion} of ${totalQuestions}` : 
+                'Complete!';
+        }
+
+        function nextQuestion() {
+            // Hide current question
+            document.querySelector('.question-section.active')?.classList.remove('active');
+            document.querySelector('.contact-section.active')?.classList.remove('active');
+            
+            currentQuestion++;
+            
+            if (currentQuestion === 7) {
+                // Show contact form after question 6
+                document.querySelector('.contact-section').classList.add('active');
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('progressText').textContent = 'Almost done!';
+            } else if (currentQuestion <= 6) {
+                // Show next question
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function previousQuestion() {
+            // Handle going back from contact form
+            if (document.querySelector('.contact-section.active')) {
+                document.querySelector('.contact-section').classList.remove('active');
+                currentQuestion = 6;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                updateProgress();
+                return;
+            }
+            
+            // Hide current question
+            document.querySelector('.question-section.active')?.classList.remove('active');
+            
+            currentQuestion--;
+            
+            // Show previous question
+            document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+            updateProgress();
+        }
+
+        // Calculate results based on answers
+        function calculateResults() {
+            let riskScore = 0;
+            let turnoverRisk = 0;
+            let productivityGap = 0;
+            let employeeCount = 100; // Default
+            
+            // Q1: Company size - affects cost calculations
+            if (answers['1'] === '10-50') employeeCount = 30;
+            else if (answers['1'] === '51-250') employeeCount = 150;
+            else if (answers['1'] === '251-1000') employeeCount = 500;
+            else if (answers['1'] === '1000+') employeeCount = 2000;
+            
+            // Q2: Turnover rate
+            if (answers['2'] === '0-10') {
+                riskScore += 5;
+                turnoverRisk += 10;
+            } else if (answers['2'] === '10-20') {
+                riskScore += 15;
+                turnoverRisk += 20;
+            } else if (answers['2'] === '20-30') {
+                riskScore += 25;
+                turnoverRisk += 35;
+            } else if (answers['2'] === '30+') {
+                riskScore += 35;
+                turnoverRisk += 50;
+            }
+            
+            // Q3: Engagement level (1-5 scale, inverted for risk)
+            const engagement = parseInt(answers['3'] || 3);
+            riskScore += (6 - engagement) * 8;
+            productivityGap += (6 - engagement) * 10;
+            turnoverRisk += (6 - engagement) * 7;
+            
+            // Q4: Challenges (multi-select)
+            const challenges = answers['4'] || [];
+            const challengeImpact = {
+                'burnout': 8,
+                'retention': 7,
+                'productivity': 6,
+                'culture': 9,
+                'communication': 5,
+                'hybrid': 4,
+                'leadership': 7,
+                'stress': 6
+            };
+            
+            challenges.forEach(challenge => {
+                riskScore += challengeImpact[challenge] || 0;
+                if (challenge === 'burnout' || challenge === 'stress') {
+                    productivityGap += 8;
+                }
+                if (challenge === 'retention' || challenge === 'culture') {
+                    turnoverRisk += 10;
+                }
+            });
+            
+            // Q5: Burnout percentage
+            if (answers['5'] === '0-25') {
+                riskScore += 5;
+                productivityGap += 10;
+            } else if (answers['5'] === '25-50') {
+                riskScore += 15;
+                productivityGap += 20;
+            } else if (answers['5'] === '50-75') {
+                riskScore += 25;
+                productivityGap += 35;
+            } else if (answers['5'] === '75+') {
+                riskScore += 35;
+                productivityGap += 45;
+            }
+            
+            // Normalize scores
+            riskScore = Math.min(Math.max(riskScore, 0), 100);
+            turnoverRisk = Math.min(Math.max(turnoverRisk, 0), 80);
+            productivityGap = Math.min(Math.max(productivityGap, 0), 60);
+            
+            // Calculate cost based on company size and risk factors
+            const avgSalary = 75000;
+            const turnoverCost = (employeeCount * (turnoverRisk / 100) * avgSalary * 0.5);
+            const productivityCost = (employeeCount * avgSalary * (productivityGap / 100) * 0.2);
+            const totalCost = turnoverCost + productivityCost;
+            
+            return {
+                riskScore: Math.round(riskScore),
+                turnoverRisk: Math.round(turnoverRisk),
+                productivityGap: Math.round(productivityGap),
+                totalCost: totalCost
+            };
+        }
+
+        // Animate the risk meter
+        function animateRiskMeter(score) {
+            const circle = document.getElementById('riskMeterFill');
+            const scoreElement = document.getElementById('riskScore');
+            const labelElement = document.getElementById('riskLabel');
+            const descElement = document.getElementById('riskDescription');
+            
+            // Calculate stroke offset (565.48 is the circumference)
+            const circumference = 565.48;
+            const offset = circumference - (score / 100) * circumference;
+            
+            // Determine color and label based on score
+            let color, label, description;
+            if (score < 30) {
+                color = '#10B981'; // Green
+                label = 'LOW RISK';
+                description = 'Your workplace engagement is relatively healthy';
+            } else if (score < 50) {
+                color = '#F59E0B'; // Yellow
+                label = 'MODERATE RISK';
+                description = 'Some areas need attention to prevent issues';
+            } else if (score < 70) {
+                color = '#FF6B6B'; // Coral
+                label = 'HIGH RISK';
+                description = 'Significant risk for turnover and productivity loss';
+            } else {
+                color = '#EF4444'; // Red
+                label = 'CRITICAL RISK';
+                description = 'Immediate action needed to address workplace issues';
+            }
+            
+            // Animate the meter
+            setTimeout(() => {
+                circle.style.stroke = color;
+                circle.style.strokeDashoffset = offset;
+                scoreElement.style.color = color;
+                
+                // Animate the score number
+                let currentScore = 0;
+                const increment = score / 50;
+                const timer = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= score) {
+                        currentScore = score;
+                        clearInterval(timer);
+                    }
+                    scoreElement.textContent = Math.round(currentScore);
+                }, 30);
+                
+                labelElement.textContent = label;
+                descElement.textContent = description;
+            }, 500);
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            if (amount >= 1000000) {
+                return '$' + (amount / 1000000).toFixed(1) + 'M';
+            } else if (amount >= 1000) {
+                return '$' + Math.round(amount / 1000) + 'K';
+            } else {
+                return '$' + Math.round(amount);
+            }
+        }
+
+        // Helper function to get risk level text
+        function getRiskLevel(score) {
+            if (score < 30) return 'Low Risk';
+            if (score < 50) return 'Moderate Risk';
+            if (score < 70) return 'High Risk';
+            return 'Critical Risk';
+        }
+
+        // Show success notification
+        function showSuccessNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10B981;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = '✓ Assessment data saved successfully';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Handle form submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+            
+            // Calculate results
+            const results = calculateResults();
+            
+            // Prepare data for Google Sheets
+            const formData = new FormData(this);
+            const assessmentData = {
+                // Contact info
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                company: formData.get('company'),
+                jobTitle: formData.get('title'),
+                phone: formData.get('phone') || '',
+                
+                // Assessment answers
+                companySize: answers['1'] || '',
+                turnoverRate: answers['2'] || '',
+                engagementLevel: answers['3'] || '',
+                challenges: answers['4'] || [],
+                burnoutPercentage: answers['5'] || '',
+                budgetPriority: answers['6'] || '',
+                
+                // Calculated results
+                riskScore: results.riskScore,
+                riskLevel: getRiskLevel(results.riskScore),
+                annualCost: results.totalCost,
+                turnoverRisk: results.turnoverRisk,
+                productivityGap: results.productivityGap
+            };
+            
+            // Send to Google Sheets (only if URL is configured)
+            if (GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes('YOUR_SCRIPT_ID_HERE')) {
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Important for Google Apps Script
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(assessmentData)
+                    });
+                    
+                    console.log('Data sent successfully to Google Sheets');
+                    showSuccessNotification();
+                    
+                } catch (error) {
+                    console.error('Error sending data to Google Sheets:', error);
+                    // Still show results even if sheet update fails
+                }
+            } else {
+                console.log('Google Sheets URL not configured. Data:', assessmentData);
+            }
+            
+            // Update results display
+            animateRiskMeter(results.riskScore);
+            
+            // Animate other metrics
+            setTimeout(() => {
+                document.getElementById('costValue').textContent = formatCurrency(results.totalCost);
+                document.getElementById('turnoverRisk').textContent = results.turnoverRisk + '%';
+                document.getElementById('productivityGap').textContent = results.productivityGap + '%';
+                
+                // Update CTA text based on risk level
+                const ctaText = document.getElementById('ctaText');
+                if (results.riskScore >= 70) {
+                    ctaText.textContent = 'Clover Era can reduce your critical risk by 67% and save you ' + 
+                                         formatCurrency(results.totalCost * 0.67) + ' annually';
+                } else if (results.riskScore >= 50) {
+                    ctaText.textContent = 'Clover Era can reduce your turnover by 47% and boost engagement, saving ' + 
+                                         formatCurrency(results.totalCost * 0.47) + ' per year';
+                } else {
+                    ctaText.textContent = 'Clover Era can help maintain and improve your already good engagement levels';
+                }
+            }, 1000);
+            
+            // Hide contact form and show results
+            document.querySelector('.contact-section').classList.remove('active');
+            document.querySelector('.results-section').classList.add('active');
+            
+            // Hide progress bar
+            document.querySelector('.progress-container').style.display = 'none';
+            document.querySelector('.progress-text').style.display = 'none';
+            
+            // Reset button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    </script>
+</body>
+</html>

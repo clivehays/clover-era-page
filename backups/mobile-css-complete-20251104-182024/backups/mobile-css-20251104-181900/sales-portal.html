@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA Sales Portal - Internal Sales Resources</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" type="image/png" href="/images/Clover-era-new-logo-1.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --bronze: #C9A667;
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --dark-gray: #6B7280;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-gray);
+            padding-top: 0;
+        }
+
+        .header {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header img {
+            height: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .quick-link-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(70, 174, 184, 0.2);
+        }
+
+        .quick-link-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .quick-link-card h3 {
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            color: var(--primary-teal);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary-teal);
+        }
+
+        .section h3 {
+            color: var(--charcoal);
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .value-prop {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-teal);
+        }
+
+        .value-prop h4 {
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .stat-highlight {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 0.5rem 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .screenshot-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .screenshot-card:hover {
+            transform: scale(1.02);
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-card .caption {
+            padding: 1rem;
+            background: var(--light-gray);
+            text-align: center;
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .collateral-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .collateral-item {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .collateral-item:hover {
+            background: var(--primary-teal);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .collateral-item .icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .collateral-item .info h4 {
+            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .collateral-item .info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .talking-points {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .talking-points ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .talking-points li {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: var(--white);
+            border-radius: 8px;
+            border-left: 4px solid var(--success-green);
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .talking-points li::before {
+            content: "✓";
+            position: absolute;
+            left: 1rem;
+            color: var(--success-green);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .objection-handlers {
+            margin: 2rem 0;
+        }
+
+        .objection {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .objection .question {
+            color: var(--warning-orange);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .objection .answer {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .demo-link {
+            display: inline-block;
+            background: var(--primary-teal);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 1rem 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(70, 174, 184, 0.3);
+        }
+
+        .demo-link:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(70, 174, 184, 0.4);
+        }
+
+        .demo-link.secondary {
+            background: var(--charcoal);
+        }
+
+        .demo-link.secondary:hover {
+            background: var(--text-primary);
+        }
+
+        .competitive-advantages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .advantage {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .advantage .number {
+            font-size: 2.5rem;
+            color: var(--primary-teal);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .advantage .label {
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .pricing-guide {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.1));
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .pricing-guide h4 {
+            color: var(--primary-teal);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-guide ul {
+            list-style-position: inside;
+            line-height: 2;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .screenshots-grid,
+            .collateral-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/images/Clover-era-new-logo-1.png" alt="Clover ERA Logo">
+        <h1>Clover ERA Sales Portal</h1>
+        <p>Internal Sales Resources & Platform Overview</p>
+    </div>
+
+    <div class="container">
+        <!-- Quick Links Section -->
+        <div class="quick-links">
+            <a href="#value-props" class="quick-link-card">
+                <div class="icon">🎯</div>
+                <h3>Value Props</h3>
+                <p>Key selling points</p>
+            </a>
+            <a href="#screenshots" class="quick-link-card">
+                <div class="icon">📸</div>
+                <h3>Screenshots</h3>
+                <p>Platform demos</p>
+            </a>
+            <a href="#collateral" class="quick-link-card">
+                <div class="icon">📁</div>
+                <h3>Collateral</h3>
+                <p>Downloads & PDFs</p>
+            </a>
+            <a href="#battle-cards" class="quick-link-card">
+                <div class="icon">🎴</div>
+                <h3>Battle Cards</h3>
+                <p>Proven call scripts</p>
+            </a>
+            <a href="#talking-points" class="quick-link-card">
+                <div class="icon">💬</div>
+                <h3>Talking Points</h3>
+                <p>Sales scripts</p>
+            </a>
+            <a href="#objections" class="quick-link-card">
+                <div class="icon">❓</div>
+                <h3>Objections</h3>
+                <p>Handle concerns</p>
+            </a>
+            <a href="#competitive" class="quick-link-card">
+                <div class="icon">⚡</div>
+                <h3>Competitive Edge</h3>
+                <p>Why we win</p>
+            </a>
+        </div>
+
+        <!-- Platform Overview Section -->
+        <div class="section" id="overview">
+            <h2>🚀 Platform Overview</h2>
+            <p style="font-size: 1.2rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem;">
+                Clover ERA is an <strong>AI-powered employee engagement platform</strong> that uses neuroscience and predictive analytics
+                to help organizations reduce burnout, prevent turnover, and improve employee wellbeing in real-time.
+            </p>
+
+            <div class="competitive-advantages">
+                <div class="advantage">
+                    <div class="number">67%</div>
+                    <div class="label">Burnout Reduction</div>
+                </div>
+                <div class="advantage">
+                    <div class="number">$4.2M</div>
+                    <div class="label">Average Annual Savings</div>
+                </div>
+                <div class="advantage">
+                    <div class="number">6 Months</div>
+                    <div class="label">Turnover Prediction Window</div>
+                </div>
+                <div class="advantage">
+                    <div class="number">7 Days</div>
+                    <div class="label">Time to First Results</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Value Propositions Section -->
+        <div class="section" id="value-props">
+            <h2>🎯 Core Value Propositions</h2>
+
+            <div class="value-props">
+                <div class="value-prop">
+                    <h4>AI-Powered Predictive Analytics</h4>
+                    <p>Our AI predicts which employees will leave <span class="stat-highlight">6 months before they resign</span>,
+                    enabling proactive retention strategies.</p>
+                </div>
+
+                <div class="value-prop">
+                    <h4>Neuroscience-Based Metrics</h4>
+                    <p>Unlike traditional surveys, we measure brain-based engagement signals linked to stress, cognitive load,
+                    and psychological safety using the proprietary CLOVER Framework.</p>
+                </div>
+
+                <div class="value-prop">
+                    <h4>Real-Time Insights</h4>
+                    <p>Daily engagement data (not annual surveys) means managers can intervene before problems escalate.
+                    <span class="stat-highlight">Minutes per day</span> to transform engagement.</p>
+                </div>
+
+                <div class="value-prop">
+                    <h4>Proven ROI: $330K Annual Savings</h4>
+                    <p>For a team of 250 employees, reducing disengagement by just 10% saves <span class="stat-highlight">$330,000 annually</span>.
+                    Platform cost: only $0.20 per employee per day.</p>
+                </div>
+
+                <div class="value-prop">
+                    <h4>Productivity Gains: 18-25%</h4>
+                    <p>Neuroscience-driven engagement strategies boost productivity by <span class="stat-highlight">18-25%</span>,
+                    directly enhancing output and performance.</p>
+                </div>
+
+                <div class="value-prop">
+                    <h4>Retention Improvement: 17-30%</h4>
+                    <p>Proactive engagement reduces voluntary turnover by <span class="stat-highlight">17-30%</span>,
+                    significantly lowering recruitment and training costs.</p>
+                </div>
+
+                <div class="value-prop">
+                    <h4>100% Beta Success Rate</h4>
+                    <p>Every beta client continued after their trial - our platform delivers measurable results immediately.</p>
+                </div>
+
+                <div class="value-prop">
+                    <h4>15-Minute Setup</h4>
+                    <p>Quick onboarding with dedicated founder support. No lengthy implementations or complex integrations.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 3rem; color: var(--primary-teal);">💰 The True Cost of Disengagement</h3>
+            <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(245, 158, 11, 0.1)); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    According to Gallup, disengaged employees cost companies approximately <strong style="color: var(--warning-orange);">$13,200 per year per employee</strong>.
+                    Globally, disengagement-related losses exceed trillions annually, significantly impacting profitability and growth potential.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
+                    <strong>Clover ERA transforms this cost into competitive advantage</strong> through neuroscience-driven engagement strategies
+                    that deliver measurable financial and operational benefits.
+                </p>
+            </div>
+        </div>
+
+        <!-- Screenshots Section -->
+        <div class="section" id="screenshots">
+            <h2>📸 Platform Screenshots & Features</h2>
+            <p style="margin-bottom: 2rem;">Show prospects these visuals to demonstrate platform capabilities:</p>
+
+            <div class="screenshots-grid">
+                <div class="screenshot-card">
+                    <img src="/images/Employee-Engagement-Active-Management-Dashboard.png" alt="Clover ERA Dashboard">
+                    <div class="caption">Real-Time Engagement Dashboard</div>
+                </div>
+
+                <div class="screenshot-card">
+                    <img src="/images/Employee-Engagement-Analytics.png" alt="AI Analytics">
+                    <div class="caption">AI-Powered Predictive Analytics</div>
+                </div>
+
+                <div class="screenshot-card">
+                    <img src="/Employee-Engagement-Active-Management.webp" alt="Active Management">
+                    <div class="caption">Active Employee Engagement Management</div>
+                </div>
+
+                <div class="screenshot-card">
+                    <img src="/images/Employee-Real-time-stress-monitoring.png" alt="Stress Monitoring">
+                    <div class="caption">Real-Time Stress Monitoring</div>
+                </div>
+
+                <div class="screenshot-card">
+                    <img src="/images/ai-burnout-prevention.png" alt="Burnout Prevention">
+                    <div class="caption">AI Burnout Prevention System</div>
+                </div>
+
+                <div class="screenshot-card">
+                    <img src="/images/Transform-Employee-Engagement.png" alt="Transformation">
+                    <div class="caption">Employee Engagement Transformation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloadable Collateral Section -->
+        <div class="section" id="collateral">
+            <h2>📁 Downloadable Sales Collateral</h2>
+            <p style="margin-bottom: 2rem;">Share these resources with prospects:</p>
+
+            <h3 style="color: var(--primary-teal); margin-top: 2rem;">📥 Sales Pack PDFs (Partner Materials)</h3>
+            <div class="collateral-grid">
+                <a href="/downloads/Clover-ERA-Company-Overview.pdf" class="collateral-item" download>
+                    <div class="icon">🏢</div>
+                    <div class="info">
+                        <h4>Company Overview</h4>
+                        <p>Mission, values & why Clover ERA</p>
+                    </div>
+                </a>
+
+                <a href="/downloads/Clover-ERA-Value-Proposition-ROI.pdf" class="collateral-item" download>
+                    <div class="icon">💰</div>
+                    <div class="info">
+                        <h4>Value Proposition & ROI</h4>
+                        <p>Cost of disengagement, savings</p>
+                    </div>
+                </a>
+
+                <a href="/downloads/Sales-Call-Battle-Cards.pdf" class="collateral-item" download>
+                    <div class="icon">🎴</div>
+                    <div class="info">
+                        <h4>Sales Call Battle Cards</h4>
+                        <p>3 proven call scripts</p>
+                    </div>
+                </a>
+
+                <a href="/downloads/employee-engagement-guide.pdf" class="collateral-item" download>
+                    <div class="icon">📄</div>
+                    <div class="info">
+                        <h4>Employee Engagement Guide</h4>
+                        <p>Comprehensive platform overview</p>
+                    </div>
+                </a>
+
+                <a href="/downloads/The Neuroscience of Employee Engagement - Preview.pdf" class="collateral-item" download>
+                    <div class="icon">🧠</div>
+                    <div class="info">
+                        <h4>Neuroscience Preview</h4>
+                        <p>Science behind our approach</p>
+                    </div>
+                </a>
+            </div>
+
+            <h3 style="color: var(--primary-teal); margin-top: 2rem;">🔗 Interactive Tools & Resources</h3>
+            <div class="collateral-grid">
+                <a href="/calculator/index.html" class="collateral-item" target="_blank">
+                    <div class="icon">🧮</div>
+                    <div class="info">
+                        <h4>ROI Calculator</h4>
+                        <p>Calculate prospect savings</p>
+                    </div>
+                </a>
+
+                <a href="/assessment/index.html" class="collateral-item" target="_blank">
+                    <div class="icon">📊</div>
+                    <div class="info">
+                        <h4>Free Assessment</h4>
+                        <p>Engagement health check</p>
+                    </div>
+                </a>
+
+                <a href="/pricing/index.html" class="collateral-item" target="_blank">
+                    <div class="icon">💵</div>
+                    <div class="info">
+                        <h4>Pricing Information</h4>
+                        <p>Plans and packages</p>
+                    </div>
+                </a>
+
+                <a href="/implementation-guide.html" class="collateral-item" target="_blank">
+                    <div class="icon">📋</div>
+                    <div class="info">
+                        <h4>Implementation Guide</h4>
+                        <p>How to get started</p>
+                    </div>
+                </a>
+
+                <a href="/clover-framework.html" class="collateral-item" target="_blank">
+                    <div class="icon">🍀</div>
+                    <div class="info">
+                        <h4>CLOVER Framework</h4>
+                        <p>Neuroscience methodology</p>
+                    </div>
+                </a>
+
+                <a href="/" class="collateral-item" target="_blank">
+                    <div class="icon">🌐</div>
+                    <div class="info">
+                        <h4>Main Website</h4>
+                        <p>Share with prospects</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sales Battle Cards Section -->
+        <div class="section" id="battle-cards">
+            <h2>🎴 Sales Call Battle Cards</h2>
+            <p style="margin-bottom: 2rem;">Use these proven scripts based on prospect type and pain points:</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin: 2rem 0;">
+
+                <!-- Straight Line Persuasion Card -->
+                <div style="background: linear-gradient(135deg, rgba(219, 39, 119, 0.1), rgba(236, 72, 153, 0.1)); padding: 2rem; border-radius: 12px; border-left: 5px solid #DB2777;">
+                    <h3 style="color: #DB2777; margin-bottom: 1.5rem;">Straight Line Persuasion</h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Opening</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Thanks for taking the time today—I know you're busy. Real quick, have you ever felt like your teams aren't giving their all?"
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Pain Exploration</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "So you're seeing productivity dips, turnover creeping up, and maybe even burnout signs. Am I right?"
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Pitch (Logical, Emotional, Urgency)</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Look, engagement isn't just a number—it's your bottom line bleeding money daily. Clover ERA leverages neuroscience,
+                            giving managers daily, actionable insights to immediately drive results. Imagine cutting turnover by 20% and raising
+                            productivity by at least 15%. That's what we deliver, fast and reliably."
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Close</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Let's get a quick 60-day trial going. No risk, all reward—sound good?"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Big Action Card -->
+                <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1)); padding: 2rem; border-radius: 12px; border-left: 5px solid #3B82F6;">
+                    <h3 style="color: #3B82F6; margin-bottom: 1.5rem;">Big Action (High Urgency)</h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Opening</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Hey, appreciate you jumping on this call. Let's skip straight to the truth—employee disengagement is costing you a fortune
+                            right now. Do you know how much?"
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Pain Exploration</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Exactly! High turnover, low productivity, constant firefighting. It's expensive and exhausting. You need results now, not a
+                            year from now."
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Pitch (Logical, Emotional, Urgency)</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Clover ERA isn't another survey. It's an engagement operating system built on real-time neuroscience—your managers get
+                            actionable daily nudges, proven to supercharge performance and drastically cut turnover. We're talking real money saved,
+                            real productivity gained. You don't need another pitch—you need a solution."
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Close</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Let's stop the bleeding now—let's lock in a free 60-day pilot today. Fair enough?"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Leadership & Coaching Card -->
+                <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(74, 222, 128, 0.1)); padding: 2rem; border-radius: 12px; border-left: 5px solid #22C55E;">
+                    <h3 style="color: #22C55E; margin-bottom: 1.5rem;">Leadership & Coaching</h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Opening</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Thanks for connecting. Quick question: Do your managers feel overwhelmed, firefighting instead of leading?"
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Pain Exploration</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "I get it—constant disengagement and burnout mean your leaders aren't able to coach effectively or proactively handle
+                            issues. That's tough."
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Pitch (Logical, Emotional, Urgency)</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "Here's the great news—Clover ERA gives your managers the precise, actionable insights they need daily, built on powerful
+                            neuroscience. It turns overwhelmed managers into proactive leaders. They'll see measurable shifts in engagement,
+                            productivity, and team culture almost immediately."
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 style="color: var(--charcoal); font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Close</h4>
+                        <p style="background: white; padding: 1rem; border-radius: 8px; font-style: italic;">
+                            "How about we give your team a 60-day pilot and let the results do the talking? Let's empower your managers to lead
+                            again—deal?"
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: var(--light-gray); padding: 2rem; border-radius: 10px; margin-top: 2rem; border-left: 4px solid var(--primary-teal);">
+                <h4 style="color: var(--primary-teal); margin-bottom: 1rem;">💡 Battle Card Selection Guide</h4>
+                <ul style="line-height: 2;">
+                    <li><strong>Straight Line Persuasion:</strong> Use for balanced prospects who need logical + emotional appeal</li>
+                    <li><strong>Big Action:</strong> Use when urgency is high and prospect needs immediate solution</li>
+                    <li><strong>Leadership & Coaching:</strong> Use when speaking to managers/directors focused on team development</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Talking Points Section -->
+        <div class="section" id="talking-points">
+            <h2>💬 Key Talking Points for Prospects</h2>
+
+            <div class="talking-points">
+                <h3>Opening Conversation</h3>
+                <ul>
+                    <li>"Most companies lose $4.2M annually to preventable employee turnover. Our AI predicts who's at risk 6 months before they leave."</li>
+                    <li>"Traditional engagement surveys are dead - you get data once a year when it's too late. Our AI gives you real-time insights daily."</li>
+                    <li>"We combine neuroscience with AI to measure what actually drives engagement, not vanity metrics."</li>
+                </ul>
+
+                <h3>ROI Discussion</h3>
+                <ul>
+                    <li>"Every employee who leaves costs 1.5x their salary in replacement costs. Our platform pays for itself by preventing just 2-3 resignations."</li>
+                    <li>"Most clients see positive ROI within 30 days - typically through retention of one key employee."</li>
+                    <li>"We've helped companies reduce burnout by 67% and improve retention by 47% with measurable results."</li>
+                </ul>
+
+                <h3>Competitive Differentiation</h3>
+                <ul>
+                    <li>"Unlike traditional survey tools, our AI is predictive, not reactive. We tell you what's going to happen before it does."</li>
+                    <li>"We're the only platform combining neuroscience-based metrics with AI-powered turnover prediction."</li>
+                    <li>"100% of our beta clients continued after their trial - our results speak for themselves."</li>
+                </ul>
+
+                <h3>Closing Points</h3>
+                <ul>
+                    <li>"We offer a 30-day free trial with no commitment. You'll see results within 7 days."</li>
+                    <li>"Setup takes 15 minutes, and you get direct founder support throughout implementation."</li>
+                    <li>"Only 20 early adopter spots left for Q4 2025 with locked-in pricing for 3 years."</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Objection Handlers Section -->
+        <div class="section" id="objections">
+            <h2>❓ Handling Common Objections</h2>
+
+            <div class="objection-handlers">
+                <div class="objection">
+                    <div class="question">🤔 "We already use [engagement survey tool]"</div>
+                    <div class="answer">
+                        <strong>Response:</strong> "That's great you're measuring engagement. But surveys are reactive - they tell you what already happened.
+                        Our AI is predictive - we tell you who's going to leave 6 months before they do, so you can actually prevent turnover.
+                        Most clients use us alongside their existing surveys for the predictive capabilities they're missing."
+                    </div>
+                </div>
+
+                <div class="objection">
+                    <div class="question">🤔 "This seems expensive"</div>
+                    <div class="answer">
+                        <strong>Response:</strong> "I understand. Let's look at the math: Losing just one employee costs 1.5x their salary.
+                        If you have an average salary of $75K, that's $112,500 per person. Our platform pays for itself by preventing 2-3 resignations annually.
+                        Can I show you our ROI calculator with your specific numbers?"
+                    </div>
+                </div>
+
+                <div class="objection">
+                    <div class="question">🤔 "We don't have time for another implementation"</div>
+                    <div class="answer">
+                        <strong>Response:</strong> "Completely understand - you're busy. That's exactly why our setup takes just 15 minutes.
+                        No lengthy integration, no IT requirements. You get founder-level support throughout, and you'll see your first insights within 7 days.
+                        It's actually designed to save you time by catching problems before they become crises."
+                    </div>
+                </div>
+
+                <div class="objection">
+                    <div class="question">🤔 "Our employees won't participate"</div>
+                    <div class="answer">
+                        <strong>Response:</strong> "That's a valid concern. The difference is our platform is built on neuroscience, not opinion surveys.
+                        Employees actually appreciate it because we help them before they reach burnout. In our beta, we saw 89% daily participation rates
+                        because the platform helps employees feel heard and supported - it's not just another survey they're asked to fill out."
+                    </div>
+                </div>
+
+                <div class="objection">
+                    <div class="question">🤔 "We need to think about it / talk to our team"</div>
+                    <div class="answer">
+                        <strong>Response:</strong> "Absolutely - this should be a team decision. How about this: Let's book a 15-minute demo where
+                        you can bring your team and they can see the platform in action. We also offer a 30-day free trial so you can test it risk-free.
+                        What concerns should we address in that demo to help your team evaluate this properly?"
+                    </div>
+                </div>
+
+                <div class="objection">
+                    <div class="question">🤔 "Can you prove this actually works?"</div>
+                    <div class="answer">
+                        <strong>Response:</strong> "Great question - I'd be skeptical too. Here are the facts: 100% of our beta clients (IT services,
+                        SaaS, cybersecurity companies with 200-500 employees) continued after their trial. Average results include 67% reduction in burnout,
+                        47% improvement in retention, and $4.2M average annual savings. We can share case studies that match your industry.
+                        Plus, the 30-day free trial lets you verify results with your own team before committing."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLOVER Framework Section -->
+        <div class="section" id="clover-framework">
+            <h2>🍀 The CLOVER Framework</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                Our proprietary <strong>Engagement Operating System</strong> is built on the CLOVER Framework—engineered to support
+                and optimize brain chemistry for enhanced productivity, innovation, and retention.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                <div style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05)); padding: 2rem; border-radius: 12px; border-top: 4px solid var(--primary-teal);">
+                    <h4 style="color: var(--primary-teal); font-size: 1.3rem; margin-bottom: 0.75rem;">C - Communication</h4>
+                    <p style="line-height: 1.7;">Open, transparent dialogue that builds trust and psychological safety within teams.</p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05)); padding: 2rem; border-radius: 12px; border-top: 4px solid var(--primary-teal);">
+                    <h4 style="color: var(--primary-teal); font-size: 1.3rem; margin-bottom: 0.75rem;">L - Learning</h4>
+                    <p style="line-height: 1.7;">Continuous growth opportunities that stimulate dopamine and drive intrinsic motivation.</p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05)); padding: 2rem; border-radius: 12px; border-top: 4px solid var(--primary-teal);">
+                    <h4 style="color: var(--primary-teal); font-size: 1.3rem; margin-bottom: 0.75rem;">O - Opportunity</h4>
+                    <p style="line-height: 1.7;">Clear pathways for advancement and meaningful contribution that foster purpose.</p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05)); padding: 2rem; border-radius: 12px; border-top: 4px solid var(--primary-teal);">
+                    <h4 style="color: var(--primary-teal); font-size: 1.3rem; margin-bottom: 0.75rem;">V - Vulnerability</h4>
+                    <p style="line-height: 1.7;">Safe spaces for authenticity and risk-taking that enable innovation and creativity.</p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05)); padding: 2rem; border-radius: 12px; border-top: 4px solid var(--primary-teal);">
+                    <h4 style="color: var(--primary-teal); font-size: 1.3rem; margin-bottom: 0.75rem;">E - Enablement</h4>
+                    <p style="line-height: 1.7;">Resources and support that remove barriers and empower high performance.</p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05)); padding: 2rem; border-radius: 12px; border-top: 4px solid var(--primary-teal);">
+                    <h4 style="color: var(--primary-teal); font-size: 1.3rem; margin-bottom: 0.75rem;">R - Reflection</h4>
+                    <p style="line-height: 1.7;">Regular feedback loops that facilitate growth and continuous improvement.</p>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(70, 174, 184, 0.15), rgba(13, 124, 136, 0.1)); padding: 2rem; border-radius: 10px; margin-top: 2rem;">
+                <h4 style="color: var(--charcoal); margin-bottom: 1rem;">🧠 Neuroscience Foundation</h4>
+                <p style="line-height: 1.8;">
+                    The CLOVER Framework is grounded in neuroscience, designed to optimize key neurochemicals:
+                    <strong>dopamine</strong> (motivation), <strong>oxytocin</strong> (connection), <strong>serotonin</strong> (wellbeing),
+                    and <strong>endorphins</strong> (stress relief). By actively managing these drivers, managers create environments
+                    where teams naturally thrive.
+                </p>
+            </div>
+        </div>
+
+        <!-- Competitive Advantages Section -->
+        <div class="section" id="competitive">
+            <h2>⚡ Why Prospects Choose Clover ERA</h2>
+
+            <div class="talking-points">
+                <ul>
+                    <li><strong>AI-Powered Prediction:</strong> Only platform that predicts turnover 6 months in advance with neuroscience-based metrics</li>
+                    <li><strong>Real-Time Data:</strong> Daily insights vs annual surveys - catch problems before they escalate</li>
+                    <li><strong>Proven ROI:</strong> Average $4.2M annual savings, positive ROI in 30 days for most clients</li>
+                    <li><strong>Neuroscience Foundation:</strong> Measures actual engagement drivers (stress, cognitive load) not opinions</li>
+                    <li><strong>100% Beta Success:</strong> Every pilot client continued - unprecedented in the industry</li>
+                    <li><strong>Rapid Implementation:</strong> 15-minute setup vs. weeks/months for competitors</li>
+                    <li><strong>Founder Support:</strong> Direct access to founders throughout implementation and beyond</li>
+                    <li><strong>Early Adopter Benefits:</strong> Locked pricing for 3 years, direct product influence, preferred support</li>
+                    <li><strong>Industry Expertise:</strong> Built specifically for IT services, SaaS, and cybersecurity companies (200-500 employees)</li>
+                    <li><strong>Risk-Free Trial:</strong> 30-day free pilot with no commitment - see results before you buy</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Pricing Guide Section -->
+        <div class="section">
+            <h2>💰 Pricing Guidance</h2>
+
+            <div class="pricing-guide">
+                <h4>Standard Pricing Structure:</h4>
+                <ul>
+                    <li><strong>Small Teams (50-200 employees):</strong> Custom pricing based on needs</li>
+                    <li><strong>Mid-Size (200-500 employees):</strong> Target market - competitive enterprise pricing</li>
+                    <li><strong>Early Adopter Program:</strong> Special pricing locked for 3 years + additional benefits</li>
+                    <li><strong>30-Day Free Trial:</strong> Full platform access, no credit card required</li>
+                    <li><strong>ROI Guarantee:</strong> Most clients see savings within 30 days that exceed platform cost</li>
+                </ul>
+                <p style="margin-top: 1rem; font-style: italic;">
+                    💡 Always use the ROI calculator to demonstrate value before discussing price.
+                    Focus on cost of turnover prevented, not cost of platform.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="/pricing/index.html" class="demo-link">View Full Pricing Page</a>
+            </div>
+        </div>
+
+        <!-- Demo Links Section -->
+        <div class="section">
+            <h2>🎬 Schedule Demos & Get Started</h2>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="demo-link" target="_blank">
+                    Book Live Demo
+                </a>
+                <a href="/30-day-free-pilot/index.html" class="demo-link secondary" target="_blank">
+                    Start Free Trial
+                </a>
+                <a href="/" class="demo-link secondary" target="_blank">
+                    Main Website
+                </a>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="section">
+            <h2>📞 Sales Support</h2>
+            <p style="font-size: 1.1rem; line-height: 2;">
+                <strong>Questions about closing a deal?</strong><br>
+                📧 Email: <a href="mailto:contact@cloverera.com" style="color: var(--primary-teal);">contact@cloverera.com</a><br>
+                📞 Phone: <a href="tel:+12129184448" style="color: var(--primary-teal);">(212) 918-4448</a><br>
+                🗓️ Schedule: <a href="https://calendly.com/clive-hays-cloverera/30min" target="_blank" style="color: var(--primary-teal);">Book Internal Strategy Call</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add print functionality
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

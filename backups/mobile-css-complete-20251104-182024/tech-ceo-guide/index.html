@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech CEO's Guide to Developer Retention</title>
+    <meta name="description" content="Tech CEOs: Your developers aren't leaving for money. Discover the neuroscience behind why engineers quit and how to cut turnover by 47% in 30 days.">
+    <meta name="keywords" content="developer retention, tech employee engagement, engineering turnover, software developer satisfaction, tech company culture">
+    <link rel="canonical" href="https://cloverera.com/tech-ceo-guide/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="The Tech CEO's Guide to Developer Retention">
+    <meta property="og:description" content="Stop losing $300K per developer. Get the neuroscience-backed playbook used by 200+ tech companies.">
+    <meta property="og:image" content="/images/tech-ceo-guide-og.jpg">
+    
+    <script src="/js/header.js"></script>
+    
+    <style>
+        :root {
+            --primary-teal: #30D5C8;
+            --coral: #FF6B6B;
+            --charcoal: #2D3E50;
+            --white: #FFFFFF;
+            --light-gray: #F7F9FB;
+            --text-primary: #2D3E50;
+            --text-secondary: #5A6C7D;
+            --border-light: #E8ECF0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: var(--white);
+        }
+
+        /* Hero Section - adjusted for standard header */
+        .hero {
+            padding: 6rem 2rem 4rem;
+            background: linear-gradient(135deg, var(--light-gray) 0%, rgba(48, 213, 200, 0.05) 100%);
+            margin-top: 100px; /* Increased gap from header */
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--charcoal);
+        }
+
+        .hero-title .highlight {
+            color: var(--coral);
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+        }
+
+        .hero-cta {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 3rem;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Pain Points Grid */
+        .pain-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .pain-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--coral);
+        }
+
+        .pain-metric {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--coral);
+            margin-bottom: 0.5rem;
+        }
+
+        .pain-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 4rem 2rem;
+            background: var(--charcoal);
+            color: var(--white);
+        }
+
+        .calculator-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .calculator-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .calculator-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .calc-input {
+            text-align: left;
+        }
+
+        .calc-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .calc-input input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            font-size: 1.1rem;
+        }
+
+        .calc-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 12px;
+            border: 2px solid var(--coral);
+        }
+
+        .calc-result-label {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .calc-result-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--coral);
+        }
+
+        /* Problem Section */
+        .problem-section {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+
+        .section-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--charcoal);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .problem-card {
+            padding: 2rem;
+            background: var(--light-gray);
+            border-radius: 12px;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .problem-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--coral);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .problem-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--charcoal);
+        }
+
+        .problem-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Solution Section */
+        .solution-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(48, 213, 200, 0.05) 0%, var(--light-gray) 100%);
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .solution-content h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--charcoal);
+        }
+
+        .solution-features {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .solution-features li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: start;
+        }
+
+        .solution-features li:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: var(--primary-teal);
+            font-weight: bold;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 2rem;
+            background: var(--charcoal);
+            color: var(--white);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-card {
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Testimonial Section */
+        .testimonial-section {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+
+        .testimonial-card {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: var(--light-gray);
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+        }
+
+        .quote-icon {
+            font-size: 3rem;
+            color: var(--coral);
+            opacity: 0.3;
+            position: absolute;
+            top: 1rem;
+            left: 2rem;
+        }
+
+        .testimonial-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .testimonial-role {
+            color: var(--text-secondary);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-teal) 0%, #27B5A9 100%);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .cta-input {
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            font-size: 1rem;
+            min-width: 250px;
+        }
+
+        .cta-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .cta-button {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 2rem;
+            background: var(--charcoal);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .solution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pain-points {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1 class="hero-title">
+                Your Developers Aren't Leaving for Money.
+                <span class="highlight">They're Leaving Because of This.</span>
+            </h1>
+            <p class="hero-subtitle">
+                The average tech company loses $4.2M annually to preventable developer turnover. 
+                Here's the neuroscience-backed playbook that's helping 200+ tech CEOs cut attrition by 47%.
+            </p>
+            
+            <a href="#get-guide" class="hero-cta">Download Free Chapter</a>
+
+            <div class="pain-points">
+                <div class="pain-card">
+                    <div class="pain-metric">$312,000</div>
+                    <div class="pain-label">Cost per senior developer exit</div>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-metric">18 weeks</div>
+                    <div class="pain-label">Average time to backfill</div>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-metric">67%</div>
+                    <div class="pain-label">Productivity loss during ramp</div>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-metric">3.2x</div>
+                    <div class="pain-label">Cascade effect on team morale</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="calculator-section">
+        <div class="calculator-container">
+            <h2 class="calculator-title">Calculate Your Developer Turnover Cost</h2>
+            <p class="calculator-subtitle">See what disengagement is really costing your company</p>
+            
+            <div class="calculator-grid">
+                <div class="calc-input">
+                    <label for="devs">Number of Developers</label>
+                    <input type="number" id="devs" value="50" min="1">
+                </div>
+                <div class="calc-input">
+                    <label for="salary">Average Salary ($)</label>
+                    <input type="number" id="salary" value="150000" min="1">
+                </div>
+                <div class="calc-input">
+                    <label for="turnover">Annual Turnover Rate (%)</label>
+                    <input type="number" id="turnover" value="22" min="0" max="100">
+                </div>
+            </div>
+            
+            <div class="calc-result">
+                <div class="calc-result-label">Your Annual Turnover Cost</div>
+                <div class="calc-result-value" id="result">$3,465,000</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="section-container">
+            <h2 class="section-title">Why Traditional Engagement Strategies Fail in Tech</h2>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">⚡</div>
+                    <h3>Surveys Are Too Slow</h3>
+                    <p>By the time quarterly surveys reveal problems, your best developers have already updated their LinkedIn profiles and started interviewing.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🎯</div>
+                    <h3>Generic Solutions Don't Work</h3>
+                    <p>Ping pong tables and free snacks don't address why engineers actually leave: lack of autonomy, unclear growth paths, and toxic team dynamics.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🧠</div>
+                    <h3>You're Fighting Biology</h3>
+                    <p>Developer brains are wired differently. Traditional management approaches trigger threat responses that shut down creativity and problem-solving.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section">
+        <div class="section-container">
+            <h2 class="section-title">The Neuroscience Advantage</h2>
+            
+            <div class="solution-grid">
+                <div class="solution-content">
+                    <h3>Real-Time Engagement Intelligence</h3>
+                    <p>Stop managing by intuition. Get daily pulse data that reveals team health issues 60 days before they become resignations.</p>
+                    
+                    <ul class="solution-features">
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>30-Second Daily Check-ins</strong><br>
+                                Non-intrusive pulse surveys that developers actually complete
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Pattern Recognition AI</strong><br>
+                                Identifies flight risk signals specific to technical teams
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Manager Action Playbooks</strong><br>
+                                Automated interventions that work for engineering culture
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="solution-content">
+                    <h3>Built for Scale-Up Challenges</h3>
+                    <p>Designed specifically for 200-500 person tech companies facing hypergrowth pressures.</p>
+                    
+                    <ul class="solution-features">
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Team-Level Analytics</strong><br>
+                                Track engagement by squad, tribe, or product area
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>Integration Ready</strong><br>
+                                Works with Slack, JIRA, and your existing dev tools
+                            </div>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <div>
+                                <strong>SOC 2 Compliant</strong><br>
+                                Enterprise-grade security your CISO will approve
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">47%</div>
+                <div class="stat-label">Reduction in Developer Turnover</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">31%</div>
+                <div class="stat-label">Increase in Sprint Velocity</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$2.8M</div>
+                <div class="stat-label">Average Annual Savings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">14 Days</div>
+                <div class="stat-label">To First Measurable Impact</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonial-section">
+        <div class="testimonial-card">
+            <span class="quote-icon">"</span>
+            <p class="testimonial-text">
+                "We were hemorrhaging senior engineers to FAANG companies. Clover ERA showed us it wasn't about compensation – 
+                it was about psychological safety and growth clarity. Within 30 days, we identified and fixed three critical team dynamics. 
+                Our attrition dropped from 28% to 15%, saving us over $3M this year alone."
+            </p>
+            <div class="testimonial-author">Sarah Chen</div>
+            <div class="testimonial-role">CEO, 400-person FinTech (Series C)</div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="get-guide">
+        <div class="cta-container">
+            <h2 class="cta-title">Get Your Free Tech CEO Survival Guide</h2>
+            <p class="cta-subtitle">
+                Download Chapter 3 of "The Trillion Dollar Problem" – 
+                rewritten specifically for technology companies
+            </p>
+            
+            <form class="cta-form" id="guide-form">
+                <input type="email" class="cta-input" placeholder="your@company.com" required>
+                <button type="submit" class="cta-button">Get Free Chapter</button>
+            </form>
+            
+            <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.9;">
+                📊 Includes: Developer Turnover Calculator + 30-Day Action Plan
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
+            <a href="/">Back to Main Site</a>
+        </div>
+        <p style="opacity: 0.7;">© 2025 Clover ERA. Leading with Neuroscience. Changing the Future of Work.</p>
+    </footer>
+
+    <script>
+        // Calculator functionality
+        function calculateCost() {
+            const devs = parseInt(document.getElementById('devs').value) || 0;
+            const salary = parseInt(document.getElementById('salary').value) || 0;
+            const turnover = parseInt(document.getElementById('turnover').value) || 0;
+            
+            // Cost calculation: (devs * turnover rate) * (salary * 2.1 replacement cost multiplier)
+            const turnoversPerYear = devs * (turnover / 100);
+            const costPerTurnover = salary * 2.1; // Industry standard replacement cost
+            const totalCost = turnoversPerYear * costPerTurnover;
+            
+            // Format and display result
+            const formattedCost = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(totalCost);
+            
+            document.getElementById('result').textContent = formattedCost;
+        }
+
+        // Add event listeners
+        document.getElementById('devs').addEventListener('input', calculateCost);
+        document.getElementById('salary').addEventListener('input', calculateCost);
+        document.getElementById('turnover').addEventListener('input', calculateCost);
+
+        // Initial calculation
+        calculateCost();
+
+        // Form submission
+        document.getElementById('guide-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you! Check your email for the free chapter and calculator.');
+            // In production, this would integrate with your email service
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Apply animations to cards
+        document.querySelectorAll('.problem-card, .pain-card, .stat-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+    <!-- Cookie Consent - Add to every page -->
+    <script src="/js/cookie-consent.js"></script>
+</body>
+</html>

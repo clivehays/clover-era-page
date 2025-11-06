@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/js/header.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workplace Solutions Hub</title>
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+    
+    <!-- Essential SEO Meta Tags -->
+    <meta name="description" content="Workplace solutions: burnout prevention, retention strategies, toxic management fixes, productivity & culture transformation.">
+    <meta name="keywords" content="workplace solutions, employee burnout solutions, retention crisis, toxic management, productivity loss, employee stress management, workplace anxiety, employee wellbeing programs, mental health support, quiet quitting, culture transformation, change management">
+    <meta name="author" content="Clover Era">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://cloverera.com/workplace-solutions/">
+    
+    <!-- GEO Tags -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="United States">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Workplace Solutions Hub | 30+ Employee Performance Solutions">
+    <meta property="og:description" content="Complete workplace solutions: burnout prevention, retention strategies, toxic management fixes, productivity optimization. Evidence-based approaches with proven ROI.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/workplace-solutions/">
+    <meta property="og:image" content="https://cloverera.com/images/workplace-solutions-hub.jpg">
+    <meta property="og:site_name" content="Clover Era">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #46AEB8;
+            --coral: #FF6B6B;
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F5F7FA;
+            --medium-gray: #E5E9ED;
+            --dark-gray: #6B7280;
+            --charcoal: #1F2937;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--white);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-teal);
+        }
+
+        .nav-cta {
+            background: var(--coral);
+            color: var(--white) !important;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 70px;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            padding: 2rem;
+            background: var(--off-white);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-teal);
+            color: var(--primary-teal);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-teal);
+            color: var(--white);
+            border-color: var(--primary-teal);
+        }
+
+        /* Solutions Grid */
+        .solutions-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .category-section {
+            margin-bottom: 4rem;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            padding-left: 1rem;
+            border-left: 4px solid var(--primary-teal);
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .solution-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.05), rgba(255, 107, 107, 0.05));
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-problem {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04));
+            padding: 1rem 2rem;
+            border-left: 4px solid var(--danger);
+        }
+
+        .problem-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .card-stats {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-around;
+            background: var(--white);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--coral);
+        }
+
+        .stat-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .card-action {
+            padding: 1.5rem 2rem;
+            background: var(--off-white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .learn-more {
+            color: var(--primary-teal);
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .priority-badge {
+            background: var(--coral);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(255, 107, 107, 0.1));
+            text-align: center;
+        }
+
+        .cta-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--coral);
+            padding: 1rem 2rem;
+            border: 2px solid var(--coral);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .solutions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="logo">CLOVER ERA</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/our-science.html">Science</a>
+                <a href="/workplace-solutions/">Solutions</a>
+                <a href="/calculator/">ROI Calculator</a>
+                <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="nav-cta">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Workplace Solutions Hub</h1>
+        <p class="subtitle">Evidence-based solutions for every workplace challenge. From burnout prevention to culture transformation, discover proven strategies that deliver measurable results.</p>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Solutions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">47%</div>
+                <div class="stat-label">Turnover Reduction</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">£2.4M</div>
+                <div class="stat-label">Average Savings</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">30-Day</div>
+                <div class="stat-label">Results Timeline</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterSolutions('all')">All Solutions</button>
+            <button class="filter-btn" onclick="filterSolutions('leadership')">Leadership & Management</button>
+            <button class="filter-btn" onclick="filterSolutions('wellbeing')">Employee Wellbeing</button>
+            <button class="filter-btn" onclick="filterSolutions('performance')">Performance & Productivity</button>
+            <button class="filter-btn" onclick="filterSolutions('culture')">Culture & Change</button>
+        </div>
+    </section>
+
+    <!-- Solutions Container -->
+    <div class="solutions-container">
+        
+        <!-- Priority Solutions -->
+        <section class="category-section" data-category="priority">
+            <h2 class="category-title"> High-Priority Solutions</h2>
+            <div class="solutions-grid">
+                
+                <!-- Employee Burnout Solutions -->
+                <a href="/workplace-solutions/Employee-burnout-solutions.html" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Burnout-Icon.png" alt="Employee Burnout Solutions">
+                        </div>
+                        <h3 class="card-title">Employee Burnout Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">73% of employees experiencing burnout, costing £38,000 per employee in turnover and lost productivity</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">47%</div>
+                            <div class="stat-desc">Reduction</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">30</div>
+                            <div class="stat-desc">Days</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">£3.8M</div>
+                            <div class="stat-desc">Saved</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                        <span class="priority-badge">Top Priority</span>
+                    </div>
+                </a>
+
+                <!-- Retention Crisis Solutions -->
+                <a href="/workplace-solutions/retention-crisis-solutions.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-turnover-high.png" alt="Retention Crisis Solutions">
+                        </div>
+                        <h3 class="card-title">Retention Crisis Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">47% turnover rates creating £3.5M annual drain for mid-size companies</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">47%</div>
+                            <div class="stat-desc">Lower Turnover</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">6mo</div>
+                            <div class="stat-desc">Early Warning</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">89%</div>
+                            <div class="stat-desc">Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                        <span class="priority-badge">Critical</span>
+                    </div>
+                </a>
+
+                <!-- Toxic Management Solutions -->
+                <a href="/workplace-solutions/toxic-management-solutions.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Toxic-management-Icon.png" alt="Toxic Management Solutions">
+                        </div>
+                        <h3 class="card-title">Toxic Management Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">57% of employees quit because of their manager, costing £750,000 annually</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">68%</div>
+                            <div class="stat-desc">Transform Rate</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">90</div>
+                            <div class="stat-desc">Days</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2x</div>
+                            <div class="stat-desc">Performance</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                        <span class="priority-badge">High Impact</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Leadership & Management -->
+        <section class="category-section" data-category="leadership">
+            <h2 class="category-title">Leadership & Management</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/bad-bosses-transformation.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-360-degree-leadership.png" alt="Bad Bosses Transformation">
+                        </div>
+                        <h3 class="card-title">Bad Bosses Transformation</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">Transform toxic managers into inspiring leaders in 90 days</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">73%</div>
+                            <div class="stat-desc">Behavior Change</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">45%</div>
+                            <div class="stat-desc">Less Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/leadership-training-programs.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-servant-leader.png" alt="Leadership Training">
+                        </div>
+                        <h3 class="card-title">Leadership Training Programs</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">85% of leadership training fails to change behavior</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">92%</div>
+                            <div class="stat-desc">Success Rate</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">10x</div>
+                            <div class="stat-desc">Team Performance</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/manager-coaching-services.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Intensive-manager-coaching.png" alt="Manager Coaching">
+                        </div>
+                        <h3 class="card-title">Manager Coaching Services</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">70% of team engagement depends on the manager</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">70%</div>
+                            <div class="stat-desc">Engagement Boost</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">50%</div>
+                            <div class="stat-desc">Less Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Employee Wellbeing -->
+        <section class="category-section" data-category="wellbeing">
+            <h2 class="category-title">Employee Wellbeing</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/employee-stress-management.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Stress-Icon.png" alt="Stress Management">
+                        </div>
+                        <h3 class="card-title">Employee Stress Management</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">83% of workers affected by chronic stress</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">40%</div>
+                            <div class="stat-desc">Stress Reduction</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2.8x</div>
+                            <div class="stat-desc">Fewer Sick Days</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/workplace-anxiety-solutions.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Workplace-Anxiety-Icon.png" alt="Workplace Anxiety">
+                        </div>
+                        <h3 class="card-title">Workplace Anxiety Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">40% experience anxiety, reducing performance by 56%</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">56%</div>
+                            <div class="stat-desc">Less Anxiety</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">3x</div>
+                            <div class="stat-desc">Lower Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/mental-health-support.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Empathy-first.png" alt="Mental Health Support">
+                        </div>
+                        <h3 class="card-title">Mental Health Support</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">1 in 4 employees struggle with mental health</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">65%</div>
+                            <div class="stat-desc">Utilization</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">£1.3k</div>
+                            <div class="stat-desc">Saved</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Performance & Productivity -->
+        <section class="category-section" data-category="performance">
+            <h2 class="category-title">Performance & Productivity</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/productivity-loss-solutions.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Productivity-loss-Icon.png" alt="Productivity Loss">
+                        </div>
+                        <h3 class="card-title">Productivity Loss Solutions</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">Workers productive only 2.5 hours per day, costing £45k annually</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">34%</div>
+                            <div class="stat-desc">Output Gain</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">£45k</div>
+                            <div class="stat-desc">Recovered</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/quiet-quitting-identification.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Lower-Engagement.png" alt="Quiet Quitting">
+                        </div>
+                        <h3 class="card-title">Quiet Quitting Identification</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">50% doing bare minimum, costing £28k per employee</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">89%</div>
+                            <div class="stat-desc">Detection</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">67%</div>
+                            <div class="stat-desc">Re-engaged</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/focus-optimization.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Focus-Optimization.png" alt="Focus Optimization">
+                        </div>
+                        <h3 class="card-title">Focus Optimization</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">11 minutes on tasks before interruption</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">3hrs</div>
+                            <div class="stat-desc">Daily Focus</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">73%</div>
+                            <div class="stat-desc">Less Distraction</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Culture & Change -->
+        <section class="category-section" data-category="culture">
+            <h2 class="category-title">Culture & Change</h2>
+            <div class="solutions-grid">
+                
+                <a href="/workplace-solutions/culture-transformation.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-culture-growth.png" alt="Culture Transformation">
+                        </div>
+                        <h3 class="card-title">Culture Transformation</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">Only 23% of culture initiatives succeed</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">87%</div>
+                            <div class="stat-desc">Success Rate</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">5x</div>
+                            <div class="stat-desc">ROI</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/change-management.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-change-optimization.png" alt="Change Management">
+                        </div>
+                        <h3 class="card-title">Change Management</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">70% of change initiatives fail</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">95%</div>
+                            <div class="stat-desc">Adoption</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">70%</div>
+                            <div class="stat-desc">Faster</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+                <a href="/workplace-solutions/toxic-workplace-culture.html/" class="solution-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <img src="/images/Employee-Toxic-management-Icon.png" alt="Toxic Workplace">
+                        </div>
+                        <h3 class="card-title">Toxic Workplace Culture</h3>
+                    </div>
+                    <div class="card-problem">
+                        <p class="problem-text">25% work in toxic cultures, 48% higher turnover</p>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <div class="stat-value">96%</div>
+                            <div class="stat-desc">Detection</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">48%</div>
+                            <div class="stat-desc">Less Turnover</div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <span class="learn-more">Learn More →</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+    </div>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Transform Your Workplace?</h2>
+            <p>Start with our free assessment to identify your biggest opportunities</p>
+            <div class="cta-buttons">
+                <a href="https://www.cloverera.com/30-day-free-pilot/index.html" class="btn-primary">Start 30-Day Free Trial</a>
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="btn-secondary">Book Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Clover Era | Comprehensive Workplace Solutions</p>
+        <p style="margin-top: 1rem;">
+            <a href="/privacy-policy.html/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Privacy</a> | 
+            <a href="/terms.html/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Terms</a> | 
+            <a href="/contact.html/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Contact</a>
+        </p>
+    </footer>
+
+    <script>
+        function filterSolutions(category) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter logic would go here
+            console.log('Filtering by:', category);
+        }
+    </script>
+    <!-- Cookie Consent - Add to every page -->
+<script src="/js/cookie-consent.js"></script>
+</body>
+</html>
+
+</body>
+</html>
