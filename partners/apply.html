@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Application - Clover ERA</title>
+    <meta name="description" content="Apply to become a Clover ERA reseller partner. Earn 20-25% recurring commissions on AI employee engagement platform sales.">
+
+    <link rel="icon" type="image/png" href="/images/Clover-era-new-logo-1.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success-green: #10B981;
+            --error-red: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--off-white);
+            padding: 20px;
+            line-height: 1.6;
+            padding-top: 130px;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-teal);
+        }
+
+        .form-header h1 {
+            color: var(--primary-teal);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .form-section h2 {
+            color: var(--charcoal);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group label.required::after {
+            content: " *";
+            color: var(--error-red);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="url"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: flex-start;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 6px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05));
+            border-left: 4px solid var(--primary-teal);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .info-box p {
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .submit-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid var(--medium-gray);
+            text-align: center;
+        }
+
+        .btn-submit {
+            background: var(--primary-teal);
+            color: var(--white);
+            padding: 15px 50px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(70, 174, 184, 0.3);
+        }
+
+        .btn-submit:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(70, 174, 184, 0.4);
+        }
+
+        .btn-submit:disabled {
+            background: var(--medium-gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .required-note {
+            color: var(--error-red);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 90px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Partner Application</h1>
+            <p>Join our reseller partner program and grow your business with Clover ERA</p>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Why Partner with Clover ERA?</strong></p>
+            <p>Earn recurring commissions of 20-25% on every manager/team license you sell. Our partners receive comprehensive training, marketing support, and dedicated account management to ensure your success.</p>
+        </div>
+
+        <p class="required-note">* Required fields</p>
+
+        <form id="partnerApplicationForm" method="POST" action="/api/partner-applications">
+
+            <!-- COMPANY INFORMATION -->
+            <div class="form-section">
+                <h2>Company Information</h2>
+
+                <div class="form-group">
+                    <label for="companyName" class="required">Company Name</label>
+                    <input type="text" id="companyName" name="companyName" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyType" class="required">Business Type</label>
+                        <select id="companyType" name="companyType" required>
+                            <option value="">Select...</option>
+                            <option value="sole_proprietor">Sole Proprietor</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="llc">LLC</option>
+                            <option value="corporation">Corporation</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearEstablished" class="required">Year Established</label>
+                        <input type="number" id="yearEstablished" name="yearEstablished" min="1900" max="2025" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="website">Company Website</label>
+                    <input type="url" id="website" name="website" placeholder="https://www.example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn Company Page</label>
+                    <input type="url" id="linkedin" name="linkedin" placeholder="https://www.linkedin.com/company/...">
+                </div>
+
+                <div class="form-group">
+                    <label for="companyDescription" class="required">Company Description</label>
+                    <textarea id="companyDescription" name="companyDescription" required placeholder="Tell us about your business, services, and expertise..."></textarea>
+                    <small>Briefly describe your company's focus and the services you provide</small>
+                </div>
+            </div>
+
+            <!-- PRIMARY CONTACT INFORMATION -->
+            <div class="form-section">
+                <h2>Primary Contact Information</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="required">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName" class="required">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title" class="required">Job Title</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="required">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number</label>
+                        <input type="tel" id="mobile" name="mobile">
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUSINESS ADDRESS -->
+            <div class="form-section">
+                <h2>Business Address</h2>
+
+                <div class="form-group">
+                    <label for="address1" class="required">Address Line 1</label>
+                    <input type="text" id="address1" name="address1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address2">Address Line 2</label>
+                    <input type="text" id="address2" name="address2">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city" class="required">City</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state" class="required">State/Province</label>
+                        <input type="text" id="state" name="state" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postalCode" class="required">Postal/Zip Code</label>
+                        <input type="text" id="postalCode" name="postalCode" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country" class="required">Country</label>
+                        <input type="text" id="country" name="country" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUSINESS PROFILE -->
+            <div class="form-section">
+                <h2>Business Profile</h2>
+
+                <div class="form-group">
+                    <label for="primaryIndustry" class="required">Primary Industry Focus</label>
+                    <select id="primaryIndustry" name="primaryIndustry" required>
+                        <option value="">Select...</option>
+                        <option value="hr_consulting">HR Consulting</option>
+                        <option value="management_consulting">Management Consulting</option>
+                        <option value="leadership_training">Leadership & Training</option>
+                        <option value="tech_consulting">Technology Consulting</option>
+                        <option value="business_coaching">Business Coaching</option>
+                        <option value="organizational_development">Organizational Development</option>
+                        <option value="software_reseller">Software Reseller</option>
+                        <option value="general_consulting">General Business Consulting</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="companySize" class="required">Company Size</label>
+                    <select id="companySize" name="companySize" required>
+                        <option value="">Select...</option>
+                        <option value="1">1 (Solo)</option>
+                        <option value="2-5">2-5 employees</option>
+                        <option value="6-10">6-10 employees</option>
+                        <option value="11-25">11-25 employees</option>
+                        <option value="26-50">26-50 employees</option>
+                        <option value="51-100">51-100 employees</option>
+                        <option value="100+">100+ employees</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentClients" class="required">Approximate Number of Current Clients</label>
+                    <input type="number" id="currentClients" name="currentClients" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetMarket" class="required">Target Market Description</label>
+                    <textarea id="targetMarket" name="targetMarket" required placeholder="Describe your typical clients and target market..."></textarea>
+                    <small>What size companies do you work with? Which industries?</small>
+                </div>
+            </div>
+
+            <!-- SALES CAPABILITIES -->
+            <div class="form-section">
+                <h2>Sales & Marketing Capabilities</h2>
+
+                <div class="form-group">
+                    <label class="required">Do you have an existing sales team?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="hasSalesTeam" value="yes" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="hasSalesTeam" value="no" required>
+                            No
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="salesTeamSize">If yes, how many sales professionals?</label>
+                    <input type="number" id="salesTeamSize" name="salesTeamSize" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Which sales channels do you currently use? (Check all that apply)</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="salesChannels[]" value="direct_outreach">
+                            Direct outreach to prospects
+                        </label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="salesChannels[]" value="referrals">
+                            Client referrals
+                        </label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="salesChannels[]" value="website">
+                            Website/Inbound leads
+                        </label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="salesChannels[]" value="linkedin">
+                            LinkedIn/Social selling
+                        </label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="salesChannels[]" value="events">
+                            Events/Conferences
+                        </label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="salesChannels[]" value="other">
+                            Other
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPERIENCE -->
+            <div class="form-section">
+                <h2>Experience & Expertise</h2>
+
+                <div class="form-group">
+                    <label class="required">Do you currently sell or resell any software products?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="sellsSoftware" value="yes" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="sellsSoftware" value="no" required>
+                            No
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentProducts">If yes, which products or types of software?</label>
+                    <textarea id="currentProducts" name="currentProducts" placeholder="List any software products you currently sell or resell..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Do you have experience with employee engagement or HR technology?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="hasHRExperience" value="yes" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="hasHRExperience" value="no" required>
+                            No
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hrExperienceDetails">If yes, please describe your experience:</label>
+                    <textarea id="hrExperienceDetails" name="hrExperienceDetails" placeholder="Describe your experience with employee engagement, HR technology, or related solutions..."></textarea>
+                </div>
+            </div>
+
+            <!-- PARTNERSHIP EXPECTATIONS -->
+            <div class="form-section">
+                <h2>Partnership Expectations</h2>
+
+                <div class="form-group">
+                    <label for="expectedSales" class="required">How many licenses do you expect to sell in your first year?</label>
+                    <select id="expectedSales" name="expectedSales" required>
+                        <option value="">Select...</option>
+                        <option value="1-10">1-10 licenses</option>
+                        <option value="11-25">11-25 licenses</option>
+                        <option value="26-50">26-50 licenses</option>
+                        <option value="51-100">51-100 licenses</option>
+                        <option value="100+">100+ licenses</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="timeCommitment" class="required">How much time can you dedicate to selling Clover ERA?</label>
+                    <select id="timeCommitment" name="timeCommitment" required>
+                        <option value="">Select...</option>
+                        <option value="5-10_hours">5-10 hours per week</option>
+                        <option value="10-20_hours">10-20 hours per week</option>
+                        <option value="20-30_hours">20-30 hours per week</option>
+                        <option value="full_time">Full-time focus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="primaryMotivation" class="required">What's your primary motivation for partnering with Clover ERA?</label>
+                    <textarea id="primaryMotivation" name="primaryMotivation" required placeholder="Tell us why you want to become a Clover ERA partner..."></textarea>
+                </div>
+            </div>
+
+            <!-- ADDITIONAL INFORMATION -->
+            <div class="form-section">
+                <h2>Additional Information</h2>
+
+                <div class="form-group">
+                    <label for="howDidYouHear">How did you hear about the Clover ERA Partner Program?</label>
+                    <select id="howDidYouHear" name="howDidYouHear">
+                        <option value="">Select...</option>
+                        <option value="website">Clover ERA Website</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="referral">Referral from existing partner</option>
+                        <option value="referral_client">Referral from client</option>
+                        <option value="search">Search engine</option>
+                        <option value="event">Event/Conference</option>
+                        <option value="email">Email/Newsletter</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalComments">Additional Comments or Questions</label>
+                    <textarea id="additionalComments" name="additionalComments" placeholder="Is there anything else you'd like us to know?"></textarea>
+                </div>
+            </div>
+
+            <!-- AGREEMENTS -->
+            <div class="form-section">
+                <h2>Agreements</h2>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="agreeTerms" required>
+                        I agree to comply with Clover ERA's partner program terms and conditions *
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="agreePrivacy" required>
+                        I acknowledge that I have read and agree to Clover ERA's Privacy Policy *
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="agreeContact" required>
+                        I authorize Clover ERA to contact me regarding this application and partnership opportunities *
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="agreeAccuracy">
+                        I certify that all information provided in this application is true and accurate
+                    </label>
+                </div>
+            </div>
+
+            <!-- SUBMIT SECTION -->
+            <div class="submit-section">
+                <button type="submit" class="btn-submit">Submit Application</button>
+                <p style="margin-top: 15px; color: var(--text-secondary); font-size: 14px;">
+                    We'll review your application and contact you within 3-5 business days.
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Form validation and submission handling
+        document.getElementById('partnerApplicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Check required checkboxes
+            const agreeTerms = form.querySelector('input[name="agreeTerms"]');
+            const agreePrivacy = form.querySelector('input[name="agreePrivacy"]');
+            const agreeContact = form.querySelector('input[name="agreeContact"]');
+
+            if (!agreeTerms.checked || !agreePrivacy.checked || !agreeContact.checked) {
+                alert('Please agree to all required terms to proceed.');
+                return;
+            }
+
+            // Collect form data
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                if (key.endsWith('[]')) {
+                    const arrayKey = key.slice(0, -2);
+                    if (!data[arrayKey]) {
+                        data[arrayKey] = [];
+                    }
+                    data[arrayKey].push(value);
+                } else {
+                    data[key] = value;
+                }
+            });
+
+            data.submittedAt = new Date().toISOString();
+
+            console.log('Form data:', data);
+
+            // TODO: Send to backend endpoint
+            // Example: fetch('/api/partner-applications', { method: 'POST', body: JSON.stringify(data) })
+
+            alert('Application submitted successfully! We will review your application and contact you within 3-5 business days.');
+            form.reset();
+        });
+
+        // Dynamic field showing/hiding
+        document.querySelectorAll('input[name="hasSalesTeam"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const salesTeamSizeField = document.getElementById('salesTeamSize').closest('.form-group');
+                salesTeamSizeField.style.display = this.value === 'yes' ? 'block' : 'none';
+                if (this.value === 'no') document.getElementById('salesTeamSize').value = '';
+            });
+        });
+
+        document.querySelectorAll('input[name="sellsSoftware"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const currentProductsField = document.getElementById('currentProducts').closest('.form-group');
+                currentProductsField.style.display = this.value === 'yes' ? 'block' : 'none';
+                if (this.value === 'no') document.getElementById('currentProducts').value = '';
+            });
+        });
+
+        document.querySelectorAll('input[name="hasHRExperience"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const hrDetailsField = document.getElementById('hrExperienceDetails').closest('.form-group');
+                hrDetailsField.style.display = this.value === 'yes' ? 'block' : 'none';
+                if (this.value === 'no') document.getElementById('hrExperienceDetails').value = '';
+            });
+        });
+
+        // Initialize hidden fields
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('salesTeamSize').closest('.form-group').style.display = 'none';
+            document.getElementById('currentProducts').closest('.form-group').style.display = 'none';
+            document.getElementById('hrExperienceDetails').closest('.form-group').style.display = 'none';
+        });
+    </script>
+
+    <footer style="background: var(--charcoal); color: var(--white); padding: 2rem; text-align: center; margin-top: 4rem;">
+        <p>© CLOVER ERA 2025 | AI-Powered Employee Engagement Platform</p>
+    </footer>
+</body>
+</html>
