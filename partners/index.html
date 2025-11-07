@@ -41,7 +41,7 @@
         .hero {
             background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
             color: var(--white);
-            padding: 6rem 2rem;
+            padding: 8rem 2rem 6rem 2rem;
             text-align: center;
         }
 
@@ -298,7 +298,7 @@
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <h3>💰 Lucrative Commissions</h3>
-                    <p>Earn 20-25% recurring revenue on every manager/team license you sell. With platform pricing at $0.20 per employee per day, your commissions grow as your clients grow.</p>
+                    <p>Earn 20-25% recurring revenue on every team license you sell. With platform pricing at $295 per team per month, your commissions grow as your clients grow.</p>
                 </div>
 
                 <div class="benefit-card">
@@ -318,7 +318,7 @@
 
                 <div class="benefit-card">
                     <h3>🚀 High-Value Solution</h3>
-                    <p>Sell a platform that delivers $330,000 annual savings for mid-sized companies. ROI speaks for itself—easier to sell, higher close rates.</p>
+                    <p>Sell a platform that delivers $3.4M annual savings for mid-sized companies. ROI speaks for itself—easier to sell, higher close rates.</p>
                 </div>
 
                 <div class="benefit-card">
@@ -459,18 +459,60 @@
 
             <div class="stat-box">
                 <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--text-secondary);">
-                    <strong>Example:</strong> If you sell Clover ERA to 5 clients with an average of 50 managers each:
+                    Calculate your potential commission based on client size:
                 </p>
-                <span class="stat-number">$3,750</span>
-                <span class="stat-label">Monthly Recurring Commission</span>
-                <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 1rem;">
-                    (250 licenses × $0.20/day × 30 days × 25% commission)
-                </p>
-                <p style="margin-top: 2rem; font-size: 1.1rem; color: var(--primary-teal); font-weight: 600;">
-                    That's $45,000 annual recurring income from just 5 clients!
+
+                <div style="margin-bottom: 2rem;">
+                    <label for="employeeCount" style="display: block; font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">Number of Employees:</label>
+                    <input type="number" id="employeeCount" value="100" min="1" style="width: 200px; padding: 0.75rem; font-size: 1.1rem; border: 2px solid var(--primary-teal); border-radius: 8px; text-align: center;">
+                </div>
+
+                <div style="background: rgba(255,255,255,0.7); padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Number of Teams (employees ÷ 20):</p>
+                    <p style="font-size: 1.8rem; color: var(--primary-teal); font-weight: 700;" id="teamCount">5</p>
+                </div>
+
+                <div style="background: rgba(70, 174, 184, 0.15); padding: 2rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Monthly Commission (22% avg):</p>
+                    <span class="stat-number" style="font-size: 2.5rem;" id="monthlyCommission">$325</span>
+                </div>
+
+                <div style="background: rgba(70, 174, 184, 0.25); padding: 2rem; border-radius: 10px;">
+                    <p style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.5rem; font-weight: 600;">Annual Recurring Commission:</p>
+                    <span class="stat-number" style="font-size: 3rem;" id="annualCommission">$3,900</span>
+                </div>
+
+                <p style="margin-top: 2rem; font-size: 0.9rem; color: var(--text-secondary); font-style: italic;">
+                    * Based on $295 per team per month at 22% commission rate
                 </p>
             </div>
         </div>
+
+        <script>
+        function updateCalculations() {
+            const employees = parseInt(document.getElementById('employeeCount').value) || 0;
+
+            // Calculate teams (round to nearest whole number)
+            const teams = Math.round(employees / 20);
+
+            // Calculate monthly commission: teams × $295 × 22%
+            const monthlyCommission = teams * 295 * 0.22;
+
+            // Calculate annual commission
+            const annualCommission = monthlyCommission * 12;
+
+            // Update display
+            document.getElementById('teamCount').textContent = teams;
+            document.getElementById('monthlyCommission').textContent = '$' + Math.round(monthlyCommission).toLocaleString();
+            document.getElementById('annualCommission').textContent = '$' + Math.round(annualCommission).toLocaleString();
+        }
+
+        // Add event listener
+        document.getElementById('employeeCount').addEventListener('input', updateCalculations);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', updateCalculations);
+        </script>
 
         <div class="section">
             <h2>Frequently Asked Questions</h2>
