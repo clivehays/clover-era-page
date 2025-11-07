@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Opportunities - Clover ERA Partner Portal</title>
+    <meta name="description" content="Manage your registered opportunities and track deals through the pipeline.">
+    <link rel="icon" type="image/png" href="/images/Clover-era-new-logo-1.png">
+    <meta name="robots" content="noindex, nofollow">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --danger-red: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-gray);
+            padding-top: 110px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: var(--white);
+            padding: 3rem 2rem;
+            margin: -2rem -2rem 3rem -2rem;
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-content p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--primary-teal);
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,255,255,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary-teal);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--charcoal);
+        }
+
+        .stat-card.warning {
+            border-top-color: var(--warning-orange);
+        }
+
+        .stat-card.success {
+            border-top-color: var(--success-green);
+        }
+
+        .filters-section {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filters-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.625rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .opportunities-table {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--light-gray);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        tbody tr:hover {
+            background: rgba(70, 174, 184, 0.05);
+        }
+
+        .company-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .contact-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .stage-new {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+        }
+
+        .stage-qualified {
+            background: rgba(168, 85, 247, 0.1);
+            color: #A855F7;
+        }
+
+        .stage-engaged {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+        }
+
+        .stage-negotiating {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+        }
+
+        .stage-closed-won {
+            background: rgba(16, 185, 129, 0.2);
+            color: #059669;
+            font-weight: 700;
+        }
+
+        .stage-closed-lost {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+        }
+
+        .days-remaining {
+            font-size: 0.9rem;
+        }
+
+        .days-ok {
+            color: var(--success-green);
+        }
+
+        .days-warning {
+            color: var(--warning-orange);
+            font-weight: 600;
+        }
+
+        .days-danger {
+            color: var(--danger-red);
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-view {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        .btn-view:hover {
+            background: var(--deep-teal);
+        }
+
+        .btn-update {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+        }
+
+        .btn-update:hover {
+            background: var(--text-secondary);
+            color: var(--white);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 1024px) {
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-section {
+                text-align: center;
+            }
+
+            .header-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .opportunities-table {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 900px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <div class="container">
+        <div class="header-section">
+            <div class="header-content">
+                <h1>📊 My Opportunities</h1>
+                <p>Track and manage your registered opportunities</p>
+            </div>
+            <a href="register.html" class="btn-primary">+ Register New Opportunity</a>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Opportunities</h3>
+                <span class="stat-number" id="totalOpps">0</span>
+            </div>
+
+            <div class="stat-card success">
+                <h3>Active Pipeline</h3>
+                <span class="stat-number" id="activeOpps">0</span>
+            </div>
+
+            <div class="stat-card warning">
+                <h3>Expiring Soon</h3>
+                <span class="stat-number" id="expiringOpps">0</span>
+            </div>
+
+            <div class="stat-card success">
+                <h3>Closed Won</h3>
+                <span class="stat-number" id="closedWonOpps">0</span>
+            </div>
+
+            <div class="stat-card">
+                <h3>Est. Monthly Value</h3>
+                <span class="stat-number" id="totalValue">$0</span>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label>Stage</label>
+                    <select id="filterStage">
+                        <option value="">All Stages</option>
+                        <option value="new">New</option>
+                        <option value="qualified">Qualified</option>
+                        <option value="engaged">Engaged</option>
+                        <option value="negotiating">Negotiating</option>
+                        <option value="closed-won">Closed Won</option>
+                        <option value="closed-lost">Closed Lost</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="filterStatus">
+                        <option value="">All</option>
+                        <option value="active">Active Only</option>
+                        <option value="expiring">Expiring Soon (&lt;15 days)</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Search Company</label>
+                    <input type="text" id="searchCompany" placeholder="Search...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Opportunities Table -->
+        <div class="opportunities-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Stage</th>
+                        <th>Value</th>
+                        <th>Close Date</th>
+                        <th>Days Left</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="opportunitiesTableBody">
+                    <!-- Data populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <h3>📭 No Opportunities Found</h3>
+                <p>Register your first opportunity to start tracking deals and protecting commissions.</p>
+                <a href="register.html" class="btn-primary" style="margin-top: 1.5rem;">Register Opportunity</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - in production, this would come from your backend API
+        const sampleOpportunities = [
+            {
+                id: 1,
+                companyName: "TechCorp Solutions",
+                contactName: "Sarah Johnson",
+                contactTitle: "HR Director",
+                stage: "negotiating",
+                dealValue: 2950,
+                teams: 10,
+                expectedCloseDate: "2025-12-15",
+                lastUpdated: "2025-11-05",
+                daysRemaining: 55,
+                industry: "Technology"
+            },
+            {
+                id: 2,
+                companyName: "Healthcare Plus",
+                contactName: "Michael Chen",
+                contactTitle: "CEO",
+                stage: "engaged",
+                dealValue: 1475,
+                teams: 5,
+                expectedCloseDate: "2025-12-30",
+                lastUpdated: "2025-11-01",
+                daysRemaining: 51,
+                industry: "Healthcare"
+            },
+            {
+                id: 3,
+                companyName: "FinServe Group",
+                contactName: "Emma Williams",
+                contactTitle: "Operations Manager",
+                stage: "qualified",
+                dealValue: 4425,
+                teams: 15,
+                expectedCloseDate: "2026-01-20",
+                lastUpdated: "2025-10-20",
+                daysRemaining: 32,
+                industry: "Financial"
+            },
+            {
+                id: 4,
+                companyName: "RetailMax Inc",
+                contactName: "David Brown",
+                contactTitle: "VP Human Resources",
+                stage: "new",
+                dealValue: 885,
+                teams: 3,
+                expectedCloseDate: "2026-01-10",
+                lastUpdated: "2025-11-06",
+                daysRemaining: 59,
+                industry: "Retail"
+            },
+            {
+                id: 5,
+                companyName: "Manufacturing Pro",
+                contactName: "Lisa Anderson",
+                contactTitle: "Plant Manager",
+                stage: "engaged",
+                dealValue: 5900,
+                teams: 20,
+                expectedCloseDate: "2025-12-01",
+                lastUpdated: "2025-10-10",
+                daysRemaining: 12,
+                industry: "Manufacturing"
+            }
+        ];
+
+        function calculateDaysRemaining(lastUpdated) {
+            const lastUpdateDate = new Date(lastUpdated);
+            const expiryDate = new Date(lastUpdateDate);
+            expiryDate.setDate(expiryDate.getDate() + 60);
+            const today = new Date();
+            const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+            return daysLeft;
+        }
+
+        function getDaysRemainingClass(days) {
+            if (days > 30) return 'days-ok';
+            if (days > 15) return 'days-warning';
+            return 'days-danger';
+        }
+
+        function renderOpportunities(opportunities = sampleOpportunities) {
+            const tbody = document.getElementById('opportunitiesTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (opportunities.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            tbody.innerHTML = opportunities.map(opp => {
+                const daysLeft = calculateDaysRemaining(opp.lastUpdated);
+                const daysClass = getDaysRemainingClass(daysLeft);
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="company-cell">${opp.companyName}</div>
+                            <div class="contact-name">${opp.industry}</div>
+                        </td>
+                        <td>
+                            <div>${opp.contactName}</div>
+                            <div class="contact-name">${opp.contactTitle}</div>
+                        </td>
+                        <td>
+                            <span class="stage-badge stage-${opp.stage}">${opp.stage.replace('-', ' ')}</span>
+                        </td>
+                        <td>$${opp.dealValue.toLocaleString()}/mo</td>
+                        <td>${new Date(opp.expectedCloseDate).toLocaleDateString()}</td>
+                        <td class="days-remaining ${daysClass}">
+                            ${daysLeft} days
+                        </td>
+                        <td>${new Date(opp.lastUpdated).toLocaleDateString()}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-view" onclick="viewOpportunity(${opp.id})">View</button>
+                                <button class="btn-action btn-update" onclick="updateOpportunity(${opp.id})">Update</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStats(opportunities = sampleOpportunities) {
+            const total = opportunities.length;
+            const active = opportunities.filter(o => !['closed-won', 'closed-lost'].includes(o.stage)).length;
+            const expiring = opportunities.filter(o => calculateDaysRemaining(o.lastUpdated) < 15).length;
+            const closedWon = opportunities.filter(o => o.stage === 'closed-won').length;
+            const totalValue = opportunities.reduce((sum, o) => sum + o.dealValue, 0);
+
+            document.getElementById('totalOpps').textContent = total;
+            document.getElementById('activeOpps').textContent = active;
+            document.getElementById('expiringOpps').textContent = expiring;
+            document.getElementById('closedWonOpps').textContent = closedWon;
+            document.getElementById('totalValue').textContent = '$' + totalValue.toLocaleString();
+        }
+
+        function filterOpportunities() {
+            const stageFilter = document.getElementById('filterStage').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            const searchTerm = document.getElementById('searchCompany').value.toLowerCase();
+
+            let filtered = sampleOpportunities;
+
+            if (stageFilter) {
+                filtered = filtered.filter(o => o.stage === stageFilter);
+            }
+
+            if (statusFilter === 'active') {
+                filtered = filtered.filter(o => !['closed-won', 'closed-lost'].includes(o.stage));
+            } else if (statusFilter === 'expiring') {
+                filtered = filtered.filter(o => calculateDaysRemaining(o.lastUpdated) < 15);
+            } else if (statusFilter === 'closed') {
+                filtered = filtered.filter(o => ['closed-won', 'closed-lost'].includes(o.stage));
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(o => o.companyName.toLowerCase().includes(searchTerm));
+            }
+
+            renderOpportunities(filtered);
+        }
+
+        function viewOpportunity(id) {
+            alert(`View opportunity details for ID: ${id}\n\nIn production, this would open a detailed view modal or page.`);
+        }
+
+        function updateOpportunity(id) {
+            alert(`Update opportunity status for ID: ${id}\n\nIn production, this would open an update form to:\n- Change stage\n- Update close date\n- Add notes\n- Reset 60-day timer`);
+        }
+
+        // Event listeners
+        document.getElementById('filterStage').addEventListener('change', filterOpportunities);
+        document.getElementById('filterStatus').addEventListener('change', filterOpportunities);
+        document.getElementById('searchCompany').addEventListener('input', filterOpportunities);
+
+        // Initialize
+        renderOpportunities();
+        updateStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Opportunity - Clover ERA Partner Portal</title>
+    <meta name="description" content="Register and protect your sales opportunities with Clover ERA's partner opportunity management system.">
+    <link rel="icon" type="image/png" href="/images/Clover-era-new-logo-1.png">
+    <meta name="robots" content="noindex, nofollow">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --bronze: #C9A667;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-gray);
+            padding-top: 110px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: -2rem -2rem 3rem -2rem;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header-section p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .info-box {
+            background: rgba(70, 174, 184, 0.1);
+            border-left: 4px solid var(--primary-teal);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            color: var(--primary-teal);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .info-box ul {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .info-box li {
+            margin: 0.5rem 0;
+        }
+
+        .form-card {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section h2 {
+            color: var(--charcoal);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group label .required {
+            color: #EF4444;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+
+        .btn-primary {
+            background: var(--primary-teal);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(70, 174, 184, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-teal);
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--primary-teal);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success-green);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .success-message h3 {
+            color: var(--success-green);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <div class="container">
+        <div class="header-section">
+            <h1>🎯 Register New Opportunity</h1>
+            <p>Protect your commission by registering prospects in our partner opportunity management system</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <h3>✓ Opportunity Registered Successfully!</h3>
+            <p>Your opportunity has been registered and is now protected. You'll receive a confirmation email with your opportunity details.</p>
+            <a href="dashboard.html" class="btn-secondary" style="margin-top: 1rem;">View My Opportunities →</a>
+        </div>
+
+        <div class="info-box">
+            <h3>📋 How Opportunity Registration Works</h3>
+            <ul>
+                <li><strong>First to Register Wins:</strong> The first partner to register a prospect gets protected commission rights</li>
+                <li><strong>60-Day Protection:</strong> Opportunities remain active and protected for 60 days from last activity</li>
+                <li><strong>Auto-Expiration:</strong> Dormant opportunities (no updates for 60 days) are automatically released</li>
+                <li><strong>Track Progress:</strong> Update opportunity status as deals progress through the pipeline</li>
+                <li><strong>Commission Protected:</strong> Once registered, your commission is protected for closed deals</li>
+            </ul>
+        </div>
+
+        <div class="form-card">
+            <form id="opportunityForm">
+                <!-- Partner Information -->
+                <div class="form-section">
+                    <h2>Partner Information</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Partner Name <span class="required">*</span></label>
+                            <input type="text" id="partnerName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Partner Email <span class="required">*</span></label>
+                            <input type="email" id="partnerEmail" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Partner Company <span class="required">*</span></label>
+                            <input type="text" id="partnerCompany" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Partner Phone</label>
+                            <input type="tel" id="partnerPhone">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prospect Information -->
+                <div class="form-section">
+                    <h2>Prospect Information</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Company Name <span class="required">*</span></label>
+                            <input type="text" id="companyName" required>
+                            <small>Legal company name for verification</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Company Website</label>
+                            <input type="url" id="companyWebsite" placeholder="https://">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Primary Contact Name <span class="required">*</span></label>
+                            <input type="text" id="contactName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Primary Contact Title <span class="required">*</span></label>
+                            <input type="text" id="contactTitle" required placeholder="e.g., CEO, HR Director">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Contact Email <span class="required">*</span></label>
+                            <input type="email" id="contactEmail" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contact Phone</label>
+                            <input type="tel" id="contactPhone">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Industry <span class="required">*</span></label>
+                            <select id="industry" required>
+                                <option value="">Select Industry...</option>
+                                <option value="technology">Technology/SaaS</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="financial">Financial Services</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="retail">Retail/E-commerce</option>
+                                <option value="professional">Professional Services</option>
+                                <option value="education">Education</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Number of Employees <span class="required">*</span></label>
+                            <select id="employeeCount" required>
+                                <option value="">Select Range...</option>
+                                <option value="1-50">1-50</option>
+                                <option value="51-100">51-100</option>
+                                <option value="101-250">101-250</option>
+                                <option value="251-500">251-500</option>
+                                <option value="501-1000">501-1,000</option>
+                                <option value="1001+">1,001+</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Company Location (City, Country) <span class="required">*</span></label>
+                        <input type="text" id="companyLocation" required placeholder="e.g., London, UK">
+                    </div>
+                </div>
+
+                <!-- Opportunity Details -->
+                <div class="form-section">
+                    <h2>Opportunity Details</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Opportunity Stage <span class="required">*</span></label>
+                            <select id="opportunityStage" required>
+                                <option value="new">New - Initial Contact</option>
+                                <option value="qualified">Qualified - Needs Confirmed</option>
+                                <option value="engaged">Engaged - Demo/Presentation Scheduled</option>
+                                <option value="negotiating">Negotiating - Discussing Terms</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Expected Close Date <span class="required">*</span></label>
+                            <input type="date" id="expectedCloseDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Estimated Deal Value (Monthly)</label>
+                            <input type="number" id="dealValue" placeholder="$" min="0">
+                            <small>Approximate monthly recurring revenue</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Estimated Teams/Licenses</label>
+                            <input type="number" id="teamCount" placeholder="Number of teams" min="1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Business Pain Points <span class="required">*</span></label>
+                        <textarea id="painPoints" required placeholder="What challenges is the prospect facing? (e.g., high turnover, low engagement, burnout)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Current Relationship Status <span class="required">*</span></label>
+                        <select id="relationshipStatus" required>
+                            <option value="">Select Status...</option>
+                            <option value="existing">Existing client/relationship</option>
+                            <option value="referral">Referral from existing network</option>
+                            <option value="cold-outreach">Cold outreach/prospecting</option>
+                            <option value="inbound">Inbound lead</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Notes</label>
+                        <textarea id="additionalNotes" placeholder="Any additional context about this opportunity..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Terms and Submission -->
+                <div class="form-section">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsAgree" required>
+                        <label for="termsAgree">
+                            I confirm that this prospect is not currently registered by another partner and I have a legitimate business relationship or contact with this company. I understand that false registrations may result in removal from the partner program. <span class="required">*</span>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-group" style="margin-top: 1rem;">
+                        <input type="checkbox" id="updateAgree" required>
+                        <label for="updateAgree">
+                            I commit to updating this opportunity at least once every 60 days to maintain protection. <span class="required">*</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">Register Opportunity</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('opportunityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                partner: {
+                    name: document.getElementById('partnerName').value,
+                    email: document.getElementById('partnerEmail').value,
+                    company: document.getElementById('partnerCompany').value,
+                    phone: document.getElementById('partnerPhone').value
+                },
+                prospect: {
+                    companyName: document.getElementById('companyName').value,
+                    website: document.getElementById('companyWebsite').value,
+                    contactName: document.getElementById('contactName').value,
+                    contactTitle: document.getElementById('contactTitle').value,
+                    contactEmail: document.getElementById('contactEmail').value,
+                    contactPhone: document.getElementById('contactPhone').value,
+                    industry: document.getElementById('industry').value,
+                    employeeCount: document.getElementById('employeeCount').value,
+                    location: document.getElementById('companyLocation').value
+                },
+                opportunity: {
+                    stage: document.getElementById('opportunityStage').value,
+                    expectedCloseDate: document.getElementById('expectedCloseDate').value,
+                    dealValue: document.getElementById('dealValue').value,
+                    teamCount: document.getElementById('teamCount').value,
+                    painPoints: document.getElementById('painPoints').value,
+                    relationshipStatus: document.getElementById('relationshipStatus').value,
+                    notes: document.getElementById('additionalNotes').value
+                },
+                timestamp: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString() // 60 days from now
+            };
+
+            // In production, this would POST to your backend API
+            console.log('Opportunity Registration:', formData);
+
+            // TODO: Replace with actual API call
+            // fetch('/api/partner-opportunities', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify(formData)
+            // }).then(response => response.json())
+            //   .then(data => {
+            //       // Show success message
+            //   });
+
+            // Show success message
+            document.querySelector('.form-card').style.display = 'none';
+            document.querySelector('.info-box').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+
+        // Set minimum date to today
+        document.getElementById('expectedCloseDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
