@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Application | Clover ERA</title>
+    <meta name="description" content="Apply to become a Clover ERA partner and earn 25% recurring commission on every license sold">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --bronze: #C9A667;
+            --charcoal: #2C3E50;
+            --success-green: #10B981;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            opacity: 0.95;
+        }
+
+        .card-body {
+            padding: 3rem 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section h3 {
+            font-size: 1.3rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group label .required {
+            color: #EF4444;
+            margin-left: 0.25rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group .help-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .benefit-highlight {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.05));
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-teal);
+        }
+
+        .benefit-highlight h4 {
+            color: var(--primary-teal);
+            margin-bottom: 0.75rem;
+        }
+
+        .benefit-highlight ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefit-highlight li {
+            padding: 0.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .benefit-highlight li::before {
+            content: "✓ ";
+            color: var(--success-green);
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .submit-section {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--medium-gray);
+        }
+
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(70, 174, 184, 0.3);
+        }
+
+        .submit-button:disabled {
+            background: var(--medium-gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--success-green);
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .success-message h3 {
+            color: var(--success-green);
+            margin-bottom: 1rem;
+        }
+
+        .success-message p {
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-message .next-steps {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .success-message .next-steps h4 {
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .success-message .next-steps ol {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 500px;
+        }
+
+        .success-message .next-steps li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(70, 174, 184, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Become a Clover ERA Partner</h1>
+            <p>Start earning 25% recurring commission on every license sold</p>
+        </div>
+
+        <div class="form-card">
+            <div class="card-header">
+                <h2>Partner Application</h2>
+                <p>Complete the form below to begin your partner journey</p>
+            </div>
+
+            <div class="card-body">
+                <div class="benefit-highlight">
+                    <h4>What You'll Get As a Partner:</h4>
+                    <ul>
+                        <li>25% recurring commission on all sales (monthly payments)</li>
+                        <li>Comprehensive product training and sales enablement</li>
+                        <li>Dedicated partner success manager</li>
+                        <li>Access to sales portal with email templates, battle cards, and resources</li>
+                        <li>No exclusivity required - sell alongside your existing offerings</li>
+                    </ul>
+                </div>
+
+                <form id="partnerForm">
+                    <!-- Company Information -->
+                    <div class="form-section">
+                        <h3>Company Information</h3>
+
+                        <div class="form-group">
+                            <label for="companyName">Company Name<span class="required">*</span></label>
+                            <input type="text" id="companyName" name="companyName" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="companyWebsite">Company Website</label>
+                                <input type="url" id="companyWebsite" name="companyWebsite" placeholder="https://">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="companySize">Company Size</label>
+                                <select id="companySize" name="companySize">
+                                    <option value="">Select size</option>
+                                    <option value="1-10">1-10 employees</option>
+                                    <option value="11-50">11-50 employees</option>
+                                    <option value="51-200">51-200 employees</option>
+                                    <option value="201-500">201-500 employees</option>
+                                    <option value="500+">500+ employees</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyType">Business Type<span class="required">*</span></label>
+                            <select id="companyType" name="companyType" required>
+                                <option value="">Select type</option>
+                                <option value="hr-consultant">HR Consultant/Coach</option>
+                                <option value="management-consultant">Management Consultant</option>
+                                <option value="software-reseller">Software Reseller/VAR</option>
+                                <option value="training-provider">Training Provider</option>
+                                <option value="staffing-recruitment">Staffing/Recruitment Agency</option>
+                                <option value="business-coach">Business Coach</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="form-section">
+                        <h3>Your Contact Information</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name<span class="required">*</span></label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastName">Last Name<span class="required">*</span></label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address<span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required>
+                            <div class="help-text">We'll send your partner portal access to this email</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number<span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Your Title/Role<span class="required">*</span></label>
+                            <input type="text" id="title" name="title" placeholder="e.g., Founder, VP Sales, Managing Partner" required>
+                        </div>
+                    </div>
+
+                    <!-- Sales Experience -->
+                    <div class="form-section">
+                        <h3>Sales Background</h3>
+
+                        <div class="form-group">
+                            <label for="salesExperience">Describe your sales experience<span class="required">*</span></label>
+                            <textarea id="salesExperience" name="salesExperience" placeholder="Tell us about your experience selling to HR/management teams, typical client size, industries you serve, etc." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="targetMarket">Primary target market/industry</label>
+                            <input type="text" id="targetMarket" name="targetMarket" placeholder="e.g., Technology companies 100-500 employees">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="territory">Geographic territory of interest</label>
+                            <input type="text" id="territory" name="territory" placeholder="e.g., San Francisco Bay Area, New England, UK">
+                        </div>
+                    </div>
+
+                    <!-- How They Found Us -->
+                    <div class="form-section">
+                        <h3>Additional Information</h3>
+
+                        <div class="form-group">
+                            <label for="referralSource">How did you hear about the Clover ERA partner program?</label>
+                            <select id="referralSource" name="referralSource">
+                                <option value="">Select source</option>
+                                <option value="web-search">Web search</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="referral">Referral from partner/colleague</option>
+                                <option value="industry-event">Industry event/conference</option>
+                                <option value="email">Email outreach</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="additionalInfo">Anything else you'd like us to know?</label>
+                            <textarea id="additionalInfo" name="additionalInfo" placeholder="Questions, specific interests, relevant experience, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="submit-section">
+                        <button type="submit" class="submit-button">Submit Partner Application</button>
+                    </div>
+                </form>
+
+                <div id="successMessage" class="success-message">
+                    <h3>Application Submitted Successfully!</h3>
+                    <p>Thank you for your interest in becoming a Clover ERA partner. We've received your application and will review it shortly.</p>
+
+                    <div class="next-steps">
+                        <h4>What Happens Next:</h4>
+                        <ol>
+                            <li>We'll review your application within 1-2 business days</li>
+                            <li>If approved, you'll receive an email with your sales portal access credentials</li>
+                            <li>Complete the Reseller Agreement electronically</li>
+                            <li>Access full partner training and sales resources</li>
+                            <li>Schedule your partner onboarding call</li>
+                        </ol>
+                    </div>
+
+                    <p style="margin-top: 1.5rem;">Questions? Email us at <strong>partners@cloverera.com</strong></p>
+
+                    <a href="/partners" class="cta-button">Return to Partner Information</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('partnerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                companyName: document.getElementById('companyName').value,
+                companyWebsite: document.getElementById('companyWebsite').value,
+                companySize: document.getElementById('companySize').value,
+                companyType: document.getElementById('companyType').value,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                title: document.getElementById('title').value,
+                salesExperience: document.getElementById('salesExperience').value,
+                targetMarket: document.getElementById('targetMarket').value,
+                territory: document.getElementById('territory').value,
+                referralSource: document.getElementById('referralSource').value,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                submittedAt: new Date().toISOString()
+            };
+
+            // In production, this would send to your backend/email service
+            // For now, we'll log to console and show success message
+            console.log('Partner Application Submitted:', formData);
+
+            // Store in localStorage for demonstration
+            localStorage.setItem('partnerApplication', JSON.stringify(formData));
+            localStorage.setItem('partnerEmail', formData.email);
+            localStorage.setItem('partnerName', `${formData.firstName} ${formData.lastName}`);
+
+            // Hide form, show success message
+            document.getElementById('partnerForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Scroll to success message
+            document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+
+            // In production, you might auto-redirect after a few seconds:
+            // setTimeout(() => {
+            //     window.location.href = '/partner-welcome.html';
+            // }, 3000);
+        });
+    </script>
+</body>
+</html>

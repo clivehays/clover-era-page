@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Clover ERA Partners | Clover ERA</title>
+    <meta name="description" content="Get started as a Clover ERA partner - complete your onboarding and access sales resources">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --bronze: #C9A667;
+            --charcoal: #2C3E50;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .header .partner-name {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            opacity: 0.95;
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 3rem 2rem;
+        }
+
+        .checklist-section {
+            margin-bottom: 3rem;
+        }
+
+        .checklist-section h3 {
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--medium-gray);
+        }
+
+        .checklist {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .checklist-item {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.05), rgba(13, 124, 136, 0.02));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--medium-gray);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item.completed {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border-left-color: var(--success-green);
+        }
+
+        .checklist-item.in-progress {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+            border-left-color: var(--warning-orange);
+        }
+
+        .checklist-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .checklist-item.completed .checklist-icon {
+            background: var(--success-green);
+        }
+
+        .checklist-item.in-progress .checklist-icon {
+            background: var(--warning-orange);
+        }
+
+        .checklist-content {
+            flex: 1;
+        }
+
+        .checklist-content h4 {
+            font-size: 1.2rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .checklist-content p {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .checklist-content .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .checklist-content .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(70, 174, 184, 0.3);
+        }
+
+        .checklist-content .secondary-button {
+            background: linear-gradient(135deg, var(--bronze), #B8935E);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .status-badge.completed {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .status-badge.pending {
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.12), rgba(13, 124, 136, 0.05));
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-teal);
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            color: var(--primary-teal);
+            margin-bottom: 1rem;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 0.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .info-box li::before {
+            content: "→ ";
+            color: var(--primary-teal);
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .quick-link-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .quick-link-card h4 {
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+        }
+
+        .quick-link-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .quick-link-card a {
+            display: inline-block;
+            color: var(--primary-teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .quick-link-card a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .checklist-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Clover ERA Partners!</h1>
+            <div class="partner-name" id="partnerName">Partner</div>
+        </div>
+
+        <div class="welcome-card">
+            <div class="card-header">
+                <h2>Your Partner Onboarding Checklist</h2>
+                <p>Complete these steps to start earning 25% recurring commission</p>
+            </div>
+
+            <div class="card-body">
+                <div class="info-box">
+                    <h3>What You've Unlocked:</h3>
+                    <ul>
+                        <li>25% recurring commission on all licenses sold</li>
+                        <li>Access to comprehensive sales portal with battle cards and email templates</li>
+                        <li>Dedicated partner success manager</li>
+                        <li>Product training and certification program</li>
+                        <li>Co-marketing opportunities and lead sharing</li>
+                    </ul>
+                </div>
+
+                <div class="checklist-section">
+                    <h3>Getting Started (Complete These First)</h3>
+
+                    <div class="checklist">
+                        <div class="checklist-item in-progress" id="step1">
+                            <div class="checklist-icon">✍️</div>
+                            <div class="checklist-content">
+                                <h4>1. Complete Reseller Agreement <span class="status-badge pending">Pending</span></h4>
+                                <p>Electronically sign the partner agreement to formalize the relationship. Takes 5 minutes - draws, type, or upload your signature.</p>
+                                <a href="/reseller-agreement.html" class="action-button">Complete Agreement Now</a>
+                            </div>
+                        </div>
+
+                        <div class="checklist-item" id="step2">
+                            <div class="checklist-icon">🎓</div>
+                            <div class="checklist-content">
+                                <h4>2. Watch Product Overview Video <span class="status-badge pending">Pending</span></h4>
+                                <p>15-minute walkthrough of the Clover ERA platform, CLOVER framework, and key differentiators.</p>
+                                <a href="#" class="action-button" onclick="markComplete('step2'); return false;">Watch Training Video</a>
+                            </div>
+                        </div>
+
+                        <div class="checklist-item" id="step3">
+                            <div class="checklist-icon">📅</div>
+                            <div class="checklist-content">
+                                <h4>3. Schedule Partner Kickoff Call <span class="status-badge pending">Pending</span></h4>
+                                <p>30-minute call with your partner success manager to discuss territory, go-to-market strategy, and answer questions.</p>
+                                <a href="https://calendly.com/clover-era-partners" target="_blank" class="action-button">Schedule Call</a>
+                            </div>
+                        </div>
+
+                        <div class="checklist-item" id="step4">
+                            <div class="checklist-icon">📦</div>
+                            <div class="checklist-content">
+                                <h4>4. Download Sales Pack <span class="status-badge pending">Pending</span></h4>
+                                <p>Complete sales collateral package: presentations, battle cards, one-pagers, ROI calculator, and competitive analysis.</p>
+                                <a href="#" class="action-button secondary-button" onclick="markComplete('step4'); return false;">Download Sales Pack (ZIP)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-section">
+                    <h3>Access Your Sales Portal</h3>
+
+                    <div class="checklist">
+                        <div class="checklist-item completed" id="step5">
+                            <div class="checklist-icon">🔓</div>
+                            <div class="checklist-content">
+                                <h4>5. Sales Portal Access <span class="status-badge completed">Granted</span></h4>
+                                <p>Your partner portal is now active. Access email templates, objection handlers, commission calculator, and client resources.</p>
+                                <div style="background: rgba(70, 174, 184, 0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                                    <strong>Portal Password:</strong> <code style="background: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 1.1rem;">CloverPartner2025</code>
+                                    <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-secondary);">Use this password to access the sales portal and partner resources.</p>
+                                </div>
+                                <a href="/sales-portal.html" class="action-button">Access Sales Portal</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checklist-section">
+                    <h3>Quick Links & Resources</h3>
+
+                    <div class="quick-links">
+                        <div class="quick-link-card">
+                            <h4>Partner Handbook</h4>
+                            <p>Complete guide to selling Clover ERA</p>
+                            <a href="#">Download PDF →</a>
+                        </div>
+
+                        <div class="quick-link-card">
+                            <h4>Platform Demo</h4>
+                            <p>Shareable demo video for prospects</p>
+                            <a href="#">View Demo →</a>
+                        </div>
+
+                        <div class="quick-link-card">
+                            <h4>Partner Community</h4>
+                            <p>Join Slack channel with other partners</p>
+                            <a href="#">Join Slack →</a>
+                        </div>
+
+                        <div class="quick-link-card">
+                            <h4>Support</h4>
+                            <p>Get help from partner success team</p>
+                            <a href="mailto:partners@cloverera.com">Contact Support →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load partner name from localStorage if available
+        document.addEventListener('DOMContentLoaded', function() {
+            const partnerName = localStorage.getItem('partnerName');
+            if (partnerName) {
+                document.getElementById('partnerName').textContent = `Welcome, ${partnerName}!`;
+            }
+
+            // Check if reseller agreement was completed
+            const agreementCompleted = localStorage.getItem('resellerAgreementCompleted');
+            if (agreementCompleted === 'true') {
+                markComplete('step1');
+            }
+        });
+
+        function markComplete(stepId) {
+            const step = document.getElementById(stepId);
+            if (!step) return;
+
+            step.classList.remove('in-progress');
+            step.classList.add('completed');
+
+            const badge = step.querySelector('.status-badge');
+            if (badge) {
+                badge.classList.remove('pending');
+                badge.classList.add('completed');
+                badge.textContent = 'Completed';
+            }
+
+            const icon = step.querySelector('.checklist-icon');
+            if (icon) {
+                icon.textContent = '✓';
+            }
+
+            // Save progress to localStorage
+            localStorage.setItem(`partner_${stepId}_completed`, 'true');
+        }
+
+        // Load completion status from localStorage
+        window.addEventListener('load', function() {
+            ['step1', 'step2', 'step3', 'step4', 'step5'].forEach(stepId => {
+                if (localStorage.getItem(`partner_${stepId}_completed`) === 'true') {
+                    markComplete(stepId);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1203,8 +1203,17 @@
 
                 console.log('PDF saved successfully:', fileName);
 
+                // Mark agreement as completed in localStorage
+                localStorage.setItem('resellerAgreementCompleted', 'true');
+                localStorage.setItem('partner_step1_completed', 'true');
+
                 // Show success message
-                alert('Your signed Reseller Agreement has been downloaded successfully! Please save it for your records.');
+                alert('Your signed Reseller Agreement has been downloaded successfully! You will now be redirected to your partner welcome page.');
+
+                // Redirect to partner welcome page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/partner-welcome.html';
+                }, 2000);
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 alert('An error occurred while generating the PDF. Please check the console for details and try again.');
