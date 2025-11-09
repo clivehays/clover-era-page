@@ -562,9 +562,51 @@
                             <strong><span id="signName"></span></strong>, <span id="signTitle"></span><br>
                             <span id="signCompany"></span>
                         </p>
-                        <canvas id="resellerSignature" class="signature-canvas"></canvas>
-                        <div class="signature-controls">
-                            <button class="btn btn-clear" onclick="clearSignature('resellerSignature')">Clear Signature</button>
+
+                        <!-- Signature Method Selection -->
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Choose signature method:</label>
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="resellerSignMethod" value="draw" checked onchange="switchSignatureMethod('reseller', 'draw')">
+                                    <span>Draw Signature</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="resellerSignMethod" value="type" onchange="switchSignatureMethod('reseller', 'type')">
+                                    <span>Type Name</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="resellerSignMethod" value="upload" onchange="switchSignatureMethod('reseller', 'upload')">
+                                    <span>Upload Image</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Draw Signature -->
+                        <div id="resellerDrawSection">
+                            <canvas id="resellerSignature" class="signature-canvas"></canvas>
+                            <div class="signature-controls">
+                                <button class="btn btn-clear" onclick="clearSignature('resellerSignature')">Clear Signature</button>
+                            </div>
+                        </div>
+
+                        <!-- Type Signature -->
+                        <div id="resellerTypeSection" style="display: none;">
+                            <input type="text" id="resellerTypedName" placeholder="Type your full name"
+                                   style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid var(--medium-gray); border-radius: 8px; margin-bottom: 1rem;"
+                                   oninput="generateTypedSignature('reseller')">
+                            <canvas id="resellerTypedCanvas" class="signature-canvas"></canvas>
+                        </div>
+
+                        <!-- Upload Signature -->
+                        <div id="resellerUploadSection" style="display: none;">
+                            <input type="file" id="resellerUpload" accept="image/*"
+                                   style="width: 100%; padding: 0.75rem; border: 2px solid var(--medium-gray); border-radius: 8px; margin-bottom: 1rem;"
+                                   onchange="handleSignatureUpload('reseller', this)">
+                            <canvas id="resellerUploadCanvas" class="signature-canvas"></canvas>
+                            <div class="signature-controls">
+                                <button class="btn btn-clear" onclick="clearUploadedSignature('reseller')">Clear Image</button>
+                            </div>
                         </div>
                     </div>
 
@@ -574,9 +616,51 @@
                             <strong>John Smith</strong>, Chief Executive Officer<br>
                             Clover ERA LLC
                         </p>
-                        <canvas id="cloverSignature" class="signature-canvas"></canvas>
-                        <div class="signature-controls">
-                            <button class="btn btn-clear" onclick="clearSignature('cloverSignature')">Clear Signature</button>
+
+                        <!-- Signature Method Selection -->
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Choose signature method:</label>
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="cloverSignMethod" value="draw" checked onchange="switchSignatureMethod('clover', 'draw')">
+                                    <span>Draw Signature</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="cloverSignMethod" value="type" onchange="switchSignatureMethod('clover', 'type')">
+                                    <span>Type Name</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="cloverSignMethod" value="upload" onchange="switchSignatureMethod('clover', 'upload')">
+                                    <span>Upload Image</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Draw Signature -->
+                        <div id="cloverDrawSection">
+                            <canvas id="cloverSignature" class="signature-canvas"></canvas>
+                            <div class="signature-controls">
+                                <button class="btn btn-clear" onclick="clearSignature('cloverSignature')">Clear Signature</button>
+                            </div>
+                        </div>
+
+                        <!-- Type Signature -->
+                        <div id="cloverTypeSection" style="display: none;">
+                            <input type="text" id="cloverTypedName" placeholder="Type your full name" value="John Smith"
+                                   style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 2px solid var(--medium-gray); border-radius: 8px; margin-bottom: 1rem;"
+                                   oninput="generateTypedSignature('clover')">
+                            <canvas id="cloverTypedCanvas" class="signature-canvas"></canvas>
+                        </div>
+
+                        <!-- Upload Signature -->
+                        <div id="cloverUploadSection" style="display: none;">
+                            <input type="file" id="cloverUpload" accept="image/*"
+                                   style="width: 100%; padding: 0.75rem; border: 2px solid var(--medium-gray); border-radius: 8px; margin-bottom: 1rem;"
+                                   onchange="handleSignatureUpload('clover', this)">
+                            <canvas id="cloverUploadCanvas" class="signature-canvas"></canvas>
+                            <div class="signature-controls">
+                                <button class="btn btn-clear" onclick="clearUploadedSignature('clover')">Clear Image</button>
+                            </div>
                         </div>
                     </div>
 
@@ -604,26 +688,52 @@
         // Signature canvas setup
         let resellerCanvas, cloverCanvas;
         let resellerCtx, cloverCtx;
+        let resellerTypedCanvas, cloverTypedCanvas;
+        let resellerUploadCanvas, cloverUploadCanvas;
         let isDrawing = false;
+
+        // Track active signature method
+        let resellerSignMethod = 'draw';
+        let cloverSignMethod = 'draw';
 
         document.addEventListener('DOMContentLoaded', function() {
             setupSignatureCanvases();
         });
 
         function setupSignatureCanvases() {
-            // Reseller signature
+            // Reseller draw signature
             resellerCanvas = document.getElementById('resellerSignature');
             resellerCtx = resellerCanvas.getContext('2d');
             resellerCanvas.width = resellerCanvas.offsetWidth;
             resellerCanvas.height = 200;
             setupCanvasEvents(resellerCanvas, resellerCtx);
 
-            // Clover signature
+            // Reseller typed signature
+            resellerTypedCanvas = document.getElementById('resellerTypedCanvas');
+            resellerTypedCanvas.width = resellerTypedCanvas.offsetWidth;
+            resellerTypedCanvas.height = 200;
+
+            // Reseller upload signature
+            resellerUploadCanvas = document.getElementById('resellerUploadCanvas');
+            resellerUploadCanvas.width = resellerUploadCanvas.offsetWidth;
+            resellerUploadCanvas.height = 200;
+
+            // Clover draw signature
             cloverCanvas = document.getElementById('cloverSignature');
             cloverCtx = cloverCanvas.getContext('2d');
             cloverCanvas.width = cloverCanvas.offsetWidth;
             cloverCanvas.height = 200;
             setupCanvasEvents(cloverCanvas, cloverCtx);
+
+            // Clover typed signature
+            cloverTypedCanvas = document.getElementById('cloverTypedCanvas');
+            cloverTypedCanvas.width = cloverTypedCanvas.offsetWidth;
+            cloverTypedCanvas.height = 200;
+
+            // Clover upload signature
+            cloverUploadCanvas = document.getElementById('cloverUploadCanvas');
+            cloverUploadCanvas.width = cloverUploadCanvas.offsetWidth;
+            cloverUploadCanvas.height = 200;
         }
 
         function setupCanvasEvents(canvas, ctx) {
@@ -678,6 +788,103 @@
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function switchSignatureMethod(party, method) {
+            // Hide all sections for this party
+            document.getElementById(`${party}DrawSection`).style.display = 'none';
+            document.getElementById(`${party}TypeSection`).style.display = 'none';
+            document.getElementById(`${party}UploadSection`).style.display = 'none';
+
+            // Show selected section
+            document.getElementById(`${party}${method.charAt(0).toUpperCase() + method.slice(1)}Section`).style.display = 'block';
+
+            // Update tracking variable
+            if (party === 'reseller') {
+                resellerSignMethod = method;
+            } else {
+                cloverSignMethod = method;
+            }
+
+            // If switching to type and there's a default name, generate it
+            if (method === 'type') {
+                if (party === 'clover') {
+                    generateTypedSignature('clover');
+                }
+            }
+        }
+
+        function generateTypedSignature(party) {
+            const input = document.getElementById(`${party}TypedName`);
+            const canvas = document.getElementById(`${party}TypedCanvas`);
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (!input.value) return;
+
+            // Set signature style - elegant cursive font
+            ctx.font = '48px "Brush Script MT", "Lucida Handwriting", cursive';
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+
+            // Draw the typed name in signature style
+            ctx.fillText(input.value, 20, canvas.height / 2);
+        }
+
+        function handleSignatureUpload(party, input) {
+            if (!input.files || !input.files[0]) return;
+
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.getElementById(`${party}UploadCanvas`);
+                    const ctx = canvas.getContext('2d');
+
+                    // Clear canvas
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // Calculate dimensions to fit image in canvas while maintaining aspect ratio
+                    const maxWidth = canvas.width - 40;
+                    const maxHeight = canvas.height - 40;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxWidth) {
+                        height = (height / width) * maxWidth;
+                        width = maxWidth;
+                    }
+                    if (height > maxHeight) {
+                        width = (width / height) * maxHeight;
+                        height = maxHeight;
+                    }
+
+                    // Center the image
+                    const x = (canvas.width - width) / 2;
+                    const y = (canvas.height - height) / 2;
+
+                    // Draw image
+                    ctx.drawImage(img, x, y, width, height);
+                };
+                img.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function clearUploadedSignature(party) {
+            const canvas = document.getElementById(`${party}UploadCanvas`);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Clear file input
+            const input = document.getElementById(`${party}Upload`);
+            input.value = '';
         }
 
         function goToStep(stepNumber) {
@@ -755,10 +962,26 @@
         }
 
         function generatePDF() {
-            // Check if signatures exist
-            const resellerCanvas = document.getElementById('resellerSignature');
-            const cloverCanvas = document.getElementById('cloverSignature');
+            // Get the appropriate canvas based on selected signature method
+            let resellerCanvas, cloverCanvas;
 
+            if (resellerSignMethod === 'draw') {
+                resellerCanvas = document.getElementById('resellerSignature');
+            } else if (resellerSignMethod === 'type') {
+                resellerCanvas = document.getElementById('resellerTypedCanvas');
+            } else {
+                resellerCanvas = document.getElementById('resellerUploadCanvas');
+            }
+
+            if (cloverSignMethod === 'draw') {
+                cloverCanvas = document.getElementById('cloverSignature');
+            } else if (cloverSignMethod === 'type') {
+                cloverCanvas = document.getElementById('cloverTypedCanvas');
+            } else {
+                cloverCanvas = document.getElementById('cloverUploadCanvas');
+            }
+
+            // Check if signatures exist
             const resellerCtx = resellerCanvas.getContext('2d');
             const cloverCtx = cloverCanvas.getContext('2d');
 
