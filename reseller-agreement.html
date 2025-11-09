@@ -8,6 +8,8 @@
     <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&display=swap');
+
         :root {
             --primary-teal: #46AEB8;
             --deep-teal: #0D7C88;
@@ -18,6 +20,7 @@
             --text-primary: #1F2937;
             --text-secondary: #6B7280;
             --white: #FFFFFF;
+            --signature-font: 'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', cursive;
         }
 
         * {
@@ -697,7 +700,15 @@
         let cloverSignMethod = 'draw';
 
         document.addEventListener('DOMContentLoaded', function() {
-            setupSignatureCanvases();
+            // Wait for fonts to load before setting up canvases
+            if (document.fonts) {
+                document.fonts.ready.then(function() {
+                    setupSignatureCanvases();
+                });
+            } else {
+                // Fallback if fonts API not available
+                setupSignatureCanvases();
+            }
         });
 
         function setupSignatureCanvases() {
@@ -739,15 +750,6 @@
         function setupCanvasEvents(canvas, ctx) {
             let drawing = false;
 
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseout', stopDrawing);
-
-            canvas.addEventListener('touchstart', handleTouch);
-            canvas.addEventListener('touchmove', handleTouch);
-            canvas.addEventListener('touchend', stopDrawing);
-
             function startDrawing(e) {
                 drawing = true;
                 const rect = canvas.getBoundingClientRect();
@@ -755,10 +757,12 @@
                 const y = e.clientY - rect.top;
                 ctx.beginPath();
                 ctx.moveTo(x, y);
+                e.preventDefault();
             }
 
             function draw(e) {
                 if (!drawing) return;
+                e.preventDefault();
                 const rect = canvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -766,22 +770,60 @@
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 2;
                 ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 ctx.stroke();
             }
 
-            function stopDrawing() {
-                drawing = false;
+            function stopDrawing(e) {
+                if (drawing) {
+                    drawing = false;
+                    ctx.closePath();
+                }
             }
 
-            function handleTouch(e) {
+            function handleTouchStart(e) {
                 e.preventDefault();
                 const touch = e.touches[0];
-                const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
-                });
-                canvas.dispatchEvent(mouseEvent);
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
             }
+
+            function handleTouchMove(e) {
+                if (!drawing) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+            }
+
+            function handleTouchEnd(e) {
+                if (drawing) {
+                    drawing = false;
+                    ctx.closePath();
+                }
+            }
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', handleTouchEnd);
         }
 
         function clearSignature(canvasId) {
@@ -817,21 +859,36 @@
         function generateTypedSignature(party) {
             const input = document.getElementById(`${party}TypedName`);
             const canvas = document.getElementById(`${party}TypedCanvas`);
+
+            if (!canvas) {
+                console.error('Canvas not found for party:', party);
+                return;
+            }
+
             const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Could not get canvas context');
+                return;
+            }
 
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            if (!input.value) return;
+            if (!input || !input.value) return;
 
             // Set signature style - elegant cursive font
-            ctx.font = '48px "Brush Script MT", "Lucida Handwriting", cursive';
-            ctx.fillStyle = '#000';
+            ctx.font = '700 52px "Dancing Script", "Brush Script MT", "Lucida Handwriting", cursive';
+            ctx.fillStyle = '#000000';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
 
             // Draw the typed name in signature style
-            ctx.fillText(input.value, 20, canvas.height / 2);
+            const text = input.value;
+            const x = 20;
+            const y = canvas.height / 2;
+
+            // Use fillText to render the signature
+            ctx.fillText(text, x, y);
         }
 
         function handleSignatureUpload(party, input) {
@@ -962,57 +1019,83 @@
         }
 
         function generatePDF() {
-            // Get the appropriate canvas based on selected signature method
-            let resellerCanvas, cloverCanvas;
-
-            if (resellerSignMethod === 'draw') {
-                resellerCanvas = document.getElementById('resellerSignature');
-            } else if (resellerSignMethod === 'type') {
-                resellerCanvas = document.getElementById('resellerTypedCanvas');
-            } else {
-                resellerCanvas = document.getElementById('resellerUploadCanvas');
-            }
-
-            if (cloverSignMethod === 'draw') {
-                cloverCanvas = document.getElementById('cloverSignature');
-            } else if (cloverSignMethod === 'type') {
-                cloverCanvas = document.getElementById('cloverTypedCanvas');
-            } else {
-                cloverCanvas = document.getElementById('cloverUploadCanvas');
-            }
-
-            // Check if signatures exist
-            const resellerCtx = resellerCanvas.getContext('2d');
-            const cloverCtx = cloverCanvas.getContext('2d');
-
-            const resellerData = resellerCtx.getImageData(0, 0, resellerCanvas.width, resellerCanvas.height);
-            const cloverData = cloverCtx.getImageData(0, 0, cloverCanvas.width, cloverCanvas.height);
-
-            let resellerHasSignature = false;
-            let cloverHasSignature = false;
-
-            for (let i = 0; i < resellerData.data.length; i += 4) {
-                if (resellerData.data[i + 3] > 0) {
-                    resellerHasSignature = true;
-                    break;
+            try {
+                // Verify jsPDF is loaded
+                if (!window.jspdf || !window.jspdf.jsPDF) {
+                    alert('PDF library is not loaded. Please refresh the page and try again.');
+                    console.error('jsPDF library not found');
+                    return;
                 }
-            }
 
-            for (let i = 0; i < cloverData.data.length; i += 4) {
-                if (cloverData.data[i + 3] > 0) {
-                    cloverHasSignature = true;
-                    break;
+                // Get the appropriate canvas based on selected signature method
+                let resellerCanvas, cloverCanvas;
+
+                if (resellerSignMethod === 'draw') {
+                    resellerCanvas = document.getElementById('resellerSignature');
+                } else if (resellerSignMethod === 'type') {
+                    resellerCanvas = document.getElementById('resellerTypedCanvas');
+                } else {
+                    resellerCanvas = document.getElementById('resellerUploadCanvas');
                 }
-            }
 
-            if (!resellerHasSignature || !cloverHasSignature) {
-                alert('Please ensure both parties have signed the agreement before downloading.');
-                return;
-            }
+                if (cloverSignMethod === 'draw') {
+                    cloverCanvas = document.getElementById('cloverSignature');
+                } else if (cloverSignMethod === 'type') {
+                    cloverCanvas = document.getElementById('cloverTypedCanvas');
+                } else {
+                    cloverCanvas = document.getElementById('cloverUploadCanvas');
+                }
 
-            // Generate PDF
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+                if (!resellerCanvas || !cloverCanvas) {
+                    alert('Error: Could not find signature canvases.');
+                    console.error('Canvas not found - Reseller:', resellerCanvas, 'Clover:', cloverCanvas);
+                    return;
+                }
+
+                // Check if signatures exist
+                const resellerCtx = resellerCanvas.getContext('2d');
+                const cloverCtx = cloverCanvas.getContext('2d');
+
+                if (!resellerCtx || !cloverCtx) {
+                    alert('Error: Could not get canvas contexts.');
+                    console.error('Context not found');
+                    return;
+                }
+
+                const resellerData = resellerCtx.getImageData(0, 0, resellerCanvas.width, resellerCanvas.height);
+                const cloverData = cloverCtx.getImageData(0, 0, cloverCanvas.width, cloverCanvas.height);
+
+                let resellerHasSignature = false;
+                let cloverHasSignature = false;
+
+                for (let i = 0; i < resellerData.data.length; i += 4) {
+                    if (resellerData.data[i + 3] > 0) {
+                        resellerHasSignature = true;
+                        break;
+                    }
+                }
+
+                for (let i = 0; i < cloverData.data.length; i += 4) {
+                    if (cloverData.data[i + 3] > 0) {
+                        cloverHasSignature = true;
+                        break;
+                    }
+                }
+
+                console.log('Signature check - Reseller:', resellerHasSignature, 'Clover:', cloverHasSignature);
+
+                if (!resellerHasSignature || !cloverHasSignature) {
+                    let missing = [];
+                    if (!resellerHasSignature) missing.push('Reseller');
+                    if (!cloverHasSignature) missing.push('Clover ERA');
+                    alert('Please ensure both parties have signed the agreement before downloading.\n\nMissing signatures: ' + missing.join(', '));
+                    return;
+                }
+
+                // Generate PDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                console.log('PDF generation started');
 
             let yPosition = 20;
             const pageHeight = doc.internal.pageSize.height;
@@ -1114,12 +1197,18 @@
             yPosition += 7;
             doc.text(`Date: ${formattedDate}`, margin, yPosition);
 
-            // Save PDF
-            const fileName = `Clover_ERA_Reseller_Agreement_${formData.companyName.replace(/[^a-z0-9]/gi, '_')}_${formData.effectiveDate}.pdf`;
-            doc.save(fileName);
+                // Save PDF
+                const fileName = `Clover_ERA_Reseller_Agreement_${formData.companyName.replace(/[^a-z0-9]/gi, '_')}_${formData.effectiveDate}.pdf`;
+                doc.save(fileName);
 
-            // Show success message
-            alert('Your signed Reseller Agreement has been downloaded successfully! Please save it for your records.');
+                console.log('PDF saved successfully:', fileName);
+
+                // Show success message
+                alert('Your signed Reseller Agreement has been downloaded successfully! Please save it for your records.');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('An error occurred while generating the PDF. Please check the console for details and try again.');
+            }
         }
     </script>
 </body>
