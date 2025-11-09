@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnover Cost Calculator | Clover ERA</title>
+    <meta name="description" content="Calculate the true cost of employee turnover for your organization. Understand how much replacing employees costs your business.">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --bronze: #C9A667;
+            --charcoal: #2C3E50;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            opacity: 0.95;
+        }
+
+        .card-body {
+            padding: 3rem 2rem;
+        }
+
+        .input-section {
+            margin-bottom: 3rem;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        .input-group .help-text {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-style: italic;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 1rem 1rem 1rem 2.5rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.1);
+        }
+
+        .results-section {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.05), rgba(13, 124, 136, 0.05));
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+        }
+
+        .result-value.warning {
+            color: var(--warning-orange);
+        }
+
+        .total-cost {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .total-cost h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+        }
+
+        .total-cost .value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-cost .subtext {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .breakdown-section {
+            margin-top: 3rem;
+        }
+
+        .breakdown-section h3 {
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--medium-gray);
+        }
+
+        .breakdown-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .breakdown-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-teal);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breakdown-item .label {
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .breakdown-item .description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .breakdown-item .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, rgba(201, 166, 103, 0.1), rgba(201, 166, 103, 0.05));
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .cta-section h3 {
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(70, 174, 184, 0.3);
+        }
+
+        .info-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success-green);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .info-box h4 {
+            color: var(--success-green);
+            margin-bottom: 0.75rem;
+        }
+
+        .info-box p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .total-cost .value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Turnover Cost Calculator</h1>
+            <p>Calculate the true cost of employee turnover for your organization</p>
+        </div>
+
+        <div class="calculator-card">
+            <div class="card-header">
+                <h2>Employee Replacement Cost Estimator</h2>
+                <p>Understanding the real financial impact of losing employees</p>
+            </div>
+
+            <div class="card-body">
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="avgSalary">Average Employee Salary</label>
+                        <span class="help-text">Enter the typical annual salary for the roles experiencing turnover</span>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">$</span>
+                            <input type="number" id="avgSalary" value="75000" min="0" step="1000">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="employeeCount">Number of Employees</label>
+                        <span class="help-text">Total number of employees in your organization or department</span>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">#</span>
+                            <input type="number" id="employeeCount" value="100" min="1" step="1">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="turnoverRate">Annual Turnover Rate (%)</label>
+                        <span class="help-text">Percentage of employees who leave annually (industry average: 15-20%)</span>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">%</span>
+                            <input type="number" id="turnoverRate" value="18" min="0" max="100" step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-grid">
+                        <div class="result-box">
+                            <div class="result-label">Employees Lost Annually</div>
+                            <div class="result-value" id="employeesLost">18</div>
+                        </div>
+
+                        <div class="result-box">
+                            <div class="result-label">Cost Per Replacement</div>
+                            <div class="result-value warning" id="costPerReplacement">$112,500</div>
+                        </div>
+
+                        <div class="result-box">
+                            <div class="result-label">Avg. Days to Fill Position</div>
+                            <div class="result-value" id="daysToFill">42</div>
+                        </div>
+                    </div>
+
+                    <div class="total-cost">
+                        <h3>Total Annual Turnover Cost</h3>
+                        <div class="value" id="totalCost">$2,025,000</div>
+                        <div class="subtext">This represents the financial impact of losing and replacing employees each year</div>
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3>📊 Cost Breakdown Per Employee</h3>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-item">
+                            <div>
+                                <div class="label">Recruiting & Hiring</div>
+                                <div class="description">Job postings, recruiter fees, interview time</div>
+                            </div>
+                            <div class="value" id="recruitingCost">$22,500</div>
+                        </div>
+
+                        <div class="breakdown-item">
+                            <div>
+                                <div class="label">Onboarding & Training</div>
+                                <div class="description">New hire training, orientation, learning curve</div>
+                            </div>
+                            <div class="value" id="trainingCost">$30,000</div>
+                        </div>
+
+                        <div class="breakdown-item">
+                            <div>
+                                <div class="label">Lost Productivity</div>
+                                <div class="description">Reduced output during vacancy and ramp-up</div>
+                            </div>
+                            <div class="value" id="productivityCost">$37,500</div>
+                        </div>
+
+                        <div class="breakdown-item">
+                            <div>
+                                <div class="label">Knowledge & Relationship Loss</div>
+                                <div class="description">Lost institutional knowledge, client relationships</div>
+                            </div>
+                            <div class="value" id="knowledgeCost">$22,500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 How We Calculate</h4>
+                    <p>Industry research shows that replacing an employee costs 150% of their annual salary on average. This includes recruiting costs (30%), onboarding and training (40%), lost productivity (50%), and knowledge/relationship loss (30%). These costs compound when multiple employees leave.</p>
+                </div>
+
+                <div class="cta-section">
+                    <h3>🎯 Reduce Your Turnover Costs by 29%</h3>
+                    <p>Clover ERA's manager enablement platform helps organizations prevent turnover before it happens. Our beta clients achieved an average 29% reduction in turnover within 6 months.</p>
+                    <a href="/30-day-free-pilot" class="cta-button">Start Free 30-Day Pilot</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(value) {
+            return '$' + Math.round(value).toLocaleString();
+        }
+
+        function formatNumber(value) {
+            return Math.round(value).toLocaleString();
+        }
+
+        function calculateCosts() {
+            // Get input values
+            const avgSalary = parseFloat(document.getElementById('avgSalary').value) || 0;
+            const employeeCount = parseInt(document.getElementById('employeeCount').value) || 0;
+            const turnoverRate = parseFloat(document.getElementById('turnoverRate').value) || 0;
+
+            // Calculate number of employees lost annually
+            const employeesLost = Math.round(employeeCount * (turnoverRate / 100));
+
+            // Cost per replacement (150% of salary)
+            const costPerReplacement = avgSalary * 1.5;
+
+            // Days to fill (industry average)
+            const daysToFill = 42;
+
+            // Total annual cost
+            const totalAnnualCost = employeesLost * costPerReplacement;
+
+            // Breakdown per employee
+            const recruitingCost = avgSalary * 0.30; // 30% of salary
+            const trainingCost = avgSalary * 0.40; // 40% of salary
+            const productivityCost = avgSalary * 0.50; // 50% of salary
+            const knowledgeCost = avgSalary * 0.30; // 30% of salary
+
+            // Update display
+            document.getElementById('employeesLost').textContent = formatNumber(employeesLost);
+            document.getElementById('costPerReplacement').textContent = formatCurrency(costPerReplacement);
+            document.getElementById('daysToFill').textContent = daysToFill;
+            document.getElementById('totalCost').textContent = formatCurrency(totalAnnualCost);
+
+            document.getElementById('recruitingCost').textContent = formatCurrency(recruitingCost);
+            document.getElementById('trainingCost').textContent = formatCurrency(trainingCost);
+            document.getElementById('productivityCost').textContent = formatCurrency(productivityCost);
+            document.getElementById('knowledgeCost').textContent = formatCurrency(knowledgeCost);
+        }
+
+        // Add event listeners
+        document.getElementById('avgSalary').addEventListener('input', calculateCosts);
+        document.getElementById('employeeCount').addEventListener('input', calculateCosts);
+        document.getElementById('turnoverRate').addEventListener('input', calculateCosts);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', calculateCosts);
+    </script>
+</body>
+</html>
