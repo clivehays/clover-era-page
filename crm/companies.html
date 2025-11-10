@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companies - Clover ERA CRM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #2C3E50;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --success-green: #10B981;
+            --warning-yellow: #F59E0B;
+            --danger-red: #EF4444;
+            --bronze: #C9A667;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--light-gray);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--bronze);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #B8935E;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-teal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filters-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--charcoal);
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 1.5rem;
+            color: var(--charcoal);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--light-gray);
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        tbody tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: var(--light-gray);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-customer { background: #DBEAFE; color: #1E40AF; }
+        .badge-partner { background: #FEF3C7; color: #92400E; }
+        .badge-both { background: #DDD6FE; color: #5B21B6; }
+
+        .badge-prospect { background: #E0E7FF; color: #4338CA; }
+        .badge-qualified { background: #DBEAFE; color: #1E40AF; }
+        .badge-customer-status { background: #D1FAE5; color: #065F46; }
+        .badge-churned { background: #FEE2E2; color: #991B1B; }
+        .badge-inactive { background: #F3F4F6; color: #4B5563; }
+
+        .badge-partner-active { background: #D1FAE5; color: #065F46; }
+        .badge-partner-pending { background: #FEF3C7; color: #92400E; }
+        .badge-partner-inactive { background: #F3F4F6; color: #4B5563; }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--medium-gray);
+            border-top: 3px solid var(--primary-teal);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🍀 Clover ERA CRM - Companies</h1>
+        <div class="header-actions">
+            <a href="/crm/index.html" class="btn btn-secondary">← Dashboard</a>
+            <button class="btn btn-primary" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-label">Total Companies</div>
+                <div class="stat-value" id="totalCompanies">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-label">Customers</div>
+                <div class="stat-value" id="totalCustomers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤝</div>
+                <div class="stat-label">Partners</div>
+                <div class="stat-value" id="totalPartners">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💼</div>
+                <div class="stat-label">Active Opportunities</div>
+                <div class="stat-value" id="totalOpportunities">0</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="Search by company name..." oninput="filterCompanies()">
+                </div>
+                <div class="filter-group">
+                    <label>Company Type</label>
+                    <select id="typeFilter" onchange="filterCompanies()">
+                        <option value="">All Types</option>
+                        <option value="customer">Customers</option>
+                        <option value="partner">Partners</option>
+                        <option value="both">Both</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter" onchange="filterCompanies()">
+                        <option value="">All Statuses</option>
+                        <option value="prospect">Prospect</option>
+                        <option value="qualified">Qualified</option>
+                        <option value="customer">Customer</option>
+                        <option value="churned">Churned</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Industry</label>
+                    <select id="industryFilter" onchange="filterCompanies()">
+                        <option value="">All Industries</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Companies Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Companies</h2>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                    <span id="companiesCount">0</span> companies
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading">
+                <div class="spinner"></div>
+                <p>Loading companies...</p>
+            </div>
+
+            <!-- Table -->
+            <div id="tableContent" style="display: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Type</th>
+                            <th>Industry</th>
+                            <th>Status</th>
+                            <th>Employees</th>
+                            <th>Opportunities</th>
+                            <th>Contacts</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companiesTableBody">
+                        <!-- Companies will be dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">🏢</div>
+                <h3>No companies found</h3>
+                <p>Try adjusting your filters or add a new company from the dashboard.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SUPABASE CONFIGURATION =====
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let allCompanies = [];
+        let filteredCompanies = [];
+
+        // Check authentication
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = '/crm/login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Logout
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = '/crm/login.html';
+        }
+
+        // Load companies
+        async function loadCompanies() {
+            try {
+                // Load companies with related counts
+                const { data: companies, error } = await supabase
+                    .from('companies')
+                    .select(`
+                        *,
+                        opportunities (count),
+                        contacts (count)
+                    `)
+                    .order('name');
+
+                if (error) throw error;
+
+                allCompanies = companies.map(company => ({
+                    ...company,
+                    opportunity_count: company.opportunities?.[0]?.count || 0,
+                    contact_count: company.contacts?.[0]?.count || 0
+                }));
+
+                filteredCompanies = [...allCompanies];
+
+                // Populate industry filter
+                populateIndustryFilter();
+
+                // Update stats
+                updateStats();
+
+                // Render table
+                renderCompaniesTable();
+
+                // Hide loading, show table
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('tableContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading companies:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div class="empty-state-icon">⚠️</div>
+                    <p>Failed to load companies</p>
+                `;
+            }
+        }
+
+        // Populate industry filter
+        function populateIndustryFilter() {
+            const industries = [...new Set(allCompanies.map(c => c.industry).filter(Boolean))].sort();
+            const select = document.getElementById('industryFilter');
+
+            industries.forEach(industry => {
+                const option = document.createElement('option');
+                option.value = industry;
+                option.textContent = industry;
+                select.appendChild(option);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = allCompanies.length;
+            const customers = allCompanies.filter(c => c.company_type === 'customer' || c.company_type === 'both').length;
+            const partners = allCompanies.filter(c => c.company_type === 'partner' || c.company_type === 'both').length;
+            const opportunities = allCompanies.reduce((sum, c) => sum + (c.opportunity_count || 0), 0);
+
+            document.getElementById('totalCompanies').textContent = total;
+            document.getElementById('totalCustomers').textContent = customers;
+            document.getElementById('totalPartners').textContent = partners;
+            document.getElementById('totalOpportunities').textContent = opportunities;
+        }
+
+        // Filter companies
+        function filterCompanies() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const industryFilter = document.getElementById('industryFilter').value;
+
+            filteredCompanies = allCompanies.filter(company => {
+                const matchesSearch = company.name.toLowerCase().includes(search);
+                const matchesType = !typeFilter || company.company_type === typeFilter;
+                const matchesStatus = !statusFilter || company.status === statusFilter;
+                const matchesIndustry = !industryFilter || company.industry === industryFilter;
+
+                return matchesSearch && matchesType && matchesStatus && matchesIndustry;
+            });
+
+            renderCompaniesTable();
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('industryFilter').value = '';
+            filterCompanies();
+        }
+
+        // Render companies table
+        function renderCompaniesTable() {
+            const tbody = document.getElementById('companiesTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const tableContent = document.getElementById('tableContent');
+
+            document.getElementById('companiesCount').textContent = filteredCompanies.length;
+
+            if (filteredCompanies.length === 0) {
+                tableContent.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tableContent.style.display = 'block';
+
+            tbody.innerHTML = filteredCompanies.map(company => `
+                <tr onclick="viewCompany('${company.id}')">
+                    <td>
+                        <strong>${company.name}</strong>
+                        ${company.website ? `<br><small style="color: var(--text-secondary);">${company.website}</small>` : ''}
+                    </td>
+                    <td>
+                        <span class="badge badge-${company.company_type || 'customer'}">
+                            ${formatCompanyType(company.company_type)}
+                        </span>
+                        ${company.company_type === 'partner' && company.partner_status ? `
+                            <br><span class="badge badge-partner-${company.partner_status}" style="margin-top: 0.25rem;">
+                                ${formatPartnerStatus(company.partner_status)}
+                            </span>
+                        ` : ''}
+                    </td>
+                    <td>${company.industry || '-'}</td>
+                    <td>
+                        <span class="badge badge-${company.status}">
+                            ${formatStatus(company.status)}
+                        </span>
+                    </td>
+                    <td>${company.employee_count ? company.employee_count.toLocaleString() : '-'}</td>
+                    <td>${company.opportunity_count || 0}</td>
+                    <td>${company.contact_count || 0}</td>
+                </tr>
+            `).join('');
+        }
+
+        // View company details
+        function viewCompany(companyId) {
+            // For now, redirect to opportunities filtered by company
+            // In Phase 2, we'll create a dedicated company detail page
+            window.location.href = `/crm/index.html?company=${companyId}`;
+        }
+
+        // Formatting functions
+        function formatCompanyType(type) {
+            const types = {
+                'customer': '👥 Customer',
+                'partner': '🤝 Partner',
+                'both': '🏢 Both'
+            };
+            return types[type] || '👥 Customer';
+        }
+
+        function formatStatus(status) {
+            const statuses = {
+                'prospect': 'Prospect',
+                'qualified': 'Qualified',
+                'customer': 'Customer',
+                'churned': 'Churned',
+                'inactive': 'Inactive'
+            };
+            return statuses[status] || status;
+        }
+
+        function formatPartnerStatus(status) {
+            const statuses = {
+                'active': 'Active',
+                'pending': 'Pending',
+                'inactive': 'Inactive'
+            };
+            return statuses[status] || status;
+        }
+
+        // Initialize
+        async function init() {
+            const authenticated = await checkAuth();
+            if (authenticated) {
+                await loadCompanies();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

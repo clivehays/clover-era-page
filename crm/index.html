@@ -500,6 +500,7 @@
         <h1>🍀 Clover ERA CRM</h1>
         <div class="header-actions">
             <span class="user-info" id="userInfo">Loading...</span>
+            <a href="/crm/companies.html" class="btn btn-secondary">🏢 Companies</a>
             <button class="btn btn-primary" onclick="showNewOpportunityModal()">+ New Opportunity</button>
             <button class="btn btn-secondary" onclick="logout()">Logout</button>
         </div>
@@ -612,6 +613,14 @@
                                     <label for="newCompanyIndustry">Industry</label>
                                     <input type="text" id="newCompanyIndustry">
                                 </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newCompanyType">Company Type</label>
+                                <select id="newCompanyType">
+                                    <option value="customer">Customer (Potential/Existing Customer)</option>
+                                    <option value="partner">Partner (Reseller/Channel Partner)</option>
+                                    <option value="both">Both</option>
+                                </select>
                             </div>
                             <button type="button" class="btn btn-primary" onclick="saveNewCompany()">Save Company</button>
                             <button type="button" class="btn btn-secondary" onclick="hideAddCompanyForm()">Cancel</button>
@@ -1093,12 +1102,14 @@
             document.getElementById('addCompanyForm').style.display = 'none';
             document.getElementById('newCompanyName').value = '';
             document.getElementById('newCompanyIndustry').value = '';
+            document.getElementById('newCompanyType').value = 'customer';
         }
 
         // Save new company
         async function saveNewCompany() {
             const name = document.getElementById('newCompanyName').value;
             const industry = document.getElementById('newCompanyIndustry').value;
+            const companyType = document.getElementById('newCompanyType').value;
 
             if (!name) {
                 alert('Please enter a company name');
@@ -1111,6 +1122,7 @@
                     .insert([{
                         name: name,
                         industry: industry,
+                        company_type: companyType,
                         status: 'prospect'
                     }])
                     .select()
