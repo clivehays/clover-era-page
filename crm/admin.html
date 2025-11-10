@@ -399,7 +399,7 @@
 
     <script>
         const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY5ODE3NTQsImV4cCI6MjA1MjU1Nzc1NH0.iNRNlR7Uk0K96jhPNm-vYzTNp_rP1T-gZ-D4uVKlxlc';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -424,26 +424,9 @@
                 .eq('id', session.user.id)
                 .single();
 
-            console.log('Admin check - Session User ID:', session.user.id);
-            console.log('Admin check - Profile Error:', JSON.stringify(profileError, null, 2));
-            console.log('Admin check - Profile Data:', profile);
-            console.log('Admin check - Profile Role:', profile?.role);
-
             if (profileError || !profile || profile.role !== 'admin') {
-                console.error('Access denied:', { profileError, profile, role: profile?.role });
-                // Temporarily show error details instead of redirecting
-                document.body.innerHTML = `
-                    <h1>Access Denied - Debug Info</h1>
-                    <h2>Error Details:</h2>
-                    <pre>${JSON.stringify(profileError, null, 2)}</pre>
-                    <h2>Session User ID:</h2>
-                    <pre>${session.user.id}</pre>
-                    <h2>Profile Data:</h2>
-                    <pre>${JSON.stringify(profile, null, 2)}</pre>
-                    <h2>Profile Role:</h2>
-                    <pre>${profile?.role || 'undefined'}</pre>
-                    <p><a href="index.html">Back to Dashboard</a></p>
-                `;
+                alert('Access denied. This page is only accessible to administrators.');
+                window.location.href = 'index.html';
                 return;
             }
 
