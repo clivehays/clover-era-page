@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA CRM - Dashboard</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --bronze: #C9A667;
+            --charcoal: #2C3E50;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --danger-red: #EF4444;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-gray);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--bronze);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #B8935E;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-teal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .metric-card .label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+        }
+
+        .metric-card .change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .change.positive {
+            color: var(--success-green);
+        }
+
+        .change.negative {
+            color: var(--danger-red);
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            color: var(--charcoal);
+        }
+
+        .pipeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .pipeline-stage {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 300px;
+        }
+
+        .pipeline-stage-header {
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stage-count {
+            background: var(--primary-teal);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .opportunity-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--primary-teal);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .opportunity-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .opportunity-card .title {
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .opportunity-card .company {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .opportunity-card .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--success-green);
+            margin-top: 0.5rem;
+        }
+
+        .opportunity-card .meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem;
+            background: var(--light-gray);
+            color: var(--charcoal);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        tr:hover {
+            background: var(--light-gray);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-lead { background: #E0F2FE; color: #0369A1; }
+        .badge-qualified { background: #DBEAFE; color: #1E40AF; }
+        .badge-demo { background: #E0E7FF; color: #4338CA; }
+        .badge-proposal { background: #F3E8FF; color: #7C3AED; }
+        .badge-negotiation { background: #FEF3C7; color: #D97706; }
+        .badge-pilot { background: #FED7AA; color: #C2410C; }
+        .badge-won { background: #D1FAE5; color: #047857; }
+        .badge-lost { background: #FEE2E2; color: #DC2626; }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pipeline {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🍀 Clover ERA CRM</h1>
+        <div class="header-actions">
+            <span class="user-info" id="userInfo">Loading...</span>
+            <button class="btn btn-primary" onclick="showNewOpportunityModal()">+ New Opportunity</button>
+            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Metrics Dashboard -->
+        <div class="metrics-grid" id="metricsGrid">
+            <div class="metric-card">
+                <div class="label">Total Pipeline Value</div>
+                <div class="value" id="totalPipelineValue">$0</div>
+                <div class="change positive">Loading...</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="label">Open Opportunities</div>
+                <div class="value" id="openOpportunities">0</div>
+                <div class="change">Loading...</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="label">Weighted Pipeline</div>
+                <div class="value" id="weightedPipeline">$0</div>
+                <div class="change">Probability-adjusted</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="label">Win Rate</div>
+                <div class="value" id="winRate">0%</div>
+                <div class="change">Last 90 days</div>
+            </div>
+        </div>
+
+        <!-- Sales Pipeline -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Sales Pipeline</h2>
+                <button class="btn btn-secondary" onclick="refreshPipeline()">Refresh</button>
+            </div>
+
+            <div id="pipelineLoading" class="loading">
+                <p>Loading pipeline...</p>
+            </div>
+
+            <div id="pipelineContainer" class="pipeline" style="display: none;">
+                <!-- Pipeline stages will be dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Recent Activities</h2>
+                <a href="/crm/activities.html" class="btn btn-secondary">View All</a>
+            </div>
+
+            <div id="activitiesLoading" class="loading">
+                <p>Loading activities...</p>
+            </div>
+
+            <div id="activitiesContainer" class="table-container" style="display: none;">
+                <table id="activitiesTable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Subject</th>
+                            <th>Company</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activitiesTableBody">
+                        <!-- Activities will be dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SUPABASE CONFIGURATION =====
+        // TODO: Replace with your actual Supabase credentials
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Stage definitions
+        const STAGES = {
+            'lead': { name: 'Lead', order: 1 },
+            'qualified': { name: 'Qualified', order: 2 },
+            'demo-scheduled': { name: 'Demo Scheduled', order: 3 },
+            'demo-completed': { name: 'Demo Completed', order: 4 },
+            'proposal': { name: 'Proposal', order: 5 },
+            'negotiation': { name: 'Negotiation', order: 6 },
+            'pilot': { name: 'Pilot', order: 7 },
+            'closed-won': { name: 'Closed Won', order: 8 },
+            'closed-lost': { name: 'Closed Lost', order: 9 }
+        };
+
+        // Format currency
+        function formatCurrency(amount) {
+            if (!amount) return '$0';
+            return '$' + amount.toLocaleString();
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return 'No date';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Check authentication on page load
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                window.location.href = '/crm/login.html';
+                return false;
+            }
+
+            document.getElementById('userInfo').textContent = session.user.email;
+            return true;
+        }
+
+        // Logout
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = '/crm/login.html';
+        }
+
+        // Load metrics
+        async function loadMetrics() {
+            try {
+                // Get all open opportunities
+                const { data: opportunities, error } = await supabase
+                    .from('opportunities')
+                    .select('*')
+                    .not('stage', 'in', '("closed-won","closed-lost")');
+
+                if (error) throw error;
+
+                // Calculate total pipeline value
+                const totalValue = opportunities.reduce((sum, opp) => sum + (opp.value || 0), 0);
+                document.getElementById('totalPipelineValue').textContent = formatCurrency(totalValue);
+
+                // Count open opportunities
+                document.getElementById('openOpportunities').textContent = opportunities.length;
+
+                // Calculate weighted pipeline
+                const weightedValue = opportunities.reduce((sum, opp) => {
+                    return sum + ((opp.value || 0) * (opp.probability || 0) / 100);
+                }, 0);
+                document.getElementById('weightedPipeline').textContent = formatCurrency(Math.round(weightedValue));
+
+                // Calculate win rate (last 90 days)
+                const ninetyDaysAgo = new Date();
+                ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+                const { data: closedOpps } = await supabase
+                    .from('opportunities')
+                    .select('stage')
+                    .gte('updated_at', ninetyDaysAgo.toISOString())
+                    .in('stage', ['closed-won', 'closed-lost']);
+
+                const won = closedOpps?.filter(o => o.stage === 'closed-won').length || 0;
+                const total = closedOpps?.length || 0;
+                const winRate = total > 0 ? Math.round((won / total) * 100) : 0;
+                document.getElementById('winRate').textContent = winRate + '%';
+
+            } catch (error) {
+                console.error('Error loading metrics:', error);
+            }
+        }
+
+        // Load pipeline
+        async function loadPipeline() {
+            try {
+                const { data: opportunities, error } = await supabase
+                    .from('opportunities')
+                    .select(`
+                        *,
+                        companies (name, industry),
+                        contacts (first_name, last_name)
+                    `)
+                    .not('stage', 'in', '("closed-won","closed-lost")')
+                    .order('expected_close_date', { ascending: true });
+
+                if (error) throw error;
+
+                // Group by stage
+                const pipeline = {};
+                Object.keys(STAGES).forEach(stage => {
+                    if (stage !== 'closed-won' && stage !== 'closed-lost') {
+                        pipeline[stage] = [];
+                    }
+                });
+
+                opportunities.forEach(opp => {
+                    if (pipeline[opp.stage]) {
+                        pipeline[opp.stage].push(opp);
+                    }
+                });
+
+                renderPipeline(pipeline);
+
+            } catch (error) {
+                console.error('Error loading pipeline:', error);
+                document.getElementById('pipelineLoading').innerHTML = '<p>Error loading pipeline. Please refresh.</p>';
+            }
+        }
+
+        // Render pipeline
+        function renderPipeline(pipeline) {
+            const container = document.getElementById('pipelineContainer');
+            container.innerHTML = '';
+
+            Object.keys(pipeline).sort((a, b) => STAGES[a].order - STAGES[b].order).forEach(stage => {
+                const opportunities = pipeline[stage];
+
+                const stageDiv = document.createElement('div');
+                stageDiv.className = 'pipeline-stage';
+
+                const header = document.createElement('div');
+                header.className = 'pipeline-stage-header';
+                header.innerHTML = `
+                    <span>${STAGES[stage].name}</span>
+                    <span class="stage-count">${opportunities.length}</span>
+                `;
+                stageDiv.appendChild(header);
+
+                opportunities.forEach(opp => {
+                    const card = document.createElement('div');
+                    card.className = 'opportunity-card';
+                    card.onclick = () => window.location.href = `/crm/opportunity.html?id=${opp.id}`;
+
+                    card.innerHTML = `
+                        <div class="title">${opp.title}</div>
+                        <div class="company">${opp.companies?.name || 'Unknown Company'}</div>
+                        <div class="value">${formatCurrency(opp.value)}</div>
+                        <div class="meta">
+                            ${opp.managers_count ? opp.managers_count + ' managers' : ''}
+                            ${opp.expected_close_date ? '• Close: ' + formatDate(opp.expected_close_date) : ''}
+                        </div>
+                    `;
+                    stageDiv.appendChild(card);
+                });
+
+                if (opportunities.length === 0) {
+                    const emptyMsg = document.createElement('p');
+                    emptyMsg.style.color = 'var(--text-secondary)';
+                    emptyMsg.style.fontSize = '0.9rem';
+                    emptyMsg.style.marginTop = '1rem';
+                    emptyMsg.textContent = 'No opportunities';
+                    stageDiv.appendChild(emptyMsg);
+                }
+
+                container.appendChild(stageDiv);
+            });
+
+            document.getElementById('pipelineLoading').style.display = 'none';
+            container.style.display = 'grid';
+        }
+
+        // Load recent activities
+        async function loadActivities() {
+            try {
+                const { data: activities, error } = await supabase
+                    .from('activities')
+                    .select(`
+                        *,
+                        companies (name),
+                        opportunities (title)
+                    `)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                if (error) throw error;
+
+                renderActivities(activities);
+
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+        }
+
+        // Render activities
+        function renderActivities(activities) {
+            const tbody = document.getElementById('activitiesTableBody');
+            tbody.innerHTML = '';
+
+            activities.forEach(activity => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><span class="badge">${activity.type}</span></td>
+                    <td>${activity.subject}</td>
+                    <td>${activity.companies?.name || '-'}</td>
+                    <td>${formatDate(activity.created_at)}</td>
+                    <td><span class="badge ${activity.completed ? 'badge-won' : 'badge-lead'}">${activity.completed ? 'Complete' : 'Pending'}</span></td>
+                `;
+            });
+
+            document.getElementById('activitiesLoading').style.display = 'none';
+            document.getElementById('activitiesContainer').style.display = 'block';
+        }
+
+        // Refresh pipeline
+        async function refreshPipeline() {
+            document.getElementById('pipelineLoading').style.display = 'block';
+            document.getElementById('pipelineContainer').style.display = 'none';
+            await Promise.all([loadMetrics(), loadPipeline()]);
+        }
+
+        // Show new opportunity modal (placeholder)
+        function showNewOpportunityModal() {
+            alert('New opportunity form coming soon! For now, use Supabase dashboard to add opportunities.');
+        }
+
+        // Initialize page
+        async function initPage() {
+            const isAuthenticated = await checkAuth();
+            if (!isAuthenticated) return;
+
+            await Promise.all([
+                loadMetrics(),
+                loadPipeline(),
+                loadActivities()
+            ]);
+        }
+
+        // Load everything when page loads
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
