@@ -508,6 +508,20 @@
     </div>
 
     <div class="container">
+        <!-- View Filter -->
+        <div style="background: white; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <label style="font-weight: 600; margin-right: 1rem;">View:</label>
+                <select id="viewFilter" onchange="changeView()" style="padding: 0.5rem 1rem; border: 2px solid var(--medium-gray); border-radius: 8px; font-size: 1rem;">
+                    <option value="my">My Opportunities</option>
+                    <option value="all">All Team Opportunities</option>
+                </select>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                <span id="currentUserDisplay"></span>
+            </div>
+        </div>
+
         <!-- Metrics Dashboard -->
         <div class="metrics-grid" id="metricsGrid">
             <div class="metric-card">
@@ -778,6 +792,11 @@
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Global state
+        let currentUserId = null;
+        let currentUserEmail = null;
+        let currentView = 'my'; // 'my' or 'all'
+
         // Stage definitions
         const STAGES = {
             'lead': { name: 'Lead', order: 1 },
@@ -813,8 +832,22 @@
                 return false;
             }
 
+            currentUserId = session.user.id;
+            currentUserEmail = session.user.email;
+
             document.getElementById('userInfo').textContent = session.user.email;
+            document.getElementById('currentUserDisplay').textContent = `Logged in as: ${session.user.email}`;
             return true;
+        }
+
+        // Change view between my opportunities and all opportunities
+        async function changeView() {
+            currentView = document.getElementById('viewFilter').value;
+            await Promise.all([
+                loadMetrics(),
+                loadPipeline(),
+                loadActivities()
+            ]);
         }
 
         // Logout
@@ -826,11 +859,18 @@
         // Load metrics
         async function loadMetrics() {
             try {
-                // Get all open opportunities
-                const { data: opportunities, error } = await supabase
+                // Get all open opportunities (filtered by view)
+                let query = supabase
                     .from('opportunities')
                     .select('*')
                     .not('stage', 'in', '("closed-won","closed-lost")');
+
+                // Filter by owner if viewing "my" opportunities
+                if (currentView === 'my' && currentUserId) {
+                    query = query.eq('owner_id', currentUserId);
+                }
+
+                const { data: opportunities, error } = await query;
 
                 if (error) throw error;
 
@@ -851,11 +891,17 @@
                 const ninetyDaysAgo = new Date();
                 ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-                const { data: closedOpps } = await supabase
+                let closedQuery = supabase
                     .from('opportunities')
                     .select('stage')
                     .gte('updated_at', ninetyDaysAgo.toISOString())
                     .in('stage', ['closed-won', 'closed-lost']);
+
+                if (currentView === 'my' && currentUserId) {
+                    closedQuery = closedQuery.eq('owner_id', currentUserId);
+                }
+
+                const { data: closedOpps } = await closedQuery;
 
                 const won = closedOpps?.filter(o => o.stage === 'closed-won').length || 0;
                 const total = closedOpps?.length || 0;
@@ -870,7 +916,7 @@
         // Load pipeline
         async function loadPipeline() {
             try {
-                const { data: opportunities, error } = await supabase
+                let query = supabase
                     .from('opportunities')
                     .select(`
                         *,
@@ -879,6 +925,13 @@
                     `)
                     .not('stage', 'in', '("closed-won","closed-lost")')
                     .order('expected_close_date', { ascending: true });
+
+                // Filter by owner if viewing "my" opportunities
+                if (currentView === 'my' && currentUserId) {
+                    query = query.eq('owner_id', currentUserId);
+                }
+
+                const { data: opportunities, error } = await query;
 
                 if (error) throw error;
 
@@ -959,7 +1012,7 @@
         // Load recent activities
         async function loadActivities() {
             try {
-                const { data: activities, error } = await supabase
+                let query = supabase
                     .from('activities')
                     .select(`
                         *,
@@ -968,6 +1021,13 @@
                     `)
                     .order('created_at', { ascending: false })
                     .limit(10);
+
+                // Filter by owner if viewing "my" activities
+                if (currentView === 'my' && currentUserId) {
+                    query = query.eq('owner_id', currentUserId);
+                }
+
+                const { data: activities, error } = await query;
 
                 if (error) throw error;
 
@@ -1248,7 +1308,8 @@
                         value: acv,
                         employees_covered: employees,
                         next_step: nextStep,
-                        notes: notes
+                        notes: notes,
+                        owner_id: currentUserId
                     }])
                     .select()
                     .single();

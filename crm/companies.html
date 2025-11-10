@@ -310,6 +310,217 @@
                 overflow-x: auto;
             }
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem 2rem;
+            border-bottom: 2px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 1.75rem;
+            color: var(--charcoal);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .form-section h3 {
+            font-size: 1.25rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 2rem 2rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 2px solid var(--medium-gray);
+        }
+
+        .partner-fields {
+            display: none;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .partner-fields.visible {
+            display: block;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .opportunities-list {
+            margin-top: 1rem;
+        }
+
+        .opportunity-item {
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .opportunity-item:hover {
+            background: var(--medium-gray);
+        }
+
+        @media (max-width: 768px) {
+            .modal {
+                padding: 0;
+            }
+
+            .modal-content {
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -392,8 +603,11 @@
         <div class="table-container">
             <div class="table-header">
                 <h2>Companies</h2>
-                <div style="color: var(--text-secondary); font-size: 0.9rem;">
-                    <span id="companiesCount">0</span> companies
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                        <span id="companiesCount">0</span> companies
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddCompanyModal()">+ Add Company</button>
                 </div>
             </div>
 
@@ -428,6 +642,220 @@
                 <div class="empty-state-icon">🏢</div>
                 <h3>No companies found</h3>
                 <p>Try adjusting your filters or add a new company from the dashboard.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Company Modal -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="companyModalTitle">Add Company</h2>
+                <button class="modal-close" onclick="hideCompanyModal()">&times;</button>
+            </div>
+            <form id="companyForm" onsubmit="saveCompany(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="companyId">
+
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+
+                        <div class="form-group">
+                            <label for="companyName">Company Name *</label>
+                            <input type="text" id="companyName" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="companyType">Company Type *</label>
+                                <select id="companyType" required onchange="togglePartnerFields()">
+                                    <option value="customer">Customer (Potential/Existing Customer)</option>
+                                    <option value="partner">Partner (Reseller/Channel Partner)</option>
+                                    <option value="both">Both</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="companyStatus">Status</label>
+                                <select id="companyStatus">
+                                    <option value="prospect">Prospect</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="churned">Churned</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="companyIndustry">Industry</label>
+                                <input type="text" id="companyIndustry" placeholder="e.g., Technology, Healthcare">
+                            </div>
+                            <div class="form-group">
+                                <label for="companyEmployeeCount">Employee Count</label>
+                                <input type="number" id="companyEmployeeCount" min="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="form-section">
+                        <h3>Contact Information</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="companyWebsite">Website</label>
+                                <input type="url" id="companyWebsite" placeholder="https://example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="companyPhone">Phone</label>
+                                <input type="tel" id="companyPhone">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyAddress">Address</label>
+                            <textarea id="companyAddress" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Partner-Specific Fields -->
+                    <div id="partnerFieldsSection" class="partner-fields">
+                        <h3>Partner Details</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="partnerCommissionRate">Commission Rate (%)</label>
+                                <input type="number" id="partnerCommissionRate" min="0" max="100" placeholder="e.g., 25">
+                            </div>
+                            <div class="form-group">
+                                <label for="partnerStatus">Partner Status</label>
+                                <select id="partnerStatus">
+                                    <option value="">Not a partner</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="partnerTerritory">Territory</label>
+                                <input type="text" id="partnerTerritory" placeholder="e.g., Northeast US, Healthcare Vertical">
+                            </div>
+                            <div class="form-group">
+                                <label for="partnerAgreementDate">Agreement Date</label>
+                                <input type="date" id="partnerAgreementDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-section">
+                        <h3>Notes</h3>
+                        <div class="form-group">
+                            <label for="companyNotes">Internal Notes</label>
+                            <textarea id="companyNotes" rows="4" placeholder="Any additional notes about this company..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideCompanyModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Company</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Company Detail Modal -->
+    <div id="companyDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="detailCompanyName">Company Details</h2>
+                <button class="modal-close" onclick="hideCompanyDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Company Information</h3>
+                        <button class="btn btn-primary" onclick="editCompanyFromDetail()">Edit Company</button>
+                    </div>
+
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Company Type</div>
+                            <div class="detail-value" id="detailCompanyType">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value" id="detailCompanyStatus">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Industry</div>
+                            <div class="detail-value" id="detailIndustry">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Employees</div>
+                            <div class="detail-value" id="detailEmployeeCount">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Website</div>
+                            <div class="detail-value" id="detailWebsite">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value" id="detailPhone">-</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-item" style="margin-top: 1rem;">
+                        <div class="detail-label">Address</div>
+                        <div class="detail-value" id="detailAddress">-</div>
+                    </div>
+
+                    <div id="detailPartnerInfo" style="display: none; margin-top: 1.5rem; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
+                        <h3 style="margin-bottom: 1rem;">Partner Information</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Commission Rate</div>
+                                <div class="detail-value" id="detailCommissionRate">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Partner Status</div>
+                                <div class="detail-value" id="detailPartnerStatus">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Territory</div>
+                                <div class="detail-value" id="detailTerritory">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Agreement Date</div>
+                                <div class="detail-value" id="detailAgreementDate">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-item" style="margin-top: 1.5rem;" id="detailNotesSection">
+                        <div class="detail-label">Notes</div>
+                        <div class="detail-value" id="detailNotes">-</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Opportunities (<span id="detailOppCount">0</span>)</h3>
+                    <div id="detailOpportunitiesList" class="opportunities-list">
+                        <p style="color: var(--text-secondary);">No opportunities found.</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Contacts (<span id="detailContactCount">0</span>)</h3>
+                    <div id="detailContactsList" class="opportunities-list">
+                        <p style="color: var(--text-secondary);">No contacts found.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -605,10 +1033,243 @@
         }
 
         // View company details
-        function viewCompany(companyId) {
-            // For now, redirect to opportunities filtered by company
-            // In Phase 2, we'll create a dedicated company detail page
-            window.location.href = `/crm/index.html?company=${companyId}`;
+        async function viewCompany(companyId) {
+            currentCompanyId = companyId;
+            const company = allCompanies.find(c => c.id === companyId);
+            if (!company) return;
+
+            // Populate detail modal
+            document.getElementById('detailCompanyName').textContent = company.name;
+            document.getElementById('detailCompanyType').textContent = formatCompanyType(company.company_type);
+            document.getElementById('detailCompanyStatus').textContent = formatStatus(company.status);
+            document.getElementById('detailIndustry').textContent = company.industry || '-';
+            document.getElementById('detailEmployeeCount').textContent = company.employee_count ? company.employee_count.toLocaleString() : '-';
+            document.getElementById('detailWebsite').innerHTML = company.website ? `<a href="${company.website}" target="_blank">${company.website}</a>` : '-';
+            document.getElementById('detailPhone').textContent = company.phone || '-';
+            document.getElementById('detailAddress').textContent = company.address || '-';
+            document.getElementById('detailNotes').textContent = company.notes || '-';
+
+            // Show/hide partner info
+            if (company.company_type === 'partner' || company.company_type === 'both') {
+                document.getElementById('detailPartnerInfo').style.display = 'block';
+                document.getElementById('detailCommissionRate').textContent = company.partner_commission_rate ? `${company.partner_commission_rate}%` : '-';
+                document.getElementById('detailPartnerStatus').textContent = company.partner_status ? formatPartnerStatus(company.partner_status) : '-';
+                document.getElementById('detailTerritory').textContent = company.partner_territory || '-';
+                document.getElementById('detailAgreementDate').textContent = company.partner_agreement_date || '-';
+            } else {
+                document.getElementById('detailPartnerInfo').style.display = 'none';
+            }
+
+            // Load opportunities
+            try {
+                const { data: opportunities, error } = await supabase
+                    .from('opportunities')
+                    .select('id, title, stage, value')
+                    .eq('company_id', companyId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                document.getElementById('detailOppCount').textContent = opportunities.length;
+
+                if (opportunities.length > 0) {
+                    document.getElementById('detailOpportunitiesList').innerHTML = opportunities.map(opp => `
+                        <div class="opportunity-item" onclick="window.location.href='/crm/opportunity.html?id=${opp.id}'">
+                            <strong>${opp.title}</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                ${formatStage(opp.stage)} • $${(opp.value || 0).toLocaleString()}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('detailOpportunitiesList').innerHTML = '<p style="color: var(--text-secondary);">No opportunities found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading opportunities:', error);
+            }
+
+            // Load contacts
+            try {
+                const { data: contacts, error } = await supabase
+                    .from('contacts')
+                    .select('id, first_name, last_name, title, email, phone')
+                    .eq('company_id', companyId)
+                    .order('first_name');
+
+                if (error) throw error;
+
+                document.getElementById('detailContactCount').textContent = contacts.length;
+
+                if (contacts.length > 0) {
+                    document.getElementById('detailContactsList').innerHTML = contacts.map(contact => `
+                        <div class="opportunity-item">
+                            <strong>${contact.first_name} ${contact.last_name}</strong>
+                            ${contact.title ? `<div style="font-size: 0.85rem; color: var(--text-secondary);">${contact.title}</div>` : ''}
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                ${contact.email || ''} ${contact.phone ? '• ' + contact.phone : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('detailContactsList').innerHTML = '<p style="color: var(--text-secondary);">No contacts found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            }
+
+            // Show modal
+            document.getElementById('companyDetailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Modal functions
+        let currentCompanyId = null;
+
+        function showAddCompanyModal() {
+            document.getElementById('companyModalTitle').textContent = 'Add Company';
+            document.getElementById('companyForm').reset();
+            document.getElementById('companyId').value = '';
+            document.getElementById('companyType').value = 'customer';
+            document.getElementById('companyStatus').value = 'prospect';
+            togglePartnerFields();
+            document.getElementById('companyModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideCompanyModal() {
+            document.getElementById('companyModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function hideCompanyDetailModal() {
+            document.getElementById('companyDetailModal').classList.remove('active');
+            document.body.style.overflow = '';
+            currentCompanyId = null;
+        }
+
+        function togglePartnerFields() {
+            const companyType = document.getElementById('companyType').value;
+            const partnerFields = document.getElementById('partnerFieldsSection');
+
+            if (companyType === 'partner' || companyType === 'both') {
+                partnerFields.classList.add('visible');
+            } else {
+                partnerFields.classList.remove('visible');
+            }
+        }
+
+        async function saveCompany(event) {
+            event.preventDefault();
+
+            const companyId = document.getElementById('companyId').value;
+            const name = document.getElementById('companyName').value;
+            const companyType = document.getElementById('companyType').value;
+            const status = document.getElementById('companyStatus').value;
+            const industry = document.getElementById('companyIndustry').value || null;
+            const employeeCount = document.getElementById('companyEmployeeCount').value || null;
+            const website = document.getElementById('companyWebsite').value || null;
+            const phone = document.getElementById('companyPhone').value || null;
+            const address = document.getElementById('companyAddress').value || null;
+            const notes = document.getElementById('companyNotes').value || null;
+
+            const companyData = {
+                name,
+                company_type: companyType,
+                status,
+                industry,
+                employee_count: employeeCount ? parseInt(employeeCount) : null,
+                website,
+                phone,
+                address,
+                notes
+            };
+
+            // Add partner fields if applicable
+            if (companyType === 'partner' || companyType === 'both') {
+                const commissionRate = document.getElementById('partnerCommissionRate').value;
+                const partnerStatus = document.getElementById('partnerStatus').value;
+                const territory = document.getElementById('partnerTerritory').value;
+                const agreementDate = document.getElementById('partnerAgreementDate').value;
+
+                companyData.partner_commission_rate = commissionRate ? parseInt(commissionRate) : null;
+                companyData.partner_status = partnerStatus || null;
+                companyData.partner_territory = territory || null;
+                companyData.partner_agreement_date = agreementDate || null;
+            }
+
+            try {
+                if (companyId) {
+                    // Update existing company
+                    const { error } = await supabase
+                        .from('companies')
+                        .update(companyData)
+                        .eq('id', companyId);
+
+                    if (error) throw error;
+                } else {
+                    // Insert new company
+                    const { error } = await supabase
+                        .from('companies')
+                        .insert([companyData]);
+
+                    if (error) throw error;
+                }
+
+                hideCompanyModal();
+                await loadCompanies();
+                alert(companyId ? 'Company updated successfully!' : 'Company added successfully!');
+            } catch (error) {
+                console.error('Error saving company:', error);
+                alert('Failed to save company: ' + error.message);
+            }
+        }
+
+        function editCompanyFromDetail() {
+            const company = allCompanies.find(c => c.id === currentCompanyId);
+            if (!company) return;
+
+            // Hide detail modal
+            hideCompanyDetailModal();
+
+            // Populate edit form
+            document.getElementById('companyModalTitle').textContent = 'Edit Company';
+            document.getElementById('companyId').value = company.id;
+            document.getElementById('companyName').value = company.name;
+            document.getElementById('companyType').value = company.company_type || 'customer';
+            document.getElementById('companyStatus').value = company.status || 'prospect';
+            document.getElementById('companyIndustry').value = company.industry || '';
+            document.getElementById('companyEmployeeCount').value = company.employee_count || '';
+            document.getElementById('companyWebsite').value = company.website || '';
+            document.getElementById('companyPhone').value = company.phone || '';
+            document.getElementById('companyAddress').value = company.address || '';
+            document.getElementById('companyNotes').value = company.notes || '';
+
+            // Partner fields
+            document.getElementById('partnerCommissionRate').value = company.partner_commission_rate || '';
+            document.getElementById('partnerStatus').value = company.partner_status || '';
+            document.getElementById('partnerTerritory').value = company.partner_territory || '';
+            document.getElementById('partnerAgreementDate').value = company.partner_agreement_date || '';
+
+            togglePartnerFields();
+
+            // Show edit modal
+            document.getElementById('companyModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function formatStage(stage) {
+            const stages = {
+                'lead': 'Lead',
+                'qualified': 'Qualified',
+                'demo-scheduled': 'Demo Scheduled',
+                'demo-completed': 'Demo Completed',
+                'proposal': 'Proposal',
+                'negotiation': 'Negotiation',
+                'pilot': 'Pilot',
+                'closed-won': 'Closed Won',
+                'closed-lost': 'Closed Lost'
+            };
+            return stages[stage] || stage;
         }
 
         // Formatting functions
