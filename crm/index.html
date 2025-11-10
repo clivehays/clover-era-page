@@ -1145,47 +1145,80 @@
         // Load today's tasks
         async function loadTodaysTasks() {
             try {
-                const today = new Date().toISOString().split('T')[0];
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const todayStr = today.toISOString().split('T')[0];
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
-                // Get activities that are tasks and due today or overdue
-                const { data: activities, error } = await supabase
+                // Get activities that are tasks and due today or tomorrow
+                const { data: activities, error: activitiesError } = await supabase
                     .from('activities')
-                    .select(`
-                        *,
-                        opportunities (title, stage),
-                        companies (name)
-                    `)
+                    .select('*')
                     .eq('type', 'task')
                     .eq('completed', false)
-                    .lte('due_date', new Date(today + 'T23:59:59').toISOString())
+                    .lte('due_date', new Date(tomorrowStr + 'T23:59:59').toISOString())
                     .order('due_date', { ascending: true });
 
-                if (error) throw error;
+                console.log('Activities loaded:', activities, 'Error:', activitiesError);
+
+                // Get company names separately if we have activities
+                if (activities && activities.length > 0) {
+                    for (let activity of activities) {
+                        if (activity.company_id) {
+                            const { data: company } = await supabase
+                                .from('companies')
+                                .select('name')
+                                .eq('id', activity.company_id)
+                                .single();
+                            activity.company = company;
+                        }
+                    }
+                }
 
                 const overdue = [];
-                const dueToday = [];
+                const dueSoon = [];
 
-                activities.forEach(task => {
+                (activities || []).forEach(task => {
                     const dueDate = new Date(task.due_date).toISOString().split('T')[0];
-                    if (dueDate < today) {
+                    if (dueDate < todayStr) {
                         overdue.push(task);
-                    } else if (dueDate === today) {
-                        dueToday.push(task);
+                    } else if (dueDate <= tomorrowStr) {
+                        dueSoon.push(task);
                     }
                 });
 
-                // Get opportunities that need follow-up
-                const { data: opps } = await supabase
+                // Get opportunities that need follow-up (closing in next 7 days)
+                const sevenDaysFromNow = new Date(today);
+                sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+                const { data: opps, error: oppsError } = await supabase
                     .from('opportunities')
-                    .select(`*, companies (name)`)
+                    .select('*')
                     .in('stage', ['demo-scheduled', 'proposal', 'negotiation'])
-                    .lte('expected_close_date', new Date(today).setDate(new Date(today).getDate() + 7).toISOString())
+                    .lte('expected_close_date', sevenDaysFromNow.toISOString())
                     .order('expected_close_date', { ascending: true })
                     .limit(5);
 
+                console.log('Opportunities loaded:', opps, 'Error:', oppsError);
+
+                // Get company names for opportunities
+                if (opps && opps.length > 0) {
+                    for (let opp of opps) {
+                        if (opp.company_id) {
+                            const { data: company } = await supabase
+                                .from('companies')
+                                .select('name')
+                                .eq('id', opp.company_id)
+                                .single();
+                            opp.company = company;
+                        }
+                    }
+                }
+
                 document.getElementById('tasksLoading').style.display = 'none';
 
-                if (overdue.length === 0 && dueToday.length === 0 && (!opps || opps.length === 0)) {
+                if (overdue.length === 0 && dueSoon.length === 0 && (!opps || opps.length === 0)) {
                     document.getElementById('noTasks').style.display = 'block';
                     return;
                 }
@@ -1200,25 +1233,28 @@
                             <div style="padding: 1rem; border-left: 4px solid var(--danger-red); background: #FEE2E2; border-radius: 8px; margin-bottom: 0.75rem;">
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
-                                    ${task.companies?.name || 'No company'} • Due: ${new Date(task.due_date).toLocaleDateString()}
+                                    ${task.company?.name || 'No company'} • Due: ${new Date(task.due_date).toLocaleDateString()}
                                 </div>
                             </div>
                         `).join('')}
                     `;
                 }
 
-                // Render due today
-                if (dueToday.length > 0) {
+                // Render due today/tomorrow
+                if (dueSoon.length > 0) {
                     document.getElementById('dueTodayList').innerHTML = `
-                        <h3 style="color: var(--warning-orange); margin-bottom: 1rem;">📅 Due Today (${dueToday.length})</h3>
-                        ${dueToday.map(task => `
+                        <h3 style="color: var(--warning-orange); margin-bottom: 1rem;">📅 Due Today/Tomorrow (${dueSoon.length})</h3>
+                        ${dueSoon.map(task => {
+                            const dueDate = new Date(task.due_date);
+                            const isToday = dueDate.toISOString().split('T')[0] === todayStr;
+                            return `
                             <div style="padding: 1rem; border-left: 4px solid var(--warning-orange); background: #FEF3C7; border-radius: 8px; margin-bottom: 0.75rem;">
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
-                                    ${task.companies?.name || 'No company'}
+                                    ${task.company?.name || 'No company'} • Due: ${isToday ? 'Today' : 'Tomorrow'} (${dueDate.toLocaleDateString()})
                                 </div>
                             </div>
-                        `).join('')}
+                        `;}).join('')}
                     `;
                 }
 
@@ -1230,7 +1266,7 @@
                             <div style="padding: 1rem; border-left: 4px solid var(--primary-green); background: var(--light-green); border-radius: 8px; margin-bottom: 0.75rem;">
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">${opp.title}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
-                                    ${opp.companies?.name || 'No company'} • ${opp.stage.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} • Close: ${new Date(opp.expected_close_date).toLocaleDateString()}
+                                    ${opp.company?.name || 'No company'} • ${opp.stage.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} • Close: ${new Date(opp.expected_close_date).toLocaleDateString()}
                                 </div>
                             </div>
                         `).join('')}
@@ -1239,7 +1275,7 @@
 
             } catch (error) {
                 console.error('Error loading tasks:', error);
-                document.getElementById('tasksLoading').innerHTML = '<div style="color: var(--danger-red);">Error loading tasks</div>';
+                document.getElementById('tasksLoading').innerHTML = `<div style="color: var(--danger-red);">Error loading tasks: ${error.message}</div>`;
             }
         }
 
