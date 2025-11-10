@@ -424,7 +424,12 @@
                 .eq('id', session.user.id)
                 .single();
 
+            console.log('Admin check - Profile Error:', profileError);
+            console.log('Admin check - Profile Data:', profile);
+            console.log('Admin check - Profile Role:', profile?.role);
+
             if (profileError || !profile || profile.role !== 'admin') {
+                console.error('Access denied:', { profileError, profile, role: profile?.role });
                 alert('Access denied. This page is only accessible to administrators.');
                 window.location.href = 'index.html';
                 return;
