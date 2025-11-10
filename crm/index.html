@@ -315,6 +315,184 @@
                 text-align: center;
             }
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem 2rem;
+            border-bottom: 2px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 1.75rem;
+            color: var(--charcoal);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+
+        .form-group label .required {
+            color: var(--danger-red);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .form-section h3 {
+            font-size: 1.25rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 2rem 2rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 2px solid var(--medium-gray);
+        }
+
+        .btn-large {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+        }
+
+        .add-new-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--primary-teal);
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .add-new-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal {
+                padding: 0;
+            }
+
+            .modal-content {
+                max-height: 100vh;
+                border-radius: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -398,6 +576,187 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- New Opportunity Modal -->
+    <div id="newOpportunityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Opportunity</h2>
+                <button class="modal-close" onclick="closeNewOpportunityModal()">&times;</button>
+            </div>
+
+            <form id="newOpportunityForm" onsubmit="saveNewOpportunity(event)">
+                <div class="modal-body">
+                    <!-- Company & Contact Section -->
+                    <div class="form-section">
+                        <h3>Company & Contact</h3>
+
+                        <div class="form-group">
+                            <label for="oppCompany">Company <span class="required">*</span></label>
+                            <select id="oppCompany" required onchange="loadCompanyContacts()">
+                                <option value="">Select a company...</option>
+                            </select>
+                            <a class="add-new-link" onclick="showAddCompanyForm()">+ Add New Company</a>
+                        </div>
+
+                        <!-- Quick Add Company Form (hidden by default) -->
+                        <div id="addCompanyForm" style="display: none; background: var(--light-gray); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newCompanyName">Company Name</label>
+                                    <input type="text" id="newCompanyName">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newCompanyIndustry">Industry</label>
+                                    <input type="text" id="newCompanyIndustry">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="saveNewCompany()">Save Company</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideAddCompanyForm()">Cancel</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="oppContact">Primary Contact</label>
+                            <select id="oppContact">
+                                <option value="">Select a contact...</option>
+                            </select>
+                            <a class="add-new-link" onclick="showAddContactForm()">+ Add New Contact</a>
+                        </div>
+
+                        <!-- Quick Add Contact Form (hidden by default) -->
+                        <div id="addContactForm" style="display: none; background: var(--light-gray); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newContactFirstName">First Name</label>
+                                    <input type="text" id="newContactFirstName">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newContactLastName">Last Name</label>
+                                    <input type="text" id="newContactLastName">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newContactEmail">Email</label>
+                                    <input type="email" id="newContactEmail">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newContactTitle">Title</label>
+                                    <input type="text" id="newContactTitle">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="saveNewContact()">Save Contact</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideAddContactForm()">Cancel</button>
+                        </div>
+                    </div>
+
+                    <!-- Opportunity Details Section -->
+                    <div class="form-section">
+                        <h3>Opportunity Details</h3>
+
+                        <div class="form-group">
+                            <label for="oppTitle">Opportunity Title <span class="required">*</span></label>
+                            <input type="text" id="oppTitle" required placeholder="e.g., Manager Enablement Pilot">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="oppStage">Stage <span class="required">*</span></label>
+                                <select id="oppStage" required>
+                                    <option value="lead">Lead</option>
+                                    <option value="qualified">Qualified</option>
+                                    <option value="demo-scheduled">Demo Scheduled</option>
+                                    <option value="demo-completed">Demo Completed</option>
+                                    <option value="proposal">Proposal</option>
+                                    <option value="negotiation">Negotiation</option>
+                                    <option value="pilot">Pilot</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="oppProbability">Probability (%)</label>
+                                <input type="number" id="oppProbability" min="0" max="100" value="10">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="oppSource">Source</label>
+                                <select id="oppSource">
+                                    <option value="inbound">Inbound</option>
+                                    <option value="outbound">Outbound</option>
+                                    <option value="partner">Partner</option>
+                                    <option value="referral">Referral</option>
+                                    <option value="event">Event</option>
+                                    <option value="website">Website</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="oppCloseDate">Expected Close Date</label>
+                                <input type="date" id="oppCloseDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financials Section -->
+                    <div class="form-section">
+                        <h3>Financials</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="oppManagers">Manager Count <span class="required">*</span></label>
+                                <input type="number" id="oppManagers" required min="1" value="1" onchange="calculateFinancials()">
+                                <div class="hint">Number of manager licenses</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="oppPricePerManager">Price per Manager/Month</label>
+                                <input type="number" id="oppPricePerManager" value="295" onchange="calculateFinancials()">
+                                <div class="hint">Default: $295/manager/month</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="oppMRR">Monthly Recurring Revenue (MRR)</label>
+                                <input type="number" id="oppMRR" readonly style="background: var(--light-gray);">
+                                <div class="hint">Auto-calculated: Managers × Price</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="oppACV">Annual Contract Value (ACV)</label>
+                                <input type="number" id="oppACV" readonly style="background: var(--light-gray);">
+                                <div class="hint">Auto-calculated: MRR × 12</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="oppEmployees">Employees Covered</label>
+                            <input type="number" id="oppEmployees" min="0">
+                            <div class="hint">Total employees that will use the platform</div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Info Section -->
+                    <div class="form-section">
+                        <h3>Additional Information</h3>
+
+                        <div class="form-group">
+                            <label for="oppNextStep">Next Step</label>
+                            <input type="text" id="oppNextStep" placeholder="e.g., Schedule demo call">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="oppNotes">Notes</label>
+                            <textarea id="oppNotes" rows="4" placeholder="Internal notes about this opportunity..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-large" onclick="closeNewOpportunityModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-large">Create Opportunity</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -651,6 +1010,247 @@
                 loadPipeline(),
                 loadActivities()
             ]);
+        }
+
+        // ===== NEW OPPORTUNITY MODAL FUNCTIONS =====
+
+        // Show modal and load companies
+        async function showNewOpportunityModal() {
+            document.getElementById('newOpportunityModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            await loadCompanies();
+            calculateFinancials(); // Set initial values
+        }
+
+        // Close modal
+        function closeNewOpportunityModal() {
+            document.getElementById('newOpportunityModal').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('newOpportunityForm').reset();
+            hideAddCompanyForm();
+            hideAddContactForm();
+        }
+
+        // Load companies into dropdown
+        async function loadCompanies() {
+            try {
+                const { data, error } = await supabase
+                    .from('companies')
+                    .select('id, name')
+                    .order('name');
+
+                if (error) throw error;
+
+                const select = document.getElementById('oppCompany');
+                select.innerHTML = '<option value="">Select a company...</option>';
+
+                data.forEach(company => {
+                    const option = document.createElement('option');
+                    option.value = company.id;
+                    option.textContent = company.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading companies:', error);
+            }
+        }
+
+        // Load contacts for selected company
+        async function loadCompanyContacts() {
+            const companyId = document.getElementById('oppCompany').value;
+            const contactSelect = document.getElementById('oppContact');
+
+            contactSelect.innerHTML = '<option value="">Select a contact...</option>';
+
+            if (!companyId) return;
+
+            try {
+                const { data, error } = await supabase
+                    .from('contacts')
+                    .select('id, first_name, last_name, title')
+                    .eq('company_id', companyId)
+                    .order('first_name');
+
+                if (error) throw error;
+
+                data.forEach(contact => {
+                    const option = document.createElement('option');
+                    option.value = contact.id;
+                    option.textContent = `${contact.first_name} ${contact.last_name}${contact.title ? ' - ' + contact.title : ''}`;
+                    contactSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            }
+        }
+
+        // Show/hide add company form
+        function showAddCompanyForm() {
+            document.getElementById('addCompanyForm').style.display = 'block';
+        }
+
+        function hideAddCompanyForm() {
+            document.getElementById('addCompanyForm').style.display = 'none';
+            document.getElementById('newCompanyName').value = '';
+            document.getElementById('newCompanyIndustry').value = '';
+        }
+
+        // Save new company
+        async function saveNewCompany() {
+            const name = document.getElementById('newCompanyName').value;
+            const industry = document.getElementById('newCompanyIndustry').value;
+
+            if (!name) {
+                alert('Please enter a company name');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('companies')
+                    .insert([{
+                        name: name,
+                        industry: industry,
+                        status: 'prospect'
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Reload companies and select the new one
+                await loadCompanies();
+                document.getElementById('oppCompany').value = data.id;
+                await loadCompanyContacts();
+                hideAddCompanyForm();
+
+            } catch (error) {
+                console.error('Error saving company:', error);
+                alert('Failed to save company');
+            }
+        }
+
+        // Show/hide add contact form
+        function showAddContactForm() {
+            const companyId = document.getElementById('oppCompany').value;
+            if (!companyId) {
+                alert('Please select a company first');
+                return;
+            }
+            document.getElementById('addContactForm').style.display = 'block';
+        }
+
+        function hideAddContactForm() {
+            document.getElementById('addContactForm').style.display = 'none';
+            document.getElementById('newContactFirstName').value = '';
+            document.getElementById('newContactLastName').value = '';
+            document.getElementById('newContactEmail').value = '';
+            document.getElementById('newContactTitle').value = '';
+        }
+
+        // Save new contact
+        async function saveNewContact() {
+            const companyId = document.getElementById('oppCompany').value;
+            const firstName = document.getElementById('newContactFirstName').value;
+            const lastName = document.getElementById('newContactLastName').value;
+            const email = document.getElementById('newContactEmail').value;
+            const title = document.getElementById('newContactTitle').value;
+
+            if (!firstName || !lastName) {
+                alert('Please enter first and last name');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('contacts')
+                    .insert([{
+                        company_id: companyId,
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: email,
+                        title: title
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Reload contacts and select the new one
+                await loadCompanyContacts();
+                document.getElementById('oppContact').value = data.id;
+                hideAddContactForm();
+
+            } catch (error) {
+                console.error('Error saving contact:', error);
+                alert('Failed to save contact');
+            }
+        }
+
+        // Calculate financials
+        function calculateFinancials() {
+            const managers = parseInt(document.getElementById('oppManagers').value) || 0;
+            const pricePerManager = parseInt(document.getElementById('oppPricePerManager').value) || 295;
+
+            const mrr = managers * pricePerManager;
+            const acv = mrr * 12;
+
+            document.getElementById('oppMRR').value = mrr;
+            document.getElementById('oppACV').value = acv;
+        }
+
+        // Save new opportunity
+        async function saveNewOpportunity(event) {
+            event.preventDefault();
+
+            const companyId = document.getElementById('oppCompany').value;
+            const contactId = document.getElementById('oppContact').value || null;
+            const title = document.getElementById('oppTitle').value;
+            const stage = document.getElementById('oppStage').value;
+            const probability = parseInt(document.getElementById('oppProbability').value) || 0;
+            const source = document.getElementById('oppSource').value;
+            const closeDate = document.getElementById('oppCloseDate').value || null;
+            const managers = parseInt(document.getElementById('oppManagers').value) || 1;
+            const pricePerManager = parseInt(document.getElementById('oppPricePerManager').value) || 295;
+            const mrr = parseInt(document.getElementById('oppMRR').value) || 0;
+            const acv = parseInt(document.getElementById('oppACV').value) || 0;
+            const employees = parseInt(document.getElementById('oppEmployees').value) || null;
+            const nextStep = document.getElementById('oppNextStep').value;
+            const notes = document.getElementById('oppNotes').value;
+
+            try {
+                const { data, error } = await supabase
+                    .from('opportunities')
+                    .insert([{
+                        company_id: companyId,
+                        contact_id: contactId,
+                        title: title,
+                        stage: stage,
+                        probability: probability,
+                        source: source,
+                        expected_close_date: closeDate,
+                        managers_count: managers,
+                        monthly_recurring_revenue: mrr,
+                        annual_contract_value: acv,
+                        value: acv,
+                        employees_covered: employees,
+                        next_step: nextStep,
+                        notes: notes
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Close modal and redirect to new opportunity
+                closeNewOpportunityModal();
+                alert('Opportunity created successfully!');
+                window.location.href = `/crm/opportunity.html?id=${data.id}`;
+
+            } catch (error) {
+                console.error('Error creating opportunity:', error);
+                alert('Failed to create opportunity: ' + error.message);
+            }
         }
 
         // Load everything when page loads
