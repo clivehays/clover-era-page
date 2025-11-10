@@ -33,26 +33,19 @@
             line-height: 1.6;
         }
 
-        .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
+        .nav {
+            background: white;
             padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .logo {
+        .nav-brand {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
@@ -60,45 +53,36 @@
 
         .nav-links {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
+            align-items: center;
         }
 
-        .nav-links a, .nav-links button {
-            text-decoration: none;
+        .nav-links a {
             color: var(--text-secondary);
+            text-decoration: none;
             font-weight: 500;
-            transition: color 0.2s;
-            background: none;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--background);
+            color: var(--text-primary);
             border: none;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
-            font-family: inherit;
+            font-weight: 500;
         }
 
-        .nav-links a:hover, .nav-links button:hover {
-            color: var(--primary);
-        }
-
-        .nav-links a.active, .nav-links button.active {
-            color: var(--primary);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
+        .btn-logout:hover {
+            background: var(--border);
         }
 
         .container {
@@ -496,22 +480,19 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-left">
-            <div class="logo">Clover ERA CRM</div>
-            <nav class="nav-links">
-                <a href="index.html">Dashboard</a>
-                <a href="companies.html">Companies</a>
-                <button class="active">Activities</button>
-                <a href="kanban.html">Kanban</a>
-                <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
-            </nav>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html" class="active">Activities</a>
+            <a href="kanban.html">Kanban</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+            <span id="userName" style="color: var(--text-secondary);"></span>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
         </div>
-        <div class="user-info">
-            <span id="userName"></span>
-            <div class="user-avatar" id="userAvatar">U</div>
-        </div>
-    </div>
+    </nav>
 
     <div class="container">
         <div class="page-header">

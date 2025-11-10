@@ -12,17 +12,17 @@
 
     <style>
         :root {
-            --primary-teal: #46AEB8;
-            --deep-teal: #0D7C88;
-            --charcoal: #2C3E50;
-            --text-primary: #1F2937;
-            --text-secondary: #6B7280;
-            --light-gray: #F8F9FA;
-            --medium-gray: #E5E7EB;
-            --success-green: #10B981;
-            --warning-yellow: #F59E0B;
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background: #f9fafb;
+            --medium-gray: #e5e7eb;
+            --border-color: #d1d5db;
             --danger-red: #EF4444;
-            --bronze: #C9A667;
+            --warning-orange: #F59E0B;
+            --light-gray: #F8F9FA;
         }
 
         * {
@@ -38,29 +38,57 @@
             line-height: 1.6;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
+        /* Navigation */
+        .nav {
+            background: white;
             padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .header h1 {
+        .nav-brand {
             font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
         }
 
-        .header-actions {
+        .nav-links {
             display: flex;
-            gap: 1rem;
+            gap: 2rem;
             align-items: center;
         }
 
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-green);
+        }
+
+        /* Page Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 8px;
             font-weight: 600;
@@ -76,17 +104,31 @@
         }
 
         .btn-primary:hover {
-            background: #B8935E;
-            transform: translateY(-1px);
+            background: var(--dark-green);
         }
 
         .btn-secondary {
             background: white;
-            color: var(--primary-green);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: var(--light-gray);
+            background: var(--background);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: var(--border-color);
         }
 
         /* Container */
@@ -524,20 +566,28 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <h1>🍀 Clover ERA CRM - Companies</h1>
-        <div class="header-actions">
-            <a href="/crm/index.html" class="btn btn-secondary">← Dashboard</a>
-            <a href="/crm/activities.html" class="btn btn-secondary">📋 Activities</a>
-            <a href="/crm/kanban.html" class="btn btn-secondary">🎯 Kanban</a>
-            <a href="/crm/admin.html" id="adminLink" class="btn btn-secondary" style="display: none;">⚙️ Admin</a>
-            <button class="btn btn-primary" onclick="logout()">Logout</button>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html" class="active">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="kanban.html">Kanban</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+            <span id="userInfo" style="color: var(--text-secondary);"></span>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
         </div>
-    </div>
+    </nav>
 
     <!-- Main Container -->
     <div class="container">
+        <!-- Page Header -->
+        <div class="header">
+            <h1>Companies</h1>
+            <button class="btn btn-primary" onclick="showNewCompanyModal()">+ New Company</button>
+        </div>
+
         <!-- Stats -->
         <div class="stats">
             <div class="stat-card">

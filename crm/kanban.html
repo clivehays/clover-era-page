@@ -36,89 +36,95 @@
             background: var(--light-gray);
         }
 
-        .header {
-            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
-            color: white;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .user-info {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background: var(--bronze);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #B8935E;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--primary-teal);
-        }
-
-        .btn-secondary:hover {
-            background: var(--light-gray);
-        }
-
         .nav {
             background: white;
             padding: 1rem 2rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .nav-links {
+            display: flex;
             gap: 2rem;
             align-items: center;
         }
 
-        .nav a {
+        .nav-links a {
+            color: var(--text-secondary);
             text-decoration: none;
-            color: var(--text-primary);
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            transition: all 0.2s ease;
         }
 
-        .nav a:hover {
-            background: var(--light-gray);
-            color: var(--primary-teal);
+        .nav-links a:hover {
+            color: var(--primary-green);
         }
 
-        .nav a.active {
-            background: var(--primary-teal);
+        .nav-links a.active {
+            color: var(--primary-green);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
             color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--background);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: var(--border-color);
         }
 
         .container {
@@ -359,23 +365,26 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🎯 Pipeline Kanban</h1>
-        <div class="header-actions">
-            <span class="user-info" id="userEmail"></span>
-            <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="kanban.html" class="active">Kanban</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+            <span id="userEmail" style="color: var(--text-secondary);"></span>
+            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
         </div>
-    </div>
-
-    <div class="nav">
-        <a href="index.html">Dashboard</a>
-        <a href="companies.html">Companies</a>
-        <a href="activities.html">Activities</a>
-        <a href="kanban.html" class="active">Kanban</a>
-        <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
-    </div>
+    </nav>
 
     <div class="container">
+        <!-- Page Header -->
+        <div class="header">
+            <h1>Pipeline Kanban</h1>
+        </div>
+
         <div class="filters">
             <div class="filter-group">
                 <label>Owner</label>
