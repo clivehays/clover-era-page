@@ -503,6 +503,7 @@
                 <a href="index.html">Dashboard</a>
                 <a href="companies.html">Companies</a>
                 <button class="active">Activities</button>
+                <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
             </nav>
         </div>
         <div class="user-info">
@@ -702,6 +703,17 @@
 
             document.getElementById('userName').textContent = user.email;
             document.getElementById('userAvatar').textContent = user.email[0].toUpperCase();
+
+            // Check if user is admin and show admin link
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', user.id)
+                .single();
+
+            if (profile && profile.role === 'admin') {
+                document.getElementById('adminLink').style.display = 'inline-block';
+            }
 
             await Promise.all([
                 loadActivities(),

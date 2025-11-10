@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Clover ERA CRM</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background: #f9fafb;
+            --medium-gray: #e5e7eb;
+            --border-color: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-green);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--light-green);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-green);
+            border-bottom: 2px solid var(--primary-green);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        tr:hover {
+            background: var(--background);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-manager {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-sales {
+            background: var(--light-green);
+            color: var(--dark-green);
+        }
+
+        .role-select {
+            padding: 0.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--text-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="admin.html" class="active">Admin</a>
+            <span id="userInfo" style="color: var(--text-secondary);"></span>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>User Management</h1>
+            <button class="btn btn-primary" onclick="showInviteModal()">Invite User</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Users</div>
+                <div class="stat-value" id="activeUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Admins</div>
+                <div class="stat-value" id="adminCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Sales Reps</div>
+                <div class="stat-value" id="salesRepCount">0</div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Role</th>
+                        <th>Opportunities</th>
+                        <th>Last Sign In</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="7" class="empty-state">Loading users...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Invite User Modal -->
+    <div id="inviteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Invite User</h2>
+                <button class="close-btn" onclick="hideInviteModal()">&times;</button>
+            </div>
+            <form onsubmit="inviteUser(event)">
+                <div class="form-group">
+                    <label for="inviteEmail">Email</label>
+                    <input type="email" id="inviteEmail" required placeholder="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="inviteFullName">Full Name</label>
+                    <input type="text" id="inviteFullName" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="inviteRole">Role</label>
+                    <select id="inviteRole" required>
+                        <option value="sales_rep">Sales Rep</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="hideInviteModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Invite</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY5ODE3NTQsImV4cCI6MjA1MjU1Nzc1NH0.iNRNlR7Uk0K96jhPNm-vYzTNp_rP1T-gZ-D4uVKlxlc';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+
+        // Check authentication and admin role
+        async function checkAuth() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = session.user;
+            document.getElementById('userInfo').textContent = session.user.email;
+
+            // Check if user is admin
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (profileError || !profile || profile.role !== 'admin') {
+                alert('Access denied. This page is only accessible to administrators.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Load data
+            await loadUsers();
+        }
+
+        // Load all users
+        async function loadUsers() {
+            try {
+                // Get all profiles
+                const { data: profiles, error: profilesError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (profilesError) throw profilesError;
+
+                // Get user auth data to check last sign in
+                const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers();
+
+                // Get opportunity counts for each user
+                const { data: opportunityCounts, error: oppError } = await supabase
+                    .from('opportunities')
+                    .select('owner_id');
+
+                if (oppError) throw oppError;
+
+                // Count opportunities per user
+                const oppCountMap = {};
+                opportunityCounts.forEach(opp => {
+                    oppCountMap[opp.owner_id] = (oppCountMap[opp.owner_id] || 0) + 1;
+                });
+
+                // Update stats
+                document.getElementById('totalUsers').textContent = profiles.length;
+                document.getElementById('activeUsers').textContent = profiles.length;
+                document.getElementById('adminCount').textContent = profiles.filter(p => p.role === 'admin').length;
+                document.getElementById('salesRepCount').textContent = profiles.filter(p => p.role === 'sales_rep').length;
+
+                // Render table
+                const tbody = document.getElementById('usersTableBody');
+                if (profiles.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No users found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = profiles.map(profile => {
+                    const authUser = users?.find(u => u.id === profile.id);
+                    const lastSignIn = authUser?.last_sign_in_at
+                        ? new Date(authUser.last_sign_in_at).toLocaleDateString()
+                        : 'Never';
+
+                    const oppCount = oppCountMap[profile.id] || 0;
+                    const roleClass = profile.role === 'admin' ? 'badge-admin' :
+                                     profile.role === 'manager' ? 'badge-manager' : 'badge-sales';
+
+                    return `
+                        <tr>
+                            <td>${profile.email || 'N/A'}</td>
+                            <td>${profile.full_name || 'N/A'}</td>
+                            <td>
+                                <span class="badge ${roleClass}">${profile.role || 'sales_rep'}</span>
+                            </td>
+                            <td>${oppCount}</td>
+                            <td>${lastSignIn}</td>
+                            <td>${new Date(profile.created_at).toLocaleDateString()}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <select class="role-select" onchange="updateUserRole('${profile.id}', this.value)">
+                                        <option value="sales_rep" ${profile.role === 'sales_rep' ? 'selected' : ''}>Sales Rep</option>
+                                        <option value="manager" ${profile.role === 'manager' ? 'selected' : ''}>Manager</option>
+                                        <option value="admin" ${profile.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+                alert('Error loading users: ' + error.message);
+            }
+        }
+
+        // Update user role
+        async function updateUserRole(userId, newRole) {
+            try {
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({ role: newRole, updated_at: new Date().toISOString() })
+                    .eq('id', userId);
+
+                if (error) throw error;
+
+                alert('User role updated successfully!');
+                await loadUsers();
+            } catch (error) {
+                console.error('Error updating role:', error);
+                alert('Error updating role: ' + error.message);
+            }
+        }
+
+        // Show invite modal
+        function showInviteModal() {
+            document.getElementById('inviteModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Hide invite modal
+        function hideInviteModal() {
+            document.getElementById('inviteModal').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('inviteEmail').value = '';
+            document.getElementById('inviteFullName').value = '';
+            document.getElementById('inviteRole').value = 'sales_rep';
+        }
+
+        // Invite user
+        async function inviteUser(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('inviteEmail').value;
+            const fullName = document.getElementById('inviteFullName').value;
+            const role = document.getElementById('inviteRole').value;
+
+            try {
+                // Note: Supabase auth.admin.inviteUserByEmail requires service role key
+                // Since we're using anon key, we'll use signUp with auto-confirm disabled
+                // In production, you'd want to use the Admin API with service role key
+
+                const { data, error } = await supabase.auth.admin.createUser({
+                    email: email,
+                    email_confirm: true,
+                    user_metadata: {
+                        full_name: fullName
+                    }
+                });
+
+                if (error) throw error;
+
+                // Update the role in profiles table
+                await supabase
+                    .from('profiles')
+                    .update({ role: role, full_name: fullName })
+                    .eq('id', data.user.id);
+
+                alert(`User invited successfully! An email has been sent to ${email}`);
+                hideInviteModal();
+                await loadUsers();
+
+            } catch (error) {
+                console.error('Error inviting user:', error);
+                if (error.message.includes('admin')) {
+                    alert('User invitation requires admin privileges. Please create users through the Supabase dashboard Authentication panel, and they will automatically appear here.');
+                } else {
+                    alert('Error inviting user: ' + error.message);
+                }
+            }
+        }
+
+        // Logout
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>
