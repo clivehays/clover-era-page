@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opportunity Details - Clover ERA CRM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #2C3E50;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --success-green: #10B981;
+            --warning-yellow: #F59E0B;
+            --danger-red: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--light-gray);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .logout-button {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-button:hover {
+            background: white;
+            color: var(--primary-teal);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            color: var(--charcoal);
+        }
+
+        /* Opportunity Header */
+        .opp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .opp-title-section h1 {
+            font-size: 2rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .opp-company {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .opp-company a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .opp-company a:hover {
+            text-decoration: underline;
+        }
+
+        .opp-value {
+            text-align: right;
+        }
+
+        .opp-value .amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success-green);
+        }
+
+        .opp-value .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Stage Badge */
+        .stage-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .stage-lead { background: #E0E7FF; color: #4338CA; }
+        .stage-qualified { background: #DBEAFE; color: #1E40AF; }
+        .stage-demo-scheduled { background: #CFFAFE; color: #0E7490; }
+        .stage-demo-completed { background: #D1FAE5; color: #047857; }
+        .stage-proposal { background: #FEF3C7; color: #92400E; }
+        .stage-negotiation { background: #FED7AA; color: #9A3412; }
+        .stage-pilot { background: #DDD6FE; color: #5B21B6; }
+        .stage-closed-won { background: #D1FAE5; color: #065F46; }
+        .stage-closed-lost { background: #FEE2E2; color: #991B1B; }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item .value {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .info-item input,
+        .info-item select,
+        .info-item textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .info-item input:focus,
+        .info-item select:focus,
+        .info-item textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #D1D5DB;
+        }
+
+        .btn-danger {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        /* Edit Mode */
+        .edit-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Activity Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--medium-gray);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--primary-teal);
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--primary-teal);
+        }
+
+        .timeline-item.activity-call::before { background: #3B82F6; box-shadow: 0 0 0 2px #3B82F6; }
+        .timeline-item.activity-meeting::before { background: #8B5CF6; box-shadow: 0 0 0 2px #8B5CF6; }
+        .timeline-item.activity-email::before { background: #10B981; box-shadow: 0 0 0 2px #10B981; }
+        .timeline-item.activity-note::before { background: #F59E0B; box-shadow: 0 0 0 2px #F59E0B; }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Add Activity Form */
+        .add-activity-form {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Contact Card */
+        .contact-card {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-detail a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .contact-detail a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--medium-gray);
+            border-top: 3px solid var(--primary-teal);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .opp-header {
+                flex-direction: column;
+            }
+
+            .opp-value {
+                text-align: left;
+                margin-top: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <h1>🍀 Clover ERA CRM</h1>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <a href="/crm/index.html" class="back-button">← Back to Dashboard</a>
+            <button class="logout-button" onclick="handleLogout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loadingState" class="card loading">
+            <div class="spinner"></div>
+            <p>Loading opportunity details...</p>
+        </div>
+
+        <!-- Content (hidden until loaded) -->
+        <div id="mainContent" class="hidden">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="/crm/index.html">Dashboard</a> / <a href="/crm/index.html">Opportunities</a> / <span id="breadcrumbTitle">Opportunity</span>
+            </div>
+
+            <!-- Opportunity Header -->
+            <div class="card">
+                <div class="opp-header">
+                    <div class="opp-title-section">
+                        <h1 id="oppTitle">Loading...</h1>
+                        <p class="opp-company">
+                            <span id="oppCompany"></span> ·
+                            <span id="oppContact"></span>
+                        </p>
+                        <span id="oppStage" class="stage-badge">Lead</span>
+                    </div>
+                    <div class="opp-value">
+                        <div class="amount" id="oppValue">$0</div>
+                        <div class="label">Annual Contract Value</div>
+                        <div class="label" style="margin-top: 0.5rem;">
+                            <span id="oppMRR">$0</span>/month · <span id="oppManagers">0</span> managers
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="toggleEditMode()">✏️ Edit Details</button>
+                    <button class="btn btn-secondary" onclick="toggleActivityForm()">+ Add Activity</button>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Left Column -->
+                <div>
+                    <!-- Opportunity Details -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Opportunity Details</h2>
+                        </div>
+
+                        <div id="viewMode">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Stage</label>
+                                    <div class="value" id="viewStage">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Probability</label>
+                                    <div class="value" id="viewProbability">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Expected Close Date</label>
+                                    <div class="value" id="viewCloseDate">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Source</label>
+                                    <div class="value" id="viewSource">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Managers Count</label>
+                                    <div class="value" id="viewManagers">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Employees Covered</label>
+                                    <div class="value" id="viewEmployees">-</div>
+                                </div>
+                            </div>
+
+                            <div class="info-item" style="margin-top: 1rem;">
+                                <label>Next Step</label>
+                                <div class="value" id="viewNextStep">-</div>
+                            </div>
+
+                            <div class="info-item" style="margin-top: 1rem;">
+                                <label>Notes</label>
+                                <div class="value" id="viewNotes">-</div>
+                            </div>
+                        </div>
+
+                        <div id="editMode" class="hidden">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Stage</label>
+                                    <select id="editStage">
+                                        <option value="lead">Lead</option>
+                                        <option value="qualified">Qualified</option>
+                                        <option value="demo-scheduled">Demo Scheduled</option>
+                                        <option value="demo-completed">Demo Completed</option>
+                                        <option value="proposal">Proposal</option>
+                                        <option value="negotiation">Negotiation</option>
+                                        <option value="pilot">Pilot</option>
+                                        <option value="closed-won">Closed Won</option>
+                                        <option value="closed-lost">Closed Lost</option>
+                                    </select>
+                                </div>
+                                <div class="info-item">
+                                    <label>Probability (%)</label>
+                                    <input type="number" id="editProbability" min="0" max="100">
+                                </div>
+                                <div class="info-item">
+                                    <label>Expected Close Date</label>
+                                    <input type="date" id="editCloseDate">
+                                </div>
+                                <div class="info-item">
+                                    <label>Source</label>
+                                    <select id="editSource">
+                                        <option value="partner">Partner</option>
+                                        <option value="direct">Direct</option>
+                                        <option value="referral">Referral</option>
+                                        <option value="inbound">Inbound</option>
+                                        <option value="outbound">Outbound</option>
+                                        <option value="event">Event</option>
+                                        <option value="website">Website</option>
+                                    </select>
+                                </div>
+                                <div class="info-item">
+                                    <label>Managers Count</label>
+                                    <input type="number" id="editManagers" min="1">
+                                </div>
+                                <div class="info-item">
+                                    <label>Employees Covered</label>
+                                    <input type="number" id="editEmployees" min="0">
+                                </div>
+                                <div class="info-item">
+                                    <label>Annual Contract Value ($)</label>
+                                    <input type="number" id="editValue" min="0">
+                                </div>
+                                <div class="info-item">
+                                    <label>Monthly Recurring Revenue ($)</label>
+                                    <input type="number" id="editMRR" min="0">
+                                </div>
+                            </div>
+
+                            <div class="info-item" style="margin-top: 1rem;">
+                                <label>Next Step</label>
+                                <input type="text" id="editNextStep" placeholder="What's the next action?">
+                            </div>
+
+                            <div class="info-item" style="margin-top: 1rem;">
+                                <label>Notes</label>
+                                <textarea id="editNotes" rows="4" placeholder="Internal notes about this opportunity..."></textarea>
+                            </div>
+
+                            <div class="edit-controls">
+                                <button class="btn btn-primary" onclick="saveChanges()">💾 Save Changes</button>
+                                <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Timeline -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Activity Timeline</h2>
+                        </div>
+
+                        <!-- Add Activity Form (hidden by default) -->
+                        <div id="activityForm" class="add-activity-form hidden">
+                            <h3 style="margin-bottom: 1rem;">Add New Activity</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Activity Type</label>
+                                    <select id="activityType">
+                                        <option value="call">Phone Call</option>
+                                        <option value="email">Email</option>
+                                        <option value="meeting">Meeting</option>
+                                        <option value="demo">Demo</option>
+                                        <option value="proposal-sent">Proposal Sent</option>
+                                        <option value="note">Note</option>
+                                        <option value="task">Task</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="datetime-local" id="activityDate">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <input type="text" id="activitySubject" placeholder="Brief description">
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="activityDescription" rows="3" placeholder="Activity details..."></textarea>
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn btn-primary" onclick="saveActivity()">Add Activity</button>
+                                <button class="btn btn-secondary" onclick="toggleActivityForm()">Cancel</button>
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div id="timelineContainer" class="timeline">
+                            <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                                No activities yet. Add your first activity above.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <!-- Contact Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Primary Contact</h2>
+                        </div>
+                        <div id="contactInfo" class="contact-card">
+                            <div class="contact-name" id="contactName">-</div>
+                            <div class="contact-detail" id="contactTitle">-</div>
+                            <div class="contact-detail">
+                                📧 <a href="#" id="contactEmail">-</a>
+                            </div>
+                            <div class="contact-detail">
+                                📞 <span id="contactPhone">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Company Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Company Info</h2>
+                        </div>
+                        <div class="info-item">
+                            <label>Industry</label>
+                            <div class="value" id="companyIndustry">-</div>
+                        </div>
+                        <div class="info-item" style="margin-top: 1rem;">
+                            <label>Employees</label>
+                            <div class="value" id="companyEmployees">-</div>
+                        </div>
+                        <div class="info-item" style="margin-top: 1rem;">
+                            <label>Website</label>
+                            <div class="value"><a href="#" id="companyWebsite" target="_blank">-</a></div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Quick Stats</h2>
+                        </div>
+                        <div class="info-item">
+                            <label>Days in Pipeline</label>
+                            <div class="value" id="daysInPipeline">-</div>
+                        </div>
+                        <div class="info-item" style="margin-top: 1rem;">
+                            <label>Last Activity</label>
+                            <div class="value" id="lastActivity">-</div>
+                        </div>
+                        <div class="info-item" style="margin-top: 1rem;">
+                            <label>Total Activities</label>
+                            <div class="value" id="totalActivities">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SUPABASE CONFIGURATION =====
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentOpportunity = null;
+        let opportunityId = null;
+
+        // Get opportunity ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        opportunityId = urlParams.get('id');
+
+        // Check authentication
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = '/crm/login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Logout
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            window.location.href = '/crm/login.html';
+        }
+
+        // Load opportunity data
+        async function loadOpportunity() {
+            if (!opportunityId) {
+                alert('No opportunity ID provided');
+                window.location.href = '/crm/index.html';
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('opportunities')
+                    .select(`
+                        *,
+                        companies (id, name, industry, employee_count, website),
+                        contacts (id, first_name, last_name, email, phone, title)
+                    `)
+                    .eq('id', opportunityId)
+                    .single();
+
+                if (error) throw error;
+
+                currentOpportunity = data;
+                renderOpportunity();
+                loadActivities();
+
+                // Hide loading, show content
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error loading opportunity:', error);
+                alert('Failed to load opportunity details');
+                window.location.href = '/crm/index.html';
+            }
+        }
+
+        // Render opportunity details
+        function renderOpportunity() {
+            const opp = currentOpportunity;
+            const company = opp.companies || {};
+            const contact = opp.contacts || {};
+
+            // Header
+            document.getElementById('oppTitle').textContent = opp.title;
+            document.getElementById('breadcrumbTitle').textContent = opp.title;
+            document.getElementById('oppCompany').textContent = company.name || 'Unknown Company';
+            document.getElementById('oppContact').textContent = contact.first_name ? `${contact.first_name} ${contact.last_name}` : 'No contact';
+
+            const stageClass = 'stage-' + (opp.stage || 'lead');
+            const stageName = formatStage(opp.stage);
+            document.getElementById('oppStage').className = 'stage-badge ' + stageClass;
+            document.getElementById('oppStage').textContent = stageName;
+
+            document.getElementById('oppValue').textContent = formatCurrency(opp.annual_contract_value || opp.value || 0);
+            document.getElementById('oppMRR').textContent = formatCurrency(opp.monthly_recurring_revenue || 0);
+            document.getElementById('oppManagers').textContent = opp.managers_count || 0;
+
+            // View Mode
+            document.getElementById('viewStage').textContent = stageName;
+            document.getElementById('viewProbability').textContent = (opp.probability || 0) + '%';
+            document.getElementById('viewCloseDate').textContent = opp.expected_close_date ? formatDate(opp.expected_close_date) : 'Not set';
+            document.getElementById('viewSource').textContent = formatSource(opp.source);
+            document.getElementById('viewManagers').textContent = opp.managers_count || '-';
+            document.getElementById('viewEmployees').textContent = opp.employees_covered || '-';
+            document.getElementById('viewNextStep').textContent = opp.next_step || '-';
+            document.getElementById('viewNotes').textContent = opp.notes || '-';
+
+            // Edit Mode
+            document.getElementById('editStage').value = opp.stage || 'lead';
+            document.getElementById('editProbability').value = opp.probability || 0;
+            document.getElementById('editCloseDate').value = opp.expected_close_date || '';
+            document.getElementById('editSource').value = opp.source || 'inbound';
+            document.getElementById('editManagers').value = opp.managers_count || '';
+            document.getElementById('editEmployees').value = opp.employees_covered || '';
+            document.getElementById('editValue').value = opp.annual_contract_value || opp.value || '';
+            document.getElementById('editMRR').value = opp.monthly_recurring_revenue || '';
+            document.getElementById('editNextStep').value = opp.next_step || '';
+            document.getElementById('editNotes').value = opp.notes || '';
+
+            // Contact Info
+            if (contact.first_name) {
+                document.getElementById('contactName').textContent = `${contact.first_name} ${contact.last_name}`;
+                document.getElementById('contactTitle').textContent = contact.title || 'No title';
+                document.getElementById('contactEmail').textContent = contact.email || 'No email';
+                document.getElementById('contactEmail').href = `mailto:${contact.email}`;
+                document.getElementById('contactPhone').textContent = contact.phone || 'No phone';
+            }
+
+            // Company Info
+            document.getElementById('companyIndustry').textContent = company.industry || '-';
+            document.getElementById('companyEmployees').textContent = company.employee_count || '-';
+            if (company.website) {
+                document.getElementById('companyWebsite').textContent = company.website;
+                document.getElementById('companyWebsite').href = company.website;
+            }
+
+            // Quick Stats
+            const createdDate = new Date(opp.created_at);
+            const daysInPipeline = Math.floor((new Date() - createdDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('daysInPipeline').textContent = daysInPipeline + ' days';
+        }
+
+        // Load activities
+        async function loadActivities() {
+            try {
+                const { data, error } = await supabase
+                    .from('activities')
+                    .select('*')
+                    .eq('opportunity_id', opportunityId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                renderActivities(data);
+
+                // Update stats
+                document.getElementById('totalActivities').textContent = data.length;
+                if (data.length > 0) {
+                    const lastActivity = data[0];
+                    document.getElementById('lastActivity').textContent = formatRelativeTime(lastActivity.created_at);
+                } else {
+                    document.getElementById('lastActivity').textContent = 'No activities yet';
+                }
+
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+        }
+
+        // Render activities
+        function renderActivities(activities) {
+            const container = document.getElementById('timelineContainer');
+
+            if (!activities || activities.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No activities yet. Add your first activity above.</p>';
+                return;
+            }
+
+            container.innerHTML = activities.map(activity => `
+                <div class="timeline-item activity-${activity.type}">
+                    <div class="timeline-header">
+                        <div class="timeline-title">${activity.subject}</div>
+                        <div class="timeline-date">${formatRelativeTime(activity.created_at)}</div>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+                        ${formatActivityType(activity.type)}
+                    </div>
+                    ${activity.description ? `<div class="timeline-description">${activity.description}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            document.getElementById('viewMode').classList.toggle('hidden');
+            document.getElementById('editMode').classList.toggle('hidden');
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            toggleEditMode();
+            // Reset values
+            renderOpportunity();
+        }
+
+        // Save changes
+        async function saveChanges() {
+            const updates = {
+                stage: document.getElementById('editStage').value,
+                probability: parseInt(document.getElementById('editProbability').value),
+                expected_close_date: document.getElementById('editCloseDate').value || null,
+                source: document.getElementById('editSource').value,
+                managers_count: parseInt(document.getElementById('editManagers').value) || null,
+                employees_covered: parseInt(document.getElementById('editEmployees').value) || null,
+                annual_contract_value: parseInt(document.getElementById('editValue').value) || null,
+                value: parseInt(document.getElementById('editValue').value) || null,
+                monthly_recurring_revenue: parseInt(document.getElementById('editMRR').value) || null,
+                next_step: document.getElementById('editNextStep').value,
+                notes: document.getElementById('editNotes').value,
+                updated_at: new Date().toISOString()
+            };
+
+            try {
+                const { error } = await supabase
+                    .from('opportunities')
+                    .update(updates)
+                    .eq('id', opportunityId);
+
+                if (error) throw error;
+
+                // Reload opportunity
+                await loadOpportunity();
+                toggleEditMode();
+
+                alert('Changes saved successfully!');
+
+            } catch (error) {
+                console.error('Error saving changes:', error);
+                alert('Failed to save changes');
+            }
+        }
+
+        // Toggle activity form
+        function toggleActivityForm() {
+            const form = document.getElementById('activityForm');
+            form.classList.toggle('hidden');
+
+            if (!form.classList.contains('hidden')) {
+                // Set default date to now
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                document.getElementById('activityDate').value = now.toISOString().slice(0, 16);
+            }
+        }
+
+        // Save activity
+        async function saveActivity() {
+            const type = document.getElementById('activityType').value;
+            const subject = document.getElementById('activitySubject').value;
+            const description = document.getElementById('activityDescription').value;
+            const activityDate = document.getElementById('activityDate').value;
+
+            if (!subject) {
+                alert('Please enter a subject');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('activities')
+                    .insert([{
+                        opportunity_id: opportunityId,
+                        company_id: currentOpportunity.company_id,
+                        contact_id: currentOpportunity.contact_id,
+                        type: type,
+                        subject: subject,
+                        description: description,
+                        completed: true,
+                        completed_at: activityDate ? new Date(activityDate).toISOString() : new Date().toISOString(),
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (error) throw error;
+
+                // Clear form
+                document.getElementById('activitySubject').value = '';
+                document.getElementById('activityDescription').value = '';
+                toggleActivityForm();
+
+                // Reload activities
+                await loadActivities();
+
+            } catch (error) {
+                console.error('Error saving activity:', error);
+                alert('Failed to save activity');
+            }
+        }
+
+        // Formatting functions
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0
+            }).format(value);
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function formatRelativeTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            return formatDate(dateString);
+        }
+
+        function formatStage(stage) {
+            const stages = {
+                'lead': 'Lead',
+                'qualified': 'Qualified',
+                'demo-scheduled': 'Demo Scheduled',
+                'demo-completed': 'Demo Completed',
+                'proposal': 'Proposal',
+                'negotiation': 'Negotiation',
+                'pilot': 'Pilot',
+                'closed-won': 'Closed Won',
+                'closed-lost': 'Closed Lost'
+            };
+            return stages[stage] || stage;
+        }
+
+        function formatSource(source) {
+            if (!source) return '-';
+            return source.charAt(0).toUpperCase() + source.slice(1);
+        }
+
+        function formatActivityType(type) {
+            const types = {
+                'call': '📞 Phone Call',
+                'email': '📧 Email',
+                'meeting': '👥 Meeting',
+                'demo': '🖥️ Demo',
+                'proposal-sent': '📄 Proposal Sent',
+                'note': '📝 Note',
+                'task': '✅ Task'
+            };
+            return types[type] || type;
+        }
+
+        // Initialize
+        async function init() {
+            const authenticated = await checkAuth();
+            if (authenticated) {
+                await loadOpportunity();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
