@@ -15,18 +15,16 @@
 
     <style>
         :root {
-            --primary-teal: #46AEB8;
-            --deep-teal: #0D7C88;
-            --bronze: #C9A667;
-            --charcoal: #2C3E50;
-            --success-green: #10B981;
-            --warning-orange: #F59E0B;
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background: #f9fafb;
+            --medium-gray: #e5e7eb;
+            --border-color: #d1d5db;
             --danger-red: #EF4444;
-            --light-gray: #F8F9FA;
-            --medium-gray: #E5E7EB;
-            --text-primary: #1F2937;
-            --text-secondary: #6B7280;
-            --white: #FFFFFF;
+            --warning-orange: #F59E0B;
         }
 
         * {
@@ -42,60 +40,95 @@
             background: var(--light-gray);
         }
 
-        .header {
-            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
-            color: white;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .header h1 {
+        .nav-brand {
             font-size: 1.5rem;
             font-weight: 700;
+            color: var(--primary-green);
         }
 
-        .header-actions {
+        .nav-links {
             display: flex;
-            gap: 1rem;
+            gap: 2rem;
             align-items: center;
         }
 
-        .user-info {
-            font-size: 0.9rem;
-            opacity: 0.9;
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-green);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
         }
 
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
         }
 
         .btn-primary {
-            background: var(--bronze);
+            background: var(--primary-green);
             color: white;
         }
 
         .btn-primary:hover {
-            background: #B8935E;
-            transform: translateY(-1px);
+            background: var(--dark-green);
         }
 
         .btn-secondary {
             background: white;
-            color: var(--primary-teal);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: var(--light-gray);
+            background: var(--background);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: var(--border-color);
         }
 
         .container {
@@ -127,7 +160,7 @@
         .metric-card .value {
             font-size: 2rem;
             font-weight: 800;
-            color: var(--primary-teal);
+            color: var(--primary-green);
         }
 
         .metric-card .change {
@@ -188,7 +221,7 @@
         }
 
         .stage-count {
-            background: var(--primary-teal);
+            background: var(--primary-green);
             color: white;
             padding: 0.25rem 0.5rem;
             border-radius: 12px;
@@ -200,7 +233,7 @@
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 0.75rem;
-            border-left: 4px solid var(--primary-teal);
+            border-left: 4px solid var(--primary-green);
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -419,7 +452,7 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--primary-teal);
+            border-color: var(--primary-green);
         }
 
         .form-group .hint {
@@ -469,7 +502,7 @@
         .add-new-link {
             display: inline-block;
             margin-top: 0.5rem;
-            color: var(--primary-teal);
+            color: var(--primary-green);
             font-size: 0.9rem;
             cursor: pointer;
             text-decoration: none;
@@ -496,20 +529,27 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🍀 Clover ERA CRM</h1>
-        <div class="header-actions">
-            <span class="user-info" id="userInfo">Loading...</span>
-            <a href="/crm/companies.html" class="btn btn-secondary">🏢 Companies</a>
-            <a href="/crm/activities.html" class="btn btn-secondary">📋 Activities</a>
-            <a href="/crm/kanban.html" class="btn btn-secondary">🎯 Kanban</a>
-            <a href="/crm/admin.html" id="adminLink" class="btn btn-secondary" style="display: none;">⚙️ Admin</a>
-            <button class="btn btn-primary" onclick="showNewOpportunityModal()">+ New Opportunity</button>
-            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="kanban.html">Kanban</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+            <span id="userInfo" style="color: var(--text-secondary);"></span>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
         </div>
-    </div>
+    </nav>
 
     <div class="container">
+        <!-- Page Header -->
+        <div class="header">
+            <h1>Sales Dashboard</h1>
+            <button class="btn btn-primary" onclick="showNewOpportunityModal()">+ New Opportunity</button>
+        </div>
+
         <!-- View Filter -->
         <div style="background: white; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
             <div>
@@ -521,6 +561,24 @@
             </div>
             <div style="color: var(--text-secondary); font-size: 0.9rem;">
                 <span id="currentUserDisplay"></span>
+            </div>
+        </div>
+
+        <!-- Today's Tasks -->
+        <div class="section" style="margin-bottom: 2rem;">
+            <div class="section-header">
+                <h2>📋 What Needs to Be Done Today</h2>
+            </div>
+            <div id="todaysTasks" style="background: white; border-radius: 12px; padding: 1.5rem;">
+                <div id="tasksLoading" class="loading">Loading today's tasks...</div>
+                <div id="tasksContent" style="display: none;">
+                    <div id="overdueTasksList" style="margin-bottom: 1.5rem;"></div>
+                    <div id="dueTodayList" style="margin-bottom: 1.5rem;"></div>
+                    <div id="followUpsList"></div>
+                </div>
+                <div id="noTasks" style="display: none; text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    🎉 All caught up! No tasks due today.
+                </div>
             </div>
         </div>
 
@@ -1084,6 +1142,107 @@
             alert('New opportunity form coming soon! For now, use Supabase dashboard to add opportunities.');
         }
 
+        // Load today's tasks
+        async function loadTodaysTasks() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+
+                // Get activities that are tasks and due today or overdue
+                const { data: activities, error } = await supabase
+                    .from('activities')
+                    .select(`
+                        *,
+                        opportunities (title, stage),
+                        companies (name)
+                    `)
+                    .eq('type', 'task')
+                    .eq('completed', false)
+                    .lte('due_date', new Date(today + 'T23:59:59').toISOString())
+                    .order('due_date', { ascending: true });
+
+                if (error) throw error;
+
+                const overdue = [];
+                const dueToday = [];
+
+                activities.forEach(task => {
+                    const dueDate = new Date(task.due_date).toISOString().split('T')[0];
+                    if (dueDate < today) {
+                        overdue.push(task);
+                    } else if (dueDate === today) {
+                        dueToday.push(task);
+                    }
+                });
+
+                // Get opportunities that need follow-up
+                const { data: opps } = await supabase
+                    .from('opportunities')
+                    .select(`*, companies (name)`)
+                    .in('stage', ['demo-scheduled', 'proposal', 'negotiation'])
+                    .lte('expected_close_date', new Date(today).setDate(new Date(today).getDate() + 7).toISOString())
+                    .order('expected_close_date', { ascending: true })
+                    .limit(5);
+
+                document.getElementById('tasksLoading').style.display = 'none';
+
+                if (overdue.length === 0 && dueToday.length === 0 && (!opps || opps.length === 0)) {
+                    document.getElementById('noTasks').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('tasksContent').style.display = 'block';
+
+                // Render overdue tasks
+                if (overdue.length > 0) {
+                    document.getElementById('overdueTasksList').innerHTML = `
+                        <h3 style="color: var(--danger-red); margin-bottom: 1rem;">⚠️ Overdue (${overdue.length})</h3>
+                        ${overdue.map(task => `
+                            <div style="padding: 1rem; border-left: 4px solid var(--danger-red); background: #FEE2E2; border-radius: 8px; margin-bottom: 0.75rem;">
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    ${task.companies?.name || 'No company'} • Due: ${new Date(task.due_date).toLocaleDateString()}
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+
+                // Render due today
+                if (dueToday.length > 0) {
+                    document.getElementById('dueTodayList').innerHTML = `
+                        <h3 style="color: var(--warning-orange); margin-bottom: 1rem;">📅 Due Today (${dueToday.length})</h3>
+                        ${dueToday.map(task => `
+                            <div style="padding: 1rem; border-left: 4px solid var(--warning-orange); background: #FEF3C7; border-radius: 8px; margin-bottom: 0.75rem;">
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    ${task.companies?.name || 'No company'}
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+
+                // Render follow-ups
+                if (opps && opps.length > 0) {
+                    document.getElementById('followUpsList').innerHTML = `
+                        <h3 style="color: var(--primary-green); margin-bottom: 1rem;">🎯 Follow-Ups Needed</h3>
+                        ${opps.map(opp => `
+                            <div style="padding: 1rem; border-left: 4px solid var(--primary-green); background: var(--light-green); border-radius: 8px; margin-bottom: 0.75rem;">
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">${opp.title}</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    ${opp.companies?.name || 'No company'} • ${opp.stage.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} • Close: ${new Date(opp.expected_close_date).toLocaleDateString()}
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                document.getElementById('tasksLoading').innerHTML = '<div style="color: var(--danger-red);">Error loading tasks</div>';
+            }
+        }
+
         // Initialize page
         async function initPage() {
             const isAuthenticated = await checkAuth();
@@ -1092,7 +1251,8 @@
             await Promise.all([
                 loadMetrics(),
                 loadPipeline(),
-                loadActivities()
+                loadActivities(),
+                loadTodaysTasks()
             ]);
         }
 
