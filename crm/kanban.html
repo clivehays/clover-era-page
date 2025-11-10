@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Kanban - Clover ERA CRM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --bronze: #C9A667;
+            --charcoal: #2C3E50;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+            --danger-red: #EF4444;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-gray);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--bronze);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #B8935E;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-teal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: var(--light-gray);
+            color: var(--primary-teal);
+        }
+
+        .nav a.active {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 1.5rem;
+        }
+
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        .kanban-board {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .kanban-column {
+            flex: 0 0 320px;
+            background: var(--medium-gray);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 280px);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .column-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--charcoal);
+        }
+
+        .column-count {
+            background: var(--charcoal);
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .column-value {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .cards-container {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .opportunity-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+
+        .opportunity-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .opportunity-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-company {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .card-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-teal);
+        }
+
+        .card-owner {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--light-gray);
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+        }
+
+        .card-metrics {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .card-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .column-lead { border-top: 4px solid #6366F1; }
+        .column-qualified { border-top: 4px solid #8B5CF6; }
+        .column-demo { border-top: 4px solid #EC4899; }
+        .column-proposal { border-top: 4px solid #F59E0B; }
+        .column-negotiation { border-top: 4px solid #10B981; }
+        .column-closed-won { border-top: 4px solid #059669; }
+        .column-closed-lost { border-top: 4px solid #EF4444; }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Drag and drop styling */
+        .cards-container.drag-over {
+            background: rgba(70, 174, 184, 0.1);
+            border: 2px dashed var(--primary-teal);
+            border-radius: 8px;
+        }
+
+        .summary-bar {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+            margin-top: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+
+        @media (max-width: 768px) {
+            .kanban-column {
+                flex: 0 0 280px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-group select,
+            .filter-group input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Pipeline Kanban</h1>
+        <div class="header-actions">
+            <span class="user-info" id="userEmail"></span>
+            <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="index.html">Dashboard</a>
+        <a href="companies.html">Companies</a>
+        <a href="activities.html">Activities</a>
+        <a href="kanban.html" class="active">Kanban</a>
+        <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+    </div>
+
+    <div class="container">
+        <div class="filters">
+            <div class="filter-group">
+                <label>Owner</label>
+                <select id="filterOwner">
+                    <option value="">All Owners</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Min Value</label>
+                <input type="number" id="filterMinValue" placeholder="$0" step="1000">
+            </div>
+            <div class="filter-group">
+                <label>Max Value</label>
+                <input type="number" id="filterMaxValue" placeholder="Any" step="1000">
+            </div>
+            <div class="filter-group">
+                <label>Close Date From</label>
+                <input type="date" id="filterDateFrom">
+            </div>
+            <div class="filter-group">
+                <label>Close Date To</label>
+                <input type="date" id="filterDateTo">
+            </div>
+            <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+            <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+        </div>
+
+        <div class="kanban-board" id="kanbanBoard">
+            <!-- Columns will be dynamically generated -->
+        </div>
+    </div>
+
+    <div class="summary-bar">
+        <div class="summary-item">
+            <div class="summary-label">Total Pipeline</div>
+            <div class="summary-value" id="totalPipeline">$0</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Weighted Value</div>
+            <div class="summary-value" id="weightedValue">$0</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Total Deals</div>
+            <div class="summary-value" id="totalDeals">0</div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const STAGES = [
+            { id: 'lead', name: 'Lead', class: 'column-lead', probability: 0.1 },
+            { id: 'qualified', name: 'Qualified', class: 'column-qualified', probability: 0.25 },
+            { id: 'demo', name: 'Demo Scheduled', class: 'column-demo', probability: 0.4 },
+            { id: 'proposal', name: 'Proposal Sent', class: 'column-proposal', probability: 0.6 },
+            { id: 'negotiation', name: 'Negotiation', class: 'column-negotiation', probability: 0.8 },
+            { id: 'closed_won', name: 'Closed Won', class: 'column-closed-won', probability: 1 },
+            { id: 'closed_lost', name: 'Closed Lost', class: 'column-closed-lost', probability: 0 }
+        ];
+
+        let allOpportunities = [];
+        let filteredOpportunities = [];
+        let currentFilters = {};
+
+        async function checkAuth() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('userEmail').textContent = session.user.email;
+
+            // Check if user is admin to show admin link
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (profile && profile.role === 'admin') {
+                document.getElementById('adminLink').style.display = 'block';
+            }
+
+            await loadOpportunities();
+        }
+
+        async function loadOpportunities() {
+            const { data, error } = await supabase
+                .from('opportunities')
+                .select(`
+                    *,
+                    companies (
+                        name
+                    ),
+                    profiles (
+                        full_name,
+                        email
+                    )
+                `)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading opportunities:', error);
+                return;
+            }
+
+            allOpportunities = data || [];
+            filteredOpportunities = [...allOpportunities];
+
+            populateOwnerFilter();
+            renderKanban();
+        }
+
+        function populateOwnerFilter() {
+            const owners = [...new Set(allOpportunities.map(opp => opp.profiles?.full_name || opp.profiles?.email).filter(Boolean))];
+            const select = document.getElementById('filterOwner');
+
+            owners.forEach(owner => {
+                const option = document.createElement('option');
+                option.value = owner;
+                option.textContent = owner;
+                select.appendChild(option);
+            });
+        }
+
+        function applyFilters() {
+            const owner = document.getElementById('filterOwner').value;
+            const minValue = parseFloat(document.getElementById('filterMinValue').value) || 0;
+            const maxValue = parseFloat(document.getElementById('filterMaxValue').value) || Infinity;
+            const dateFrom = document.getElementById('filterDateFrom').value;
+            const dateTo = document.getElementById('filterDateTo').value;
+
+            currentFilters = { owner, minValue, maxValue, dateFrom, dateTo };
+
+            filteredOpportunities = allOpportunities.filter(opp => {
+                if (owner && (opp.profiles?.full_name !== owner && opp.profiles?.email !== owner)) return false;
+                if (opp.value < minValue || opp.value > maxValue) return false;
+                if (dateFrom && opp.expected_close_date < dateFrom) return false;
+                if (dateTo && opp.expected_close_date > dateTo) return false;
+                return true;
+            });
+
+            renderKanban();
+        }
+
+        function clearFilters() {
+            document.getElementById('filterOwner').value = '';
+            document.getElementById('filterMinValue').value = '';
+            document.getElementById('filterMaxValue').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+
+            currentFilters = {};
+            filteredOpportunities = [...allOpportunities];
+            renderKanban();
+        }
+
+        function renderKanban() {
+            const board = document.getElementById('kanbanBoard');
+            board.innerHTML = '';
+
+            let totalPipeline = 0;
+            let weightedValue = 0;
+            let totalDeals = 0;
+
+            STAGES.forEach(stage => {
+                const stageOpps = filteredOpportunities.filter(opp => opp.stage === stage.id);
+                const stageValue = stageOpps.reduce((sum, opp) => sum + (opp.value || 0), 0);
+
+                totalPipeline += stageValue;
+                weightedValue += stageValue * stage.probability;
+                totalDeals += stageOpps.length;
+
+                const column = document.createElement('div');
+                column.className = `kanban-column ${stage.class}`;
+                column.dataset.stage = stage.id;
+
+                const header = `
+                    <div class="column-header">
+                        <div>
+                            <div class="column-title">${stage.name}</div>
+                            <div class="column-value">${formatCurrency(stageValue)}</div>
+                        </div>
+                        <div class="column-count">${stageOpps.length}</div>
+                    </div>
+                `;
+
+                const cardsContainer = document.createElement('div');
+                cardsContainer.className = 'cards-container';
+                cardsContainer.dataset.stage = stage.id;
+
+                // Add drag and drop event listeners
+                cardsContainer.addEventListener('dragover', handleDragOver);
+                cardsContainer.addEventListener('drop', handleDrop);
+                cardsContainer.addEventListener('dragleave', handleDragLeave);
+
+                if (stageOpps.length === 0) {
+                    cardsContainer.innerHTML = '<div class="empty-state">No deals in this stage</div>';
+                } else {
+                    stageOpps.forEach(opp => {
+                        const card = createOpportunityCard(opp);
+                        cardsContainer.appendChild(card);
+                    });
+                }
+
+                column.innerHTML = header;
+                column.appendChild(cardsContainer);
+                board.appendChild(column);
+            });
+
+            // Update summary
+            document.getElementById('totalPipeline').textContent = formatCurrency(totalPipeline);
+            document.getElementById('weightedValue').textContent = formatCurrency(weightedValue);
+            document.getElementById('totalDeals').textContent = totalDeals;
+        }
+
+        function createOpportunityCard(opp) {
+            const card = document.createElement('div');
+            card.className = 'opportunity-card';
+            card.draggable = true;
+            card.dataset.id = opp.id;
+
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+
+            const ownerName = opp.profiles?.full_name || opp.profiles?.email || 'Unassigned';
+            const companyName = opp.companies?.name || 'No Company';
+
+            card.innerHTML = `
+                <div class="card-title">${opp.title}</div>
+                <div class="card-company">${companyName}</div>
+                <div class="card-metrics">
+                    <div class="card-metric">📅 ${formatDate(opp.expected_close_date)}</div>
+                    <div class="card-metric">📊 ${opp.probability || 0}%</div>
+                </div>
+                <div class="card-details">
+                    <div class="card-value">${formatCurrency(opp.value)}</div>
+                    <div class="card-owner">${ownerName}</div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Drag and Drop handlers
+        let draggedCard = null;
+
+        function handleDragStart(e) {
+            draggedCard = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        async function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.preventDefault();
+
+            e.currentTarget.classList.remove('drag-over');
+
+            if (draggedCard) {
+                const oppId = draggedCard.dataset.id;
+                const newStage = e.currentTarget.dataset.stage;
+
+                // Update in database
+                const { error } = await supabase
+                    .from('opportunities')
+                    .update({
+                        stage: newStage,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', oppId);
+
+                if (error) {
+                    console.error('Error updating opportunity:', error);
+                    alert('Failed to update opportunity stage');
+                } else {
+                    // Reload opportunities to reflect changes
+                    await loadOpportunities();
+                }
+            }
+
+            return false;
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value || 0);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'No date';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>
