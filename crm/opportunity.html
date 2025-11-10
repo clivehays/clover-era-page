@@ -453,6 +453,22 @@
 
                 <!-- Sidebar -->
                 <div>
+                    <!-- Outlook/Teams Integration -->
+                    <div class="section">
+                        <h2 class="section-header">Quick Actions</h2>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <button class="btn btn-primary" onclick="scheduleTeamsMeeting()" style="width: 100%;">
+                                📅 Schedule Teams Meeting
+                            </button>
+                            <button class="btn btn-secondary" onclick="showLogEmailModal()" style="width: 100%;">
+                                ✉️ Log Email
+                            </button>
+                            <button class="btn btn-secondary" onclick="generateEmailTemplate()" style="width: 100%;">
+                                📝 Copy Demo Email
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Company Info -->
                     <div class="section">
                         <h2 class="section-header">Company</h2>
@@ -605,6 +621,39 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="hideAddActivityModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Log Email Modal -->
+    <div id="logEmailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Log Email</h2>
+                <button class="modal-close" onclick="hideLogEmailModal()">&times;</button>
+            </div>
+            <form id="logEmailForm" onsubmit="saveLoggedEmail(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Email Subject</label>
+                        <input type="text" id="logEmailSubject" required placeholder="e.g., Demo follow-up">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date Sent/Received</label>
+                        <input type="datetime-local" id="logEmailDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Summary</label>
+                        <textarea id="logEmailSummary" rows="4" placeholder="Brief summary of the email content..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideLogEmailModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Log Email</button>
                 </div>
             </form>
         </div>
@@ -953,6 +1002,212 @@
                 window.location.href = `/crm/companies.html#${currentOpportunity.company_id}`;
             }
         }
+
+        // ======== OUTLOOK/TEAMS INTEGRATION - PHASE 1 ========
+
+        // Format date for ICS file (iCalendar format)
+        function formatICSDate(date) {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+
+        // 1. Schedule Teams Meeting - Downloads .ics file
+        async function scheduleTeamsMeeting() {
+            if (!currentOpportunity) {
+                alert('Please wait for opportunity to load.');
+                return;
+            }
+
+            const contact = currentOpportunity.contacts;
+            if (!contact || !contact.email) {
+                alert('No contact email found. Please add a contact to this opportunity first.');
+                return;
+            }
+
+            const company = currentOpportunity.companies;
+
+            // Default meeting to next week, 2pm
+            const meetingDate = new Date();
+            meetingDate.setDate(meetingDate.getDate() + 7);
+            meetingDate.setHours(14, 0, 0, 0);
+
+            const meetingEnd = new Date(meetingDate);
+            meetingEnd.setMinutes(meetingEnd.getMinutes() + 60); // 1 hour meeting
+
+            // Get current user's email
+            const { data: { session } } = await supabase.auth.getSession();
+            const organizerEmail = session.user.email;
+
+            // Generate ICS file content
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Clover ERA CRM//EN
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:${currentOpportunity.id}-${Date.now()}@cloverera.com
+DTSTAMP:${formatICSDate(new Date())}
+DTSTART:${formatICSDate(meetingDate)}
+DTEND:${formatICSDate(meetingEnd)}
+SUMMARY:Demo - ${currentOpportunity.title}
+DESCRIPTION:Demo meeting for ${company.name}\\n\\nOpportunity: ${currentOpportunity.title}\\nValue: ${formatCurrency(currentOpportunity.value || currentOpportunity.annual_contract_value)}\\n\\nPlease join via Microsoft Teams.
+LOCATION:Microsoft Teams Meeting
+ORGANIZER:mailto:${organizerEmail}
+ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:${contact.email}
+STATUS:CONFIRMED
+SEQUENCE:0
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR`;
+
+            // Download the .ics file
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `demo-${company.name.replace(/\s+/g, '-')}.ics`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Log the meeting creation as an activity
+            try {
+                await supabase.from('activities').insert([{
+                    opportunity_id: currentOpportunity.id,
+                    company_id: currentOpportunity.company_id,
+                    type: 'meeting',
+                    subject: `Demo scheduled with ${company.name}`,
+                    description: `Teams meeting invite sent to ${contact.first_name} ${contact.last_name} (${contact.email})`,
+                    due_date: meetingDate.toISOString(),
+                    owner_id: currentUserId,
+                    completed: false
+                }]);
+
+                await loadActivities();
+                alert('Meeting invite downloaded! Open the .ics file to add it to your Outlook calendar, then send the invite to the contact.');
+            } catch (error) {
+                console.error('Error logging meeting:', error);
+                alert('Meeting invite downloaded, but failed to log activity in CRM.');
+            }
+        }
+
+        // 2. Log Email Modal
+        function showLogEmailModal() {
+            if (!currentOpportunity) {
+                alert('Please wait for opportunity to load.');
+                return;
+            }
+
+            // Set default date to now
+            const now = new Date();
+            const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+                .toISOString()
+                .slice(0, 16);
+            document.getElementById('logEmailDate').value = localDateTime;
+
+            document.getElementById('logEmailForm').reset();
+            document.getElementById('logEmailDate').value = localDateTime;
+            document.getElementById('logEmailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLogEmailModal() {
+            document.getElementById('logEmailModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveLoggedEmail(event) {
+            event.preventDefault();
+
+            const emailData = {
+                opportunity_id: currentOpportunity.id,
+                company_id: currentOpportunity.company_id,
+                type: 'email',
+                subject: document.getElementById('logEmailSubject').value,
+                description: document.getElementById('logEmailSummary').value,
+                due_date: new Date(document.getElementById('logEmailDate').value).toISOString(),
+                owner_id: currentUserId,
+                completed: true
+            };
+
+            try {
+                const { error } = await supabase
+                    .from('activities')
+                    .insert([emailData]);
+
+                if (error) throw error;
+
+                hideLogEmailModal();
+                await loadActivities();
+                alert('Email logged successfully!');
+
+            } catch (error) {
+                console.error('Error logging email:', error);
+                alert('Failed to log email: ' + error.message);
+            }
+        }
+
+        // 3. Generate Email Template - Copy to clipboard
+        async function generateEmailTemplate() {
+            if (!currentOpportunity) {
+                alert('Please wait for opportunity to load.');
+                return;
+            }
+
+            const contact = currentOpportunity.contacts;
+            if (!contact) {
+                alert('No contact found for this opportunity.');
+                return;
+            }
+
+            const company = currentOpportunity.companies;
+
+            // Get current user info
+            const { data: { session } } = await supabase.auth.getSession();
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('full_name')
+                .eq('id', session.user.id)
+                .single();
+
+            const userName = profile?.full_name || session.user.email;
+
+            const template = `Subject: Demo Invitation - Clover ERA Manager Enablement
+
+Hi ${contact.first_name},
+
+Thank you for your interest in Clover ERA's manager enablement platform.
+
+I'd like to schedule a 30-minute demo to show you how we help organizations identify struggling managers before they cause turnover and performance issues.
+
+Key topics we'll cover:
+- Early warning system for manager performance issues
+- Anonymous feedback that managers actually want to hear
+- Coaching pathways proven to improve retention
+
+Based on your organization's ${currentOpportunity.managers_count || '[NUMBER]'} managers, we estimate this could help you avoid $${((currentOpportunity.managers_count || 10) * 150000 * 0.1).toLocaleString()} in turnover costs annually.
+
+Does next week work for a brief demo? I'm happy to work around your schedule.
+
+Best regards,
+${userName}
+Clover ERA
+
+---
+CRM Opportunity: ${currentOpportunity.title}
+Value: ${formatCurrency(currentOpportunity.value || currentOpportunity.annual_contract_value)}`;
+
+            try {
+                await navigator.clipboard.writeText(template);
+                alert('Email template copied to clipboard! Paste it into Outlook and customize as needed.');
+            } catch (error) {
+                console.error('Failed to copy to clipboard:', error);
+                // Fallback: show in alert for manual copy
+                alert('Could not copy automatically. Here\'s the template:\n\n' + template);
+            }
+        }
+
+        // ======== END OUTLOOK/TEAMS INTEGRATION ========
 
         // Initialize
         async function init() {
