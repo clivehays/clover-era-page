@@ -6,22 +6,21 @@
     <title>Opportunity Details - Clover ERA CRM</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
-
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
-            --primary-teal: #46AEB8;
-            --deep-teal: #0D7C88;
-            --charcoal: #2C3E50;
-            --text-primary: #1F2937;
-            --text-secondary: #6B7280;
-            --light-gray: #F8F9FA;
-            --medium-gray: #E5E7EB;
-            --success-green: #10B981;
-            --warning-yellow: #F59E0B;
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background: #f9fafb;
+            --medium-gray: #e5e7eb;
+            --border-color: #d1d5db;
             --danger-red: #EF4444;
+            --warning-orange: #F59E0B;
+            --light-gray: #F8F9FA;
         }
 
         * {
@@ -37,216 +36,37 @@
             line-height: 1.6;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
-            color: white;
+        .nav {
+            background: white;
             padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .header h1 {
+        .nav-brand {
             font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .back-button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: background 0.3s;
-        }
-
-        .back-button:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .logout-button {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .logout-button:hover {
-            background: white;
-            color: var(--primary-teal);
-        }
-
-        /* Container */
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-
-        /* Breadcrumb */
-        .breadcrumb {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .breadcrumb a {
-            color: var(--primary-teal);
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        /* Layout */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--medium-gray);
-        }
-
-        .card-header h2 {
-            font-size: 1.5rem;
-            color: var(--charcoal);
-        }
-
-        /* Opportunity Header */
-        .opp-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-        }
-
-        .opp-title-section h1 {
-            font-size: 2rem;
-            color: var(--charcoal);
-            margin-bottom: 0.5rem;
-        }
-
-        .opp-company {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-        }
-
-        .opp-company a {
-            color: var(--primary-teal);
-            text-decoration: none;
-        }
-
-        .opp-company a:hover {
-            text-decoration: underline;
-        }
-
-        .opp-value {
-            text-align: right;
-        }
-
-        .opp-value .amount {
-            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--success-green);
+            color: var(--primary-green);
         }
 
-        .opp-value .label {
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
         }
 
-        /* Stage Badge */
-        .stage-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+        .nav-links a:hover {
+            color: var(--primary-green);
         }
 
-        .stage-lead { background: #E0E7FF; color: #4338CA; }
-        .stage-qualified { background: #DBEAFE; color: #1E40AF; }
-        .stage-demo-scheduled { background: #CFFAFE; color: #0E7490; }
-        .stage-demo-completed { background: #D1FAE5; color: #047857; }
-        .stage-proposal { background: #FEF3C7; color: #92400E; }
-        .stage-negotiation { background: #FED7AA; color: #9A3412; }
-        .stage-pilot { background: #DDD6FE; color: #5B21B6; }
-        .stage-closed-won { background: #D1FAE5; color: #065F46; }
-        .stage-closed-lost { background: #FEE2E2; color: #991B1B; }
-
-        /* Info Grid */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .info-item label {
-            display: block;
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-item .value {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-
-        .info-item input,
-        .info-item select,
-        .info-item textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--medium-gray);
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        .info-item input:focus,
-        .info-item select:focus,
-        .info-item textarea:focus {
-            outline: none;
-            border-color: var(--primary-teal);
-        }
-
-        /* Buttons */
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
@@ -254,98 +74,149 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            background: var(--primary-green);
             color: white;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.4);
+            background: var(--dark-green);
         }
 
         .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
             background: var(--medium-gray);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: var(--border-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
             color: var(--text-primary);
         }
 
-        .btn-secondary:hover {
-            background: #D1D5DB;
-        }
-
-        .btn-danger {
-            background: var(--danger-red);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #DC2626;
-        }
-
-        /* Edit Mode */
-        .edit-controls {
+        .header-actions {
             display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
+            gap: 0.5rem;
         }
 
-        .hidden {
-            display: none;
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
         }
 
-        /* Activity Timeline */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .stage-lead { background: #E0F2FE; color: #0369A1; }
+        .stage-qualified { background: #DBEAFE; color: #1E40AF; }
+        .stage-demo-scheduled { background: #E0E7FF; color: #4338CA; }
+        .stage-demo-completed { background: #F3E8FF; color: #7C3AED; }
+        .stage-proposal { background: #FEF3C7; color: #D97706; }
+        .stage-negotiation { background: #FED7AA; color: #C2410C; }
+        .stage-pilot { background: #D1FAE5; color: #047857; }
+        .stage-closed-won { background: #D1FAE5; color: #065F46; }
+        .stage-closed-lost { background: #FEE2E2; color: #991B1B; }
+
         .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0.5rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--medium-gray);
+            margin-top: 1.5rem;
         }
 
         .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-left: 2rem;
+            padding: 1rem;
+            border-left: 3px solid var(--primary-green);
+            margin-bottom: 1rem;
+            background: var(--light-gray);
+            border-radius: 0 8px 8px 0;
         }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -1.5rem;
-            top: 0.25rem;
-            width: 1rem;
-            height: 1rem;
-            border-radius: 50%;
-            background: var(--primary-teal);
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px var(--primary-teal);
-        }
-
-        .timeline-item.activity-call::before { background: #3B82F6; box-shadow: 0 0 0 2px #3B82F6; }
-        .timeline-item.activity-meeting::before { background: #8B5CF6; box-shadow: 0 0 0 2px #8B5CF6; }
-        .timeline-item.activity-email::before { background: #10B981; box-shadow: 0 0 0 2px #10B981; }
-        .timeline-item.activity-note::before { background: #F59E0B; box-shadow: 0 0 0 2px #F59E0B; }
 
         .timeline-header {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
             margin-bottom: 0.5rem;
         }
 
         .timeline-title {
             font-weight: 600;
-            color: var(--charcoal);
+            color: var(--text-primary);
         }
 
         .timeline-date {
@@ -353,68 +224,11 @@
             color: var(--text-secondary);
         }
 
-        .timeline-description {
+        .timeline-content {
             color: var(--text-secondary);
-            margin-top: 0.25rem;
+            font-size: 0.95rem;
         }
 
-        /* Add Activity Form */
-        .add-activity-form {
-            background: var(--light-gray);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--charcoal);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        /* Contact Card */
-        .contact-card {
-            background: var(--light-gray);
-            padding: 1.5rem;
-            border-radius: 8px;
-        }
-
-        .contact-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--charcoal);
-            margin-bottom: 0.5rem;
-        }
-
-        .contact-detail {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
-
-        .contact-detail a {
-            color: var(--primary-teal);
-            text-decoration: none;
-        }
-
-        .contact-detail a:hover {
-            text-decoration: underline;
-        }
-
-        /* Loading State */
         .loading {
             text-align: center;
             padding: 3rem;
@@ -423,7 +237,7 @@
 
         .spinner {
             border: 3px solid var(--medium-gray);
-            border-top: 3px solid var(--primary-teal);
+            border-top: 3px solid var(--primary-green);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -436,29 +250,106 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Responsive */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem 2rem;
+            border-bottom: 2px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.75rem;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 2rem 2rem 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
         @media (max-width: 1024px) {
             .content-grid {
                 grid-template-columns: 1fr;
             }
 
-            .info-grid {
+            .detail-grid {
                 grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem;
-            }
-
-            .opp-header {
-                flex-direction: column;
-            }
-
-            .opp-value {
-                text-align: left;
-                margin-top: 1rem;
             }
 
             .form-row {
@@ -468,283 +359,121 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div>
-            <h1>🍀 Clover ERA CRM</h1>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="kanban.html">Kanban</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+            <span id="userInfo" style="color: var(--text-secondary);"></span>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
         </div>
-        <div style="display: flex; gap: 1rem;">
-            <a href="/crm/index.html" class="back-button">← Back to Dashboard</a>
-            <button class="logout-button" onclick="handleLogout()">Logout</button>
-        </div>
-    </div>
+    </nav>
 
-    <!-- Main Container -->
     <div class="container">
         <!-- Loading State -->
-        <div id="loadingState" class="card loading">
+        <div id="loadingState" class="loading">
             <div class="spinner"></div>
-            <p>Loading opportunity details...</p>
+            <p>Loading opportunity...</p>
         </div>
 
-        <!-- Content (hidden until loaded) -->
-        <div id="mainContent" class="hidden">
-            <!-- Breadcrumb -->
-            <div class="breadcrumb">
-                <a href="/crm/index.html">Dashboard</a> / <a href="/crm/index.html">Opportunities</a> / <span id="breadcrumbTitle">Opportunity</span>
-            </div>
-
-            <!-- Opportunity Header -->
-            <div class="card">
-                <div class="opp-header">
-                    <div class="opp-title-section">
-                        <h1 id="oppTitle">Loading...</h1>
-                        <p class="opp-company">
-                            <span id="oppCompany"></span> ·
-                            <span id="oppContact"></span>
-                        </p>
-                        <span id="oppStage" class="stage-badge">Lead</span>
-                    </div>
-                    <div class="opp-value">
-                        <div class="amount" id="oppValue">$0</div>
-                        <div class="label">Annual Contract Value</div>
-                        <div class="label" style="margin-top: 0.5rem;">
-                            <span id="oppMRR">$0</span>/month · <span id="oppManagers">0</span> managers
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div style="display: flex; gap: 1rem;">
-                    <button class="btn btn-primary" onclick="toggleEditMode()">✏️ Edit Details</button>
-                    <button class="btn btn-secondary" onclick="toggleActivityForm()">+ Add Activity</button>
+        <!-- Content -->
+        <div id="content" style="display: none;">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 id="opportunityTitle">Opportunity Details</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showEditModal()">Edit Opportunity</button>
+                    <button class="btn" style="background: var(--danger-red); color: white;" onclick="deleteOpportunity()">Delete</button>
                 </div>
             </div>
 
-            <!-- Content Grid -->
             <div class="content-grid">
-                <!-- Left Column -->
+                <!-- Main Content -->
                 <div>
                     <!-- Opportunity Details -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Opportunity Details</h2>
-                        </div>
-
-                        <div id="viewMode">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <label>Stage</label>
-                                    <div class="value" id="viewStage">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <label>Probability</label>
-                                    <div class="value" id="viewProbability">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <label>Expected Close Date</label>
-                                    <div class="value" id="viewCloseDate">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <label>Source</label>
-                                    <div class="value" id="viewSource">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <label>Managers Count</label>
-                                    <div class="value" id="viewManagers">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <label>Employees Covered</label>
-                                    <div class="value" id="viewEmployees">-</div>
-                                </div>
+                    <div class="section">
+                        <h2 class="section-header">Opportunity Information</h2>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Stage</div>
+                                <div class="detail-value" id="oppStage"></div>
                             </div>
-
-                            <div class="info-item" style="margin-top: 1rem;">
-                                <label>Next Step</label>
-                                <div class="value" id="viewNextStep">-</div>
+                            <div class="detail-item">
+                                <div class="detail-label">Value</div>
+                                <div class="detail-value" id="oppValue"></div>
                             </div>
-
-                            <div class="info-item" style="margin-top: 1rem;">
-                                <label>Notes</label>
-                                <div class="value" id="viewNotes">-</div>
+                            <div class="detail-item">
+                                <div class="detail-label">Probability</div>
+                                <div class="detail-value" id="oppProbability"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Expected Close Date</div>
+                                <div class="detail-value" id="oppCloseDate"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Manager Count</div>
+                                <div class="detail-value" id="oppManagers"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">MRR</div>
+                                <div class="detail-value" id="oppMRR"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Source</div>
+                                <div class="detail-value" id="oppSource"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Owner</div>
+                                <div class="detail-value" id="oppOwner"></div>
                             </div>
                         </div>
-
-                        <div id="editMode" class="hidden">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <label>Stage</label>
-                                    <select id="editStage">
-                                        <option value="lead">Lead</option>
-                                        <option value="qualified">Qualified</option>
-                                        <option value="demo-scheduled">Demo Scheduled</option>
-                                        <option value="demo-completed">Demo Completed</option>
-                                        <option value="proposal">Proposal</option>
-                                        <option value="negotiation">Negotiation</option>
-                                        <option value="pilot">Pilot</option>
-                                        <option value="closed-won">Closed Won</option>
-                                        <option value="closed-lost">Closed Lost</option>
-                                    </select>
-                                </div>
-                                <div class="info-item">
-                                    <label>Probability (%)</label>
-                                    <input type="number" id="editProbability" min="0" max="100">
-                                </div>
-                                <div class="info-item">
-                                    <label>Expected Close Date</label>
-                                    <input type="date" id="editCloseDate">
-                                </div>
-                                <div class="info-item">
-                                    <label>Source</label>
-                                    <select id="editSource">
-                                        <option value="partner">Partner</option>
-                                        <option value="direct">Direct</option>
-                                        <option value="referral">Referral</option>
-                                        <option value="inbound">Inbound</option>
-                                        <option value="outbound">Outbound</option>
-                                        <option value="event">Event</option>
-                                        <option value="website">Website</option>
-                                    </select>
-                                </div>
-                                <div class="info-item">
-                                    <label>Managers Count</label>
-                                    <input type="number" id="editManagers" min="1">
-                                </div>
-                                <div class="info-item">
-                                    <label>Employees Covered</label>
-                                    <input type="number" id="editEmployees" min="0">
-                                </div>
-                                <div class="info-item">
-                                    <label>Annual Contract Value ($)</label>
-                                    <input type="number" id="editValue" min="0">
-                                </div>
-                                <div class="info-item">
-                                    <label>Monthly Recurring Revenue ($)</label>
-                                    <input type="number" id="editMRR" min="0">
-                                </div>
-                            </div>
-
-                            <div class="info-item" style="margin-top: 1rem;">
-                                <label>Next Step</label>
-                                <input type="text" id="editNextStep" placeholder="What's the next action?">
-                            </div>
-
-                            <div class="info-item" style="margin-top: 1rem;">
-                                <label>Notes</label>
-                                <textarea id="editNotes" rows="4" placeholder="Internal notes about this opportunity..."></textarea>
-                            </div>
-
-                            <div class="edit-controls">
-                                <button class="btn btn-primary" onclick="saveChanges()">💾 Save Changes</button>
-                                <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
-                            </div>
+                        <div class="detail-item" style="margin-top: 1.5rem;">
+                            <div class="detail-label">Next Step</div>
+                            <div class="detail-value" id="oppNextStep"></div>
+                        </div>
+                        <div class="detail-item" style="margin-top: 1.5rem;">
+                            <div class="detail-label">Notes</div>
+                            <div class="detail-value" id="oppNotes" style="white-space: pre-wrap;"></div>
                         </div>
                     </div>
 
                     <!-- Activity Timeline -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Activity Timeline</h2>
-                        </div>
-
-                        <!-- Add Activity Form (hidden by default) -->
-                        <div id="activityForm" class="add-activity-form hidden">
-                            <h3 style="margin-bottom: 1rem;">Add New Activity</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Activity Type</label>
-                                    <select id="activityType">
-                                        <option value="call">Phone Call</option>
-                                        <option value="email">Email</option>
-                                        <option value="meeting">Meeting</option>
-                                        <option value="demo">Demo</option>
-                                        <option value="proposal-sent">Proposal Sent</option>
-                                        <option value="note">Note</option>
-                                        <option value="task">Task</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Date</label>
-                                    <input type="datetime-local" id="activityDate">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Subject</label>
-                                <input type="text" id="activitySubject" placeholder="Brief description">
-                            </div>
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea id="activityDescription" rows="3" placeholder="Activity details..."></textarea>
-                            </div>
-                            <div style="display: flex; gap: 1rem;">
-                                <button class="btn btn-primary" onclick="saveActivity()">Add Activity</button>
-                                <button class="btn btn-secondary" onclick="toggleActivityForm()">Cancel</button>
-                            </div>
-                        </div>
-
-                        <!-- Timeline -->
-                        <div id="timelineContainer" class="timeline">
-                            <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
-                                No activities yet. Add your first activity above.
-                            </p>
+                    <div class="section">
+                        <h2 class="section-header">Activity Timeline (<span id="activityCount">0</span>)</h2>
+                        <button class="btn btn-secondary" onclick="showAddActivityModal()" style="margin-bottom: 1rem;">+ Add Activity</button>
+                        <div id="activityTimeline" class="timeline">
+                            <p style="color: var(--text-secondary);">No activities yet.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column -->
+                <!-- Sidebar -->
                 <div>
-                    <!-- Contact Information -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Primary Contact</h2>
-                        </div>
-                        <div id="contactInfo" class="contact-card">
-                            <div class="contact-name" id="contactName">-</div>
-                            <div class="contact-detail" id="contactTitle">-</div>
-                            <div class="contact-detail">
-                                📧 <a href="#" id="contactEmail">-</a>
+                    <!-- Company Info -->
+                    <div class="section">
+                        <h2 class="section-header">Company</h2>
+                        <div id="companyInfo">
+                            <div class="detail-item" style="margin-bottom: 1rem;">
+                                <div class="detail-label">Company Name</div>
+                                <div class="detail-value" id="companyName"></div>
                             </div>
-                            <div class="contact-detail">
-                                📞 <span id="contactPhone">-</span>
+                            <div class="detail-item" style="margin-bottom: 1rem;">
+                                <div class="detail-label">Industry</div>
+                                <div class="detail-value" id="companyIndustry"></div>
                             </div>
+                            <button class="btn btn-secondary" onclick="viewCompany()" style="width: 100%;">View Company Details</button>
                         </div>
                     </div>
 
-                    <!-- Company Information -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Company Info</h2>
-                        </div>
-                        <div class="info-item">
-                            <label>Industry</label>
-                            <div class="value" id="companyIndustry">-</div>
-                        </div>
-                        <div class="info-item" style="margin-top: 1rem;">
-                            <label>Employees</label>
-                            <div class="value" id="companyEmployees">-</div>
-                        </div>
-                        <div class="info-item" style="margin-top: 1rem;">
-                            <label>Website</label>
-                            <div class="value"><a href="#" id="companyWebsite" target="_blank">-</a></div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Stats -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>Quick Stats</h2>
-                        </div>
-                        <div class="info-item">
-                            <label>Days in Pipeline</label>
-                            <div class="value" id="daysInPipeline">-</div>
-                        </div>
-                        <div class="info-item" style="margin-top: 1rem;">
-                            <label>Last Activity</label>
-                            <div class="value" id="lastActivity">-</div>
-                        </div>
-                        <div class="info-item" style="margin-top: 1rem;">
-                            <label>Total Activities</label>
-                            <div class="value" id="totalActivities">-</div>
+                    <!-- Contact Info -->
+                    <div class="section">
+                        <h2 class="section-header">Primary Contact</h2>
+                        <div id="contactInfo">
+                            <p style="color: var(--text-secondary);">No contact assigned</p>
                         </div>
                     </div>
                 </div>
@@ -752,20 +481,143 @@
         </div>
     </div>
 
+    <!-- Edit Opportunity Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Opportunity</h2>
+                <button class="modal-close" onclick="hideEditModal()">&times;</button>
+            </div>
+            <form id="editForm" onsubmit="saveOpportunity(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Opportunity Title</label>
+                        <input type="text" id="editTitle" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stage</label>
+                            <select id="editStage" required>
+                                <option value="lead">Lead</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="demo-scheduled">Demo Scheduled</option>
+                                <option value="demo-completed">Demo Completed</option>
+                                <option value="proposal">Proposal</option>
+                                <option value="negotiation">Negotiation</option>
+                                <option value="pilot">Pilot</option>
+                                <option value="closed-won">Closed Won</option>
+                                <option value="closed-lost">Closed Lost</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Probability (%)</label>
+                            <input type="number" id="editProbability" min="0" max="100">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expected Close Date</label>
+                            <input type="date" id="editCloseDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Source</label>
+                            <select id="editSource">
+                                <option value="inbound">Inbound</option>
+                                <option value="outbound">Outbound</option>
+                                <option value="partner">Partner</option>
+                                <option value="referral">Referral</option>
+                                <option value="event">Event</option>
+                                <option value="website">Website</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Manager Count</label>
+                            <input type="number" id="editManagers" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>MRR</label>
+                            <input type="number" id="editMRR">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Next Step</label>
+                        <input type="text" id="editNextStep">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="editNotes" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Activity Modal -->
+    <div id="activityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Activity</h2>
+                <button class="modal-close" onclick="hideAddActivityModal()">&times;</button>
+            </div>
+            <form id="activityForm" onsubmit="saveActivity(event)">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="activityType" required>
+                                <option value="call">Call</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="email">Email</option>
+                                <option value="demo">Demo</option>
+                                <option value="note">Note</option>
+                                <option value="task">Task</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" id="activityDueDate">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" id="activitySubject" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="activityDescription" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideAddActivityModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // ===== SUPABASE CONFIGURATION =====
         const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
-
-        // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentOpportunity = null;
+        let currentUserId = null;
         let opportunityId = null;
-
-        // Get opportunity ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        opportunityId = urlParams.get('id');
 
         // Check authentication
         async function checkAuth() {
@@ -774,305 +626,44 @@
                 window.location.href = '/crm/login.html';
                 return false;
             }
+
+            currentUserId = session.user.id;
+            document.getElementById('userInfo').textContent = session.user.email;
+
+            // Check if user is admin
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (profile && profile.role === 'admin') {
+                document.getElementById('adminLink').style.display = 'inline-block';
+            }
+
             return true;
         }
 
         // Logout
-        async function handleLogout() {
+        async function logout() {
             await supabase.auth.signOut();
             window.location.href = '/crm/login.html';
         }
 
-        // Load opportunity data
-        async function loadOpportunity() {
-            if (!opportunityId) {
-                alert('No opportunity ID provided');
-                window.location.href = '/crm/index.html';
-                return;
-            }
-
-            try {
-                const { data, error } = await supabase
-                    .from('opportunities')
-                    .select(`
-                        *,
-                        companies (id, name, industry, employee_count, website),
-                        contacts (id, first_name, last_name, email, phone, title)
-                    `)
-                    .eq('id', opportunityId)
-                    .single();
-
-                if (error) throw error;
-
-                currentOpportunity = data;
-                renderOpportunity();
-                loadActivities();
-
-                // Hide loading, show content
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('mainContent').classList.remove('hidden');
-
-            } catch (error) {
-                console.error('Error loading opportunity:', error);
-                alert('Failed to load opportunity details');
-                window.location.href = '/crm/index.html';
-            }
+        // Format currency
+        function formatCurrency(amount) {
+            if (!amount) return '$0';
+            return '$' + amount.toLocaleString();
         }
 
-        // Render opportunity details
-        function renderOpportunity() {
-            const opp = currentOpportunity;
-            const company = opp.companies || {};
-            const contact = opp.contacts || {};
-
-            // Header
-            document.getElementById('oppTitle').textContent = opp.title;
-            document.getElementById('breadcrumbTitle').textContent = opp.title;
-            document.getElementById('oppCompany').textContent = company.name || 'Unknown Company';
-            document.getElementById('oppContact').textContent = contact.first_name ? `${contact.first_name} ${contact.last_name}` : 'No contact';
-
-            const stageClass = 'stage-' + (opp.stage || 'lead');
-            const stageName = formatStage(opp.stage);
-            document.getElementById('oppStage').className = 'stage-badge ' + stageClass;
-            document.getElementById('oppStage').textContent = stageName;
-
-            document.getElementById('oppValue').textContent = formatCurrency(opp.annual_contract_value || opp.value || 0);
-            document.getElementById('oppMRR').textContent = formatCurrency(opp.monthly_recurring_revenue || 0);
-            document.getElementById('oppManagers').textContent = opp.managers_count || 0;
-
-            // View Mode
-            document.getElementById('viewStage').textContent = stageName;
-            document.getElementById('viewProbability').textContent = (opp.probability || 0) + '%';
-            document.getElementById('viewCloseDate').textContent = opp.expected_close_date ? formatDate(opp.expected_close_date) : 'Not set';
-            document.getElementById('viewSource').textContent = formatSource(opp.source);
-            document.getElementById('viewManagers').textContent = opp.managers_count || '-';
-            document.getElementById('viewEmployees').textContent = opp.employees_covered || '-';
-            document.getElementById('viewNextStep').textContent = opp.next_step || '-';
-            document.getElementById('viewNotes').textContent = opp.notes || '-';
-
-            // Edit Mode
-            document.getElementById('editStage').value = opp.stage || 'lead';
-            document.getElementById('editProbability').value = opp.probability || 0;
-            document.getElementById('editCloseDate').value = opp.expected_close_date || '';
-            document.getElementById('editSource').value = opp.source || 'inbound';
-            document.getElementById('editManagers').value = opp.managers_count || '';
-            document.getElementById('editEmployees').value = opp.employees_covered || '';
-            document.getElementById('editValue').value = opp.annual_contract_value || opp.value || '';
-            document.getElementById('editMRR').value = opp.monthly_recurring_revenue || '';
-            document.getElementById('editNextStep').value = opp.next_step || '';
-            document.getElementById('editNotes').value = opp.notes || '';
-
-            // Contact Info
-            if (contact.first_name) {
-                document.getElementById('contactName').textContent = `${contact.first_name} ${contact.last_name}`;
-                document.getElementById('contactTitle').textContent = contact.title || 'No title';
-                document.getElementById('contactEmail').textContent = contact.email || 'No email';
-                document.getElementById('contactEmail').href = `mailto:${contact.email}`;
-                document.getElementById('contactPhone').textContent = contact.phone || 'No phone';
-            }
-
-            // Company Info
-            document.getElementById('companyIndustry').textContent = company.industry || '-';
-            document.getElementById('companyEmployees').textContent = company.employee_count || '-';
-            if (company.website) {
-                document.getElementById('companyWebsite').textContent = company.website;
-                document.getElementById('companyWebsite').href = company.website;
-            }
-
-            // Quick Stats
-            const createdDate = new Date(opp.created_at);
-            const daysInPipeline = Math.floor((new Date() - createdDate) / (1000 * 60 * 60 * 24));
-            document.getElementById('daysInPipeline').textContent = daysInPipeline + ' days';
-        }
-
-        // Load activities
-        async function loadActivities() {
-            try {
-                const { data, error } = await supabase
-                    .from('activities')
-                    .select('*')
-                    .eq('opportunity_id', opportunityId)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                renderActivities(data);
-
-                // Update stats
-                document.getElementById('totalActivities').textContent = data.length;
-                if (data.length > 0) {
-                    const lastActivity = data[0];
-                    document.getElementById('lastActivity').textContent = formatRelativeTime(lastActivity.created_at);
-                } else {
-                    document.getElementById('lastActivity').textContent = 'No activities yet';
-                }
-
-            } catch (error) {
-                console.error('Error loading activities:', error);
-            }
-        }
-
-        // Render activities
-        function renderActivities(activities) {
-            const container = document.getElementById('timelineContainer');
-
-            if (!activities || activities.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No activities yet. Add your first activity above.</p>';
-                return;
-            }
-
-            container.innerHTML = activities.map(activity => `
-                <div class="timeline-item activity-${activity.type}">
-                    <div class="timeline-header">
-                        <div class="timeline-title">${activity.subject}</div>
-                        <div class="timeline-date">${formatRelativeTime(activity.created_at)}</div>
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
-                        ${formatActivityType(activity.type)}
-                    </div>
-                    ${activity.description ? `<div class="timeline-description">${activity.description}</div>` : ''}
-                </div>
-            `).join('');
-        }
-
-        // Toggle edit mode
-        function toggleEditMode() {
-            document.getElementById('viewMode').classList.toggle('hidden');
-            document.getElementById('editMode').classList.toggle('hidden');
-        }
-
-        // Cancel edit
-        function cancelEdit() {
-            toggleEditMode();
-            // Reset values
-            renderOpportunity();
-        }
-
-        // Save changes
-        async function saveChanges() {
-            const updates = {
-                stage: document.getElementById('editStage').value,
-                probability: parseInt(document.getElementById('editProbability').value),
-                expected_close_date: document.getElementById('editCloseDate').value || null,
-                source: document.getElementById('editSource').value,
-                managers_count: parseInt(document.getElementById('editManagers').value) || null,
-                employees_covered: parseInt(document.getElementById('editEmployees').value) || null,
-                annual_contract_value: parseInt(document.getElementById('editValue').value) || null,
-                value: parseInt(document.getElementById('editValue').value) || null,
-                monthly_recurring_revenue: parseInt(document.getElementById('editMRR').value) || null,
-                next_step: document.getElementById('editNextStep').value,
-                notes: document.getElementById('editNotes').value,
-                updated_at: new Date().toISOString()
-            };
-
-            try {
-                const { error } = await supabase
-                    .from('opportunities')
-                    .update(updates)
-                    .eq('id', opportunityId);
-
-                if (error) throw error;
-
-                // Reload opportunity
-                await loadOpportunity();
-                toggleEditMode();
-
-                alert('Changes saved successfully!');
-
-            } catch (error) {
-                console.error('Error saving changes:', error);
-                alert('Failed to save changes');
-            }
-        }
-
-        // Toggle activity form
-        function toggleActivityForm() {
-            const form = document.getElementById('activityForm');
-            form.classList.toggle('hidden');
-
-            if (!form.classList.contains('hidden')) {
-                // Set default date to now
-                const now = new Date();
-                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-                document.getElementById('activityDate').value = now.toISOString().slice(0, 16);
-            }
-        }
-
-        // Save activity
-        async function saveActivity() {
-            const type = document.getElementById('activityType').value;
-            const subject = document.getElementById('activitySubject').value;
-            const description = document.getElementById('activityDescription').value;
-            const activityDate = document.getElementById('activityDate').value;
-
-            if (!subject) {
-                alert('Please enter a subject');
-                return;
-            }
-
-            try {
-                const { error } = await supabase
-                    .from('activities')
-                    .insert([{
-                        opportunity_id: opportunityId,
-                        company_id: currentOpportunity.company_id,
-                        contact_id: currentOpportunity.contact_id,
-                        type: type,
-                        subject: subject,
-                        description: description,
-                        completed: true,
-                        completed_at: activityDate ? new Date(activityDate).toISOString() : new Date().toISOString(),
-                        created_at: new Date().toISOString()
-                    }]);
-
-                if (error) throw error;
-
-                // Clear form
-                document.getElementById('activitySubject').value = '';
-                document.getElementById('activityDescription').value = '';
-                toggleActivityForm();
-
-                // Reload activities
-                await loadActivities();
-
-            } catch (error) {
-                console.error('Error saving activity:', error);
-                alert('Failed to save activity');
-            }
-        }
-
-        // Formatting functions
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 0
-            }).format(value);
-        }
-
+        // Format date
         function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-
-        function formatRelativeTime(dateString) {
+            if (!dateString) return 'Not set';
             const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMs / 3600000);
-            const diffDays = Math.floor(diffMs / 86400000);
-
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
-            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-            return formatDate(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
+        // Format stage
         function formatStage(stage) {
             const stages = {
                 'lead': 'Lead',
@@ -1088,26 +679,292 @@
             return stages[stage] || stage;
         }
 
-        function formatSource(source) {
-            if (!source) return '-';
-            return source.charAt(0).toUpperCase() + source.slice(1);
+        // Load opportunity
+        async function loadOpportunity() {
+            try {
+                const { data: opp, error } = await supabase
+                    .from('opportunities')
+                    .select(`
+                        *,
+                        companies (id, name, industry),
+                        contacts (id, first_name, last_name, email, phone, title)
+                    `)
+                    .eq('id', opportunityId)
+                    .single();
+
+                if (error) throw error;
+
+                currentOpportunity = opp;
+
+                // Get owner details
+                if (opp.owner_id) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('full_name, email')
+                        .eq('id', opp.owner_id)
+                        .single();
+                    opp.owner = profile;
+                }
+
+                renderOpportunity(opp);
+                await loadActivities();
+
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading opportunity:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <p style="color: var(--danger-red);">Error loading opportunity: ${error.message}</p>
+                `;
+            }
         }
 
-        function formatActivityType(type) {
-            const types = {
-                'call': '📞 Phone Call',
-                'email': '📧 Email',
-                'meeting': '👥 Meeting',
-                'demo': '🖥️ Demo',
-                'proposal-sent': '📄 Proposal Sent',
-                'note': '📝 Note',
-                'task': '✅ Task'
+        // Render opportunity
+        function renderOpportunity(opp) {
+            document.getElementById('opportunityTitle').textContent = opp.title;
+
+            const stageBadge = `<span class="stage-badge stage-${opp.stage}">${formatStage(opp.stage)}</span>`;
+            document.getElementById('oppStage').innerHTML = stageBadge;
+
+            document.getElementById('oppValue').textContent = formatCurrency(opp.value || opp.annual_contract_value);
+            document.getElementById('oppProbability').textContent = (opp.probability || 0) + '%';
+            document.getElementById('oppCloseDate').textContent = formatDate(opp.expected_close_date);
+            document.getElementById('oppManagers').textContent = opp.managers_count || 'Not set';
+            document.getElementById('oppMRR').textContent = formatCurrency(opp.monthly_recurring_revenue);
+            document.getElementById('oppSource').textContent = (opp.source || 'Not set').charAt(0).toUpperCase() + (opp.source || 'Not set').slice(1);
+            document.getElementById('oppOwner').textContent = opp.owner?.full_name || opp.owner?.email || 'Unassigned';
+            document.getElementById('oppNextStep').textContent = opp.next_step || 'No next step defined';
+            document.getElementById('oppNotes').textContent = opp.notes || 'No notes';
+
+            // Company info
+            if (opp.companies) {
+                document.getElementById('companyName').textContent = opp.companies.name;
+                document.getElementById('companyIndustry').textContent = opp.companies.industry || 'Not specified';
+            }
+
+            // Contact info
+            if (opp.contacts) {
+                const contact = opp.contacts;
+                document.getElementById('contactInfo').innerHTML = `
+                    <div class="detail-item" style="margin-bottom: 0.5rem;">
+                        <div class="detail-label">Name</div>
+                        <div class="detail-value">${contact.first_name} ${contact.last_name}</div>
+                    </div>
+                    ${contact.title ? `
+                        <div class="detail-item" style="margin-bottom: 0.5rem;">
+                            <div class="detail-label">Title</div>
+                            <div class="detail-value">${contact.title}</div>
+                        </div>
+                    ` : ''}
+                    ${contact.email ? `
+                        <div class="detail-item" style="margin-bottom: 0.5rem;">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value">${contact.email}</div>
+                        </div>
+                    ` : ''}
+                    ${contact.phone ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value">${contact.phone}</div>
+                        </div>
+                    ` : ''}
+                `;
+            }
+        }
+
+        // Load activities
+        async function loadActivities() {
+            try {
+                const { data: activities, error } = await supabase
+                    .from('activities')
+                    .select('*')
+                    .eq('opportunity_id', opportunityId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                document.getElementById('activityCount').textContent = activities.length;
+
+                if (activities.length > 0) {
+                    document.getElementById('activityTimeline').innerHTML = activities.map(activity => `
+                        <div class="timeline-item">
+                            <div class="timeline-header">
+                                <span class="timeline-title">${activity.type.toUpperCase()}: ${activity.subject}</span>
+                                <span class="timeline-date">${formatDate(activity.created_at)}</span>
+                            </div>
+                            ${activity.description ? `<div class="timeline-content">${activity.description}</div>` : ''}
+                            ${activity.due_date ? `<div class="timeline-content" style="margin-top: 0.5rem;"><strong>Due:</strong> ${formatDate(activity.due_date)}</div>` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('activityTimeline').innerHTML = '<p style="color: var(--text-secondary);">No activities yet.</p>';
+                }
+
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+        }
+
+        // Show edit modal
+        function showEditModal() {
+            if (!currentOpportunity) return;
+
+            document.getElementById('editTitle').value = currentOpportunity.title;
+            document.getElementById('editStage').value = currentOpportunity.stage;
+            document.getElementById('editProbability').value = currentOpportunity.probability || 0;
+            document.getElementById('editCloseDate').value = currentOpportunity.expected_close_date || '';
+            document.getElementById('editSource').value = currentOpportunity.source || 'inbound';
+            document.getElementById('editManagers').value = currentOpportunity.managers_count || '';
+            document.getElementById('editMRR').value = currentOpportunity.monthly_recurring_revenue || '';
+            document.getElementById('editNextStep').value = currentOpportunity.next_step || '';
+            document.getElementById('editNotes').value = currentOpportunity.notes || '';
+
+            document.getElementById('editModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Save opportunity
+        async function saveOpportunity(event) {
+            event.preventDefault();
+
+            const updates = {
+                title: document.getElementById('editTitle').value,
+                stage: document.getElementById('editStage').value,
+                probability: parseInt(document.getElementById('editProbability').value) || 0,
+                expected_close_date: document.getElementById('editCloseDate').value || null,
+                source: document.getElementById('editSource').value,
+                managers_count: parseInt(document.getElementById('editManagers').value) || null,
+                monthly_recurring_revenue: parseInt(document.getElementById('editMRR').value) || null,
+                next_step: document.getElementById('editNextStep').value,
+                notes: document.getElementById('editNotes').value
             };
-            return types[type] || type;
+
+            // Calculate ACV from MRR
+            if (updates.monthly_recurring_revenue) {
+                updates.annual_contract_value = updates.monthly_recurring_revenue * 12;
+                updates.value = updates.annual_contract_value;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('opportunities')
+                    .update(updates)
+                    .eq('id', opportunityId);
+
+                if (error) throw error;
+
+                hideEditModal();
+                await loadOpportunity();
+                alert('Opportunity updated successfully!');
+
+            } catch (error) {
+                console.error('Error updating opportunity:', error);
+                alert('Failed to update opportunity: ' + error.message);
+            }
+        }
+
+        // Delete opportunity
+        async function deleteOpportunity() {
+            if (!currentOpportunity) return;
+
+            const confirmMessage = `Are you sure you want to delete "${currentOpportunity.title}"?\n\nThis will also delete all associated activities.\n\nThis action cannot be undone.`;
+
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            try {
+                // Delete activities first
+                await supabase
+                    .from('activities')
+                    .delete()
+                    .eq('opportunity_id', opportunityId);
+
+                // Delete opportunity
+                const { error } = await supabase
+                    .from('opportunities')
+                    .delete()
+                    .eq('id', opportunityId);
+
+                if (error) throw error;
+
+                alert('Opportunity deleted successfully!');
+                window.location.href = '/crm/index.html';
+
+            } catch (error) {
+                console.error('Error deleting opportunity:', error);
+                alert('Failed to delete opportunity: ' + error.message);
+            }
+        }
+
+        // Show add activity modal
+        function showAddActivityModal() {
+            document.getElementById('activityForm').reset();
+            document.getElementById('activityModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideAddActivityModal() {
+            document.getElementById('activityModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Save activity
+        async function saveActivity(event) {
+            event.preventDefault();
+
+            const activity = {
+                opportunity_id: opportunityId,
+                company_id: currentOpportunity.company_id,
+                type: document.getElementById('activityType').value,
+                subject: document.getElementById('activitySubject').value,
+                description: document.getElementById('activityDescription').value,
+                due_date: document.getElementById('activityDueDate').value || null,
+                owner_id: currentUserId,
+                completed: false
+            };
+
+            try {
+                const { error } = await supabase
+                    .from('activities')
+                    .insert([activity]);
+
+                if (error) throw error;
+
+                hideAddActivityModal();
+                await loadActivities();
+                alert('Activity added successfully!');
+
+            } catch (error) {
+                console.error('Error adding activity:', error);
+                alert('Failed to add activity: ' + error.message);
+            }
+        }
+
+        // View company
+        function viewCompany() {
+            if (currentOpportunity && currentOpportunity.company_id) {
+                window.location.href = `/crm/companies.html#${currentOpportunity.company_id}`;
+            }
         }
 
         // Initialize
         async function init() {
+            // Get opportunity ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            opportunityId = urlParams.get('id');
+
+            if (!opportunityId) {
+                document.getElementById('loadingState').innerHTML = '<p style="color: var(--danger-red);">No opportunity ID provided</p>';
+                return;
+            }
+
             const authenticated = await checkAuth();
             if (authenticated) {
                 await loadOpportunity();

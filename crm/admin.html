@@ -502,6 +502,7 @@
                                         <option value="manager" ${profile.role === 'manager' ? 'selected' : ''}>Manager</option>
                                         <option value="admin" ${profile.role === 'admin' ? 'selected' : ''}>Admin</option>
                                     </select>
+                                    <button class="btn btn-danger btn-small" onclick="deleteUser('${profile.id}', '${profile.email}')">Delete</button>
                                 </div>
                             </td>
                         </tr>
@@ -587,6 +588,60 @@
                 } else {
                     alert('Error inviting user: ' + error.message);
                 }
+            }
+        }
+
+        // Delete user
+        async function deleteUser(userId, userEmail) {
+            if (userId === currentUser.id) {
+                alert('You cannot delete your own account while logged in.');
+                return;
+            }
+
+            const confirmMessage = `Are you sure you want to delete user "${userEmail}"?\n\nThis will delete:\n- The user's profile\n- All opportunities owned by this user will become unassigned\n- All activities owned by this user will become unassigned\n\nThis action cannot be undone.`;
+
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            try {
+                // Update opportunities to remove owner
+                await supabase
+                    .from('opportunities')
+                    .update({ owner_id: null })
+                    .eq('owner_id', userId);
+
+                // Update activities to remove owner
+                await supabase
+                    .from('activities')
+                    .update({ owner_id: null })
+                    .eq('owner_id', userId);
+
+                // Delete the profile
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .delete()
+                    .eq('id', userId);
+
+                if (profileError) throw profileError;
+
+                // Note: Deleting from auth.users requires admin API with service role key
+                // Since we're using anon key, we can only delete the profile
+                // The auth user will remain but won't be able to access CRM without a profile
+
+                try {
+                    await supabase.auth.admin.deleteUser(userId);
+                } catch (authError) {
+                    console.warn('Could not delete auth user (requires admin privileges):', authError);
+                    alert('User profile deleted successfully. Note: The authentication record requires manual deletion through the Supabase dashboard (Authentication section).');
+                }
+
+                await loadUsers();
+                alert('User deleted successfully!');
+
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Error deleting user: ' + error.message);
             }
         }
 
