@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Profile Access</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Testing Profile Access</h1>
+    <div id="results"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function testProfileAccess() {
+            const resultsDiv = document.getElementById('results');
+            let output = '<h2>Test Results:</h2>';
+
+            // Get current session
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+            output += '<h3>1. Session Check:</h3>';
+            if (sessionError) {
+                output += `<p style="color: red;">Session Error: ${sessionError.message}</p>`;
+            } else if (!session) {
+                output += '<p style="color: orange;">No active session. Please log in first.</p>';
+                output += '<p><a href="login.html">Go to Login</a></p>';
+            } else {
+                output += `<p style="color: green;">✓ Session found</p>`;
+                output += `<p>User ID: ${session.user.id}</p>`;
+                output += `<p>Email: ${session.user.email}</p>`;
+
+                // Try to query profile
+                output += '<h3>2. Profile Query Test:</h3>';
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (profileError) {
+                    output += `<p style="color: red;">Profile Error: ${profileError.message}</p>`;
+                    output += `<p>Error Code: ${profileError.code}</p>`;
+                    output += `<p>Error Details: ${JSON.stringify(profileError.details)}</p>`;
+                } else if (!profile) {
+                    output += '<p style="color: orange;">No profile found for this user</p>';
+                } else {
+                    output += `<p style="color: green;">✓ Profile found!</p>`;
+                    output += `<pre>${JSON.stringify(profile, null, 2)}</pre>`;
+
+                    if (profile.role === 'admin') {
+                        output += '<p style="color: green; font-weight: bold;">✓ You are an ADMIN!</p>';
+                    } else {
+                        output += `<p style="color: orange;">Your role is: ${profile.role}</p>`;
+                    }
+                }
+
+                // Try to query all profiles
+                output += '<h3>3. All Profiles Query Test:</h3>';
+                const { data: allProfiles, error: allProfilesError } = await supabase
+                    .from('profiles')
+                    .select('id, email, role');
+
+                if (allProfilesError) {
+                    output += `<p style="color: red;">Error: ${allProfilesError.message}</p>`;
+                } else {
+                    output += `<p style="color: green;">✓ Found ${allProfiles.length} profile(s)</p>`;
+                    output += `<pre>${JSON.stringify(allProfiles, null, 2)}</pre>`;
+                }
+            }
+
+            resultsDiv.innerHTML = output;
+        }
+
+        testProfileAccess();
+    </script>
+</body>
+</html>
