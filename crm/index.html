@@ -229,7 +229,7 @@
         }
 
         .opportunity-card {
-            background: white;
+            background: #f0fdf4;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 0.75rem;
@@ -1230,7 +1230,7 @@
                     document.getElementById('overdueTasksList').innerHTML = `
                         <h3 style="color: var(--danger-red); margin-bottom: 1rem;">⚠️ Overdue (${overdue.length})</h3>
                         ${overdue.map(task => `
-                            <div style="padding: 1rem; border-left: 4px solid var(--danger-red); background: #FEE2E2; border-radius: 8px; margin-bottom: 0.75rem;">
+                            <div onclick="window.location.href='/crm/activities.html?id=${task.id}'" style="padding: 1rem; border-left: 4px solid var(--danger-red); background: #FEE2E2; border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow=''; this.style.transform='';">
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
                                     ${task.company?.name || 'No company'} • Due: ${new Date(task.due_date).toLocaleDateString()}
@@ -1248,7 +1248,7 @@
                             const dueDate = new Date(task.due_date);
                             const isToday = dueDate.toISOString().split('T')[0] === todayStr;
                             return `
-                            <div style="padding: 1rem; border-left: 4px solid var(--warning-orange); background: #FEF3C7; border-radius: 8px; margin-bottom: 0.75rem;">
+                            <div onclick="window.location.href='/crm/activities.html?id=${task.id}'" style="padding: 1rem; border-left: 4px solid var(--warning-orange); background: #FEF3C7; border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow=''; this.style.transform='';">
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
                                     ${task.company?.name || 'No company'} • Due: ${isToday ? 'Today' : 'Tomorrow'} (${dueDate.toLocaleDateString()})
@@ -1263,7 +1263,7 @@
                     document.getElementById('followUpsList').innerHTML = `
                         <h3 style="color: var(--primary-green); margin-bottom: 1rem;">🎯 Follow-Ups Needed</h3>
                         ${opps.map(opp => `
-                            <div style="padding: 1rem; border-left: 4px solid var(--primary-green); background: var(--light-green); border-radius: 8px; margin-bottom: 0.75rem;">
+                            <div onclick="window.location.href='/crm/opportunity.html?id=${opp.id}'" style="padding: 1rem; border-left: 4px solid var(--primary-green); background: var(--light-green); border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow=''; this.style.transform='';">
                                 <div style="font-weight: 600; margin-bottom: 0.25rem;">${opp.title}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
                                     ${opp.company?.name || 'No company'} • ${opp.stage.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} • Close: ${new Date(opp.expected_close_date).toLocaleDateString()}
