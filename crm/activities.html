@@ -709,21 +709,42 @@
             try {
                 const { data, error } = await supabase
                     .from('activities')
-                    .select(`
-                        *,
-                        companies (id, name),
-                        opportunities (id, title)
-                    `)
+                    .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
+
+                // Fetch related company and opportunity details separately
+                if (data && data.length > 0) {
+                    for (let activity of data) {
+                        // Fetch company details
+                        if (activity.company_id) {
+                            const { data: company } = await supabase
+                                .from('companies')
+                                .select('id, name')
+                                .eq('id', activity.company_id)
+                                .single();
+                            activity.companies = company;
+                        }
+
+                        // Fetch opportunity details
+                        if (activity.opportunity_id) {
+                            const { data: opportunity } = await supabase
+                                .from('opportunities')
+                                .select('id, title')
+                                .eq('id', activity.opportunity_id)
+                                .single();
+                            activity.opportunities = opportunity;
+                        }
+                    }
+                }
 
                 allActivities = data || [];
                 filteredActivities = allActivities;
                 renderActivitiesTable();
             } catch (error) {
                 console.error('Error loading activities:', error);
-                alert('Failed to load activities');
+                alert('Failed to load activities: ' + error.message);
             }
         }
 
