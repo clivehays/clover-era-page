@@ -477,10 +477,6 @@
                     *,
                     companies (
                         name
-                    ),
-                    profiles (
-                        full_name,
-                        email
                     )
                 `)
                 .order('created_at', { ascending: false });
@@ -492,6 +488,22 @@
             }
 
             console.log('Loaded opportunities:', data);
+
+            // Fetch owner details separately for each opportunity
+            if (data && data.length > 0) {
+                for (let opp of data) {
+                    if (opp.owner_id) {
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('full_name, email')
+                            .eq('id', opp.owner_id)
+                            .single();
+
+                        opp.owner = profile;
+                    }
+                }
+            }
+
             allOpportunities = data || [];
             filteredOpportunities = [...allOpportunities];
 
@@ -501,7 +513,7 @@
         }
 
         function populateOwnerFilter() {
-            const owners = [...new Set(allOpportunities.map(opp => opp.profiles?.full_name || opp.profiles?.email).filter(Boolean))];
+            const owners = [...new Set(allOpportunities.map(opp => opp.owner?.full_name || opp.owner?.email).filter(Boolean))];
             const select = document.getElementById('filterOwner');
 
             owners.forEach(owner => {
@@ -522,7 +534,7 @@
             currentFilters = { owner, minValue, maxValue, dateFrom, dateTo };
 
             filteredOpportunities = allOpportunities.filter(opp => {
-                if (owner && (opp.profiles?.full_name !== owner && opp.profiles?.email !== owner)) return false;
+                if (owner && (opp.owner?.full_name !== owner && opp.owner?.email !== owner)) return false;
                 if (opp.value < minValue || opp.value > maxValue) return false;
                 if (dateFrom && opp.expected_close_date < dateFrom) return false;
                 if (dateTo && opp.expected_close_date > dateTo) return false;
@@ -616,7 +628,7 @@
             card.addEventListener('dragstart', handleDragStart);
             card.addEventListener('dragend', handleDragEnd);
 
-            const ownerName = opp.profiles?.full_name || opp.profiles?.email || 'Unassigned';
+            const ownerName = opp.owner?.full_name || opp.owner?.email || 'Unassigned';
             const companyName = opp.companies?.name || 'No Company';
 
             card.innerHTML = `
