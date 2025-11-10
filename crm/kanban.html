@@ -294,6 +294,7 @@
         .column-demo { border-top: 4px solid #EC4899; }
         .column-proposal { border-top: 4px solid #F59E0B; }
         .column-negotiation { border-top: 4px solid #10B981; }
+        .column-pilot { border-top: 4px solid #06B6D4; }
         .column-closed-won { border-top: 4px solid #059669; }
         .column-closed-lost { border-top: 4px solid #EF4444; }
 
@@ -431,11 +432,13 @@
         const STAGES = [
             { id: 'lead', name: 'Lead', class: 'column-lead', probability: 0.1 },
             { id: 'qualified', name: 'Qualified', class: 'column-qualified', probability: 0.25 },
-            { id: 'demo', name: 'Demo Scheduled', class: 'column-demo', probability: 0.4 },
+            { id: 'demo-scheduled', name: 'Demo Scheduled', class: 'column-demo', probability: 0.35 },
+            { id: 'demo-completed', name: 'Demo Completed', class: 'column-demo', probability: 0.5 },
             { id: 'proposal', name: 'Proposal Sent', class: 'column-proposal', probability: 0.6 },
-            { id: 'negotiation', name: 'Negotiation', class: 'column-negotiation', probability: 0.8 },
-            { id: 'closed_won', name: 'Closed Won', class: 'column-closed-won', probability: 1 },
-            { id: 'closed_lost', name: 'Closed Lost', class: 'column-closed-lost', probability: 0 }
+            { id: 'negotiation', name: 'Negotiation', class: 'column-negotiation', probability: 0.75 },
+            { id: 'pilot', name: 'Pilot', class: 'column-pilot', probability: 0.85 },
+            { id: 'closed-won', name: 'Closed Won', class: 'column-closed-won', probability: 1 },
+            { id: 'closed-lost', name: 'Closed Lost', class: 'column-closed-lost', probability: 0 }
         ];
 
         let allOpportunities = [];
@@ -467,6 +470,7 @@
         }
 
         async function loadOpportunities() {
+            console.log('Loading opportunities...');
             const { data, error } = await supabase
                 .from('opportunities')
                 .select(`
@@ -483,12 +487,15 @@
 
             if (error) {
                 console.error('Error loading opportunities:', error);
+                alert('Error loading opportunities: ' + error.message);
                 return;
             }
 
+            console.log('Loaded opportunities:', data);
             allOpportunities = data || [];
             filteredOpportunities = [...allOpportunities];
 
+            console.log('Total opportunities:', allOpportunities.length);
             populateOwnerFilter();
             renderKanban();
         }
@@ -538,6 +545,9 @@
         }
 
         function renderKanban() {
+            console.log('Rendering kanban board...');
+            console.log('Filtered opportunities:', filteredOpportunities.length);
+
             const board = document.getElementById('kanbanBoard');
             board.innerHTML = '';
 
@@ -547,6 +557,7 @@
 
             STAGES.forEach(stage => {
                 const stageOpps = filteredOpportunities.filter(opp => opp.stage === stage.id);
+                console.log(`Stage ${stage.id}: ${stageOpps.length} opportunities`);
                 const stageValue = stageOpps.reduce((sum, opp) => sum + (opp.value || 0), 0);
 
                 totalPipeline += stageValue;
