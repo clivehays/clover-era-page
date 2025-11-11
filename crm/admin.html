@@ -524,6 +524,9 @@
                     const roleClass = profile.role === 'admin' ? 'badge-admin' :
                                      profile.role === 'manager' ? 'badge-manager' : 'badge-sales';
 
+                    // Escape strings for HTML attributes to prevent breaking onclick handlers
+                    const escapeAttr = (str) => (str || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+
                     return `
                         <tr>
                             <td>${profile.email || 'N/A'}</td>
@@ -536,9 +539,20 @@
                             <td>${new Date(profile.created_at).toLocaleDateString()}</td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn btn-secondary btn-small" onclick="showEditUserModal('${profile.id}', '${profile.email}', '${profile.full_name || ''}', '${profile.role || 'sales_rep'}')">Edit</button>
-                                    <button class="btn btn-secondary btn-small" onclick="resetUserPassword('${profile.id}', '${profile.email}')">Reset Password</button>
-                                    <button class="btn btn-danger btn-small" onclick="deleteUser('${profile.id}', '${profile.email}')">Delete</button>
+                                    <button class="btn btn-secondary btn-small"
+                                            data-user-id="${profile.id}"
+                                            data-user-email="${escapeAttr(profile.email)}"
+                                            data-user-name="${escapeAttr(profile.full_name || '')}"
+                                            data-user-role="${profile.role || 'sales_rep'}"
+                                            onclick="showEditUserModal(this.dataset.userId, this.dataset.userEmail, this.dataset.userName, this.dataset.userRole)">Edit</button>
+                                    <button class="btn btn-secondary btn-small"
+                                            data-user-id="${profile.id}"
+                                            data-user-email="${escapeAttr(profile.email)}"
+                                            onclick="resetUserPassword(this.dataset.userId, this.dataset.userEmail)">Reset Password</button>
+                                    <button class="btn btn-danger btn-small"
+                                            data-user-id="${profile.id}"
+                                            data-user-email="${escapeAttr(profile.email)}"
+                                            onclick="deleteUser(this.dataset.userId, this.dataset.userEmail)">Delete</button>
                                 </div>
                             </td>
                         </tr>
@@ -553,9 +567,16 @@
 
         // Show edit user modal
         function showEditUserModal(userId, email, fullName, role) {
+            // Decode HTML entities
+            const decodeHtml = (html) => {
+                const txt = document.createElement('textarea');
+                txt.innerHTML = html;
+                return txt.value;
+            };
+
             document.getElementById('editUserId').value = userId;
-            document.getElementById('editEmail').value = email;
-            document.getElementById('editFullName').value = fullName;
+            document.getElementById('editEmail').value = decodeHtml(email);
+            document.getElementById('editFullName').value = decodeHtml(fullName);
             document.getElementById('editRole').value = role;
             document.getElementById('editUserModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -598,9 +619,17 @@
 
         // Reset user password
         async function resetUserPassword(userId, userEmail) {
+            // Decode HTML entities
+            const decodeHtml = (html) => {
+                const txt = document.createElement('textarea');
+                txt.innerHTML = html;
+                return txt.value;
+            };
+
+            const decodedEmail = decodeHtml(userEmail);
             const newPassword = 'CloverERA2025!'; // Same temporary password as for new users
 
-            const confirmed = confirm(`Reset password for ${userEmail}?\n\nNew temporary password: ${newPassword}\n\nYou'll need to share this with the user securely.`);
+            const confirmed = confirm(`Reset password for ${decodedEmail}?\n\nNew temporary password: ${newPassword}\n\nYou'll need to share this with the user securely.`);
 
             if (!confirmed) return;
 
@@ -617,7 +646,7 @@
                     throw new Error('Password reset requires admin privileges. Please send a password reset email instead.');
                 }
 
-                const credentials = `Password reset for: ${userEmail}\n\nTemporary Password: ${newPassword}\n\nPlease share this with the user securely and ask them to change it upon login.`;
+                const credentials = `Password reset for: ${decodedEmail}\n\nTemporary Password: ${newPassword}\n\nPlease share this with the user securely and ask them to change it upon login.`;
 
                 alert(credentials);
 
@@ -636,7 +665,7 @@
                 if (sendEmail) {
                     try {
                         const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-                            userEmail,
+                            decodedEmail,
                             {
                                 redirectTo: `${window.location.origin}/crm/login.html`
                             }
@@ -644,7 +673,7 @@
 
                         if (resetError) throw resetError;
 
-                        alert(`Password reset email sent to ${userEmail}!`);
+                        alert(`Password reset email sent to ${decodedEmail}!`);
                     } catch (emailError) {
                         console.error('Error sending reset email:', emailError);
                         alert('Error sending reset email: ' + emailError.message);
@@ -751,12 +780,21 @@
 
         // Delete user
         async function deleteUser(userId, userEmail) {
+            // Decode HTML entities
+            const decodeHtml = (html) => {
+                const txt = document.createElement('textarea');
+                txt.innerHTML = html;
+                return txt.value;
+            };
+
+            const decodedEmail = decodeHtml(userEmail);
+
             if (userId === currentUser.id) {
                 alert('You cannot delete your own account while logged in.');
                 return;
             }
 
-            const confirmMessage = `Are you sure you want to delete user "${userEmail}"?\n\nThis will delete:\n- The user's profile\n- All opportunities owned by this user will become unassigned\n- All activities owned by this user will become unassigned\n\nThis action cannot be undone.`;
+            const confirmMessage = `Are you sure you want to delete user "${decodedEmail}"?\n\nThis will delete:\n- The user's profile\n- All opportunities owned by this user will become unassigned\n- All activities owned by this user will become unassigned\n\nThis action cannot be undone.`;
 
             if (!confirm(confirmMessage)) {
                 return;
