@@ -706,45 +706,77 @@
 
         // ===== DATA LOADING =====
         async function loadActivities() {
+            console.log('Loading activities...');
             try {
                 const { data, error } = await supabase
                     .from('activities')
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error fetching activities:', error);
+                    throw error;
+                }
+
+                console.log('Fetched activities:', data?.length || 0);
 
                 // Fetch related company and opportunity details separately
                 if (data && data.length > 0) {
                     for (let activity of data) {
                         // Fetch company details
                         if (activity.company_id) {
-                            const { data: company } = await supabase
-                                .from('companies')
-                                .select('id, name')
-                                .eq('id', activity.company_id)
-                                .single();
-                            activity.companies = company;
+                            try {
+                                const { data: company, error: companyError } = await supabase
+                                    .from('companies')
+                                    .select('id, name')
+                                    .eq('id', activity.company_id)
+                                    .single();
+
+                                if (!companyError && company) {
+                                    activity.companies = company;
+                                }
+                            } catch (e) {
+                                console.warn('Could not fetch company:', activity.company_id, e);
+                            }
                         }
 
                         // Fetch opportunity details
                         if (activity.opportunity_id) {
-                            const { data: opportunity } = await supabase
-                                .from('opportunities')
-                                .select('id, title')
-                                .eq('id', activity.opportunity_id)
-                                .single();
-                            activity.opportunities = opportunity;
+                            try {
+                                const { data: opportunity, error: oppError } = await supabase
+                                    .from('opportunities')
+                                    .select('id, title')
+                                    .eq('id', activity.opportunity_id)
+                                    .single();
+
+                                if (!oppError && opportunity) {
+                                    activity.opportunities = opportunity;
+                                }
+                            } catch (e) {
+                                console.warn('Could not fetch opportunity:', activity.opportunity_id, e);
+                            }
                         }
                     }
                 }
 
                 allActivities = data || [];
                 filteredActivities = allActivities;
+                console.log('Activities loaded successfully, rendering table...');
                 renderActivitiesTable();
+                console.log('Table rendered');
             } catch (error) {
                 console.error('Error loading activities:', error);
-                alert('Failed to load activities: ' + error.message);
+                const tbody = document.getElementById('activitiesTableBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state" style="color: red;">
+                                <h3>Error loading activities</h3>
+                                <p>${error.message}</p>
+                            </td>
+                        </tr>
+                    `;
+                }
             }
         }
 
