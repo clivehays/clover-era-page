@@ -678,9 +678,8 @@
                             <th>Type</th>
                             <th>Industry</th>
                             <th>Status</th>
-                            <th>Employees</th>
-                            <th>Opportunities</th>
-                            <th>Contacts</th>
+                            <th>Assigned To</th>
+                            <th>Last Action</th>
                         </tr>
                     </thead>
                     <tbody id="companiesTableBody">
@@ -947,23 +946,68 @@
         // Load companies
         async function loadCompanies() {
             try {
-                // Load companies with related counts
+                // Load companies
                 const { data: companies, error } = await supabase
                     .from('companies')
-                    .select(`
-                        *,
-                        opportunities (count),
-                        contacts (count)
-                    `)
+                    .select('*')
                     .order('name');
 
                 if (error) throw error;
 
-                allCompanies = companies.map(company => ({
-                    ...company,
-                    opportunity_count: company.opportunities?.[0]?.count || 0,
-                    contact_count: company.contacts?.[0]?.count || 0
-                }));
+                // Get the most recent opportunity for each company (to find assigned owner)
+                const { data: opportunities, error: oppError } = await supabase
+                    .from('opportunities')
+                    .select('company_id, owner_id')
+                    .order('created_at', { ascending: false });
+
+                if (oppError) console.error('Error loading opportunities:', oppError);
+
+                // Get the most recent activity for each company
+                const { data: activities, error: actError } = await supabase
+                    .from('activities')
+                    .select('company_id, subject, type, created_at, due_date')
+                    .order('created_at', { ascending: false });
+
+                if (actError) console.error('Error loading activities:', actError);
+
+                // Get all profiles for owner names
+                const { data: profiles, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('id, full_name, email');
+
+                if (profileError) console.error('Error loading profiles:', profileError);
+
+                // Create lookup maps
+                const ownerMap = {};
+                (opportunities || []).forEach(opp => {
+                    if (!ownerMap[opp.company_id] && opp.owner_id) {
+                        ownerMap[opp.company_id] = opp.owner_id;
+                    }
+                });
+
+                const lastActivityMap = {};
+                (activities || []).forEach(activity => {
+                    if (!lastActivityMap[activity.company_id]) {
+                        lastActivityMap[activity.company_id] = activity;
+                    }
+                });
+
+                const profileMap = {};
+                (profiles || []).forEach(profile => {
+                    profileMap[profile.id] = profile;
+                });
+
+                allCompanies = companies.map(company => {
+                    const ownerId = ownerMap[company.id];
+                    const owner = ownerId ? profileMap[ownerId] : null;
+                    const lastActivity = lastActivityMap[company.id];
+
+                    return {
+                        ...company,
+                        owner_name: owner ? (owner.full_name || owner.email) : 'Unassigned',
+                        last_activity: lastActivity
+                    };
+                });
 
                 filteredCompanies = [...allCompanies];
 
@@ -1003,16 +1047,20 @@
         }
 
         // Update stats
-        function updateStats() {
+        async function updateStats() {
             const total = allCompanies.length;
             const customers = allCompanies.filter(c => c.company_type === 'customer' || c.company_type === 'both').length;
             const partners = allCompanies.filter(c => c.company_type === 'partner' || c.company_type === 'both').length;
-            const opportunities = allCompanies.reduce((sum, c) => sum + (c.opportunity_count || 0), 0);
+
+            // Get total opportunities count
+            const { count: opportunitiesCount } = await supabase
+                .from('opportunities')
+                .select('*', { count: 'exact', head: true });
 
             document.getElementById('totalCompanies').textContent = total;
             document.getElementById('totalCustomers').textContent = customers;
             document.getElementById('totalPartners').textContent = partners;
-            document.getElementById('totalOpportunities').textContent = opportunities;
+            document.getElementById('totalOpportunities').textContent = opportunitiesCount || 0;
         }
 
         // Filter companies
@@ -1060,33 +1108,51 @@
             emptyState.style.display = 'none';
             tableContent.style.display = 'block';
 
-            tbody.innerHTML = filteredCompanies.map(company => `
-                <tr onclick="viewCompany('${company.id}')">
-                    <td>
-                        <strong>${company.name}</strong>
-                        ${company.website ? `<br><small style="color: var(--text-secondary);">${company.website}</small>` : ''}
-                    </td>
-                    <td>
-                        <span class="badge badge-${company.company_type || 'customer'}">
-                            ${formatCompanyType(company.company_type)}
-                        </span>
-                        ${company.company_type === 'partner' && company.partner_status ? `
-                            <br><span class="badge badge-partner-${company.partner_status}" style="margin-top: 0.25rem;">
-                                ${formatPartnerStatus(company.partner_status)}
+            tbody.innerHTML = filteredCompanies.map(company => {
+                const lastActivity = company.last_activity;
+                let lastActionText = '-';
+
+                if (lastActivity) {
+                    const activityIcons = {
+                        task: '✅',
+                        meeting: '📅',
+                        call: '📞',
+                        email: '✉️',
+                        note: '📝',
+                        demo: '🎯'
+                    };
+                    const icon = activityIcons[lastActivity.type] || '📋';
+                    const timeAgo = getTimeAgo(new Date(lastActivity.created_at));
+                    lastActionText = `${icon} ${lastActivity.subject}<br><small style="color: var(--text-secondary);">${timeAgo}</small>`;
+                }
+
+                return `
+                    <tr onclick="viewCompany('${company.id}')">
+                        <td>
+                            <strong>${company.name}</strong>
+                            ${company.website ? `<br><small style="color: var(--text-secondary);">${company.website}</small>` : ''}
+                        </td>
+                        <td>
+                            <span class="badge badge-${company.company_type || 'customer'}">
+                                ${formatCompanyType(company.company_type)}
                             </span>
-                        ` : ''}
-                    </td>
-                    <td>${company.industry || '-'}</td>
-                    <td>
-                        <span class="badge badge-${company.status}">
-                            ${formatStatus(company.status)}
-                        </span>
-                    </td>
-                    <td>${company.employee_count ? company.employee_count.toLocaleString() : '-'}</td>
-                    <td>${company.opportunity_count || 0}</td>
-                    <td>${company.contact_count || 0}</td>
-                </tr>
-            `).join('');
+                            ${company.company_type === 'partner' && company.partner_status ? `
+                                <br><span class="badge badge-partner-${company.partner_status}" style="margin-top: 0.25rem;">
+                                    ${formatPartnerStatus(company.partner_status)}
+                                </span>
+                            ` : ''}
+                        </td>
+                        <td>${company.industry || '-'}</td>
+                        <td>
+                            <span class="badge badge-${company.status}">
+                                ${formatStatus(company.status)}
+                            </span>
+                        </td>
+                        <td>${company.owner_name}</td>
+                        <td>${lastActionText}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // View company details
@@ -1356,6 +1422,19 @@
                 'inactive': 'Inactive'
             };
             return statuses[status] || status;
+        }
+
+        // Get time ago string
+        function getTimeAgo(date) {
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+            if (seconds < 2592000) return `${Math.floor(seconds / 604800)} weeks ago`;
+            return date.toLocaleDateString();
         }
 
         // Delete company
