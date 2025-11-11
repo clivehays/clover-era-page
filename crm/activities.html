@@ -152,6 +152,38 @@
             background: #ffebee;
         }
 
+        .status-select {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .status-select:hover {
+            border-color: var(--primary);
+        }
+
+        .status-select.status-todo {
+            background: #FFF8E1;
+            color: #F57C00;
+            border-color: #FFE082;
+        }
+
+        .status-select.status-doing {
+            background: #E3F2FD;
+            color: #1976D2;
+            border-color: #90CAF9;
+        }
+
+        .status-select.status-completed {
+            background: #E8F5E9;
+            color: #388E3C;
+            border-color: #A5D6A7;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1076,7 +1108,7 @@
             }
 
             tbody.innerHTML = filteredActivities.map(activity => {
-                const status = getActivityStatus(activity);
+                const activityStatus = activity.status || (activity.completed ? 'completed' : 'todo');
                 const isTask = activity.type === 'task';
 
                 return `
@@ -1095,7 +1127,11 @@
                         <td>${activity.opportunities ? activity.opportunities.title : '-'}</td>
                         <td>${activity.due_date ? formatDueDate(activity.due_date) : '-'}</td>
                         <td>
-                            <span class="badge ${status}">${formatStatus(status)}</span>
+                            <select class="status-select status-${activityStatus}" onchange="updateActivityStatus('${activity.id}', this.value)" onclick="event.stopPropagation()">
+                                <option value="todo" ${activityStatus === 'todo' ? 'selected' : ''}>📝 To Do</option>
+                                <option value="doing" ${activityStatus === 'doing' ? 'selected' : ''}>🚀 Doing</option>
+                                <option value="completed" ${activityStatus === 'completed' ? 'selected' : ''}>✅ Completed</option>
+                            </select>
                         </td>
                         <td>
                             <button class="btn-icon" onclick="event.stopPropagation(); deleteActivity('${activity.id}')" title="Delete activity">🗑️</button>
@@ -1212,7 +1248,8 @@
                     company_id: companyId,
                     opportunity_id: opportunityId,
                     due_date: dueDate,
-                    completed
+                    completed: activityId ? completed : false,  // New activities default to not completed
+                    status: activityId ? undefined : 'todo'     // New activities default to 'todo' status
                 };
 
                 if (activityId) {
@@ -1281,6 +1318,63 @@
             } catch (error) {
                 console.error('Error deleting activity:', error);
                 alert('Failed to delete activity: ' + error.message);
+            }
+        }
+
+        async function updateActivityStatus(activityId, newStatus) {
+            try {
+                // Try to update with status column first
+                const { error } = await supabase
+                    .from('activities')
+                    .update({
+                        status: newStatus,
+                        completed: newStatus === 'completed'
+                    })
+                    .eq('id', activityId);
+
+                if (error) {
+                    // Check if error is due to missing status column
+                    if (error.message.includes("'status' column") || error.message.includes("column \"status\"")) {
+                        // Fallback: just update completed field
+                        const { error: fallbackError } = await supabase
+                            .from('activities')
+                            .update({
+                                completed: newStatus === 'completed'
+                            })
+                            .eq('id', activityId);
+
+                        if (fallbackError) throw fallbackError;
+
+                        // Show helpful message (only once)
+                        if (!window.statusColumnWarningShown) {
+                            window.statusColumnWarningShown = true;
+                            alert('⚠️ Status column not yet added to database.\n\nTo enable full status tracking:\n1. Go to Supabase SQL Editor\n2. Run the SQL from add-activity-status.sql\n\nFor now, only "Completed" status is being tracked.');
+                        }
+                    } else {
+                        throw error;
+                    }
+                }
+
+                // Update local data
+                const activity = allActivities.find(a => a.id === activityId);
+                if (activity) {
+                    activity.status = newStatus;
+                    activity.completed = newStatus === 'completed';
+                }
+
+                // Re-render current view
+                if (currentView === 'kanban') {
+                    renderKanbanBoard();
+                } else {
+                    renderActivitiesTable();
+                }
+
+                updateStats();
+            } catch (error) {
+                console.error('Error updating activity status:', error);
+                alert('Failed to update status: ' + error.message);
+                // Reload to reset the dropdown
+                await loadActivities();
             }
         }
 
