@@ -138,6 +138,20 @@
             background: var(--background);
         }
 
+        .btn-icon {
+            background: transparent;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: #ffebee;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -508,6 +522,7 @@
             cursor: grab;
             transition: all 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         .kanban-card:hover {
@@ -520,10 +535,34 @@
             cursor: grabbing;
         }
 
+        .kanban-card-delete {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: transparent;
+            border: none;
+            color: #999;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .kanban-card-delete:hover {
+            background: #ffebee;
+            color: #c62828;
+        }
+
         .kanban-card-title {
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: var(--text-primary);
+            padding-right: 24px;
         }
 
         .kanban-card-description {
@@ -741,11 +780,12 @@
                         <th>Opportunity</th>
                         <th>Due Date</th>
                         <th>Status</th>
+                        <th style="width: 60px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="activitiesTableBody">
                     <tr>
-                        <td colspan="7" class="empty-state">
+                        <td colspan="8" class="empty-state">
                             <h3>Loading activities...</h3>
                         </td>
                     </tr>
@@ -931,7 +971,7 @@
                 if (tbody) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="7" class="empty-state" style="color: red;">
+                            <td colspan="8" class="empty-state" style="color: red;">
                                 <h3>Error loading activities</h3>
                                 <p>${error.message}</p>
                             </td>
@@ -1026,7 +1066,7 @@
             if (filteredActivities.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="empty-state">
+                        <td colspan="8" class="empty-state">
                             <h3>No activities found</h3>
                             <p>Add your first activity to get started.</p>
                         </td>
@@ -1056,6 +1096,9 @@
                         <td>${activity.due_date ? formatDueDate(activity.due_date) : '-'}</td>
                         <td>
                             <span class="badge ${status}">${formatStatus(status)}</span>
+                        </td>
+                        <td>
+                            <button class="btn-icon" onclick="event.stopPropagation(); deleteActivity('${activity.id}')" title="Delete activity">🗑️</button>
                         </td>
                     </tr>
                 `;
@@ -1213,6 +1256,34 @@
             }
         }
 
+        async function deleteActivity(activityId) {
+            if (!confirm('Are you sure you want to delete this activity? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('activities')
+                    .delete()
+                    .eq('id', activityId);
+
+                if (error) throw error;
+
+                // Reload activities in both table and kanban views
+                await loadActivities();
+
+                // If in kanban view, re-render the board
+                if (currentView === 'kanban') {
+                    renderKanbanBoard();
+                }
+
+                updateStats();
+            } catch (error) {
+                console.error('Error deleting activity:', error);
+                alert('Failed to delete activity: ' + error.message);
+            }
+        }
+
         // ===== UTILITY FUNCTIONS =====
         function getActivityStatus(activity) {
             if (activity.type !== 'task') return 'completed';
@@ -1338,6 +1409,7 @@
             const isOverdue = dueDate && dueDate < new Date() && activity.status !== 'completed';
 
             card.innerHTML = `
+                <button class="kanban-card-delete" onclick="event.stopPropagation(); deleteActivity('${activity.id}')" title="Delete activity">&times;</button>
                 <div class="kanban-card-title">${activity.subject}</div>
                 ${activity.description ? `<div class="kanban-card-description">${activity.description.substring(0, 100)}${activity.description.length > 100 ? '...' : ''}</div>` : ''}
                 <div class="kanban-card-meta">
@@ -1406,6 +1478,7 @@
 
                 // Update status in database
                 try {
+                    // Try to update with status column first
                     const { error } = await supabase
                         .from('activities')
                         .update({
@@ -1414,7 +1487,25 @@
                         })
                         .eq('id', activityId);
 
-                    if (error) throw error;
+                    if (error) {
+                        // Check if error is due to missing status column
+                        if (error.message.includes("'status' column") || error.message.includes("column \"status\"")) {
+                            // Fallback: just update completed field
+                            const { error: fallbackError } = await supabase
+                                .from('activities')
+                                .update({
+                                    completed: newStatus === 'completed'
+                                })
+                                .eq('id', activityId);
+
+                            if (fallbackError) throw fallbackError;
+
+                            // Show helpful message
+                            alert('⚠️ Status column not yet added to database.\n\nTo enable full Kanban functionality:\n1. Go to Supabase SQL Editor\n2. Run the SQL from add-activity-status.sql\n\nFor now, only "Completed" status is being tracked.');
+                        } else {
+                            throw error;
+                        }
+                    }
 
                     // Update local data
                     const activity = allActivities.find(a => a.id === activityId);
@@ -1427,7 +1518,7 @@
                     renderKanbanBoard();
                 } catch (error) {
                     console.error('Error updating activity status:', error);
-                    alert('Failed to update activity status: ' + error.message);
+                    alert('Failed to update activity: ' + error.message);
                 }
             }
 
