@@ -390,6 +390,15 @@
                         <option value="admin">Admin</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="skipEmailVerification" style="width: auto; cursor: pointer;">
+                        <span>Skip email verification (user can login immediately)</span>
+                    </label>
+                    <small style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem; display: block;">
+                        Check this if you trust this user and want them to login without verifying their email.
+                    </small>
+                </div>
                 <div class="info-box" style="background: #E3F2FD; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #1976D2;">
                     <p style="margin: 0; font-size: 0.9rem; color: #1565C0;">
                         <strong>Note:</strong> A temporary password will be generated. You'll receive login credentials to share with the new user securely.
@@ -485,9 +494,6 @@
 
                 if (profilesError) throw profilesError;
 
-                // Get user auth data to check last sign in
-                const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers();
-
                 // Get opportunity counts for each user
                 const { data: opportunityCounts, error: oppError } = await supabase
                     .from('opportunities')
@@ -515,9 +521,8 @@
                 }
 
                 tbody.innerHTML = profiles.map(profile => {
-                    const authUser = users?.find(u => u.id === profile.id);
-                    const lastSignIn = authUser?.last_sign_in_at
-                        ? new Date(authUser.last_sign_in_at).toLocaleDateString()
+                    const lastSignIn = profile.last_sign_in_at
+                        ? new Date(profile.last_sign_in_at).toLocaleDateString()
                         : 'Never';
 
                     const oppCount = oppCountMap[profile.id] || 0;
@@ -527,9 +532,20 @@
                     // Escape strings for HTML attributes to prevent breaking onclick handlers
                     const escapeAttr = (str) => (str || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
 
+                    const emailVerified = profile.email_confirmed_at ? '✅' : '⚠️ Unverified';
+                    const verifyButton = profile.email_confirmed_at ? '' :
+                        `<button class="btn btn-secondary btn-small"
+                                data-user-id="${profile.id}"
+                                data-user-email="${escapeAttr(profile.email)}"
+                                onclick="verifyUserEmail(this.dataset.userId, this.dataset.userEmail)"
+                                title="Manually verify email">✓ Verify Email</button>`;
+
                     return `
                         <tr>
-                            <td>${profile.email || 'N/A'}</td>
+                            <td>
+                                ${profile.email || 'N/A'}
+                                <br><small style="color: var(--text-secondary);">${emailVerified}</small>
+                            </td>
                             <td>${profile.full_name || 'N/A'}</td>
                             <td>
                                 <span class="badge ${roleClass}">${profile.role || 'sales_rep'}</span>
@@ -545,14 +561,11 @@
                                             data-user-name="${escapeAttr(profile.full_name || '')}"
                                             data-user-role="${profile.role || 'sales_rep'}"
                                             onclick="showEditUserModal(this.dataset.userId, this.dataset.userEmail, this.dataset.userName, this.dataset.userRole)">Edit</button>
+                                    ${verifyButton}
                                     <button class="btn btn-secondary btn-small"
                                             data-user-id="${profile.id}"
                                             data-user-email="${escapeAttr(profile.email)}"
                                             onclick="resetUserPassword(this.dataset.userId, this.dataset.userEmail)">Reset Password</button>
-                                    <button class="btn btn-secondary btn-small"
-                                            data-user-email="${escapeAttr(profile.email)}"
-                                            onclick="resendVerificationEmail(this.dataset.userEmail)"
-                                            title="Resend email verification">Resend Verification</button>
                                     <button class="btn btn-danger btn-small"
                                             data-user-id="${profile.id}"
                                             data-user-email="${escapeAttr(profile.email)}"
@@ -720,6 +733,50 @@
             }
         }
 
+        // Manually verify user email
+        async function verifyUserEmail(userId, userEmail) {
+            // Decode HTML entities
+            const decodeHtml = (html) => {
+                const txt = document.createElement('textarea');
+                txt.innerHTML = html;
+                return txt.value;
+            };
+
+            const decodedEmail = decodeHtml(userEmail);
+
+            const confirmed = confirm(`Manually verify email for ${decodedEmail}?\n\nThis will allow the user to log in without clicking the email verification link.\n\nOnly do this if you trust this user!`);
+
+            if (!confirmed) return;
+
+            try {
+                // Try to confirm email using admin API
+                try {
+                    await supabase.auth.admin.updateUserById(userId, {
+                        email_confirm: true
+                    });
+                } catch (adminError) {
+                    console.warn('Admin API not available, updating profile directly');
+                }
+
+                // Update the profile to mark email as confirmed
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        email_confirmed_at: new Date().toISOString()
+                    })
+                    .eq('id', userId);
+
+                if (error) throw error;
+
+                alert(`Email verified for ${decodedEmail}!\n\nThe user can now log in.`);
+                await loadUsers();
+
+            } catch (error) {
+                console.error('Error verifying email:', error);
+                alert('Error verifying email: ' + error.message);
+            }
+        }
+
         // Show invite modal
         function showInviteModal() {
             document.getElementById('inviteModal').classList.add('active');
@@ -733,6 +790,7 @@
             document.getElementById('inviteEmail').value = '';
             document.getElementById('inviteFullName').value = '';
             document.getElementById('inviteRole').value = 'sales_rep';
+            document.getElementById('skipEmailVerification').checked = false;
         }
 
         // Invite user
@@ -742,6 +800,7 @@
             const email = document.getElementById('inviteEmail').value;
             const fullName = document.getElementById('inviteFullName').value;
             const role = document.getElementById('inviteRole').value;
+            const skipVerification = document.getElementById('skipEmailVerification').checked;
 
             // Generate a temporary password
             const tempPassword = 'CloverERA2025!'; // Users will need to change this on first login
@@ -777,14 +836,28 @@
                     // Wait a moment for trigger to create profile
                     await new Promise(resolve => setTimeout(resolve, 500));
 
-                    // Try to confirm email using admin API (may not work with anon key)
-                    try {
-                        await supabase.auth.admin.updateUserById(data.user.id, {
-                            email_confirm: true
-                        });
-                    } catch (confirmError) {
-                        console.warn('Could not auto-confirm email (requires admin privileges):', confirmError);
-                        // Continue anyway - user will need to manually confirm
+                    let emailVerified = false;
+
+                    // If skip verification is checked, try to confirm email
+                    if (skipVerification) {
+                        try {
+                            await supabase.auth.admin.updateUserById(data.user.id, {
+                                email_confirm: true
+                            });
+                            emailVerified = true;
+
+                            // Also update the profile to mark email as confirmed
+                            await supabase
+                                .from('profiles')
+                                .update({
+                                    email_confirmed_at: new Date().toISOString()
+                                })
+                                .eq('id', data.user.id);
+
+                        } catch (confirmError) {
+                            console.warn('Could not auto-confirm email (requires admin privileges):', confirmError);
+                            alert('Note: Could not skip email verification automatically. The user will need to verify their email before logging in.');
+                        }
                     }
 
                     // Update the role in profiles table (profile is auto-created by trigger)
@@ -801,7 +874,9 @@
                         throw new Error('User created but role assignment failed: ' + updateError.message);
                     }
 
-                    const instructions = `User created successfully!\n\nEmail: ${email}\nTemporary Password: ${tempPassword}\nRole: ${role}\n\nIMPORTANT: Share these credentials with the new user securely. They should:\n1. Check their email (${email}) for a confirmation link\n2. Click the confirmation link to verify their email\n3. Log in at: ${window.location.origin}/crm/login.html\n4. Change their password immediately after first login\n\nNote: The user MUST verify their email before they can log in.`;
+                    const instructions = emailVerified
+                        ? `User created successfully!\n\nEmail: ${email}\nTemporary Password: ${tempPassword}\nRole: ${role}\n\n✅ Email verification SKIPPED - user can log in immediately!\n\nIMPORTANT: Share these credentials with the new user securely. They should:\n1. Log in at: https://cloverera.com/crm/login.html\n2. Change their password immediately after first login`
+                        : `User created successfully!\n\nEmail: ${email}\nTemporary Password: ${tempPassword}\nRole: ${role}\n\nIMPORTANT: Share these credentials with the new user securely. They should:\n1. Check their email (${email}) for a confirmation link\n2. Click the confirmation link to verify their email\n3. Log in at: https://cloverera.com/crm/login.html\n4. Change their password immediately after first login\n\nNote: The user MUST verify their email before they can log in.`;
 
                     alert(instructions);
 
