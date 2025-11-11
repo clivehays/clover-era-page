@@ -265,8 +265,38 @@
 
             } catch (error) {
                 console.error('Login error:', error);
-                errorMessage.textContent = error.message || 'Login failed. Please check your credentials.';
-                errorMessage.style.display = 'block';
+
+                // Check if error is due to unverified email
+                if (error.message.includes('Email not confirmed') || error.message.includes('email not verified')) {
+                    const resend = confirm(`Your email address has not been verified.\n\nWould you like to resend the verification email to ${email}?`);
+
+                    if (resend) {
+                        try {
+                            const { error: resendError } = await supabase.auth.resend({
+                                type: 'signup',
+                                email: email,
+                                options: {
+                                    emailRedirectTo: `${window.location.origin}/crm/login.html`
+                                }
+                            });
+
+                            if (resendError) throw resendError;
+
+                            successMessage.textContent = `Verification email sent to ${email}! Please check your inbox and click the confirmation link.`;
+                            successMessage.style.display = 'block';
+                        } catch (resendError) {
+                            console.error('Resend error:', resendError);
+                            errorMessage.textContent = 'Failed to resend verification email. Please contact your administrator.';
+                            errorMessage.style.display = 'block';
+                        }
+                    } else {
+                        errorMessage.textContent = 'Please verify your email before logging in. Check your inbox for the verification link.';
+                        errorMessage.style.display = 'block';
+                    }
+                } else {
+                    errorMessage.textContent = error.message || 'Login failed. Please check your credentials.';
+                    errorMessage.style.display = 'block';
+                }
 
                 loginButton.disabled = false;
                 loginButton.textContent = 'Sign In';

@@ -549,6 +549,10 @@
                                             data-user-id="${profile.id}"
                                             data-user-email="${escapeAttr(profile.email)}"
                                             onclick="resetUserPassword(this.dataset.userId, this.dataset.userEmail)">Reset Password</button>
+                                    <button class="btn btn-secondary btn-small"
+                                            data-user-email="${escapeAttr(profile.email)}"
+                                            onclick="resendVerificationEmail(this.dataset.userEmail)"
+                                            title="Resend email verification">Resend Verification</button>
                                     <button class="btn btn-danger btn-small"
                                             data-user-id="${profile.id}"
                                             data-user-email="${escapeAttr(profile.email)}"
@@ -682,6 +686,40 @@
             }
         }
 
+        // Resend verification email
+        async function resendVerificationEmail(userEmail) {
+            // Decode HTML entities
+            const decodeHtml = (html) => {
+                const txt = document.createElement('textarea');
+                txt.innerHTML = html;
+                return txt.value;
+            };
+
+            const decodedEmail = decodeHtml(userEmail);
+
+            const confirmed = confirm(`Resend verification email to ${decodedEmail}?\n\nThe user will receive a new confirmation link.`);
+
+            if (!confirmed) return;
+
+            try {
+                const { error } = await supabase.auth.resend({
+                    type: 'signup',
+                    email: decodedEmail,
+                    options: {
+                        emailRedirectTo: `${window.location.origin}/crm/login.html`
+                    }
+                });
+
+                if (error) throw error;
+
+                alert(`Verification email sent to ${decodedEmail}!\n\nThe user should check their inbox and click the confirmation link.`);
+
+            } catch (error) {
+                console.error('Error resending verification email:', error);
+                alert('Error resending verification email: ' + error.message);
+            }
+        }
+
         // Show invite modal
         function showInviteModal() {
             document.getElementById('inviteModal').classList.add('active');
@@ -738,6 +776,16 @@
                     // Wait a moment for trigger to create profile
                     await new Promise(resolve => setTimeout(resolve, 500));
 
+                    // Try to confirm email using admin API (may not work with anon key)
+                    try {
+                        await supabase.auth.admin.updateUserById(data.user.id, {
+                            email_confirm: true
+                        });
+                    } catch (confirmError) {
+                        console.warn('Could not auto-confirm email (requires admin privileges):', confirmError);
+                        // Continue anyway - user will need to manually confirm
+                    }
+
                     // Update the role in profiles table (profile is auto-created by trigger)
                     const { error: updateError } = await supabase
                         .from('profiles')
@@ -752,7 +800,7 @@
                         throw new Error('User created but role assignment failed: ' + updateError.message);
                     }
 
-                    const instructions = `User created successfully!\n\nEmail: ${email}\nTemporary Password: ${tempPassword}\nRole: ${role}\n\nIMPORTANT: Share these credentials with the new user securely. They should:\n1. Log in at: ${window.location.origin}/crm/login.html\n2. Change their password immediately after first login\n\nNote: If email confirmation is enabled, the user must confirm their email first.`;
+                    const instructions = `User created successfully!\n\nEmail: ${email}\nTemporary Password: ${tempPassword}\nRole: ${role}\n\nIMPORTANT: Share these credentials with the new user securely. They should:\n1. Check their email (${email}) for a confirmation link\n2. Click the confirmation link to verify their email\n3. Log in at: ${window.location.origin}/crm/login.html\n4. Change their password immediately after first login\n\nNote: The user MUST verify their email before they can log in.`;
 
                     alert(instructions);
 
