@@ -448,6 +448,126 @@
             font-weight: 600;
         }
 
+        /* Kanban Board Styles */
+        .kanban-board {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kanban-board.active {
+            display: grid;
+        }
+
+        .kanban-column {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 500px;
+        }
+
+        .kanban-column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin: -1rem -1rem 1rem -1rem;
+            border-bottom: 2px solid var(--border);
+            background: var(--background);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .kanban-column-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .kanban-column-count {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .kanban-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 400px;
+        }
+
+        .kanban-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: grab;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .kanban-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .kanban-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .kanban-card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .kanban-card-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .kanban-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .kanban-card-type {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .kanban-card-date {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .kanban-cards.drag-over {
+            background: var(--background);
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+        }
+
+        .table-view {
+            display: block;
+        }
+
+        .table-view.hidden {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 1rem;
@@ -497,7 +617,12 @@
     <div class="container">
         <div class="page-header">
             <h1 class="page-title">Activities</h1>
-            <button class="btn btn-primary" onclick="showNewActivityModal()">+ Add Activity</button>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary" id="viewToggle" onclick="toggleView()">
+                    <span id="viewIcon">📋</span> <span id="viewText">Board View</span>
+                </button>
+                <button class="btn btn-primary" onclick="showNewActivityModal()">+ Add Activity</button>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -571,7 +696,41 @@
             </div>
         </div>
 
-        <div class="activities-table">
+        <!-- Kanban Board View -->
+        <div id="kanbanBoard" class="kanban-board">
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title">📝 To Do</span>
+                    <span class="kanban-column-count" id="todoCount">0</span>
+                </div>
+                <div class="kanban-cards" id="todoColumn" data-status="todo">
+                    <!-- Cards will be dynamically added here -->
+                </div>
+            </div>
+
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title">🚀 Doing</span>
+                    <span class="kanban-column-count" id="doingCount">0</span>
+                </div>
+                <div class="kanban-cards" id="doingColumn" data-status="doing">
+                    <!-- Cards will be dynamically added here -->
+                </div>
+            </div>
+
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title">✅ Completed</span>
+                    <span class="kanban-column-count" id="completedCount">0</span>
+                </div>
+                <div class="kanban-cards" id="completedColumn" data-status="completed">
+                    <!-- Cards will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div id="tableView" class="table-view activities-table">
             <table>
                 <thead>
                     <tr>
@@ -1093,6 +1252,200 @@
             }
 
             return dueDate.toLocaleDateString();
+        }
+
+        // ===== KANBAN BOARD FUNCTIONS =====
+        let currentView = 'table'; // 'table' or 'kanban'
+
+        function toggleView() {
+            const kanbanBoard = document.getElementById('kanbanBoard');
+            const tableView = document.getElementById('tableView');
+            const viewIcon = document.getElementById('viewIcon');
+            const viewText = document.getElementById('viewText');
+
+            if (currentView === 'table') {
+                // Switch to Kanban
+                currentView = 'kanban';
+                kanbanBoard.classList.add('active');
+                tableView.classList.add('hidden');
+                viewIcon.textContent = '📊';
+                viewText.textContent = 'Table View';
+                renderKanbanBoard();
+            } else {
+                // Switch to Table
+                currentView = 'table';
+                kanbanBoard.classList.remove('active');
+                tableView.classList.remove('hidden');
+                viewIcon.textContent = '📋';
+                viewText.textContent = 'Board View';
+            }
+        }
+
+        function renderKanbanBoard() {
+            const todoColumn = document.getElementById('todoColumn');
+            const doingColumn = document.getElementById('doingColumn');
+            const completedColumn = document.getElementById('completedColumn');
+
+            // Clear columns
+            todoColumn.innerHTML = '';
+            doingColumn.innerHTML = '';
+            completedColumn.innerHTML = '';
+
+            // Group activities by status
+            const todoActivities = allActivities.filter(a => !a.status || a.status === 'todo');
+            const doingActivities = allActivities.filter(a => a.status === 'doing');
+            const completedActivities = allActivities.filter(a => a.status === 'completed' || a.completed);
+
+            // Update counts
+            document.getElementById('todoCount').textContent = todoActivities.length;
+            document.getElementById('doingCount').textContent = doingActivities.length;
+            document.getElementById('completedCount').textContent = completedActivities.length;
+
+            // Render cards
+            todoActivities.forEach(activity => {
+                todoColumn.appendChild(createKanbanCard(activity));
+            });
+
+            doingActivities.forEach(activity => {
+                doingColumn.appendChild(createKanbanCard(activity));
+            });
+
+            completedActivities.forEach(activity => {
+                completedColumn.appendChild(createKanbanCard(activity));
+            });
+
+            // Setup drag and drop
+            setupDragAndDrop();
+        }
+
+        function createKanbanCard(activity) {
+            const card = document.createElement('div');
+            card.className = 'kanban-card';
+            card.draggable = true;
+            card.dataset.activityId = activity.id;
+
+            const typeClass = activity.type || 'task';
+            const typeColor = {
+                call: '#2196F3',
+                email: '#FF9800',
+                meeting: '#9C27B0',
+                demo: '#4CAF50',
+                note: '#607D8B',
+                task: '#00BCD4'
+            }[typeClass] || '#757575';
+
+            const dueDate = activity.due_date ? new Date(activity.due_date) : null;
+            const isOverdue = dueDate && dueDate < new Date() && activity.status !== 'completed';
+
+            card.innerHTML = `
+                <div class="kanban-card-title">${activity.subject}</div>
+                ${activity.description ? `<div class="kanban-card-description">${activity.description.substring(0, 100)}${activity.description.length > 100 ? '...' : ''}</div>` : ''}
+                <div class="kanban-card-meta">
+                    <span class="kanban-card-type" style="background: ${typeColor}; color: white;">${formatActivityType(activity.type)}</span>
+                    ${dueDate ? `<span class="kanban-card-date${isOverdue ? ' overdue-text' : ''}">📅 ${formatDateShort(dueDate)}</span>` : ''}
+                </div>
+            `;
+
+            card.addEventListener('click', () => editActivity(activity.id));
+
+            return card;
+        }
+
+        function setupDragAndDrop() {
+            const cards = document.querySelectorAll('.kanban-card');
+            const columns = document.querySelectorAll('.kanban-cards');
+
+            cards.forEach(card => {
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragend', handleDragEnd);
+            });
+
+            columns.forEach(column => {
+                column.addEventListener('dragover', handleDragOver);
+                column.addEventListener('drop', handleDrop);
+                column.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        let draggedElement = null;
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('drag-over');
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        async function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            this.classList.remove('drag-over');
+
+            if (draggedElement) {
+                const activityId = draggedElement.dataset.activityId;
+                const newStatus = this.dataset.status;
+
+                // Update status in database
+                try {
+                    const { error } = await supabase
+                        .from('activities')
+                        .update({
+                            status: newStatus,
+                            completed: newStatus === 'completed'
+                        })
+                        .eq('id', activityId);
+
+                    if (error) throw error;
+
+                    // Update local data
+                    const activity = allActivities.find(a => a.id === activityId);
+                    if (activity) {
+                        activity.status = newStatus;
+                        activity.completed = newStatus === 'completed';
+                    }
+
+                    // Re-render board
+                    renderKanbanBoard();
+                } catch (error) {
+                    console.error('Error updating activity status:', error);
+                    alert('Failed to update activity status: ' + error.message);
+                }
+            }
+
+            return false;
+        }
+
+        function formatDateShort(date) {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === tomorrow.toDateString()) {
+                return 'Tomorrow';
+            } else {
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
         }
 
         // ===== EVENT LISTENERS =====
