@@ -754,15 +754,9 @@
                     <div class="form-section">
                         <h3>Contact Information</h3>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="companyWebsite">Website</label>
-                                <input type="url" id="companyWebsite" placeholder="https://example.com">
-                            </div>
-                            <div class="form-group">
-                                <label for="companyPhone">Phone</label>
-                                <input type="tel" id="companyPhone">
-                            </div>
+                        <div class="form-group">
+                            <label for="companyWebsite">Website</label>
+                            <input type="url" id="companyWebsite" placeholder="https://example.com">
                         </div>
 
                         <div class="form-group">
@@ -858,10 +852,6 @@
                         <div class="detail-item">
                             <div class="detail-label">Website</div>
                             <div class="detail-value" id="detailWebsite">-</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Phone</div>
-                            <div class="detail-value" id="detailPhone">-</div>
                         </div>
                     </div>
 
@@ -1112,7 +1102,6 @@
             document.getElementById('detailIndustry').textContent = company.industry || '-';
             document.getElementById('detailEmployeeCount').textContent = company.employee_count ? company.employee_count.toLocaleString() : '-';
             document.getElementById('detailWebsite').innerHTML = company.website ? `<a href="${company.website}" target="_blank">${company.website}</a>` : '-';
-            document.getElementById('detailPhone').textContent = company.phone || '-';
             document.getElementById('detailAddress').textContent = company.address || '-';
             document.getElementById('detailNotes').textContent = company.notes || '-';
 
@@ -1238,7 +1227,6 @@
             const industry = document.getElementById('companyIndustry').value || null;
             const employeeCount = document.getElementById('companyEmployeeCount').value || null;
             const website = document.getElementById('companyWebsite').value || null;
-            const phone = document.getElementById('companyPhone').value || null;
             const address = document.getElementById('companyAddress').value || null;
             const notes = document.getElementById('companyNotes').value || null;
 
@@ -1249,7 +1237,6 @@
                 industry,
                 employee_count: employeeCount ? parseInt(employeeCount) : null,
                 website,
-                phone,
                 address,
                 notes
             };
@@ -1310,7 +1297,6 @@
             document.getElementById('companyIndustry').value = company.industry || '';
             document.getElementById('companyEmployeeCount').value = company.employee_count || '';
             document.getElementById('companyWebsite').value = company.website || '';
-            document.getElementById('companyPhone').value = company.phone || '';
             document.getElementById('companyAddress').value = company.address || '';
             document.getElementById('companyNotes').value = company.notes || '';
 
