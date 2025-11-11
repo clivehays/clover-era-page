@@ -21,10 +21,12 @@ WHERE email_confirmed_at IS NULL
   AND created_at < NOW() - INTERVAL '1 day';
 
 -- Create a function to update last_sign_in_at when user logs in
-CREATE OR REPLACE FUNCTION update_user_last_sign_in()
+-- IMPORTANT: Must use explicit schema qualification (public.profiles)
+-- and grant permissions to supabase_auth_admin
+CREATE OR REPLACE FUNCTION public.update_user_last_sign_in()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE profiles
+  UPDATE public.profiles
   SET last_sign_in_at = NEW.last_sign_in_at
   WHERE id = NEW.id;
   RETURN NEW;
@@ -42,3 +44,8 @@ CREATE TRIGGER on_auth_user_sign_in
 
 -- Grant necessary permissions
 GRANT USAGE ON SCHEMA auth TO postgres, anon, authenticated, service_role;
+
+-- CRITICAL: Grant permissions for auth admin to access profiles table
+-- This is needed for the update_user_last_sign_in trigger to work
+GRANT EXECUTE ON FUNCTION public.update_user_last_sign_in() TO supabase_auth_admin;
+GRANT SELECT, UPDATE ON public.profiles TO supabase_auth_admin;
