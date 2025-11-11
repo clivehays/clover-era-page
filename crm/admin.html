@@ -403,6 +403,40 @@
         </div>
     </div>
 
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit User</h2>
+                <button class="close-btn" onclick="hideEditUserModal()">&times;</button>
+            </div>
+            <form onsubmit="updateUser(event)">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" readonly style="background: #f5f5f5; cursor: not-allowed;">
+                    <small style="color: var(--text-secondary); font-size: 0.85rem;">Email cannot be changed</small>
+                </div>
+                <div class="form-group">
+                    <label for="editFullName">Full Name</label>
+                    <input type="text" id="editFullName" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="editRole">Role</label>
+                    <select id="editRole" required>
+                        <option value="sales_rep">Sales Rep</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="hideEditUserModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
@@ -502,11 +536,8 @@
                             <td>${new Date(profile.created_at).toLocaleDateString()}</td>
                             <td>
                                 <div class="action-buttons">
-                                    <select class="role-select" onchange="updateUserRole('${profile.id}', this.value)">
-                                        <option value="sales_rep" ${profile.role === 'sales_rep' ? 'selected' : ''}>Sales Rep</option>
-                                        <option value="manager" ${profile.role === 'manager' ? 'selected' : ''}>Manager</option>
-                                        <option value="admin" ${profile.role === 'admin' ? 'selected' : ''}>Admin</option>
-                                    </select>
+                                    <button class="btn btn-secondary btn-small" onclick="showEditUserModal('${profile.id}', '${profile.email}', '${profile.full_name || ''}', '${profile.role || 'sales_rep'}')">Edit</button>
+                                    <button class="btn btn-secondary btn-small" onclick="resetUserPassword('${profile.id}', '${profile.email}')">Reset Password</button>
                                     <button class="btn btn-danger btn-small" onclick="deleteUser('${profile.id}', '${profile.email}')">Delete</button>
                                 </div>
                             </td>
@@ -520,21 +551,105 @@
             }
         }
 
-        // Update user role
-        async function updateUserRole(userId, newRole) {
+        // Show edit user modal
+        function showEditUserModal(userId, email, fullName, role) {
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editFullName').value = fullName;
+            document.getElementById('editRole').value = role;
+            document.getElementById('editUserModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Hide edit user modal
+        function hideEditUserModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Update user
+        async function updateUser(event) {
+            event.preventDefault();
+
+            const userId = document.getElementById('editUserId').value;
+            const fullName = document.getElementById('editFullName').value;
+            const role = document.getElementById('editRole').value;
+
             try {
                 const { error } = await supabase
                     .from('profiles')
-                    .update({ role: newRole, updated_at: new Date().toISOString() })
+                    .update({
+                        full_name: fullName,
+                        role: role,
+                        updated_at: new Date().toISOString()
+                    })
                     .eq('id', userId);
 
                 if (error) throw error;
 
-                alert('User role updated successfully!');
+                alert('User updated successfully!');
+                hideEditUserModal();
                 await loadUsers();
             } catch (error) {
-                console.error('Error updating role:', error);
-                alert('Error updating role: ' + error.message);
+                console.error('Error updating user:', error);
+                alert('Error updating user: ' + error.message);
+            }
+        }
+
+        // Reset user password
+        async function resetUserPassword(userId, userEmail) {
+            const newPassword = 'CloverERA2025!'; // Same temporary password as for new users
+
+            const confirmed = confirm(`Reset password for ${userEmail}?\n\nNew temporary password: ${newPassword}\n\nYou'll need to share this with the user securely.`);
+
+            if (!confirmed) return;
+
+            try {
+                // Update user password using Supabase Admin API
+                const { data, error } = await supabase.auth.admin.updateUserById(
+                    userId,
+                    { password: newPassword }
+                );
+
+                if (error) {
+                    // If admin API fails, try the public auth method
+                    // This requires re-authentication but works with anon key
+                    throw new Error('Password reset requires admin privileges. Please send a password reset email instead.');
+                }
+
+                const credentials = `Password reset for: ${userEmail}\n\nTemporary Password: ${newPassword}\n\nPlease share this with the user securely and ask them to change it upon login.`;
+
+                alert(credentials);
+
+                try {
+                    await navigator.clipboard.writeText(credentials);
+                    alert('Credentials copied to clipboard!');
+                } catch (clipError) {
+                    console.warn('Could not copy to clipboard:', clipError);
+                }
+
+            } catch (error) {
+                console.error('Error resetting password:', error);
+                // Fallback to password reset email
+                const sendEmail = confirm('Direct password reset requires admin API access.\n\nWould you like to send a password reset email to the user instead?');
+
+                if (sendEmail) {
+                    try {
+                        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+                            userEmail,
+                            {
+                                redirectTo: `${window.location.origin}/crm/login.html`
+                            }
+                        );
+
+                        if (resetError) throw resetError;
+
+                        alert(`Password reset email sent to ${userEmail}!`);
+                    } catch (emailError) {
+                        console.error('Error sending reset email:', emailError);
+                        alert('Error sending reset email: ' + emailError.message);
+                    }
+                }
             }
         }
 
@@ -591,14 +706,22 @@
                 if (error) throw error;
 
                 if (data.user) {
+                    // Wait a moment for trigger to create profile
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
                     // Update the role in profiles table (profile is auto-created by trigger)
-                    await supabase
+                    const { error: updateError } = await supabase
                         .from('profiles')
                         .update({
                             role: role,
                             full_name: fullName
                         })
                         .eq('id', data.user.id);
+
+                    if (updateError) {
+                        console.error('Error updating profile:', updateError);
+                        throw new Error('User created but role assignment failed: ' + updateError.message);
+                    }
 
                     const instructions = `User created successfully!\n\nEmail: ${email}\nTemporary Password: ${tempPassword}\nRole: ${role}\n\nIMPORTANT: Share these credentials with the new user securely. They should:\n1. Log in at: ${window.location.origin}/crm/login.html\n2. Change their password immediately after first login\n\nNote: If email confirmation is enabled, the user must confirm their email first.`;
 

@@ -185,8 +185,27 @@
         </form>
 
         <div class="help-text">
-            <p>First time? Contact admin to set up your account.</p>
-            <p style="margin-top: 0.5rem;"><a href="mailto:admin@cloverera.com">admin@cloverera.com</a></p>
+            <p><a href="#" onclick="showForgotPassword(); return false;">Forgot Password?</a></p>
+            <p style="margin-top: 0.5rem;">First time? Contact admin to set up your account.</p>
+            <p style="margin-top: 0.25rem;"><a href="mailto:admin@cloverera.com">admin@cloverera.com</a></p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 16px; max-width: 400px; width: 90%;">
+            <h2 style="margin-bottom: 1rem; color: var(--charcoal);">Reset Password</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Enter your email address and we'll send you a link to reset your password.</p>
+            <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+                <div class="form-group">
+                    <label for="resetEmail">Email Address</label>
+                    <input type="email" id="resetEmail" required placeholder="your.email@cloverera.com">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" onclick="hideForgotPassword()" style="flex: 1; padding: 0.75rem; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Cancel</button>
+                    <button type="submit" style="flex: 1; padding: 0.75rem; background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal)); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Send Reset Link</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -254,8 +273,66 @@
             }
         });
 
+        // Show forgot password modal
+        function showForgotPassword() {
+            document.getElementById('forgotPasswordModal').style.display = 'flex';
+        }
+
+        // Hide forgot password modal
+        function hideForgotPassword() {
+            document.getElementById('forgotPasswordModal').style.display = 'none';
+            document.getElementById('resetEmail').value = '';
+        }
+
+        // Handle forgot password
+        async function handleForgotPassword(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('resetEmail').value;
+
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/crm/reset-password.html`
+                });
+
+                if (error) throw error;
+
+                alert('Password reset email sent! Please check your inbox and follow the instructions.');
+                hideForgotPassword();
+
+            } catch (error) {
+                console.error('Password reset error:', error);
+                alert('Error sending reset email: ' + error.message);
+            }
+        }
+
         // Check for existing session on load
         checkExistingSession();
+
+        // Handle password reset callback (if coming from reset email)
+        window.addEventListener('hashchange', async () => {
+            if (window.location.hash.includes('type=recovery')) {
+                // User clicked password reset link
+                const newPassword = prompt('Enter your new password (minimum 6 characters):');
+
+                if (newPassword && newPassword.length >= 6) {
+                    try {
+                        const { error } = await supabase.auth.updateUser({
+                            password: newPassword
+                        });
+
+                        if (error) throw error;
+
+                        alert('Password updated successfully! Please log in with your new password.');
+                        window.location.href = '/crm/login.html';
+
+                    } catch (error) {
+                        console.error('Error updating password:', error);
+                        alert('Error updating password: ' + error.message);
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
