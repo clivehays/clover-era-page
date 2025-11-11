@@ -683,8 +683,10 @@
                 return;
             }
 
-            document.getElementById('userName').textContent = user.email;
-            document.getElementById('userAvatar').textContent = user.email[0].toUpperCase();
+            const userNameEl = document.getElementById('userName');
+            if (userNameEl) {
+                userNameEl.textContent = user.email;
+            }
 
             // Check if user is admin and show admin link
             const { data: profile } = await supabase
