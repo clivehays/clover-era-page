@@ -1146,25 +1146,35 @@
         async function loadTodaysTasks() {
             try {
                 const today = new Date();
+                today.setHours(0, 0, 0, 0);
                 const tomorrow = new Date(today);
                 tomorrow.setDate(tomorrow.getDate() + 1);
-                const todayStr = today.toISOString().split('T')[0];
-                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                const tomorrowEnd = new Date(tomorrow);
+                tomorrowEnd.setHours(23, 59, 59, 999);
 
-                // Get activities that are tasks and due today or tomorrow
+                // Get ALL activities (not just tasks) that have a due date and are not completed
+                // This includes meetings, calls, emails with due dates
                 const { data: activities, error: activitiesError } = await supabase
                     .from('activities')
                     .select('*')
-                    .eq('type', 'task')
-                    .eq('completed', false)
-                    .lte('due_date', new Date(tomorrowStr + 'T23:59:59').toISOString())
+                    .not('due_date', 'is', null)
+                    .lte('due_date', tomorrowEnd.toISOString())
                     .order('due_date', { ascending: true });
 
                 console.log('Activities loaded:', activities, 'Error:', activitiesError);
 
+                // Filter out completed activities (check both status and completed fields)
+                const incompleteActivities = (activities || []).filter(activity => {
+                    // If status field exists, use it; otherwise fall back to completed field
+                    if (activity.status) {
+                        return activity.status !== 'completed';
+                    }
+                    return !activity.completed;
+                });
+
                 // Get company names separately if we have activities
-                if (activities && activities.length > 0) {
-                    for (let activity of activities) {
+                if (incompleteActivities.length > 0) {
+                    for (let activity of incompleteActivities) {
                         if (activity.company_id) {
                             const { data: company } = await supabase
                                 .from('companies')
@@ -1179,11 +1189,13 @@
                 const overdue = [];
                 const dueSoon = [];
 
-                (activities || []).forEach(task => {
-                    const dueDate = new Date(task.due_date).toISOString().split('T')[0];
-                    if (dueDate < todayStr) {
+                incompleteActivities.forEach(task => {
+                    const dueDate = new Date(task.due_date);
+                    dueDate.setHours(0, 0, 0, 0);
+
+                    if (dueDate < today) {
                         overdue.push(task);
-                    } else if (dueDate <= tomorrowStr) {
+                    } else if (dueDate <= tomorrow) {
                         dueSoon.push(task);
                     }
                 });
@@ -1225,31 +1237,46 @@
 
                 document.getElementById('tasksContent').style.display = 'block';
 
+                // Activity type icons
+                const activityIcons = {
+                    task: '✅',
+                    meeting: '📅',
+                    call: '📞',
+                    email: '✉️',
+                    note: '📝',
+                    demo: '🎯'
+                };
+
                 // Render overdue tasks
                 if (overdue.length > 0) {
                     document.getElementById('overdueTasksList').innerHTML = `
                         <h3 style="color: var(--danger-red); margin-bottom: 1rem;">⚠️ Overdue (${overdue.length})</h3>
-                        ${overdue.map(task => `
+                        ${overdue.map(task => {
+                            const icon = activityIcons[task.type] || '📋';
+                            return `
                             <div onclick="window.location.href='/crm/activities.html?id=${task.id}'" style="padding: 1rem; border-left: 4px solid var(--danger-red); background: #FEE2E2; border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow=''; this.style.transform='';">
-                                <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">${icon} ${task.subject}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
                                     ${task.company?.name || 'No company'} • Due: ${new Date(task.due_date).toLocaleDateString()}
                                 </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     `;
                 }
 
                 // Render due today/tomorrow
                 if (dueSoon.length > 0) {
+                    const todayStr = today.toISOString().split('T')[0];
                     document.getElementById('dueTodayList').innerHTML = `
                         <h3 style="color: var(--warning-orange); margin-bottom: 1rem;">📅 Due Today/Tomorrow (${dueSoon.length})</h3>
                         ${dueSoon.map(task => {
                             const dueDate = new Date(task.due_date);
-                            const isToday = dueDate.toISOString().split('T')[0] === todayStr;
+                            const dueDateStr = dueDate.toISOString().split('T')[0];
+                            const isToday = dueDateStr === todayStr;
+                            const icon = activityIcons[task.type] || '📋';
                             return `
                             <div onclick="window.location.href='/crm/activities.html?id=${task.id}'" style="padding: 1rem; border-left: 4px solid var(--warning-orange); background: #FEF3C7; border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow=''; this.style.transform='';">
-                                <div style="font-weight: 600; margin-bottom: 0.25rem;">${task.subject}</div>
+                                <div style="font-weight: 600; margin-bottom: 0.25rem;">${icon} ${task.subject}</div>
                                 <div style="font-size: 0.9rem; color: var(--text-secondary);">
                                     ${task.company?.name || 'No company'} • Due: ${isToday ? 'Today' : 'Tomorrow'} (${dueDate.toLocaleDateString()})
                                 </div>
