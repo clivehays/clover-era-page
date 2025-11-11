@@ -613,19 +613,42 @@
             const fullName = document.getElementById('editFullName').value;
             const role = document.getElementById('editRole').value;
 
+            console.log('=== UPDATE USER DEBUG ===');
+            console.log('User ID:', userId);
+            console.log('Full Name:', fullName);
+            console.log('Role:', role);
+
             try {
-                const { error } = await supabase
+                const updateData = {
+                    full_name: fullName,
+                    role: role,
+                    updated_at: new Date().toISOString()
+                };
+
+                console.log('Update data:', updateData);
+
+                const { data, error } = await supabase
                     .from('profiles')
-                    .update({
-                        full_name: fullName,
-                        role: role,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', userId);
+                    .update(updateData)
+                    .eq('id', userId)
+                    .select(); // Add select to see what was actually updated
+
+                console.log('Update response data:', data);
+                console.log('Update response error:', error);
 
                 if (error) throw error;
 
-                alert('User updated successfully!');
+                // Verify the update by fetching the profile
+                const { data: verifyData, error: verifyError } = await supabase
+                    .from('profiles')
+                    .select('id, email, full_name, role')
+                    .eq('id', userId)
+                    .single();
+
+                console.log('Verification query result:', verifyData);
+                console.log('Verification query error:', verifyError);
+
+                alert(`User updated successfully!\n\nVerified data:\nName: ${verifyData?.full_name}\nRole: ${verifyData?.role}`);
                 hideEditUserModal();
                 await loadUsers();
             } catch (error) {
