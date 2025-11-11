@@ -320,7 +320,7 @@
         <!-- Header -->
         <div class="header">
             <h1>User Management</h1>
-            <button class="btn btn-primary" onclick="showInviteModal()">Invite User</button>
+            <button class="btn btn-primary" onclick="showInviteModal()">+ Add User</button>
         </div>
 
         <!-- Stats -->
@@ -366,11 +366,11 @@
         </div>
     </div>
 
-    <!-- Invite User Modal -->
+    <!-- Add User Modal -->
     <div id="inviteModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Invite User</h2>
+                <h2>Add New User</h2>
                 <button class="close-btn" onclick="hideInviteModal()">&times;</button>
             </div>
             <form onsubmit="inviteUser(event)">
@@ -390,9 +390,14 @@
                         <option value="admin">Admin</option>
                     </select>
                 </div>
+                <div class="info-box" style="background: #E3F2FD; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #1976D2;">
+                    <p style="margin: 0; font-size: 0.9rem; color: #1565C0;">
+                        <strong>Note:</strong> A temporary password will be generated. You'll receive login credentials to share with the new user securely.
+                    </p>
+                </div>
                 <div style="display: flex; gap: 1rem; justify-content: flex-end;">
                     <button type="button" class="btn btn-secondary" onclick="hideInviteModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Send Invite</button>
+                    <button type="submit" class="btn btn-primary">Create User</button>
                 </div>
             </form>
         </div>
@@ -556,38 +561,68 @@
             const fullName = document.getElementById('inviteFullName').value;
             const role = document.getElementById('inviteRole').value;
 
-            try {
-                // Note: Supabase auth.admin.inviteUserByEmail requires service role key
-                // Since we're using anon key, we'll use signUp with auto-confirm disabled
-                // In production, you'd want to use the Admin API with service role key
+            // Generate a temporary password
+            const tempPassword = 'CloverERA2025!'; // Users will need to change this on first login
 
-                const { data, error } = await supabase.auth.admin.createUser({
+            try {
+                // Check if user already exists
+                const { data: existingProfile } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('email', email)
+                    .single();
+
+                if (existingProfile) {
+                    alert('A user with this email already exists.');
+                    return;
+                }
+
+                // Create the user account using signUp
+                const { data, error } = await supabase.auth.signUp({
                     email: email,
-                    email_confirm: true,
-                    user_metadata: {
-                        full_name: fullName
+                    password: tempPassword,
+                    options: {
+                        data: {
+                            full_name: fullName
+                        }
                     }
                 });
 
                 if (error) throw error;
 
-                // Update the role in profiles table
-                await supabase
-                    .from('profiles')
-                    .update({ role: role, full_name: fullName })
-                    .eq('id', data.user.id);
+                if (data.user) {
+                    // Update the role in profiles table (profile is auto-created by trigger)
+                    await supabase
+                        .from('profiles')
+                        .update({
+                            role: role,
+                            full_name: fullName
+                        })
+                        .eq('id', data.user.id);
 
-                alert(`User invited successfully! An email has been sent to ${email}`);
-                hideInviteModal();
-                await loadUsers();
+                    const instructions = `User created successfully!\n\nEmail: ${email}\nTemporary Password: ${tempPassword}\nRole: ${role}\n\nIMPORTANT: Share these credentials with the new user securely. They should:\n1. Log in at: ${window.location.origin}/crm/login.html\n2. Change their password immediately after first login\n\nNote: If email confirmation is enabled, the user must confirm their email first.`;
+
+                    alert(instructions);
+
+                    // Copy credentials to clipboard for easy sharing
+                    const clipboardText = `Clover ERA CRM Login\n\nURL: ${window.location.origin}/crm/login.html\nEmail: ${email}\nTemporary Password: ${tempPassword}\n\nPlease change your password after first login.`;
+
+                    try {
+                        await navigator.clipboard.writeText(clipboardText);
+                        alert('Login credentials have been copied to your clipboard!');
+                    } catch (clipError) {
+                        console.warn('Could not copy to clipboard:', clipError);
+                    }
+
+                    hideInviteModal();
+                    await loadUsers();
+                } else {
+                    throw new Error('User creation failed - no user data returned');
+                }
 
             } catch (error) {
-                console.error('Error inviting user:', error);
-                if (error.message.includes('admin')) {
-                    alert('User invitation requires admin privileges. Please create users through the Supabase dashboard Authentication panel, and they will automatically appear here.');
-                } else {
-                    alert('Error inviting user: ' + error.message);
-                }
+                console.error('Error creating user:', error);
+                alert('Error creating user: ' + error.message);
             }
         }
 
