@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Article Editor | Clover ERA CRM</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/ea04nnt2s009oy5lvyd223xj819byssuu7kzh4f0togfpusa/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <style>
+        :root {
+            --primary-teal: #1ba098;
+            --deep-teal: #158f87;
+            --soft-beige: #f9f7f4;
+            --warm-cream: #fdfbf7;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --success-green: #48bb78;
+            --warning-orange: #ed8936;
+            --error-red: #f56565;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--warm-cream);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .back-btn {
+            background: var(--soft-beige);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-draft { background: #e2e8f0; color: #4a5568; }
+        .status-published { background: #c6f6d5; color: #22543d; }
+
+        .save-status {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .save-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success-green);
+        }
+
+        .save-indicator.saving {
+            background: var(--warning-orange);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .main-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .sidebar-section h3 {
+            font-size: 1.1rem;
+            color: var(--primary-teal);
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+        }
+
+        .char-count {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+
+        .char-count.over-limit {
+            color: var(--error-red);
+        }
+
+        .tag-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tag-input-wrapper button {
+            padding: 0.75rem 1rem;
+            background: var(--primary-teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .tag-item {
+            background: var(--soft-beige);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .tag-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show { display: block; }
+        .alert-success { background: #c6f6d5; color: #22543d; }
+        .alert-error { background: #fed7d7; color: #742a2a; }
+
+        @media (max-width: 1024px) {
+            .editor-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <a href="blog-articles.html" class="back-btn">← Back</a>
+            <h1 class="page-title" id="pageTitle">New Article</h1>
+        </div>
+        <div class="header-right">
+            <div class="save-status">
+                <span class="save-indicator" id="saveIndicator"></span>
+                <span id="saveStatusText">All changes saved</span>
+            </div>
+            <span class="status-badge status-draft" id="statusBadge">Draft</span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div id="alertBox" class="alert"></div>
+
+        <div class="editor-layout">
+            <!-- Main Editor -->
+            <div class="main-content">
+                <form id="articleForm">
+                    <input type="hidden" id="articleId">
+
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label for="title">Article Title *</label>
+                        <input type="text" id="title" required maxlength="255" placeholder="Enter article title...">
+                        <div class="char-count"><span id="titleCount">0</span>/255</div>
+                    </div>
+
+                    <!-- Slug -->
+                    <div class="form-group">
+                        <label for="slug">URL Slug (auto-generated)</label>
+                        <input type="text" id="slug" maxlength="255" placeholder="article-url-slug">
+                    </div>
+
+                    <!-- Excerpt -->
+                    <div class="form-group">
+                        <label for="excerpt">Excerpt *</label>
+                        <textarea id="excerpt" required maxlength="300" placeholder="Brief summary..."></textarea>
+                        <div class="char-count"><span id="excerptCount">0</span>/300</div>
+                    </div>
+
+                    <!-- Rich Text Editor -->
+                    <div class="form-group">
+                        <label for="content">Article Content *</label>
+                        <textarea id="content"></textarea>
+                    </div>
+
+                    <!-- SEO Fields -->
+                    <div class="form-group">
+                        <label for="metaTitle">Meta Title (SEO)</label>
+                        <input type="text" id="metaTitle" maxlength="70">
+                        <div class="char-count"><span id="metaTitleCount">0</span>/70</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="metaDescription">Meta Description (SEO)</label>
+                        <textarea id="metaDescription" maxlength="160"></textarea>
+                        <div class="char-count"><span id="metaDescCount">0</span>/160</div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="saveDraft()">💾 Save Draft</button>
+                        <button type="button" class="btn btn-primary" onclick="publishArticle()">🚀 Publish</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Featured Image -->
+                <div class="sidebar-section">
+                    <h3>Featured Image</h3>
+                    <div class="form-group">
+                        <input type="url" id="featuredImage" placeholder="Image URL">
+                    </div>
+                </div>
+
+                <!-- Category & Tags -->
+                <div class="sidebar-section">
+                    <h3>Organization</h3>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="">Select...</option>
+                            <option value="Employee Engagement">Employee Engagement</option>
+                            <option value="Team Management">Team Management</option>
+                            <option value="Workplace Wellness">Workplace Wellness</option>
+                            <option value="Productivity">Productivity</option>
+                            <option value="Company Culture">Company Culture</option>
+                            <option value="Remote Work">Remote Work</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tagInput">Tags</label>
+                        <div class="tag-input-wrapper">
+                            <input type="text" id="tagInput" placeholder="Add tag...">
+                            <button type="button" onclick="addTag()">Add</button>
+                        </div>
+                        <div class="tags-list" id="tagsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibnpsYmJhZXpvdHpiYWVjcGJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5NTgyNTgsImV4cCI6MjA3ODUzNDI1OH0.TBRvG4AuCNE7ZdqZB_NXvQwDteAFHcDAM_DxApPHOlo';
+
+        let supabase;
+        let articleId = null;
+        let currentTags = [];
+        let autoSaveTimer = null;
+        let currentUser = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            // Check authentication
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = session.user;
+
+            // Initialize TinyMCE
+            tinymce.init({
+                selector: '#content',
+                height: 500,
+                menubar: true,
+                plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                ],
+                toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif; font-size: 16px; }',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        triggerAutoSave();
+                    });
+                }
+            });
+
+            // Check if editing existing article
+            const urlParams = new URLSearchParams(window.location.search);
+            articleId = urlParams.get('id');
+            if (articleId) {
+                loadArticle(articleId);
+            }
+
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('title').addEventListener('input', function() {
+                updateCharCount('title', 'titleCount', 255);
+                updateSlug();
+            });
+
+            document.getElementById('excerpt').addEventListener('input', function() {
+                updateCharCount('excerpt', 'excerptCount', 300);
+            });
+
+            document.getElementById('metaTitle').addEventListener('input', function() {
+                updateCharCount('metaTitle', 'metaTitleCount', 70);
+            });
+
+            document.getElementById('metaDescription').addEventListener('input', function() {
+                updateCharCount('metaDescription', 'metaDescCount', 160);
+            });
+
+            document.getElementById('tagInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addTag();
+                }
+            });
+
+            document.getElementById('articleForm').addEventListener('input', triggerAutoSave);
+        }
+
+        function updateCharCount(fieldId, countId, max) {
+            const field = document.getElementById(fieldId);
+            const count = document.getElementById(countId);
+            const length = field.value.length;
+            count.textContent = length;
+            count.parentElement.classList.toggle('over-limit', length > max);
+        }
+
+        function updateSlug() {
+            const title = document.getElementById('title').value;
+            const slug = title.toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+            document.getElementById('slug').value = slug;
+        }
+
+        function addTag() {
+            const input = document.getElementById('tagInput');
+            const tag = input.value.trim();
+            if (tag && !currentTags.includes(tag)) {
+                currentTags.push(tag);
+                renderTags();
+                input.value = '';
+            }
+        }
+
+        function removeTag(tag) {
+            currentTags = currentTags.filter(t => t !== tag);
+            renderTags();
+        }
+
+        function renderTags() {
+            const tagsList = document.getElementById('tagsList');
+            tagsList.innerHTML = currentTags.map(tag => `
+                <div class="tag-item">
+                    <span>${tag}</span>
+                    <button type="button" onclick="removeTag('${tag}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        function triggerAutoSave() {
+            clearTimeout(autoSaveTimer);
+            updateSaveStatus('saving');
+
+            autoSaveTimer = setTimeout(() => {
+                if (articleId) {
+                    saveDraft(true);
+                }
+            }, 3000);
+        }
+
+        function updateSaveStatus(status) {
+            const indicator = document.getElementById('saveIndicator');
+            const text = document.getElementById('saveStatusText');
+
+            if (status === 'saving') {
+                indicator.classList.add('saving');
+                text.textContent = 'Saving...';
+            } else if (status === 'saved') {
+                indicator.classList.remove('saving');
+                text.textContent = 'All changes saved';
+            }
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.textContent = message;
+            setTimeout(() => alertBox.classList.remove('show'), 5000);
+        }
+
+        async function saveDraft(silent = false) {
+            try {
+                if (!silent) updateSaveStatus('saving');
+
+                const data = {
+                    title: document.getElementById('title').value,
+                    slug: document.getElementById('slug').value,
+                    excerpt: document.getElementById('excerpt').value,
+                    content: tinymce.get('content').getContent(),
+                    featured_image: document.getElementById('featuredImage').value || null,
+                    category: document.getElementById('category').value || null,
+                    tags: currentTags,
+                    meta_title: document.getElementById('metaTitle').value || null,
+                    meta_description: document.getElementById('metaDescription').value || null,
+                    author_id: currentUser.id,
+                    status: 'draft'
+                };
+
+                if (articleId) {
+                    const { error } = await supabase
+                        .from('blog_articles')
+                        .update(data)
+                        .eq('id', articleId);
+                    if (error) throw error;
+                } else {
+                    const { data: newArticle, error } = await supabase
+                        .from('blog_articles')
+                        .insert([data])
+                        .select()
+                        .single();
+                    if (error) throw error;
+                    articleId = newArticle.id;
+                    window.history.replaceState({}, '', `?id=${articleId}`);
+                }
+
+                updateSaveStatus('saved');
+                if (!silent) showAlert('Draft saved successfully!');
+
+            } catch (error) {
+                console.error('Error saving:', error);
+                showAlert('Error saving draft: ' + error.message, 'error');
+            }
+        }
+
+        async function publishArticle() {
+            try {
+                if (!articleId) {
+                    await saveDraft(true);
+                }
+
+                const confirmed = confirm('Publish this article? It will be visible on the blog.');
+                if (!confirmed) return;
+
+                const { error } = await supabase
+                    .from('blog_articles')
+                    .update({
+                        status: 'published',
+                        published_at: new Date().toISOString()
+                    })
+                    .eq('id', articleId);
+
+                if (error) throw error;
+
+                showAlert('Article published successfully! 🎉');
+                document.getElementById('statusBadge').className = 'status-badge status-published';
+                document.getElementById('statusBadge').textContent = 'Published';
+
+                setTimeout(() => {
+                    window.location.href = 'blog-articles.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error publishing:', error);
+                showAlert('Error publishing article: ' + error.message, 'error');
+            }
+        }
+
+        async function loadArticle(id) {
+            try {
+                const { data: article, error } = await supabase
+                    .from('blog_articles')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                document.getElementById('title').value = article.title;
+                document.getElementById('slug').value = article.slug;
+                document.getElementById('excerpt').value = article.excerpt || '';
+                tinymce.get('content').setContent(article.content);
+                document.getElementById('featuredImage').value = article.featured_image || '';
+                document.getElementById('category').value = article.category || '';
+                document.getElementById('metaTitle').value = article.meta_title || '';
+                document.getElementById('metaDescription').value = article.meta_description || '';
+
+                if (article.tags) {
+                    currentTags = article.tags;
+                    renderTags();
+                }
+
+                document.getElementById('pageTitle').textContent = `Edit: ${article.title}`;
+                document.getElementById('statusBadge').textContent = article.status;
+
+                updateCharCount('title', 'titleCount', 255);
+                updateCharCount('excerpt', 'excerptCount', 300);
+
+            } catch (error) {
+                console.error('Error loading article:', error);
+                showAlert('Error loading article', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
