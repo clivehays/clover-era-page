@@ -785,7 +785,89 @@
             }
         });
     </script>
-    
+
+    <!-- Supabase JS Client for Dynamic Blog Loading -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Load articles dynamically from Supabase
+        async function loadBlogArticles() {
+            try {
+                const { data: articles, error } = await supabase
+                    .from('blog_articles')
+                    .select('*')
+                    .eq('status', 'published')
+                    .order('published_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading articles:', error);
+                    return;
+                }
+
+                if (!articles || articles.length === 0) {
+                    console.log('No published articles found');
+                    return;
+                }
+
+                // Render articles
+                const articleList = document.querySelector('.article-list');
+
+                // Clear existing articles
+                articleList.innerHTML = '';
+
+                articles.forEach(article => {
+                    const articleHTML = `
+                        <article class="article-item">
+                            ${article.featured_image ? `<div class="article-image" style="background-image: url('${article.featured_image}')"></div>` : ''}
+                            <div class="article-details">
+                                <div class="article-meta">
+                                    ${article.category ? `<span class="article-category">${escapeHtml(article.category)}</span>` : ''}
+                                    <span class="article-author">✍️ Clover ERA Team</span>
+                                    <span>📅 ${formatDate(article.published_at)}</span>
+                                    ${article.read_time_minutes ? `<span>⏱️ ${article.read_time_minutes} min read</span>` : ''}
+                                </div>
+                                <h3>
+                                    <a href="/Blog/${article.slug}.html">${escapeHtml(article.title)}</a>
+                                </h3>
+                                ${article.excerpt ? `<p class="article-excerpt">${escapeHtml(article.excerpt)}</p>` : ''}
+                                <a href="/Blog/${article.slug}.html" class="read-more">
+                                    Read Full Article →
+                                </a>
+                            </div>
+                        </article>
+                    `;
+                    articleList.insertAdjacentHTML('beforeend', articleHTML);
+                });
+
+                console.log(`Loaded ${articles.length} articles from Supabase`);
+
+            } catch (error) {
+                console.error('Unexpected error loading articles:', error);
+            }
+        }
+
+        // Helper functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load articles when page loads
+        document.addEventListener('DOMContentLoaded', loadBlogArticles);
+    </script>
+
     <!-- Cookie Consent -->
     <script src="/js/cookie-consent.js"></script>
 </body>
