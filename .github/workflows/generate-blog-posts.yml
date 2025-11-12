@@ -1,0 +1,50 @@
+name: Generate Blog Posts from Supabase
+
+on:
+  # Run on push to main (manual trigger from editor)
+  repository_dispatch:
+    types: [publish-blog-article]
+
+  # Also allow manual trigger
+  workflow_dispatch:
+
+  # Run every 5 minutes to check for new published articles
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  generate-blog-posts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install @supabase/supabase-js
+
+      - name: Generate blog posts from Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node .github/scripts/generate-blog-posts.js
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add Blog/*.html
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🤖 Auto-generate blog posts from Supabase [skip ci]"
+            git push
+          fi
