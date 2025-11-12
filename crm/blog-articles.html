@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Management | Clover ERA CRM</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary-teal: #1ba098;
+            --deep-teal: #158f87;
+            --soft-beige: #f9f7f4;
+            --warm-cream: #fdfbf7;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --success-green: #48bb78;
+            --warning-orange: #ed8936;
+            --error-red: #f56565;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--warm-cream);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-teal);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--primary-teal);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 160, 152, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+        }
+
+        .articles-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .filters {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filters select, .filters input {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--soft-beige);
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background: var(--warm-cream);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-draft {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .status-published {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .loading, .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="blog-articles.html" class="active">📝 Blog</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div id="alertBox" class="alert"></div>
+
+        <div class="header">
+            <h1>📝 Blog Management</h1>
+            <div style="display: flex; gap: 1rem;">
+                <a href="../blog-index.html" target="_blank" class="btn btn-secondary">
+                    🌐 View Blog
+                </a>
+                <a href="blog-editor.html" class="btn btn-primary">
+                    ✏️ New Article
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📄</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Total Articles</div>
+                <div class="stat-value" id="totalArticles">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Published</div>
+                <div class="stat-value" id="publishedArticles">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">👁️</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Total Views</div>
+                <div class="stat-value" id="totalViews">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤖</div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">AI Traffic</div>
+                <div class="stat-value" id="aiTraffic">0</div>
+            </div>
+        </div>
+
+        <!-- Articles Table -->
+        <div class="articles-card">
+            <div class="card-header">
+                <h2>Articles</h2>
+            </div>
+
+            <div class="filters">
+                <select id="statusFilter" onchange="filterArticles()">
+                    <option value="">All Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="pending_review">Pending Review</option>
+                    <option value="published">Published</option>
+                    <option value="archived">Archived</option>
+                </select>
+
+                <select id="categoryFilter" onchange="filterArticles()">
+                    <option value="">All Categories</option>
+                    <option value="Employee Engagement">Employee Engagement</option>
+                    <option value="Team Management">Team Management</option>
+                    <option value="Workplace Wellness">Workplace Wellness</option>
+                    <option value="Productivity">Productivity</option>
+                </select>
+
+                <input type="text" id="searchInput" placeholder="Search articles..." oninput="searchArticles()">
+            </div>
+
+            <div id="tableContainer">
+                <div class="loading">Loading articles...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Get from: https://drugebiitlcjkknjfxeh.supabase.co/project/_/settings/api
+
+        let supabase;
+        let allArticles = [];
+        let currentUser = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize Supabase
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            // Check authentication
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = session.user;
+
+            // Load articles
+            await loadArticles();
+        });
+
+        async function loadArticles() {
+            try {
+                const { data, error } = await supabase
+                    .from('blog_articles')
+                    .select('*')
+                    .order('updated_at', { ascending: false });
+
+                if (error) throw error;
+
+                allArticles = data || [];
+                renderTable();
+                updateStats();
+
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                showAlert('Error loading articles: ' + error.message, 'error');
+                showEmptyState('Error loading articles');
+            }
+        }
+
+        function updateStats() {
+            const total = allArticles.length;
+            const published = allArticles.filter(a => a.status === 'published').length;
+            const totalViews = allArticles.reduce((sum, a) => sum + (a.view_count || 0), 0);
+
+            document.getElementById('totalArticles').textContent = total;
+            document.getElementById('publishedArticles').textContent = published;
+            document.getElementById('totalViews').textContent = totalViews;
+            document.getElementById('aiTraffic').textContent = '0'; // Will be calculated from analytics
+        }
+
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+
+            if (allArticles.length === 0) {
+                showEmptyState('No articles found. Create your first article!');
+                return;
+            }
+
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Views</th>
+                            <th>Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${allArticles.map(article => `
+                            <tr>
+                                <td style="font-weight: 600;">
+                                    <a href="blog-editor.html?id=${article.id}" style="color: inherit; text-decoration: none;">
+                                        ${escapeHtml(article.title)}
+                                    </a>
+                                </td>
+                                <td>${article.category || '-'}</td>
+                                <td>
+                                    <span class="status-badge status-${article.status}">
+                                        ${article.status.replace('_', ' ')}
+                                    </span>
+                                </td>
+                                <td>${article.view_count || 0}</td>
+                                <td>${formatDate(article.updated_at)}</td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="action-btn" onclick="editArticle('${article.id}')" title="Edit">✏️</button>
+                                        ${article.status === 'published' ?
+                                            `<button class="action-btn" onclick="viewArticle('${article.slug}')" title="View">👁️</button>` : ''
+                                        }
+                                        <button class="action-btn" onclick="deleteArticle('${article.id}')" title="Delete">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        function filterArticles() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+
+            // TODO: Implement filtering
+            renderTable();
+        }
+
+        function searchArticles() {
+            // TODO: Implement search
+        }
+
+        function editArticle(id) {
+            window.location.href = `blog-editor.html?id=${id}`;
+        }
+
+        function viewArticle(slug) {
+            window.open(`../blog/${slug}.html`, '_blank');
+        }
+
+        async function deleteArticle(id) {
+            if (!confirm('Are you sure you want to delete this article? This cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('blog_articles')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showAlert('Article deleted successfully', 'success');
+                await loadArticles();
+
+            } catch (error) {
+                console.error('Error deleting article:', error);
+                showAlert('Error deleting article: ' + error.message, 'error');
+            }
+        }
+
+        function showEmptyState(message) {
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h2>${message}</h2>
+                    ${allArticles.length === 0 ? '<p><a href="blog-editor.html" class="btn btn-primary" style="margin-top: 1rem;">Create Your First Article</a></p>' : ''}
+                </div>
+            `;
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.textContent = message;
+
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
