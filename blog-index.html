@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Employee Engagement Insights | Clover ERA</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Discover expert insights on employee engagement, workplace wellness, and team management. Learn how to build thriving teams with Clover ERA.">
+    <meta name="keywords" content="employee engagement, workplace wellness, team management, burnout prevention, company culture">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Blog - Employee Engagement Insights | Clover ERA">
+    <meta property="og:description" content="Expert insights on building engaged, thriving teams">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/blog-index.html">
+
+    <!-- Fuse.js for client-side search -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+
+    <style>
+        :root {
+            --primary-teal: #1ba098;
+            --deep-teal: #158f87;
+            --soft-beige: #f9f7f4;
+            --warm-cream: #fdfbf7;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--warm-cream);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-teal);
+        }
+
+        .cta-btn {
+            background: var(--primary-teal);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 160, 152, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-teal);
+            color: var(--primary-teal);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-teal);
+            color: white;
+            border-color: var(--primary-teal);
+        }
+
+        /* Article Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .article-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--soft-beige);
+        }
+
+        .article-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .article-category {
+            background: var(--primary-teal);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .article-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+            color: var(--text-primary);
+        }
+
+        .article-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .read-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .read-more {
+            color: var(--primary-teal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Tag Cloud */
+        .tag-cloud {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 3rem;
+        }
+
+        .tag-cloud h2 {
+            margin-bottom: 1rem;
+            color: var(--primary-teal);
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tag {
+            background: var(--soft-beige);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        /* Loading & Empty States */
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-teal);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">Clover ERA</a>
+            <nav class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/research">Research</a>
+                <a href="/blog-index.html">Blog</a>
+                <a href="/start-trial" class="cta-btn">Start Free Trial</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Employee Engagement Insights</h1>
+            <p>Expert advice on building thriving teams, preventing burnout, and creating exceptional workplace culture</p>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search articles..." autocomplete="off">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>Categories:</label>
+                <button class="filter-btn active" data-category="all" onclick="filterByCategory('all')">All</button>
+                <button class="filter-btn" data-category="Employee Engagement" onclick="filterByCategory('Employee Engagement')">Employee Engagement</button>
+                <button class="filter-btn" data-category="Team Management" onclick="filterByCategory('Team Management')">Team Management</button>
+                <button class="filter-btn" data-category="Workplace Wellness" onclick="filterByCategory('Workplace Wellness')">Workplace Wellness</button>
+                <button class="filter-btn" data-category="Productivity" onclick="filterByCategory('Productivity')">Productivity</button>
+            </div>
+        </div>
+
+        <!-- Articles Grid -->
+        <div id="articlesContainer">
+            <div class="loading">Loading articles...</div>
+        </div>
+
+        <!-- Tag Cloud -->
+        <div class="tag-cloud">
+            <h2>Popular Topics</h2>
+            <div class="tags" id="tagCloud">
+                <!-- Tags populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Clover ERA</h3>
+                <p>Daily pulse checks and AI-powered insights to build engaged, thriving teams.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Product</h3>
+                <ul>
+                    <li><a href="/#features">Features</a></li>
+                    <li><a href="/research">Research</a></li>
+                    <li><a href="/blog-index.html">Blog</a></li>
+                    <li><a href="/start-trial">Start Trial</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/terms">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <ul>
+                    <li><a href="mailto:support@cloverera.com">support@cloverera.com</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Twitter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Clover ERA. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Configuration
+        const API_BASE = '/api/blog';
+        let allArticles = [];
+        let filteredArticles = [];
+        let fuse = null;
+        let currentCategory = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadArticles();
+            setupSearch();
+        });
+
+        async function loadArticles() {
+            try {
+                // In production, this would fetch from the API
+                // For now, we'll use a mock data structure
+                const response = await fetch(`${API_BASE}/articles?status=published&sort=published_at&order=desc&limit=100`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    allArticles = data.articles;
+                } else {
+                    // Mock data for demonstration
+                    allArticles = getMockArticles();
+                }
+
+                filteredArticles = allArticles;
+                renderArticles();
+                renderTagCloud();
+
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                // Use mock data on error
+                allArticles = getMockArticles();
+                filteredArticles = allArticles;
+                renderArticles();
+                renderTagCloud();
+            }
+        }
+
+        function setupSearch() {
+            // Initialize Fuse.js for fuzzy search
+            fuse = new Fuse(allArticles, {
+                keys: ['title', 'excerpt', 'content', 'category', 'tags'],
+                threshold: 0.3,
+                includeScore: true
+            });
+
+            // Search input handler
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const query = this.value.trim();
+
+                    if (query.length === 0) {
+                        filteredArticles = currentCategory === 'all'
+                            ? allArticles
+                            : allArticles.filter(a => a.category === currentCategory);
+                    } else {
+                        const results = fuse.search(query);
+                        filteredArticles = results.map(r => r.item);
+
+                        if (currentCategory !== 'all') {
+                            filteredArticles = filteredArticles.filter(a => a.category === currentCategory);
+                        }
+                    }
+
+                    renderArticles();
+                }, 300);
+            });
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter articles
+            const searchQuery = document.getElementById('searchInput').value.trim();
+
+            if (searchQuery.length > 0) {
+                const results = fuse.search(searchQuery);
+                filteredArticles = results.map(r => r.item);
+            } else {
+                filteredArticles = allArticles;
+            }
+
+            if (category !== 'all') {
+                filteredArticles = filteredArticles.filter(a => a.category === category);
+            }
+
+            renderArticles();
+        }
+
+        function filterByTag(tag) {
+            // Update search input
+            document.getElementById('searchInput').value = tag;
+
+            // Perform search
+            const results = fuse.search(tag);
+            filteredArticles = results.map(r => r.item);
+
+            renderArticles();
+
+            // Scroll to articles
+            document.getElementById('articlesContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderArticles() {
+            const container = document.getElementById('articlesContainer');
+
+            if (filteredArticles.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h2>No articles found</h2>
+                        <p>Try adjusting your search or filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const articlesHTML = filteredArticles.map(article => `
+                <a href="/blog/${article.slug}.html" class="article-card">
+                    ${article.featured_image ?
+                        `<img src="${article.featured_image}" alt="${article.title}" class="article-image" onerror="this.style.display='none'">` :
+                        '<div class="article-image"></div>'
+                    }
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-category">${article.category || 'Uncategorized'}</span>
+                            <span>📅 ${formatDate(article.published_at)}</span>
+                        </div>
+                        <h2 class="article-title">${article.title}</h2>
+                        <p class="article-excerpt">${article.excerpt || ''}</p>
+                        <div class="article-footer">
+                            <span class="read-time">⏱️ ${article.read_time_minutes || 5} min read</span>
+                            <span class="read-more">Read more →</span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+
+            container.innerHTML = `<div class="articles-grid">${articlesHTML}</div>`;
+        }
+
+        function renderTagCloud() {
+            const tagFrequency = {};
+
+            allArticles.forEach(article => {
+                if (article.tags) {
+                    article.tags.forEach(tag => {
+                        tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+                    });
+                }
+            });
+
+            const sortedTags = Object.entries(tagFrequency)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 20);
+
+            const tagCloudHTML = sortedTags.map(([tag, count]) => `
+                <span class="tag" onclick="filterByTag('${tag}')">${tag} (${count})</span>
+            `).join('');
+
+            document.getElementById('tagCloud').innerHTML = tagCloudHTML;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function getMockArticles() {
+            // Mock data for demonstration
+            return [
+                {
+                    id: '1',
+                    title: '5 Signs Your Team is Experiencing Burnout',
+                    slug: '5-signs-team-burnout',
+                    excerpt: 'Learn to recognize early warning signs of employee burnout before it affects productivity and morale.',
+                    category: 'Workplace Wellness',
+                    tags: ['burnout', 'employee wellness', 'mental health'],
+                    published_at: '2025-11-10T10:00:00Z',
+                    read_time_minutes: 6,
+                    featured_image: null
+                },
+                {
+                    id: '2',
+                    title: 'How to Build Psychological Safety in Remote Teams',
+                    slug: 'psychological-safety-remote-teams',
+                    excerpt: 'Discover practical strategies for creating an environment where remote team members feel safe to take risks and be vulnerable.',
+                    category: 'Team Management',
+                    tags: ['remote work', 'psychological safety', 'team culture'],
+                    published_at: '2025-11-08T14:30:00Z',
+                    read_time_minutes: 8,
+                    featured_image: null
+                },
+                {
+                    id: '3',
+                    title: 'The ROI of Employee Engagement: Data-Driven Insights',
+                    slug: 'roi-employee-engagement',
+                    excerpt: 'Hard numbers on how engaged teams drive business results, from productivity to profitability.',
+                    category: 'Employee Engagement',
+                    tags: ['ROI', 'engagement metrics', 'business impact'],
+                    published_at: '2025-11-05T09:00:00Z',
+                    read_time_minutes: 10,
+                    featured_image: null
+                }
+            ];
+        }
+    </script>
+</body>
+</html>
