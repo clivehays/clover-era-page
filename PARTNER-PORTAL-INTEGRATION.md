@@ -19,7 +19,7 @@ Integrate the existing Partner Portal (static HTML pages) into the Clover ERA ba
 
 ---
 
-## Epic 1: Partner User Management
+## Feature 1: Partner User Management
 
 ### Feature 1.1: Partner Self-Registration Flow
 
@@ -156,7 +156,7 @@ ALTER TABLE leads ADD COLUMN created_by_partner_user_id UUID REFERENCES users(id
 
 ---
 
-## Epic 2: Partner Navigation & Portal Access
+## Feature 2: Partner Navigation & Portal Access
 
 ### Feature 2.1: Partner-Specific Navigation
 
@@ -256,7 +256,7 @@ So that I can conduct effective client onboarding sessions
 
 ---
 
-## Epic 3: Lead Management (My Opportunities)
+## Feature 3: Lead Management (My Opportunities)
 
 ### Feature 3.1: Lead Registration
 
@@ -430,7 +430,7 @@ CREATE INDEX idx_lead_activities_lead_id ON partner_lead_activities(lead_id);
 
 ---
 
-## Epic 4: Customer Management (My Customers)
+## Feature 4: Customer Management (My Customers)
 
 ### Feature 4.1: View Customer List
 
@@ -572,7 +572,7 @@ So that I can share progress with my customer contacts
 
 ---
 
-## Epic 5: Settings & Profile Management
+## Feature 5: Settings & Profile Management
 
 ### Feature 5.1: Partner Profile Settings
 
@@ -602,7 +602,7 @@ So that I can keep my contact details current
 
 ---
 
-## Epic 6: Admin Management of Partners
+## Feature 6: Admin Management of Partners
 
 ### Feature 6.1: Admin Partner Overview
 
