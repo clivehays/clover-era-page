@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Onboarding Process - Clover ERA Partner Resources</title>
+    <meta name="description" content="Complete guide for onboarding teams to the Clover ERA employee engagement platform. Step-by-step process for partners and internal teams.">
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/images/favicon-32x32.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --bronze: #C9A667;
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --dark-gray: #6B7280;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-gray);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-teal), var(--deep-teal));
+            color: var(--white);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--light-gray);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--text-secondary);
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .nav-tab:hover {
+            background: var(--medium-gray);
+        }
+
+        .nav-tab.active {
+            background: var(--primary-teal);
+            color: var(--white);
+            border-color: var(--deep-teal);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: var(--deep-teal);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h3 {
+            color: var(--charcoal);
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .card h4 {
+            color: var(--primary-teal);
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .card ul, .card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Time Badges */
+        .time-badge {
+            display: inline-block;
+            background: var(--bronze);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(70, 174, 184, 0.1), rgba(13, 124, 136, 0.1));
+            border-left: 4px solid var(--primary-teal);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box h4 {
+            color: var(--deep-teal);
+            margin-top: 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning-orange);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .checklist li:before {
+            content: "□";
+            position: absolute;
+            left: 0;
+            color: var(--primary-teal);
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        /* CLOVER Framework */
+        .clover-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .clover-item {
+            background: var(--off-white);
+            padding: 1.25rem;
+            border-radius: 8px;
+            border: 2px solid var(--medium-gray);
+            transition: all 0.3s ease;
+        }
+
+        .clover-item:hover {
+            border-color: var(--primary-teal);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.2);
+        }
+
+        .clover-letter {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .clover-name {
+            font-weight: 600;
+            color: var(--charcoal);
+            font-size: 1.1rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary-teal);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -2.6rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: var(--primary-teal);
+            border: 3px solid var(--white);
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px var(--primary-teal);
+        }
+
+        .timeline-item h4 {
+            margin-top: 0;
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav-tabs {
+                display: none;
+            }
+
+            .content-section {
+                display: block !important;
+                page-break-after: always;
+            }
+
+            .header {
+                background: none;
+                color: var(--charcoal);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                width: 100%;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Back to Portal Link */
+        .back-link {
+            display: inline-block;
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Clover ERA Team Onboarding Process</h1>
+        <p>Complete guide for partners and internal teams to onboard organizations effectively</p>
+        <a href="/sales-portal.html" class="back-link">← Back to Partner Portal</a>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('overview')">Overview</div>
+            <div class="nav-tab" onclick="showSection('preparation')">Preparation</div>
+            <div class="nav-tab" onclick="showSection('meeting')">Meeting Structure</div>
+            <div class="nav-tab" onclick="showSection('followup')">Follow-Up</div>
+            <div class="nav-tab" onclick="showSection('checklist')">Checklist</div>
+        </div>
+
+        <!-- Overview Section -->
+        <div class="content-section active" id="overview">
+            <div class="card">
+                <h2>🎯 Onboarding Overview</h2>
+                <p>This template provides a comprehensive framework for conducting effective team onboarding sessions. The process is designed to be conversational and focused on solving real problems managers and teams face daily.</p>
+
+                <div class="highlight-box">
+                    <h4>Session Duration: 30-40 minutes</h4>
+                    <p>Keep the tone conversational and avoid making this feel like a product pitch. Frame it as a tool to solve a real problem the manager and team experience daily.</p>
+                </div>
+
+                <h3>Meeting Flow at a Glance</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>Part 1: Context & Backstory <span class="time-badge">5-7 min</span></h4>
+                        <p>Set the stage with the problem, solution, and why this matters</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Part 2: How the App Works <span class="time-badge">8-10 min</span></h4>
+                        <p>Demo the app features and user experience</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Part 3: Download & Enrollment <span class="time-badge">3-5 min</span></h4>
+                        <p>Get everyone set up in real-time</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Part 4: Manager Dashboard <span class="time-badge">6-8 min</span></h4>
+                        <p>Show how insights turn into action</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Part 5: Q&A Session <span class="time-badge">8-10 min</span></h4>
+                        <p>Address questions and concerns</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Part 6: Closing <span class="time-badge">2-3 min</span></h4>
+                        <p>Set expectations and next steps</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h4>Key Messages to Reinforce Throughout</h4>
+                    <ul>
+                        <li><strong>Completely anonymous</strong> (say this at least three times)</li>
+                        <li>Takes <strong>less than 30 seconds daily</strong></li>
+                        <li>Designed for managers who <strong>lack tools despite responsibility</strong></li>
+                        <li>Focus on <strong>small, incremental improvements</strong></li>
+                        <li><strong>Real-time insights</strong> vs. rearview mirror surveys</li>
+                        <li><strong>Action-oriented</strong>, not just data collection</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preparation Section -->
+        <div class="content-section" id="preparation">
+            <div class="card">
+                <h2>📋 Pre-Meeting Preparation</h2>
+                <p>Ensure everything is ready before the onboarding session begins.</p>
+
+                <h3>Required Items</h3>
+                <ul class="checklist">
+                    <li>Confirm meeting time with team leader (allow 30-40 minutes)</li>
+                    <li>Prepare team enrollment code</li>
+                    <li>Test screen sharing capability</li>
+                    <li>Have QR code ready for app download</li>
+                    <li>Ensure demo account access is working</li>
+                </ul>
+
+                <h3>Technical Checklist</h3>
+                <ul class="checklist">
+                    <li>Team enrollment code generated</li>
+                    <li>QR code prepared</li>
+                    <li>Demo account accessible</li>
+                    <li>Screen sharing tested</li>
+                    <li>Phone screen sharing capability confirmed</li>
+                    <li>Dashboard examples ready</li>
+                    <li>Worksheet samples available if needed</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>⚠️ Pro Tip: Customization</h4>
+                    <p>Adjust the backstory depth based on:</p>
+                    <ul>
+                        <li>Team's familiarity with engagement concepts</li>
+                        <li>Time available for onboarding</li>
+                        <li>Organizational context (consulting vs. functional teams)</li>
+                        <li>Prior survey fatigue levels</li>
+                        <li>Manager's engagement with the process</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meeting Structure Section -->
+        <div class="content-section" id="meeting">
+            <!-- Part 1 -->
+            <div class="card">
+                <h2>💬 Part 1: Context and Backstory <span class="time-badge">5-7 minutes</span></h2>
+
+                <h3>Opening</h3>
+                <ul>
+                    <li>Brief introduction of yourself and Clover ERA</li>
+                    <li>Acknowledge the team and their manager</li>
+                </ul>
+
+                <h3>The Problem</h3>
+                <ul>
+                    <li><strong>70% of transformations fail</strong> (McKinsey data)</li>
+                    <li><strong>79% of people are not engaged</strong> at work</li>
+                    <li>Clarify what engagement actually means (not just happiness or satisfaction)</li>
+                    <li><strong>60% of workers</strong> show up, do their job, collect paycheck, but aren't invested in outcomes</li>
+                    <li>Traditional surveys provide <strong>rearview mirror data</strong>, not real-time insights</li>
+                </ul>
+
+                <h3>The Solution: CLOVER Framework</h3>
+                <div class="clover-grid">
+                    <div class="clover-item">
+                        <div class="clover-letter">C</div>
+                        <div class="clover-name">Communication</div>
+                    </div>
+                    <div class="clover-item">
+                        <div class="clover-letter">L</div>
+                        <div class="clover-name">Learning</div>
+                    </div>
+                    <div class="clover-item">
+                        <div class="clover-letter">O</div>
+                        <div class="clover-name">Opportunity</div>
+                    </div>
+                    <div class="clover-item">
+                        <div class="clover-letter">V</div>
+                        <div class="clover-name">Vulnerability</div>
+                    </div>
+                    <div class="clover-item">
+                        <div class="clover-letter">E</div>
+                        <div class="clover-name">Enablement</div>
+                    </div>
+                    <div class="clover-item">
+                        <div class="clover-letter">R</div>
+                        <div class="clover-name">Reflection</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Brief mention of neuroscience foundation:</strong> Brain chemistry optimization</p>
+                    <p><strong>Reference books if relevant:</strong></p>
+                    <ul>
+                        <li>"The Trillion Dollar Problem"</li>
+                        <li>"The Neuroscience of Employee Engagement"</li>
+                    </ul>
+                </div>
+
+                <h3>The Gap</h3>
+                <ul>
+                    <li>Managers are expected to look after people but given <strong>almost no tools or training</strong></li>
+                    <li>This app helps managers <strong>understand and improve</strong> the team environment</li>
+                    <li>Focus on <strong>incremental action</strong> and small daily improvements</li>
+                </ul>
+            </div>
+
+            <!-- Part 2 -->
+            <div class="card">
+                <h2>📱 Part 2: How the App Works <span class="time-badge">8-10 minutes</span></h2>
+
+                <h3>Key Features</h3>
+                <div class="highlight-box">
+                    <ul>
+                        <li><strong>ONE question per day</strong></li>
+                        <li>Takes <strong>less than 30 seconds</strong></li>
+                        <li><strong>Completely anonymous</strong> (emphasize multiple times)</li>
+                    </ul>
+                </div>
+
+                <h4>Anonymity Details</h4>
+                <ul>
+                    <li>No names collected</li>
+                    <li>No device IDs tracked</li>
+                    <li>Only team code for association</li>
+                    <li>Questions rotate through CLOVER elements</li>
+                </ul>
+
+                <h3>User Experience Walkthrough</h3>
+                <ol>
+                    <li>Show the daily question format</li>
+                    <li>Demonstrate emoji-based response scale</li>
+                    <li>Explain dropdown reason selection</li>
+                    <li>Show optional free text field (remind about anonymity)</li>
+                    <li>Preview the micro-action that appears after submission</li>
+                </ol>
+
+                <h3>Live Demo (share phone screen)</h3>
+                <ol>
+                    <li>Display enrollment screen</li>
+                    <li>Show "Enroll as Team Member" option</li>
+                    <li>Enter team code process</li>
+                    <li>Navigate through terms and conditions</li>
+                    <li>Show main question interface</li>
+                    <li>Demonstrate settings:
+                        <ul>
+                            <li>Notification time customization</li>
+                            <li>Light/dark theme toggle</li>
+                            <li>Work days selection</li>
+                        </ul>
+                    </li>
+                    <li>Mention upcoming features if applicable (multiple team enrollment)</li>
+                </ol>
+            </div>
+
+            <!-- Part 3 -->
+            <div class="card">
+                <h2>⬇️ Part 3: App Download and Enrollment <span class="time-badge">3-5 minutes</span></h2>
+
+                <h3>Installation Instructions</h3>
+                <ol>
+                    <li>Direct team to App Store or Google Play Store</li>
+                    <li>Display QR code on screen</li>
+                    <li>Share team enrollment code (drop in chat)</li>
+                    <li>Guide through first-time setup if anyone has questions</li>
+                </ol>
+
+                <h3>Immediate Testing</h3>
+                <div class="success-box">
+                    <p><strong>Ask team members to download and enroll in real-time:</strong></p>
+                    <ul>
+                        <li>Verify first question appears</li>
+                        <li>Confirm notifications are set appropriately</li>
+                        <li>Address any technical issues</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Part 4 -->
+            <div class="card">
+                <h2>📊 Part 4: Manager Dashboard Overview <span class="time-badge">6-8 minutes</span></h2>
+
+                <h3>Dashboard Components</h3>
+                <ul>
+                    <li>Overall engagement score display</li>
+                    <li>Response count and timeframe (typically 90 days)</li>
+                    <li>Individual scores for each CLOVER element</li>
+                    <li>Identification of problem areas (show example like enablement issues)</li>
+                </ul>
+
+                <h3>Reporting Cycle</h3>
+                <div class="highlight-box">
+                    <h4>Bi-weekly AI-Generated Reports</h4>
+                    <ul>
+                        <li>Top themes identification</li>
+                        <li>Specific recommendations for addressing issues</li>
+                        <li>Actionable next steps</li>
+                    </ul>
+                </div>
+
+                <h3>Action Hub</h3>
+                <ul>
+                    <li>How actions get created and tracked</li>
+                    <li><strong>Worksheet library:</strong> 150 worksheets, approximately 30 minutes each</li>
+                    <li><strong>Micro-actions and mini-actions:</strong> 600+ options</li>
+                    <li>Action completion tracking and feedback loop</li>
+                    <li>Connection to manager KPIs around employee well-being</li>
+                </ul>
+
+                <h3>Data Anonymity Assurance</h3>
+                <div class="warning-box">
+                    <h4>Emphasize Privacy</h4>
+                    <ul>
+                        <li>Show that only <strong>aggregated data</strong> appears in reports</li>
+                        <li>Demonstrate that <strong>individual responses are not visible</strong></li>
+                        <li>Explain how themes emerge from <strong>collective input</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Part 5 -->
+            <div class="card">
+                <h2>❓ Part 5: Q&A Session <span class="time-badge">8-10 minutes</span></h2>
+
+                <h3>Common Questions to Address</h3>
+
+                <h4>Purpose and Use of Feedback</h4>
+                <p>Explain how feedback drives actionable insights and improvements</p>
+
+                <h4>Multiple Team Enrollment</h4>
+                <ul>
+                    <li>Scenarios for users on multiple teams</li>
+                    <li>Complexity considerations</li>
+                    <li>Data clustering and anonymity verification</li>
+                </ul>
+
+                <h4>Question Consistency</h4>
+                <ul>
+                    <li>Everyone gets the same daily question</li>
+                    <li>Rationale: Creates conversation opportunities</li>
+                    <li>Team structure and code management</li>
+                    <li>Functional vs. project team alignment</li>
+                </ul>
+
+                <h3>Manager Commitment</h3>
+                <div class="warning-box">
+                    <h4>Set Clear Expectations</h4>
+                    <ul>
+                        <li>Emphasize that this <strong>requires action</strong>, not just data collection</li>
+                        <li>Set expectation for manager to <strong>implement recommendations</strong></li>
+                        <li>Frame as <strong>ongoing improvement process</strong></li>
+                        <li>Distinguish from passive annual surveys</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Part 6 -->
+            <div class="card">
+                <h2>🎬 Part 6: Closing <span class="time-badge">2-3 minutes</span></h2>
+
+                <h3>Next Steps</h3>
+                <ol>
+                    <li>First report available after <strong>two weeks of data</strong></li>
+                    <li>Manager will share findings and actions with team</li>
+                    <li>Open door for feedback on app experience</li>
+                    <li>Contact information for support</li>
+                </ol>
+
+                <h3>Final Reminders</h3>
+                <div class="success-box">
+                    <ul>
+                        <li>Answer daily for best results</li>
+                        <li><strong>Complete anonymity maintained</strong></li>
+                        <li>Takes only <strong>30 seconds</strong></li>
+                        <li>Small actions compound over time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Follow-Up Section -->
+        <div class="content-section" id="followup">
+            <div class="card">
+                <h2>📅 Post-Meeting Follow-Up</h2>
+
+                <h3>Within 24 Hours</h3>
+                <ul class="checklist">
+                    <li>Send email with team code and download links</li>
+                    <li>Include quick reference guide for app settings</li>
+                    <li>Share contact information for technical support</li>
+                </ul>
+
+                <h3>After One Week</h3>
+                <ul class="checklist">
+                    <li>Check in with manager on response rate</li>
+                    <li>Address any technical issues team members encountered</li>
+                    <li>Confirm notification timing is working well</li>
+                </ul>
+
+                <h3>After Two Weeks</h3>
+                <ul class="checklist">
+                    <li>Prepare first AI report</li>
+                    <li>Schedule brief review session with manager</li>
+                    <li>Identify first action to implement</li>
+                </ul>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>24 Hours: Send Resources</h4>
+                        <p>Email with codes, links, and support info</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>1 Week: Check Progress</h4>
+                        <p>Verify adoption and resolve technical issues</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2 Weeks: First Report</h4>
+                        <p>Review insights and plan first actions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checklist Section -->
+        <div class="content-section" id="checklist">
+            <div class="card">
+                <h2>✅ Complete Onboarding Checklist</h2>
+
+                <h3>Pre-Meeting</h3>
+                <ul class="checklist">
+                    <li>Meeting time confirmed with team leader (30-40 min allocated)</li>
+                    <li>Team enrollment code generated</li>
+                    <li>QR code prepared and tested</li>
+                    <li>Demo account accessible</li>
+                    <li>Screen sharing tested (desktop and mobile)</li>
+                    <li>Dashboard examples ready</li>
+                    <li>Worksheet samples available</li>
+                </ul>
+
+                <h3>During Meeting</h3>
+                <ul class="checklist">
+                    <li>Context and backstory presented (5-7 min)</li>
+                    <li>App features demonstrated (8-10 min)</li>
+                    <li>Team downloaded and enrolled (3-5 min)</li>
+                    <li>Manager dashboard shown (6-8 min)</li>
+                    <li>Questions answered (8-10 min)</li>
+                    <li>Next steps clarified (2-3 min)</li>
+                    <li>Anonymity emphasized at least 3 times</li>
+                    <li>30-second daily commitment mentioned multiple times</li>
+                </ul>
+
+                <h3>Post-Meeting</h3>
+                <ul class="checklist">
+                    <li>Follow-up email sent within 24 hours</li>
+                    <li>Team code and download links shared</li>
+                    <li>Quick reference guide provided</li>
+                    <li>Week 1 check-in completed</li>
+                    <li>Week 2 report prepared</li>
+                    <li>First action identified with manager</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <h4>Print This Checklist</h4>
+                    <p>Use your browser's print function to create a physical checklist for each onboarding session. Check off items as you complete them.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Key Talking Points Reference</h2>
+
+                <div class="success-box">
+                    <h4>The Problem (Why This Matters)</h4>
+                    <ul>
+                        <li>70% of transformations fail (McKinsey)</li>
+                        <li>79% of workers not engaged</li>
+                        <li>60% just collecting paychecks</li>
+                        <li>Managers lack tools despite responsibility</li>
+                        <li>Traditional surveys = rearview mirror data</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>The Solution (What We Provide)</h4>
+                    <ul>
+                        <li>CLOVER Framework (neuroscience-based)</li>
+                        <li>30-second daily questions</li>
+                        <li>Complete anonymity (repeat 3x)</li>
+                        <li>Real-time insights</li>
+                        <li>Actionable recommendations</li>
+                        <li>600+ micro-actions and 150 worksheets</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>Manager Expectations (Set Upfront)</h4>
+                    <ul>
+                        <li>This requires action, not just data review</li>
+                        <li>Bi-weekly reports need implementation</li>
+                        <li>Ongoing process, not one-time survey</li>
+                        <li>Connected to manager KPIs</li>
+                        <li>First report after 2 weeks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Scroll to top of content
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
