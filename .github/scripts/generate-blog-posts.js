@@ -2,12 +2,35 @@ const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
 
+// Load environment variables from .env.local if exists
+function loadEnvFile() {
+    const envPath = path.join(process.cwd(), '.env.local');
+    if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        envContent.split(/\r?\n/).forEach(line => {
+            line = line.trim();
+            if (!line || line.startsWith('#')) return;
+            const match = line.match(/^([^=]+)=(.*)$/);
+            if (match) {
+                const key = match[1].trim();
+                const value = match[2].trim();
+                if (!process.env[key]) {
+                    process.env[key] = value;
+                }
+            }
+        });
+    }
+}
+
+loadEnvFile();
+
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('❌ Missing Supabase credentials in environment variables');
+    console.error('   Please set SUPABASE_URL and SUPABASE_SERVICE_KEY in .env.local or environment');
     process.exit(1);
 }
 
@@ -30,10 +53,128 @@ function formatDate(dateString) {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+// Generate Schema.org markup with GEO enhancements
+function generateSchemaMarkup(article, publishDate, readTime, wordCount) {
+    const schemas = [];
+
+    // Enhanced BlogPosting schema with GEO fields
+    const blogPostingSchema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "@id": `https://cloverera.com/Blog/${article.slug}.html#article`,
+        "headline": escapeHtml(article.title),
+        "description": escapeHtml(article.excerpt || article.meta_description || ''),
+        "datePublished": publishDate,
+        "dateModified": new Date(article.updated_at).toISOString(),
+        "author": {
+            "@type": "Person",
+            "name": "Clover ERA Team"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Clover ERA",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://cloverera.com/images/logo.png"
+            }
+        },
+        "url": `https://cloverera.com/Blog/${article.slug}.html`,
+        "mainEntityOfPage": `https://cloverera.com/Blog/${article.slug}.html`,
+        "wordCount": wordCount,
+        "timeRequired": `PT${readTime}M`,
+        "inLanguage": "en-US"
+    };
+
+    // Add optional fields
+    if (article.featured_image) {
+        blogPostingSchema.image = {
+            "@type": "ImageObject",
+            "url": article.featured_image,
+            "width": 1200,
+            "height": 630
+        };
+    }
+
+    if (article.category) {
+        blogPostingSchema.articleSection = article.category;
+    }
+
+    // Combine meta_keywords, tags, and key_topics for comprehensive keywords
+    const allKeywords = [];
+    if (article.meta_keywords && article.meta_keywords.length > 0) {
+        allKeywords.push(...article.meta_keywords);
+    }
+    if (article.tags && article.tags.length > 0) {
+        allKeywords.push(...article.tags);
+    }
+    if (article.key_topics && article.key_topics.length > 0) {
+        allKeywords.push(...article.key_topics);
+    }
+    if (allKeywords.length > 0) {
+        blogPostingSchema.keywords = [...new Set(allKeywords)]; // Remove duplicates
+    }
+
+    // GEO: Add target audience
+    if (article.target_audience) {
+        blogPostingSchema.audience = {
+            "@type": "Audience",
+            "audienceType": article.target_audience
+        };
+    }
+
+    // GEO: Add speakable for voice search optimization
+    blogPostingSchema.speakable = {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [".article-content", ".article-excerpt"]
+    };
+
+    schemas.push(blogPostingSchema);
+
+    // GEO: Generate FAQPage schema if faq_items exists
+    if (article.faq_items && Array.isArray(article.faq_items) && article.faq_items.length > 0) {
+        const faqSchema = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": article.faq_items.map(faq => ({
+                "@type": "Question",
+                "name": faq.question,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": faq.answer
+                }
+            }))
+        };
+        schemas.push(faqSchema);
+    }
+
+    return schemas;
+}
+
+// Generate FAQ section HTML
+function generateFAQSection(faqItems) {
+    if (!faqItems || !Array.isArray(faqItems) || faqItems.length === 0) {
+        return '';
+    }
+
+    return `
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            ${faqItems.map(faq => `
+            <div class="faq-item">
+                <h3 class="faq-question">${escapeHtml(faq.question)}</h3>
+                <div class="faq-answer">${escapeHtml(faq.answer)}</div>
+            </div>`).join('')}
+        </div>`;
+}
+
 // Generate article HTML
 function generateArticleHTML(article) {
     const publishDate = new Date(article.published_at).toISOString();
     const readTime = article.read_time_minutes || 5;
+    const wordCount = article.content.split(/\s+/).length;
+
+    // Generate all Schema.org markup
+    const schemas = generateSchemaMarkup(article, publishDate, readTime, wordCount);
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -44,9 +185,8 @@ function generateArticleHTML(article) {
     <!-- SEO Meta Tags -->
     <title>${escapeHtml(article.meta_title || article.title)}</title>
     <meta name="description" content="${escapeHtml(article.meta_description || article.excerpt || '')}">
-    ${article.meta_keywords && article.meta_keywords.length > 0 ? `<meta name="keywords" content="${article.meta_keywords.join(', ')}">` : ''}
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-    <link rel="canonical" href="https://cloverera.com/Blog/${article.slug}.html">
+    <link rel="canonical" href="${article.canonical_url || `https://cloverera.com/Blog/${article.slug}.html`}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
@@ -58,49 +198,27 @@ function generateArticleHTML(article) {
     <meta property="og:description" content="${escapeHtml(article.meta_description || article.excerpt || '')}">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://cloverera.com/Blog/${article.slug}.html">
-    ${article.featured_image ? `<meta property="og:image" content="${article.featured_image}">` : ''}
+    ${article.featured_image ? `<meta property="og:image" content="${article.featured_image}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${escapeHtml(article.title)}">` : ''}
     <meta property="og:site_name" content="Clover ERA">
     <meta property="article:published_time" content="${publishDate}">
-    ${article.category ? `<meta property="article:section" content="${article.category}">` : ''}
-    ${article.tags ? article.tags.map(tag => `<meta property="article:tag" content="${tag}">`).join('\n    ') : ''}
+    ${article.updated_at ? `<meta property="article:modified_time" content="${new Date(article.updated_at).toISOString()}">` : ''}
+    ${article.category ? `<meta property="article:section" content="${escapeHtml(article.category)}">` : ''}
+    ${article.tags ? article.tags.map(tag => `<meta property="article:tag" content="${escapeHtml(tag)}">`).join('\n    ') : ''}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(article.meta_title || article.title)}">
     <meta name="twitter:description" content="${escapeHtml(article.meta_description || article.excerpt || '')}">
-    ${article.featured_image ? `<meta name="twitter:image" content="${article.featured_image}">` : ''}
+    ${article.featured_image ? `<meta name="twitter:image" content="${article.featured_image}">
+    <meta name="twitter:image:alt" content="${escapeHtml(article.title)}">` : ''}
 
-    <!-- Schema.org Markup -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "@id": "https://cloverera.com/Blog/${article.slug}.html#article",
-      "headline": "${escapeHtml(article.title)}",
-      "description": "${escapeHtml(article.excerpt || article.meta_description || '')}",
-      "datePublished": "${publishDate}",
-      "dateModified": "${new Date(article.updated_at).toISOString()}",
-      "author": {
-        "@type": "Person",
-        "name": "Clover ERA Team"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Clover ERA",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://cloverera.com/images/logo.png"
-        }
-      },
-      ${article.featured_image ? `"image": "${article.featured_image}",` : ''}
-      "url": "https://cloverera.com/Blog/${article.slug}.html",
-      "mainEntityOfPage": "https://cloverera.com/Blog/${article.slug}.html",
-      ${article.category ? `"articleSection": "${article.category}",` : ''}
-      ${article.tags ? `"keywords": ${JSON.stringify(article.tags)},` : ''}
-      "wordCount": ${article.content.split(/\s+/).length},
-      "timeRequired": "PT${readTime}M"
-    }
-    </script>
+    <!-- Schema.org Markup (GEO Enhanced) -->
+    ${schemas.map(schema => `<script type="application/ld+json">
+    ${JSON.stringify(schema, null, 2)}
+    </script>`).join('\n    ')}
 
     <!-- Styles -->
     <link rel="stylesheet" href="/css/mobile-responsive.css">
@@ -293,6 +411,46 @@ function generateArticleHTML(article) {
             text-decoration: none;
         }
 
+        .faq-section {
+            margin: 4rem 0;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .faq-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .faq-item {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .faq-question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
         .cta-section {
             background: white;
             border-radius: 12px;
@@ -387,6 +545,8 @@ function generateArticleHTML(article) {
             <strong>Tags:</strong>
             ${article.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
         </div>` : ''}
+
+        ${generateFAQSection(article.faq_items)}
 
         <div class="cta-section">
             <h2>Transform Your Team's Engagement</h2>
