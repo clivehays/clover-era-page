@@ -225,13 +225,15 @@
             margin: 0 auto;
         }
         
-        /* Article List */
+        /* Article List - Responsive Grid */
         .article-list {
-            display: flex;
-            flex-direction: column;
-            gap: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        
+
         /* Individual Article Card */
         .article-item {
             background: var(--white);
@@ -239,37 +241,38 @@
             overflow: hidden;
             box-shadow: 0 5px 25px rgba(0,0,0,0.08);
             transition: all 0.3s;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
-        
+
         .article-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 40px rgba(0,0,0,0.12);
         }
-        
+
         .article-image {
             width: 100%;
-            height: 100%;
-            min-height: 250px;
+            height: 220px;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             position: relative;
+            flex-shrink: 0;
         }
-        
+
         .article-image::after {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(135deg, rgba(70,174,184,0.1), rgba(44,111,116,0.1));
         }
-        
+
         .article-details {
-            padding: 2.5rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
+            flex-grow: 1;
         }
         
         .article-meta {
@@ -459,39 +462,46 @@
         }
         
         /* Responsive */
+        @media (max-width: 1200px) {
+            .article-list {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
             .blog-hero {
                 padding: 8rem 1.5rem 4rem;
             }
-            
+
             .blog-hero h1 {
                 font-size: 2rem;
             }
-            
+
             .blog-hero p {
                 font-size: 1.1rem;
             }
-            
-            .article-item {
+
+            .article-list {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
-            
+
             .article-image {
-                min-height: 200px;
+                height: 200px;
             }
-            
+
             .article-details {
-                padding: 2rem;
+                padding: 1.5rem;
             }
-            
+
             .article-item h3 {
                 font-size: 1.5rem;
             }
-            
+
             .newsletter-form {
                 flex-direction: column;
             }
-            
+
             .newsletter-section h2 {
                 font-size: 2rem;
             }
