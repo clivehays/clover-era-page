@@ -415,25 +415,165 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            /* Prevent horizontal scroll */
+            body {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+
+            /* Hero section mobile */
+            .hero {
+                padding: 2rem 1rem;
+                min-height: auto;
+            }
+
             .hero h1 {
-                font-size: 2rem;
+                font-size: 2rem !important;
             }
 
             .hero p {
-                font-size: 1.1rem;
+                font-size: 1.1rem !important;
             }
 
+            .hero-content {
+                margin-top: 1rem !important;
+            }
+
+            /* Hero CTA buttons */
+            .hero-cta-group {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+
+            .hero-cta-group a {
+                width: 100% !important;
+                max-width: 300px;
+                padding: 1rem 1.5rem !important;
+                font-size: 0.95rem !important;
+            }
+
+            /* Headings */
             h2 {
-                font-size: 1.8rem;
+                font-size: 1.8rem !important;
             }
 
+            h3 {
+                font-size: 1.3rem !important;
+            }
+
+            /* Stats bar */
+            .stats-bar {
+                padding: 2rem 1rem !important;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 1rem !important;
+            }
+
+            .stat-value {
+                font-size: 1.8rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.8rem !important;
+            }
+
+            /* Section padding */
+            section {
+                padding: 3rem 1rem !important;
+            }
+
+            /* Problem section and grids */
             .problem-grid,
-            .comparison-grid {
-                grid-template-columns: 1fr;
+            .comparison-grid,
+            .steps-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
             }
 
+            /* Fix ALL grid minmax issues - override inline styles */
+            div[style*="grid-template-columns"][style*="minmax"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Case studies - fix minmax issue */
+            .results-section > div > div {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Problem boxes */
+            .problem-box {
+                padding: 1.5rem !important;
+            }
+
+            /* Stats grids inside case studies */
+            .results-section .stat-item,
+            div[style*="grid-template-columns: repeat(2, 1fr)"] {
+                gap: 0.75rem !important;
+            }
+
+            /* Calculator */
             .calc-inputs {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
+            }
+
+            /* CTA section */
+            .cta-section {
+                padding: 3rem 1rem !important;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem !important;
+            }
+
+            .cta-section p {
+                font-size: 1rem !important;
+            }
+
+            .cta-section ul {
+                max-width: 100% !important;
+                padding: 0 1rem !important;
+            }
+
+            .cta-section li {
+                font-size: 1rem !important;
+                padding-left: 1.5rem !important;
+            }
+
+            .cta-section div[style*="display: flex"] {
+                flex-direction: column !important;
+            }
+
+            .cta-section a {
+                width: 100% !important;
+                max-width: 300px;
+                padding: 1rem 1.5rem !important;
+                font-size: 1rem !important;
+            }
+
+            /* Step numbers */
+            .step-number {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.5rem !important;
+            }
+
+            /* Testimonial and comparison boxes */
+            div[style*="max-width: 700px"],
+            div[style*="max-width: 800px"],
+            div[style*="max-width: 900px"] {
+                padding: 1.5rem !important;
+            }
+
+            /* Footer */
+            footer {
+                padding: 2rem 1rem !important;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                gap: 2rem !important;
             }
         }
     </style>
