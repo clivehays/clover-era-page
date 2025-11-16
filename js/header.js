@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <a href="/locations/" class="featured-link">UK & Ireland Engagement Solutions</a>
                     </div>
                 </div>
-                <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">BOOK DEMO</a>
+                <a href="https://calendly.com/clive-hays-cloverera/30min" class="nav-cta">SCHEDULE ANALYSIS</a>
             </div>
         </div>
     `;
