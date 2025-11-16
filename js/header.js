@@ -1,7 +1,6 @@
 // header.js - Fixed version with proper variable scoping
 document.addEventListener('DOMContentLoaded', function() {
     // Declare ALL variables at the top - ONCE
-    let trustBar = null;
     let breadcrumbNav = null;
     
     // Add favicon if not present
@@ -50,24 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
             justify-content: space-between;
             align-items: center;
             height: 100%;
-        }
-
-        .trust-bar {
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            width: 100%;
-            height: 40px;
-            background: #F5F7FA;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1.5rem;
-            padding: 0.5rem 1rem;
-            box-sizing: border-box;
-            z-index: 999;
-            border-bottom: 1px solid #E5E9ED;
         }
 
         .logo {
@@ -203,11 +184,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* Fix body padding to eliminate white space */
         body {
-            padding-top: 110px !important; /* nav (70px) + trust bar (40px) */
+            padding-top: 70px !important; /* nav (70px) only */
             margin-top: 0 !important;
         }
 
-        /* Ensure hero/first section sits flush against trust bar */
+        /* Ensure hero/first section sits flush against nav */
         body > section:first-of-type,
         body > .hero,
         .hero-image-container,
@@ -263,16 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 max-height: 500px;
                 padding: 0.5rem 0;
             }
-            
-            /* Hide trust bar on mobile */
-            .trust-bar {
-                display: none !important;
-            }
-            
-            /* Adjust body padding on mobile (only nav height needed) */
-            body {
-                padding-top: 70px !important;
-            }
         }
     `;
     document.head.appendChild(styleElement);
@@ -325,24 +296,8 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
 
-    // Create trust bar - SIMPLE VERSION
-    trustBar = document.createElement('div');
-    trustBar.className = 'trust-bar';
-    trustBar.innerHTML = `
-        <span style="color: #6B7280; display: inline-flex; align-items: center; gap: 0.5rem;">
-            <a href="https://cloverera.com/active-employee-engagement-management/index.html" style="text-decoration: none; color: inherit;">
-                <strong style="color: #46AEB8;">1% Better</strong> - Everyday
-            </a>
-            ||
-            <a href="https://cloverera.com/30-day-free-pilot/index.html" style="text-decoration: none; color: #46AEB8;">
-                <strong>30 Day Trial</strong>
-            </a>
-        </span>
-    `;
-
-    // Insert elements
+    // Insert navigation
     document.body.insertBefore(nav, document.body.firstChild);
-    document.body.insertBefore(trustBar, nav.nextSibling);
 
     // Mobile menu functionality
     const mobileToggle = document.getElementById('mobileToggle');
