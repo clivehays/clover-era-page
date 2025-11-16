@@ -48,70 +48,27 @@
             line-height: 1.6;
         }
 
-        /* Header */
-        header {
-            background: white;
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-teal);
-        }
-
-        .cta-nav {
+        /* Skip to content link for accessibility */
+        .skip-to-content {
+            position: absolute;
+            left: -9999px;
+            z-index: 999;
+            padding: 1rem;
             background: var(--primary-teal);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            transition: all 0.3s;
+            text-decoration: none;
         }
 
-        .cta-nav:hover {
-            background: var(--deep-teal);
-            transform: translateY(-2px);
+        .skip-to-content:focus {
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, var(--deep-teal), var(--primary-teal));
             color: white;
-            padding: 10rem 2rem 6rem;
-            margin-top: 80px;
+            padding: 6rem 2rem 6rem;
             text-align: center;
         }
 
@@ -775,10 +732,6 @@
                 transform: scale(1);
             }
 
-            .nav-links {
-                display: none;
-            }
-
             table {
                 font-size: 0.9rem;
             }
@@ -790,22 +743,12 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <a href="/" class="logo">Clover ERA</a>
-            <nav class="nav-links">
-                <a href="/how-it-works.html">How It Works</a>
-                <a href="/roi-calculator.html">ROI Calculator</a>
-                <a href="/pricing.html">Pricing</a>
-                <a href="/resources.html">Resources</a>
-                <a href="/contact.html" class="cta-nav">Book Demo</a>
-            </nav>
-        </div>
-    </header>
+    <script src="/js/header.js"></script>
+
+    <a href="#main" class="skip-to-content">Skip to main content</a>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="main">
         <h1>You're Losing $2.4 Million Per Year To Turnover<br>(And Your Annual Engagement Survey Won't Fix It)</h1>
         <div class="subheadline">
             <p>For 200-500 person companies, every employee who quits costs $120K-$180K in recruiting, training, lost productivity, and team disruption. At 20% annual turnover, that's 40-100 people. Do the math.</p>
