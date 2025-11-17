@@ -194,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .hero-image-container,
         main > section:first-of-type {
             margin-top: 0 !important;
-            padding-top: 0 !important;
         }
 
         @media (max-width: 768px) {
