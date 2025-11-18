@@ -749,8 +749,14 @@
                 </div>
                 <div class="filter-group">
                     <label>Company</label>
-                    <select id="companyFilter">
+                    <select id="companyFilter" onchange="loadContactFilterOptions()">
                         <option value="">All Companies</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Contact</label>
+                    <select id="contactFilter">
+                        <option value="">All Contacts</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -810,6 +816,7 @@
                         <th>Subject</th>
                         <th>Type</th>
                         <th>Company</th>
+                        <th>Contact</th>
                         <th>Opportunity</th>
                         <th>Due Date</th>
                         <th>Status</th>
@@ -818,7 +825,7 @@
                 </thead>
                 <tbody id="activitiesTableBody">
                     <tr>
-                        <td colspan="8" class="empty-state">
+                        <td colspan="9" class="empty-state">
                             <h3>Loading activities...</h3>
                         </td>
                     </tr>
@@ -863,8 +870,15 @@
 
                     <div class="form-group">
                         <label for="activityCompany">Company</label>
-                        <select id="activityCompany" onchange="loadOpportunitiesForActivity()">
+                        <select id="activityCompany" onchange="loadContactsAndOpportunitiesForActivity()">
                             <option value="">Select company...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="activityContact">Contact (Optional)</label>
+                        <select id="activityContact">
+                            <option value="">Select contact...</option>
                         </select>
                     </div>
 
@@ -936,6 +950,24 @@
                 loadCompanies()
             ]);
             updateStats();
+
+            // Check if we should open the new activity modal with a preselected company
+            const urlParams = new URLSearchParams(window.location.search);
+            const addNew = urlParams.get('addNew');
+            const preselectedCompanyId = sessionStorage.getItem('preselectedCompanyId');
+
+            if (addNew === 'true' && preselectedCompanyId) {
+                // Clear sessionStorage
+                sessionStorage.removeItem('preselectedCompanyId');
+                sessionStorage.removeItem('preselectedCompanyName');
+
+                // Open modal and preselect company
+                setTimeout(async () => {
+                    showNewActivityModal();
+                    document.getElementById('activityCompany').value = preselectedCompanyId;
+                    await loadContactsAndOpportunitiesForActivity();
+                }, 500);
+            }
         }
 
         // ===== DATA LOADING =====
@@ -954,7 +986,7 @@
 
                 console.log('Fetched activities:', data?.length || 0);
 
-                // Fetch related company and opportunity details separately
+                // Fetch related company, contact, and opportunity details separately
                 if (data && data.length > 0) {
                     for (let activity of data) {
                         // Fetch company details
@@ -971,6 +1003,23 @@
                                 }
                             } catch (e) {
                                 console.warn('Could not fetch company:', activity.company_id, e);
+                            }
+                        }
+
+                        // Fetch contact details
+                        if (activity.contact_id) {
+                            try {
+                                const { data: contact, error: contactError } = await supabase
+                                    .from('contacts')
+                                    .select('id, first_name, last_name')
+                                    .eq('id', activity.contact_id)
+                                    .single();
+
+                                if (!contactError && contact) {
+                                    activity.contacts = contact;
+                                }
+                            } catch (e) {
+                                console.warn('Could not fetch contact:', activity.contact_id, e);
                             }
                         }
 
@@ -1004,7 +1053,7 @@
                 if (tbody) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="8" class="empty-state" style="color: red;">
+                            <td colspan="9" class="empty-state" style="color: red;">
                                 <h3>Error loading activities</h3>
                                 <p>${error.message}</p>
                             </td>
@@ -1038,28 +1087,95 @@
             }
         }
 
-        async function loadOpportunitiesForActivity() {
+        async function loadContactFilterOptions() {
+            const companyId = document.getElementById('companyFilter').value;
+            const contactFilter = document.getElementById('contactFilter');
+
+            // Reset contact filter
+            contactFilter.innerHTML = '<option value="">All Contacts</option>';
+
+            if (!companyId) {
+                // If no company selected, show all contacts from activities
+                const uniqueContactIds = [...new Set(allActivities.filter(a => a.contact_id).map(a => a.contact_id))];
+
+                if (uniqueContactIds.length > 0) {
+                    try {
+                        const { data: contacts, error } = await supabase
+                            .from('contacts')
+                            .select('id, first_name, last_name')
+                            .in('id', uniqueContactIds)
+                            .order('first_name');
+
+                        if (error) throw error;
+
+                        contacts.forEach(contact => {
+                            contactFilter.innerHTML += `<option value="${contact.id}">${contact.first_name} ${contact.last_name}</option>`;
+                        });
+                    } catch (error) {
+                        console.error('Error loading contacts:', error);
+                    }
+                }
+                return;
+            }
+
+            // Load contacts for the selected company
+            try {
+                const { data: contacts, error } = await supabase
+                    .from('contacts')
+                    .select('id, first_name, last_name')
+                    .eq('company_id', companyId)
+                    .order('first_name');
+
+                if (error) throw error;
+
+                contacts.forEach(contact => {
+                    contactFilter.innerHTML += `<option value="${contact.id}">${contact.first_name} ${contact.last_name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            }
+        }
+
+        async function loadContactsAndOpportunitiesForActivity() {
             const companyId = document.getElementById('activityCompany').value;
+            const contactSelect = document.getElementById('activityContact');
             const oppSelect = document.getElementById('activityOpportunity');
 
+            // Reset dropdowns
+            contactSelect.innerHTML = '<option value="">Select contact...</option>';
             oppSelect.innerHTML = '<option value="">Select opportunity...</option>';
 
             if (!companyId) return;
 
             try {
-                const { data, error } = await supabase
+                // Load contacts for the selected company
+                const { data: contacts, error: contactError } = await supabase
+                    .from('contacts')
+                    .select('id, first_name, last_name, title')
+                    .eq('company_id', companyId)
+                    .order('first_name');
+
+                if (contactError) throw contactError;
+
+                contacts.forEach(contact => {
+                    const displayName = `${contact.first_name} ${contact.last_name}${contact.title ? ' - ' + contact.title : ''}`;
+                    contactSelect.innerHTML += `<option value="${contact.id}">${displayName}</option>`;
+                });
+
+                // Load opportunities for the selected company
+                const { data: opps, error: oppError } = await supabase
                     .from('opportunities')
                     .select('id, title')
                     .eq('company_id', companyId)
                     .order('title');
 
-                if (error) throw error;
+                if (oppError) throw oppError;
 
-                data.forEach(opp => {
+                opps.forEach(opp => {
                     oppSelect.innerHTML += `<option value="${opp.id}">${opp.title}</option>`;
                 });
             } catch (error) {
-                console.error('Error loading opportunities:', error);
+                console.error('Error loading contacts and opportunities:', error);
             }
         }
 
@@ -1099,7 +1215,7 @@
             if (filteredActivities.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" class="empty-state">
+                        <td colspan="9" class="empty-state">
                             <h3>No activities found</h3>
                             <p>Add your first activity to get started.</p>
                         </td>
@@ -1111,6 +1227,7 @@
             tbody.innerHTML = filteredActivities.map(activity => {
                 const activityStatus = activity.status || (activity.completed ? 'completed' : 'todo');
                 const isTask = activity.type === 'task';
+                const contactName = activity.contacts ? `${activity.contacts.first_name} ${activity.contacts.last_name}` : '-';
 
                 return `
                     <tr onclick="editActivity('${activity.id}')">
@@ -1125,6 +1242,7 @@
                             <span class="activity-type ${activity.type}">${formatActivityType(activity.type)}</span>
                         </td>
                         <td>${activity.companies ? activity.companies.name : '-'}</td>
+                        <td>${contactName}</td>
                         <td>${activity.opportunities ? activity.opportunities.title : '-'}</td>
                         <td>${activity.due_date ? formatDueDate(activity.due_date) : '-'}</td>
                         <td>
@@ -1148,6 +1266,7 @@
             const type = document.getElementById('typeFilter').value;
             const status = document.getElementById('statusFilter').value;
             const company = document.getElementById('companyFilter').value;
+            const contact = document.getElementById('contactFilter').value;
             const dateFrom = document.getElementById('dateFromFilter').value;
             const dateTo = document.getElementById('dateToFilter').value;
 
@@ -1166,6 +1285,8 @@
 
                 if (company && activity.company_id !== company) return false;
 
+                if (contact && activity.contact_id !== contact) return false;
+
                 if (dateFrom && new Date(activity.created_at) < new Date(dateFrom)) return false;
                 if (dateTo && new Date(activity.created_at) > new Date(dateTo + 'T23:59:59')) return false;
 
@@ -1180,8 +1301,12 @@
             document.getElementById('typeFilter').value = '';
             document.getElementById('statusFilter').value = '';
             document.getElementById('companyFilter').value = '';
+            document.getElementById('contactFilter').value = '';
             document.getElementById('dateFromFilter').value = '';
             document.getElementById('dateToFilter').value = '';
+
+            // Reset contact filter options
+            document.getElementById('contactFilter').innerHTML = '<option value="">All Contacts</option>';
 
             filteredActivities = allActivities;
             renderActivitiesTable();
@@ -1211,7 +1336,8 @@
             document.getElementById('activityCompany').value = activity.company_id || '';
 
             if (activity.company_id) {
-                await loadOpportunitiesForActivity();
+                await loadContactsAndOpportunitiesForActivity();
+                document.getElementById('activityContact').value = activity.contact_id || '';
                 document.getElementById('activityOpportunity').value = activity.opportunity_id || '';
             }
 
@@ -1232,6 +1358,7 @@
             const subject = document.getElementById('activitySubject').value;
             const description = document.getElementById('activityDescription').value;
             const companyId = document.getElementById('activityCompany').value || null;
+            const contactId = document.getElementById('activityContact').value || null;
             const opportunityId = document.getElementById('activityOpportunity').value || null;
             const dueDate = document.getElementById('activityDueDate').value || null;
             const completed = document.getElementById('activityCompleted').checked;
@@ -1247,6 +1374,7 @@
                     subject,
                     description: description || null,
                     company_id: companyId,
+                    contact_id: contactId,
                     opportunity_id: opportunityId,
                     due_date: dueDate,
                     completed: activityId ? completed : false,  // New activities default to not completed
@@ -1502,11 +1630,13 @@
 
             const dueDate = activity.due_date ? new Date(activity.due_date) : null;
             const isOverdue = dueDate && dueDate < new Date() && activity.status !== 'completed';
+            const contactName = activity.contacts ? `${activity.contacts.first_name} ${activity.contacts.last_name}` : null;
 
             card.innerHTML = `
                 <button class="kanban-card-delete" onclick="event.stopPropagation(); deleteActivity('${activity.id}')" title="Delete activity">&times;</button>
                 <div class="kanban-card-title">${activity.subject}</div>
                 ${activity.description ? `<div class="kanban-card-description">${activity.description.substring(0, 100)}${activity.description.length > 100 ? '...' : ''}</div>` : ''}
+                ${contactName ? `<div class="kanban-card-description" style="color: var(--primary); font-weight: 600;">👤 ${contactName}</div>` : ''}
                 <div class="kanban-card-meta">
                     <span class="kanban-card-type" style="background: ${typeColor}; color: white;">${formatActivityType(activity.type)}</span>
                     ${dueDate ? `<span class="kanban-card-date${isOverdue ? ' overdue-text' : ''}">📅 ${formatDateShort(dueDate)}</span>` : ''}

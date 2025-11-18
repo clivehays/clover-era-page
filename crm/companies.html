@@ -901,6 +901,16 @@
                         <p style="color: var(--text-secondary);">No contacts found.</p>
                     </div>
                 </div>
+
+                <div class="form-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Activities (<span id="detailActivityCount">0</span>)</h3>
+                        <button class="btn btn-primary" onclick="addActivityForCompany()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Add Activity</button>
+                    </div>
+                    <div id="detailActivitiesList" class="opportunities-list">
+                        <p style="color: var(--text-secondary);">No activities found.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1243,6 +1253,74 @@
                 console.error('Error loading contacts:', error);
             }
 
+            // Load activities
+            try {
+                const { data: activities, error } = await supabase
+                    .from('activities')
+                    .select('id, type, subject, description, due_date, completed, created_at, contact_id')
+                    .eq('company_id', companyId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Load contact names for activities
+                const contactIds = [...new Set(activities.filter(a => a.contact_id).map(a => a.contact_id))];
+                let contactMap = {};
+
+                if (contactIds.length > 0) {
+                    const { data: activityContacts } = await supabase
+                        .from('contacts')
+                        .select('id, first_name, last_name')
+                        .in('id', contactIds);
+
+                    if (activityContacts) {
+                        contactMap = activityContacts.reduce((acc, c) => {
+                            acc[c.id] = `${c.first_name} ${c.last_name}`;
+                            return acc;
+                        }, {});
+                    }
+                }
+
+                document.getElementById('detailActivityCount').textContent = activities.length;
+
+                if (activities.length > 0) {
+                    const activityIcons = {
+                        task: '✅',
+                        meeting: '📅',
+                        call: '📞',
+                        email: '✉️',
+                        note: '📝',
+                        demo: '🎯'
+                    };
+
+                    document.getElementById('detailActivitiesList').innerHTML = activities.map(activity => {
+                        const icon = activityIcons[activity.type] || '📋';
+                        const contactName = activity.contact_id ? contactMap[activity.contact_id] : null;
+                        const timeAgo = getTimeAgo(new Date(activity.created_at));
+
+                        return `
+                            <div class="opportunity-item">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div style="flex: 1;">
+                                        <strong>${icon} ${activity.subject}</strong>
+                                        ${contactName ? `<div style="font-size: 0.85rem; color: var(--text-secondary);">Contact: ${contactName}</div>` : ''}
+                                        ${activity.description ? `<div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">${activity.description.substring(0, 100)}${activity.description.length > 100 ? '...' : ''}</div>` : ''}
+                                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                            ${timeAgo}${activity.due_date ? ' • Due: ' + new Date(activity.due_date).toLocaleDateString() : ''}
+                                        </div>
+                                    </div>
+                                    ${activity.type === 'task' ? `<span style="font-size: 1.5rem;">${activity.completed ? '✅' : '⏳'}</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    document.getElementById('detailActivitiesList').innerHTML = '<p style="color: var(--text-secondary);">No activities found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading activities:', error);
+            }
+
             // Show modal
             document.getElementById('companyDetailModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1516,6 +1594,21 @@
                 console.error('Error deleting contact:', error);
                 alert('Failed to delete contact: ' + error.message);
             }
+        }
+
+        // Add activity for current company
+        function addActivityForCompany() {
+            if (!currentCompanyId) return;
+
+            const company = allCompanies.find(c => c.id === currentCompanyId);
+            if (!company) return;
+
+            // Store company info in sessionStorage to pre-fill the activity form
+            sessionStorage.setItem('preselectedCompanyId', currentCompanyId);
+            sessionStorage.setItem('preselectedCompanyName', company.name);
+
+            // Redirect to activities page
+            window.location.href = '/crm/activities.html?addNew=true';
         }
 
         // Initialize
