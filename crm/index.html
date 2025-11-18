@@ -616,9 +616,46 @@
                 <h2>Sales Pipeline</h2>
                 <div style="display: flex; gap: 0.5rem;">
                     <button class="btn btn-secondary" id="viewToggleBtn" onclick="togglePipelineView()">
-                        <span id="viewToggleText">View by Company</span>
+                        <span id="viewToggleText">View by Opportunity</span>
                     </button>
                     <button class="btn btn-secondary" onclick="refreshPipeline()">Refresh</button>
+                </div>
+            </div>
+
+            <!-- Pipeline Filters -->
+            <div style="background: var(--white); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem; color: var(--text-secondary);">Search</label>
+                        <input type="text" id="pipelineSearch" placeholder="Search companies or opportunities..." style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px;" oninput="applyPipelineFilters()">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem; color: var(--text-secondary);">Source</label>
+                        <select id="pipelineSourceFilter" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px;" onchange="applyPipelineFilters()">
+                            <option value="">All Sources</option>
+                            <option value="partner">Partner</option>
+                            <option value="direct">Direct</option>
+                            <option value="referral">Referral</option>
+                            <option value="inbound">Inbound</option>
+                            <option value="outbound">Outbound</option>
+                            <option value="event">Event</option>
+                            <option value="website">Website</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem; color: var(--text-secondary);">Min Value</label>
+                        <input type="number" id="pipelineMinValue" placeholder="$0" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px;" oninput="applyPipelineFilters()">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem; color: var(--text-secondary);">Options</label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="hideClosedFilter" onchange="applyPipelineFilters()">
+                            <span style="font-size: 0.875rem;">Hide Closed Deals</span>
+                        </label>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="clearPipelineFilters()" style="width: 100%;">Clear Filters</button>
+                    </div>
                 </div>
             </div>
 
@@ -626,12 +663,12 @@
                 <p>Loading pipeline...</p>
             </div>
 
-            <!-- Opportunity-based Pipeline (default) -->
+            <!-- Opportunity-based Pipeline -->
             <div id="pipelineContainer" class="pipeline" style="display: none;">
                 <!-- Pipeline stages will be dynamically populated -->
             </div>
 
-            <!-- Company-based Pipeline -->
+            <!-- Company-based Pipeline (default) -->
             <div id="companyPipelineContainer" class="pipeline" style="display: none;">
                 <!-- Company pipeline stages will be dynamically populated -->
             </div>
@@ -1064,47 +1101,98 @@
 
         // Render pipeline
         function renderPipeline(pipeline) {
+            allOpportunities = []; // Reset
+            Object.values(pipeline).forEach(opps => allOpportunities.push(...opps));
+            filteredOpportunities = [...allOpportunities];
+            applyPipelineFilters();
+        }
+
+        // Render opportunity pipeline from filtered data
+        function renderOpportunityPipelineFromFiltered() {
             const container = document.getElementById('pipelineContainer');
             container.innerHTML = '';
 
+            // Group filtered opportunities by stage
+            const pipeline = {};
+            Object.keys(STAGES).forEach(stage => pipeline[stage] = []);
+            filteredOpportunities.forEach(opp => {
+                if (pipeline[opp.stage]) {
+                    pipeline[opp.stage].push(opp);
+                }
+            });
+
             Object.keys(pipeline).sort((a, b) => STAGES[a].order - STAGES[b].order).forEach(stage => {
                 const opportunities = pipeline[stage];
+                const isCollapsed = collapsedStages[stage] || false;
+
+                // Calculate stage stats
+                const stageValue = opportunities.reduce((sum, opp) => sum + (opp.value || 0), 0);
 
                 const stageDiv = document.createElement('div');
                 stageDiv.className = 'pipeline-stage';
 
                 const header = document.createElement('div');
                 header.className = 'pipeline-stage-header';
+                header.style.cursor = 'pointer';
+                header.style.userSelect = 'none';
+                header.onclick = () => toggleStageCollapse(stage);
                 header.innerHTML = `
-                    <span>${STAGES[stage].name}</span>
-                    <span class="stage-count">${opportunities.length}</span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.2rem;">${isCollapsed ? '▶' : '▼'}</span>
+                        <span>${STAGES[stage].name}</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.875rem;">
+                        <span class="stage-count">${opportunities.length} deals</span>
+                        <span style="color: var(--primary); font-weight: 600;">${formatCurrency(stageValue)}</span>
+                    </div>
                 `;
                 stageDiv.appendChild(header);
 
-                opportunities.forEach(opp => {
-                    const card = document.createElement('div');
-                    card.className = 'opportunity-card';
-                    card.onclick = () => window.location.href = `/crm/opportunity.html?id=${opp.id}`;
+                if (!isCollapsed) {
+                    // Show max 10 cards initially with "show more" button
+                    const visibleOpps = opportunities.slice(0, 10);
+                    const hasMore = opportunities.length > 10;
 
-                    card.innerHTML = `
-                        <div class="title">${opp.title}</div>
-                        <div class="company">${opp.companies?.name || 'Unknown Company'}</div>
-                        <div class="value">${formatCurrency(opp.value)}</div>
-                        <div class="meta">
-                            ${opp.managers_count ? opp.managers_count + ' managers' : ''}
-                            ${opp.expected_close_date ? '• Close: ' + formatDate(opp.expected_close_date) : ''}
-                        </div>
-                    `;
-                    stageDiv.appendChild(card);
-                });
+                    visibleOpps.forEach(opp => {
+                        const card = document.createElement('div');
+                        card.className = 'opportunity-card';
+                        card.style.padding = '0.75rem'; // Compact
+                        card.onclick = () => window.location.href = `/crm/opportunity.html?id=${opp.id}`;
 
-                if (opportunities.length === 0) {
-                    const emptyMsg = document.createElement('p');
-                    emptyMsg.style.color = 'var(--text-secondary)';
-                    emptyMsg.style.fontSize = '0.9rem';
-                    emptyMsg.style.marginTop = '1rem';
-                    emptyMsg.textContent = 'No opportunities';
-                    stageDiv.appendChild(emptyMsg);
+                        card.innerHTML = `
+                            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">${opp.companies?.name || 'Unknown'}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.25rem;">${opp.title}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600; color: var(--primary);">${formatCurrency(opp.value || 0)}</span>
+                                ${opp.expected_close_date ? `<span style="font-size: 0.75rem; color: var(--text-secondary);">${formatDate(opp.expected_close_date)}</span>` : ''}
+                            </div>
+                        `;
+                        stageDiv.appendChild(card);
+                    });
+
+                    if (hasMore) {
+                        const showMoreBtn = document.createElement('button');
+                        showMoreBtn.className = 'btn btn-secondary';
+                        showMoreBtn.style.width = '100%';
+                        showMoreBtn.style.marginTop = '0.5rem';
+                        showMoreBtn.textContent = `Show ${opportunities.length - 10} more`;
+                        showMoreBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            // Expand to show all
+                            collapsedStages[stage] = false;
+                            renderOpportunityPipelineFromFiltered();
+                        };
+                        stageDiv.appendChild(showMoreBtn);
+                    }
+
+                    if (opportunities.length === 0) {
+                        const emptyMsg = document.createElement('p');
+                        emptyMsg.style.color = 'var(--text-secondary)';
+                        emptyMsg.style.fontSize = '0.85rem';
+                        emptyMsg.style.marginTop = '0.5rem';
+                        emptyMsg.textContent = 'No opportunities';
+                        stageDiv.appendChild(emptyMsg);
+                    }
                 }
 
                 container.appendChild(stageDiv);
@@ -1115,7 +1203,10 @@
         }
 
         // Toggle between opportunity and company pipeline views
-        let pipelineViewMode = 'opportunity'; // 'opportunity' or 'company'
+        let pipelineViewMode = 'company'; // 'opportunity' or 'company' - default to company view
+        let collapsedStages = {}; // Track which stages are collapsed
+        let allOpportunities = []; // Store all opportunities for filtering
+        let filteredOpportunities = []; // Store filtered opportunities
 
         function togglePipelineView() {
             if (pipelineViewMode === 'opportunity') {
@@ -1123,17 +1214,19 @@
                 document.getElementById('viewToggleText').textContent = 'View by Opportunity';
                 document.getElementById('pipelineContainer').style.display = 'none';
                 document.getElementById('companyPipelineContainer').style.display = 'grid';
-                loadCompanyPipeline();
+                applyPipelineFilters();
             } else {
                 pipelineViewMode = 'opportunity';
                 document.getElementById('viewToggleText').textContent = 'View by Company';
                 document.getElementById('pipelineContainer').style.display = 'grid';
                 document.getElementById('companyPipelineContainer').style.display = 'none';
+                applyPipelineFilters();
             }
         }
 
         // Load company-based pipeline
         async function loadCompanyPipeline() {
+            allOpportunities = []; // Reset
             try {
                 let query = supabase
                     .from('opportunities')
@@ -1153,50 +1246,11 @@
 
                 if (error) throw error;
 
-                // Group by company, then find most advanced stage
-                const companyMap = {};
+                // Store all opportunities for filtering
+                allOpportunities = opportunities;
+                filteredOpportunities = [...allOpportunities];
 
-                opportunities.forEach(opp => {
-                    const companyId = opp.company_id;
-                    const companyName = opp.companies?.name || 'Unknown Company';
-
-                    if (!companyMap[companyId]) {
-                        companyMap[companyId] = {
-                            id: companyId,
-                            name: companyName,
-                            opportunities: [],
-                            totalValue: 0,
-                            mostAdvancedStage: 'lead',
-                            mostAdvancedStageOrder: STAGES['lead'].order
-                        };
-                    }
-
-                    companyMap[companyId].opportunities.push(opp);
-                    companyMap[companyId].totalValue += opp.value || 0;
-
-                    // Track most advanced stage
-                    const stageOrder = STAGES[opp.stage]?.order || 0;
-                    if (stageOrder > companyMap[companyId].mostAdvancedStageOrder) {
-                        companyMap[companyId].mostAdvancedStage = opp.stage;
-                        companyMap[companyId].mostAdvancedStageOrder = stageOrder;
-                    }
-                });
-
-                // Group companies by their most advanced stage
-                const pipeline = {};
-                Object.keys(STAGES).forEach(stage => {
-                    if (stage !== 'closed-won' && stage !== 'closed-lost') {
-                        pipeline[stage] = [];
-                    }
-                });
-
-                Object.values(companyMap).forEach(company => {
-                    if (pipeline[company.mostAdvancedStage]) {
-                        pipeline[company.mostAdvancedStage].push(company);
-                    }
-                });
-
-                renderCompanyPipeline(pipeline);
+                applyPipelineFilters();
 
             } catch (error) {
                 console.error('Error loading company pipeline:', error);
@@ -1204,58 +1258,127 @@
             }
         }
 
-        // Render company-based pipeline
-        function renderCompanyPipeline(pipeline) {
+        // Render company-based pipeline from filtered data
+        function renderCompanyPipelineFromFiltered() {
             const container = document.getElementById('companyPipelineContainer');
             container.innerHTML = '';
 
+            // Group filtered opportunities by company
+            const companyMap = {};
+            filteredOpportunities.forEach(opp => {
+                const companyId = opp.company_id;
+                const companyName = opp.companies?.name || 'Unknown Company';
+
+                if (!companyMap[companyId]) {
+                    companyMap[companyId] = {
+                        id: companyId,
+                        name: companyName,
+                        opportunities: [],
+                        totalValue: 0,
+                        mostAdvancedStage: 'lead',
+                        mostAdvancedStageOrder: STAGES['lead'].order
+                    };
+                }
+
+                companyMap[companyId].opportunities.push(opp);
+                companyMap[companyId].totalValue += opp.value || 0;
+
+                const stageOrder = STAGES[opp.stage]?.order || 0;
+                if (stageOrder > companyMap[companyId].mostAdvancedStageOrder) {
+                    companyMap[companyId].mostAdvancedStage = opp.stage;
+                    companyMap[companyId].mostAdvancedStageOrder = stageOrder;
+                }
+            });
+
+            // Group companies by their most advanced stage
+            const pipeline = {};
+            Object.keys(STAGES).forEach(stage => {
+                if (stage !== 'closed-won' && stage !== 'closed-lost') {
+                    pipeline[stage] = [];
+                }
+            });
+
+            Object.values(companyMap).forEach(company => {
+                if (pipeline[company.mostAdvancedStage]) {
+                    pipeline[company.mostAdvancedStage].push(company);
+                }
+            });
+
             Object.keys(pipeline).sort((a, b) => STAGES[a].order - STAGES[b].order).forEach(stage => {
                 const companies = pipeline[stage];
+                const isCollapsed = collapsedStages[stage] || false;
+
+                // Calculate stage stats
+                const stageValue = companies.reduce((sum, c) => sum + c.totalValue, 0);
 
                 const stageDiv = document.createElement('div');
                 stageDiv.className = 'pipeline-stage';
 
                 const header = document.createElement('div');
                 header.className = 'pipeline-stage-header';
+                header.style.cursor = 'pointer';
+                header.style.userSelect = 'none';
+                header.onclick = () => toggleStageCollapse(stage);
                 header.innerHTML = `
-                    <span>${STAGES[stage].name}</span>
-                    <span class="stage-count">${companies.length}</span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.2rem;">${isCollapsed ? '▶' : '▼'}</span>
+                        <span>${STAGES[stage].name}</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.875rem;">
+                        <span class="stage-count">${companies.length} companies</span>
+                        <span style="color: var(--primary); font-weight: 600;">${formatCurrency(stageValue)}</span>
+                    </div>
                 `;
                 stageDiv.appendChild(header);
 
-                companies.forEach(company => {
-                    const card = document.createElement('div');
-                    card.className = 'opportunity-card';
-                    card.onclick = () => window.location.href = `/crm/companies.html?highlight=${company.id}`;
+                if (!isCollapsed) {
+                    // Show max 10 cards initially
+                    const visibleCompanies = companies.slice(0, 10);
+                    const hasMore = companies.length > 10;
 
-                    const oppCount = company.opportunities.length;
-                    const oppList = company.opportunities.map(o => o.title).join(', ');
-                    const totalManagers = company.opportunities.reduce((sum, o) => sum + (o.managers_count || 0), 0);
+                    visibleCompanies.forEach(company => {
+                        const card = document.createElement('div');
+                        card.className = 'opportunity-card';
+                        card.style.padding = '0.75rem'; // Compact
+                        card.onclick = () => window.location.href = `/crm/companies.html?highlight=${company.id}`;
 
-                    card.innerHTML = `
-                        <div class="title">${company.name}</div>
-                        <div class="company" style="color: var(--primary-green); font-weight: 600;">
-                            ${oppCount} ${oppCount === 1 ? 'Opportunity' : 'Opportunities'}
-                        </div>
-                        <div class="value">${formatCurrency(company.totalValue)}</div>
-                        <div class="meta">
-                            ${totalManagers ? totalManagers + ' total managers' : ''}
-                            ${company.opportunities[0]?.expected_close_date ? '• Next close: ' + formatDate(company.opportunities[0].expected_close_date) : ''}
-                        </div>
-                        <div class="meta" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${oppList}">
-                            ${oppList}
-                        </div>
-                    `;
-                    stageDiv.appendChild(card);
-                });
+                        const oppCount = company.opportunities.length;
 
-                if (companies.length === 0) {
-                    const emptyMsg = document.createElement('p');
-                    emptyMsg.style.color = 'var(--text-secondary)';
-                    emptyMsg.style.fontSize = '0.9rem';
-                    emptyMsg.style.marginTop = '1rem';
-                    emptyMsg.textContent = 'No companies';
-                    stageDiv.appendChild(emptyMsg);
+                        card.innerHTML = `
+                            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">${company.name}</div>
+                            <div style="font-size: 0.85rem; color: var(--primary-green); margin-bottom: 0.25rem; font-weight: 600;">
+                                ${oppCount} ${oppCount === 1 ? 'Opportunity' : 'Opportunities'}
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600; color: var(--primary);">${formatCurrency(company.totalValue)}</span>
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">${formatStage(company.mostAdvancedStage)}</span>
+                            </div>
+                        `;
+                        stageDiv.appendChild(card);
+                    });
+
+                    if (hasMore) {
+                        const showMoreBtn = document.createElement('button');
+                        showMoreBtn.className = 'btn btn-secondary';
+                        showMoreBtn.style.width = '100%';
+                        showMoreBtn.style.marginTop = '0.5rem';
+                        showMoreBtn.textContent = `Show ${companies.length - 10} more`;
+                        showMoreBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            collapsedStages[stage] = false;
+                            renderCompanyPipelineFromFiltered();
+                        };
+                        stageDiv.appendChild(showMoreBtn);
+                    }
+
+                    if (companies.length === 0) {
+                        const emptyMsg = document.createElement('p');
+                        emptyMsg.style.color = 'var(--text-secondary)';
+                        emptyMsg.style.fontSize = '0.85rem';
+                        emptyMsg.style.marginTop = '0.5rem';
+                        emptyMsg.textContent = 'No companies';
+                        stageDiv.appendChild(emptyMsg);
+                    }
                 }
 
                 container.appendChild(stageDiv);
@@ -1263,6 +1386,12 @@
 
             document.getElementById('pipelineLoading').style.display = 'none';
             container.style.display = 'grid';
+        }
+
+        // Old renderCompanyPipeline for compatibility
+        function renderCompanyPipeline(pipeline) {
+            // This function is no longer used but kept for compatibility
+            renderCompanyPipelineFromFiltered();
         }
 
         // Load recent activities
@@ -1325,6 +1454,65 @@
             } else {
                 await Promise.all([loadMetrics(), loadPipeline()]);
             }
+        }
+
+        // Apply pipeline filters
+        function applyPipelineFilters() {
+            const search = document.getElementById('pipelineSearch')?.value.toLowerCase() || '';
+            const source = document.getElementById('pipelineSourceFilter')?.value || '';
+            const minValue = parseInt(document.getElementById('pipelineMinValue')?.value) || 0;
+            const hideClosed = document.getElementById('hideClosedFilter')?.checked || false;
+
+            filteredOpportunities = allOpportunities.filter(opp => {
+                // Search filter
+                if (search) {
+                    const companyName = opp.companies?.name?.toLowerCase() || '';
+                    const oppTitle = opp.title?.toLowerCase() || '';
+                    if (!companyName.includes(search) && !oppTitle.includes(search)) {
+                        return false;
+                    }
+                }
+
+                // Source filter
+                if (source && opp.source !== source) {
+                    return false;
+                }
+
+                // Min value filter
+                const value = opp.value || opp.annual_contract_value || 0;
+                if (value < minValue) {
+                    return false;
+                }
+
+                // Hide closed filter
+                if (hideClosed && (opp.stage === 'closed-won' || opp.stage === 'closed-lost')) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            // Re-render the pipeline with filtered data
+            if (pipelineViewMode === 'company') {
+                renderCompanyPipelineFromFiltered();
+            } else {
+                renderOpportunityPipelineFromFiltered();
+            }
+        }
+
+        // Clear pipeline filters
+        function clearPipelineFilters() {
+            document.getElementById('pipelineSearch').value = '';
+            document.getElementById('pipelineSourceFilter').value = '';
+            document.getElementById('pipelineMinValue').value = '';
+            document.getElementById('hideClosedFilter').checked = false;
+            applyPipelineFilters();
+        }
+
+        // Toggle stage collapse
+        function toggleStageCollapse(stage) {
+            collapsedStages[stage] = !collapsedStages[stage];
+            applyPipelineFilters();
         }
 
         // Show new opportunity modal (placeholder)
