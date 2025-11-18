@@ -1458,6 +1458,17 @@
 
         // Apply pipeline filters
         function applyPipelineFilters() {
+            // Safety check - if filter elements don't exist yet, just render without filtering
+            if (!document.getElementById('pipelineSearch')) {
+                filteredOpportunities = [...allOpportunities];
+                if (pipelineViewMode === 'company') {
+                    renderCompanyPipelineFromFiltered();
+                } else {
+                    renderOpportunityPipelineFromFiltered();
+                }
+                return;
+            }
+
             const search = document.getElementById('pipelineSearch')?.value.toLowerCase() || '';
             const source = document.getElementById('pipelineSourceFilter')?.value || '';
             const minValue = parseInt(document.getElementById('pipelineMinValue')?.value) || 0;
@@ -1691,7 +1702,7 @@
 
             await Promise.all([
                 loadMetrics(),
-                loadPipeline(),
+                loadCompanyPipeline(), // Changed to load company pipeline by default
                 loadActivities(),
                 loadTodaysTasks()
             ]);
