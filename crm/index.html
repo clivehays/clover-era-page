@@ -614,15 +614,26 @@
         <div class="section">
             <div class="section-header">
                 <h2>Sales Pipeline</h2>
-                <button class="btn btn-secondary" onclick="refreshPipeline()">Refresh</button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" id="viewToggleBtn" onclick="togglePipelineView()">
+                        <span id="viewToggleText">View by Company</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshPipeline()">Refresh</button>
+                </div>
             </div>
 
             <div id="pipelineLoading" class="loading">
                 <p>Loading pipeline...</p>
             </div>
 
+            <!-- Opportunity-based Pipeline (default) -->
             <div id="pipelineContainer" class="pipeline" style="display: none;">
                 <!-- Pipeline stages will be dynamically populated -->
+            </div>
+
+            <!-- Company-based Pipeline -->
+            <div id="companyPipelineContainer" class="pipeline" style="display: none;">
+                <!-- Company pipeline stages will be dynamically populated -->
             </div>
         </div>
 
@@ -1082,6 +1093,157 @@
             container.style.display = 'grid';
         }
 
+        // Toggle between opportunity and company pipeline views
+        let pipelineViewMode = 'opportunity'; // 'opportunity' or 'company'
+
+        function togglePipelineView() {
+            if (pipelineViewMode === 'opportunity') {
+                pipelineViewMode = 'company';
+                document.getElementById('viewToggleText').textContent = 'View by Opportunity';
+                document.getElementById('pipelineContainer').style.display = 'none';
+                document.getElementById('companyPipelineContainer').style.display = 'grid';
+                loadCompanyPipeline();
+            } else {
+                pipelineViewMode = 'opportunity';
+                document.getElementById('viewToggleText').textContent = 'View by Company';
+                document.getElementById('pipelineContainer').style.display = 'grid';
+                document.getElementById('companyPipelineContainer').style.display = 'none';
+            }
+        }
+
+        // Load company-based pipeline
+        async function loadCompanyPipeline() {
+            try {
+                let query = supabase
+                    .from('opportunities')
+                    .select(`
+                        *,
+                        companies (id, name, industry)
+                    `)
+                    .not('stage', 'in', '("closed-won","closed-lost")')
+                    .order('expected_close_date', { ascending: true });
+
+                // Filter by owner if viewing "my" opportunities
+                if (currentView === 'my' && currentUserId) {
+                    query = query.eq('owner_id', currentUserId);
+                }
+
+                const { data: opportunities, error } = await query;
+
+                if (error) throw error;
+
+                // Group by company, then find most advanced stage
+                const companyMap = {};
+
+                opportunities.forEach(opp => {
+                    const companyId = opp.company_id;
+                    const companyName = opp.companies?.name || 'Unknown Company';
+
+                    if (!companyMap[companyId]) {
+                        companyMap[companyId] = {
+                            id: companyId,
+                            name: companyName,
+                            opportunities: [],
+                            totalValue: 0,
+                            mostAdvancedStage: 'lead',
+                            mostAdvancedStageOrder: STAGES['lead'].order
+                        };
+                    }
+
+                    companyMap[companyId].opportunities.push(opp);
+                    companyMap[companyId].totalValue += opp.value || 0;
+
+                    // Track most advanced stage
+                    const stageOrder = STAGES[opp.stage]?.order || 0;
+                    if (stageOrder > companyMap[companyId].mostAdvancedStageOrder) {
+                        companyMap[companyId].mostAdvancedStage = opp.stage;
+                        companyMap[companyId].mostAdvancedStageOrder = stageOrder;
+                    }
+                });
+
+                // Group companies by their most advanced stage
+                const pipeline = {};
+                Object.keys(STAGES).forEach(stage => {
+                    if (stage !== 'closed-won' && stage !== 'closed-lost') {
+                        pipeline[stage] = [];
+                    }
+                });
+
+                Object.values(companyMap).forEach(company => {
+                    if (pipeline[company.mostAdvancedStage]) {
+                        pipeline[company.mostAdvancedStage].push(company);
+                    }
+                });
+
+                renderCompanyPipeline(pipeline);
+
+            } catch (error) {
+                console.error('Error loading company pipeline:', error);
+                document.getElementById('pipelineLoading').innerHTML = '<p>Error loading pipeline. Please refresh.</p>';
+            }
+        }
+
+        // Render company-based pipeline
+        function renderCompanyPipeline(pipeline) {
+            const container = document.getElementById('companyPipelineContainer');
+            container.innerHTML = '';
+
+            Object.keys(pipeline).sort((a, b) => STAGES[a].order - STAGES[b].order).forEach(stage => {
+                const companies = pipeline[stage];
+
+                const stageDiv = document.createElement('div');
+                stageDiv.className = 'pipeline-stage';
+
+                const header = document.createElement('div');
+                header.className = 'pipeline-stage-header';
+                header.innerHTML = `
+                    <span>${STAGES[stage].name}</span>
+                    <span class="stage-count">${companies.length}</span>
+                `;
+                stageDiv.appendChild(header);
+
+                companies.forEach(company => {
+                    const card = document.createElement('div');
+                    card.className = 'opportunity-card';
+                    card.onclick = () => window.location.href = `/crm/companies.html?highlight=${company.id}`;
+
+                    const oppCount = company.opportunities.length;
+                    const oppList = company.opportunities.map(o => o.title).join(', ');
+                    const totalManagers = company.opportunities.reduce((sum, o) => sum + (o.managers_count || 0), 0);
+
+                    card.innerHTML = `
+                        <div class="title">${company.name}</div>
+                        <div class="company" style="color: var(--primary-green); font-weight: 600;">
+                            ${oppCount} ${oppCount === 1 ? 'Opportunity' : 'Opportunities'}
+                        </div>
+                        <div class="value">${formatCurrency(company.totalValue)}</div>
+                        <div class="meta">
+                            ${totalManagers ? totalManagers + ' total managers' : ''}
+                            ${company.opportunities[0]?.expected_close_date ? '• Next close: ' + formatDate(company.opportunities[0].expected_close_date) : ''}
+                        </div>
+                        <div class="meta" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${oppList}">
+                            ${oppList}
+                        </div>
+                    `;
+                    stageDiv.appendChild(card);
+                });
+
+                if (companies.length === 0) {
+                    const emptyMsg = document.createElement('p');
+                    emptyMsg.style.color = 'var(--text-secondary)';
+                    emptyMsg.style.fontSize = '0.9rem';
+                    emptyMsg.style.marginTop = '1rem';
+                    emptyMsg.textContent = 'No companies';
+                    stageDiv.appendChild(emptyMsg);
+                }
+
+                container.appendChild(stageDiv);
+            });
+
+            document.getElementById('pipelineLoading').style.display = 'none';
+            container.style.display = 'grid';
+        }
+
         // Load recent activities
         async function loadActivities() {
             try {
@@ -1135,7 +1297,13 @@
         async function refreshPipeline() {
             document.getElementById('pipelineLoading').style.display = 'block';
             document.getElementById('pipelineContainer').style.display = 'none';
-            await Promise.all([loadMetrics(), loadPipeline()]);
+            document.getElementById('companyPipelineContainer').style.display = 'none';
+
+            if (pipelineViewMode === 'company') {
+                await Promise.all([loadMetrics(), loadCompanyPipeline()]);
+            } else {
+                await Promise.all([loadMetrics(), loadPipeline()]);
+            }
         }
 
         // Show new opportunity modal (placeholder)
