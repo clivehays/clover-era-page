@@ -415,12 +415,16 @@
                                 <div class="detail-value" id="oppCloseDate"></div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-label">Manager Count</div>
-                                <div class="detail-value" id="oppManagers"></div>
+                                <div class="detail-label">Pricing Tier</div>
+                                <div class="detail-value" id="oppPricingTier"></div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-label">MRR</div>
-                                <div class="detail-value" id="oppMRR"></div>
+                                <div class="detail-label">Employee Count</div>
+                                <div class="detail-value" id="oppEmployeeCount"></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Department Count</div>
+                                <div class="detail-value" id="oppDepartmentCount"></div>
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label">Source</div>
@@ -552,12 +556,31 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Manager Count</label>
-                            <input type="number" id="editManagers" min="1">
+                            <label>Pricing Tier</label>
+                            <select id="editPricingTier" onchange="updateOpportunityValue()">
+                                <option value="">Select tier...</option>
+                                <option value="poc" data-value="24000" data-duration="90">Proof of Concept (90-day pilot) - $24,000</option>
+                                <option value="departmental" data-value="48000" data-duration="365">Departmental (Annual) - $48,000</option>
+                                <option value="enterprise-small" data-value="96000" data-duration="365">Enterprise 200-500 (Annual) - $96,000</option>
+                                <option value="enterprise-medium" data-value="180000" data-duration="365">Enterprise 500-1000 (Annual) - $180,000</option>
+                                <option value="enterprise-large" data-value="300000" data-duration="365">Enterprise 1000+ (Annual) - $300,000</option>
+                                <option value="custom" data-value="0" data-duration="365">Custom Pricing</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label>MRR</label>
-                            <input type="number" id="editMRR">
+                            <label>Contract Value</label>
+                            <input type="number" id="editContractValue" placeholder="Auto-calculated or enter custom">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Employee Count (covered)</label>
+                            <input type="number" id="editEmployeeCount" min="1" placeholder="e.g., 250">
+                        </div>
+                        <div class="form-group">
+                            <label>Department Count</label>
+                            <input type="number" id="editDepartmentCount" min="1" placeholder="e.g., 3-5">
                         </div>
                     </div>
 
@@ -779,8 +802,20 @@
             document.getElementById('oppValue').textContent = formatCurrency(opp.value || opp.annual_contract_value);
             document.getElementById('oppProbability').textContent = (opp.probability || 0) + '%';
             document.getElementById('oppCloseDate').textContent = formatDate(opp.expected_close_date);
-            document.getElementById('oppManagers').textContent = opp.managers_count || 'Not set';
-            document.getElementById('oppMRR').textContent = formatCurrency(opp.monthly_recurring_revenue);
+
+            // Display pricing tier with readable name
+            const pricingTierNames = {
+                'poc': 'Proof of Concept (90-day pilot)',
+                'departmental': 'Departmental (Annual)',
+                'enterprise-small': 'Enterprise 200-500 (Annual)',
+                'enterprise-medium': 'Enterprise 500-1000 (Annual)',
+                'enterprise-large': 'Enterprise 1000+ (Annual)',
+                'custom': 'Custom Pricing'
+            };
+            document.getElementById('oppPricingTier').textContent = opp.pricing_tier ? pricingTierNames[opp.pricing_tier] : 'Not set';
+            document.getElementById('oppEmployeeCount').textContent = opp.employee_count || 'Not set';
+            document.getElementById('oppDepartmentCount').textContent = opp.department_count || 'Not set';
+
             document.getElementById('oppSource').textContent = (opp.source || 'Not set').charAt(0).toUpperCase() + (opp.source || 'Not set').slice(1);
             document.getElementById('oppOwner').textContent = opp.owner?.full_name || opp.owner?.email || 'Unassigned';
             document.getElementById('oppNextStep').textContent = opp.next_step || 'No next step defined';
@@ -819,6 +854,17 @@
                         </div>
                     ` : ''}
                 `;
+            }
+        }
+
+        // Update opportunity value based on pricing tier
+        function updateOpportunityValue() {
+            const tierSelect = document.getElementById('editPricingTier');
+            const selectedOption = tierSelect.options[tierSelect.selectedIndex];
+            const tierValue = selectedOption.getAttribute('data-value');
+
+            if (tierValue && tierValue !== '0') {
+                document.getElementById('editContractValue').value = tierValue;
             }
         }
 
@@ -864,8 +910,10 @@
             document.getElementById('editProbability').value = currentOpportunity.probability || 0;
             document.getElementById('editCloseDate').value = currentOpportunity.expected_close_date || '';
             document.getElementById('editSource').value = currentOpportunity.source || 'inbound';
-            document.getElementById('editManagers').value = currentOpportunity.managers_count || '';
-            document.getElementById('editMRR').value = currentOpportunity.monthly_recurring_revenue || '';
+            document.getElementById('editPricingTier').value = currentOpportunity.pricing_tier || 'departmental';
+            document.getElementById('editContractValue').value = currentOpportunity.value || currentOpportunity.annual_contract_value || '';
+            document.getElementById('editEmployeeCount').value = currentOpportunity.employee_count || '';
+            document.getElementById('editDepartmentCount').value = currentOpportunity.department_count || '';
             document.getElementById('editNextStep').value = currentOpportunity.next_step || '';
             document.getElementById('editNotes').value = currentOpportunity.notes || '';
 
@@ -888,17 +936,14 @@
                 probability: parseInt(document.getElementById('editProbability').value) || 0,
                 expected_close_date: document.getElementById('editCloseDate').value || null,
                 source: document.getElementById('editSource').value,
-                managers_count: parseInt(document.getElementById('editManagers').value) || null,
-                monthly_recurring_revenue: parseInt(document.getElementById('editMRR').value) || null,
+                pricing_tier: document.getElementById('editPricingTier').value,
+                value: parseInt(document.getElementById('editContractValue').value) || null,
+                annual_contract_value: parseInt(document.getElementById('editContractValue').value) || null,
+                employee_count: parseInt(document.getElementById('editEmployeeCount').value) || null,
+                department_count: parseInt(document.getElementById('editDepartmentCount').value) || null,
                 next_step: document.getElementById('editNextStep').value,
                 notes: document.getElementById('editNotes').value
             };
-
-            // Calculate ACV from MRR
-            if (updates.monthly_recurring_revenue) {
-                updates.annual_contract_value = updates.monthly_recurring_revenue * 12;
-                updates.value = updates.annual_contract_value;
-            }
 
             try {
                 const { error } = await supabase
