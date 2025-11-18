@@ -1388,12 +1388,19 @@
                 // Create cards container
                 const cardsContainer = document.createElement('div');
                 cardsContainer.className = 'pipeline-stage-cards';
+                cardsContainer.id = `cards-${stage}`;
 
-                // Render all company cards (simplified - no collapse/expand)
+                // WIP Limit: Show max 10 cards initially
+                const WIP_LIMIT = 10;
+                const isExpanded = expandedStages[stage] || false;
+                const visibleCompanies = isExpanded ? companies : companies.slice(0, WIP_LIMIT);
+                const hasMore = companies.length > WIP_LIMIT;
+
+                // Render company cards
                 if (companies.length === 0) {
                     cardsContainer.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.875rem; text-align: center; padding: 2rem 0;">No companies</div>';
                 } else {
-                    companies.forEach(company => {
+                    visibleCompanies.forEach(company => {
                         const card = document.createElement('div');
                         card.className = 'opportunity-card';
                         card.onclick = () => window.location.href = `/crm/companies.html?highlight=${company.id}`;
@@ -1423,6 +1430,39 @@
                         `;
                         cardsContainer.appendChild(card);
                     });
+
+                    // Add "Show More" / "Show Less" button if needed
+                    if (hasMore) {
+                        const buttonContainer = document.createElement('div');
+                        buttonContainer.style.padding = '0.5rem';
+                        buttonContainer.style.textAlign = 'center';
+
+                        const toggleBtn = document.createElement('button');
+                        toggleBtn.className = 'btn btn-secondary';
+                        toggleBtn.style.width = '100%';
+                        toggleBtn.style.fontSize = '0.85rem';
+                        toggleBtn.style.padding = '0.6rem';
+
+                        if (isExpanded) {
+                            toggleBtn.innerHTML = '▲ Show Less';
+                            toggleBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                expandedStages[stage] = false;
+                                renderCompanyPipelineFromFiltered();
+                            };
+                        } else {
+                            const remainingCount = companies.length - WIP_LIMIT;
+                            toggleBtn.innerHTML = `▼ Show ${remainingCount} More`;
+                            toggleBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                expandedStages[stage] = true;
+                                renderCompanyPipelineFromFiltered();
+                            };
+                        }
+
+                        buttonContainer.appendChild(toggleBtn);
+                        cardsContainer.appendChild(buttonContainer);
+                    }
                 }
 
                 stageDiv.appendChild(cardsContainer);
