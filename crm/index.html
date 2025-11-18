@@ -839,8 +839,27 @@
                         <h3>Additional Information</h3>
 
                         <div class="form-group">
-                            <label for="oppNextStep">Next Step</label>
-                            <input type="text" id="oppNextStep" placeholder="e.g., Schedule demo call">
+                            <label for="oppNextActivity">Next Activity <span class="required">*</span></label>
+                            <input type="text" id="oppNextActivity" required placeholder="e.g., Schedule demo call">
+                            <div class="hint">This will create the first activity for this opportunity</div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="oppActivityType">Activity Type</label>
+                                <select id="oppActivityType">
+                                    <option value="task">Task</option>
+                                    <option value="call" selected>Call</option>
+                                    <option value="email">Email</option>
+                                    <option value="meeting">Meeting</option>
+                                    <option value="demo">Demo</option>
+                                    <option value="note">Note</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="oppActivityDueDate">Activity Due Date</label>
+                                <input type="datetime-local" id="oppActivityDueDate">
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1694,11 +1713,14 @@
             const contractValue = parseInt(document.getElementById('oppContractValue').value) || 0;
             const employees = parseInt(document.getElementById('oppEmployees').value) || null;
             const departments = parseInt(document.getElementById('oppDepartments').value) || null;
-            const nextStep = document.getElementById('oppNextStep').value;
+            const nextActivity = document.getElementById('oppNextActivity').value;
+            const activityType = document.getElementById('oppActivityType').value;
+            const activityDueDate = document.getElementById('oppActivityDueDate').value || null;
             const notes = document.getElementById('oppNotes').value;
 
             try {
-                const { data, error } = await supabase
+                // Create the opportunity
+                const { data: opportunityData, error: opportunityError } = await supabase
                     .from('opportunities')
                     .insert([{
                         company_id: companyId,
@@ -1713,19 +1735,40 @@
                         annual_contract_value: contractValue,
                         employee_count: employees,
                         department_count: departments,
-                        next_step: nextStep,
+                        next_step: nextActivity,
                         notes: notes,
                         owner_id: currentUserId
                     }])
                     .select()
                     .single();
 
-                if (error) throw error;
+                if (opportunityError) throw opportunityError;
+
+                // Create the first activity for this opportunity
+                const { error: activityError } = await supabase
+                    .from('activities')
+                    .insert([{
+                        company_id: companyId,
+                        contact_id: contactId,
+                        opportunity_id: opportunityData.id,
+                        type: activityType,
+                        subject: nextActivity,
+                        description: `Initial activity for opportunity: ${title}`,
+                        due_date: activityDueDate,
+                        completed: false,
+                        status: 'todo',
+                        created_by: currentUserId
+                    }]);
+
+                if (activityError) {
+                    console.error('Error creating activity:', activityError);
+                    // Don't fail the whole operation if activity creation fails
+                }
 
                 // Close modal and redirect to new opportunity
                 closeNewOpportunityModal();
-                alert('Opportunity created successfully!');
-                window.location.href = `/crm/opportunity.html?id=${data.id}`;
+                alert('Opportunity and first activity created successfully!');
+                window.location.href = `/crm/opportunity.html?id=${opportunityData.id}`;
 
             } catch (error) {
                 console.error('Error creating opportunity:', error);
