@@ -953,6 +953,11 @@
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
+        // Format stage name
+        function formatStage(stage) {
+            return STAGES[stage] ? STAGES[stage].name : stage;
+        }
+
         // Check authentication on page load
         async function checkAuth() {
             const { data: { session } } = await supabase.auth.getSession();
