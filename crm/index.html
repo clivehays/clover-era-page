@@ -801,34 +801,36 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="oppManagers">Manager Count <span class="required">*</span></label>
-                                <input type="number" id="oppManagers" required min="1" value="1" onchange="calculateFinancials()">
-                                <div class="hint">Number of manager licenses</div>
+                                <label for="oppPricingTier">Pricing Tier <span class="required">*</span></label>
+                                <select id="oppPricingTier" required onchange="calculateFinancials()">
+                                    <option value="">Select tier...</option>
+                                    <option value="poc" data-value="24000">Proof of Concept (90-day pilot) - $24,000</option>
+                                    <option value="departmental" data-value="48000" selected>Departmental (Annual) - $48,000</option>
+                                    <option value="enterprise-small" data-value="96000">Enterprise 200-500 (Annual) - $96,000</option>
+                                    <option value="enterprise-medium" data-value="180000">Enterprise 500-1000 (Annual) - $180,000</option>
+                                    <option value="enterprise-large" data-value="300000">Enterprise 1000+ (Annual) - $300,000</option>
+                                    <option value="custom" data-value="0">Custom Pricing</option>
+                                </select>
+                                <div class="hint">Select pricing tier based on company size</div>
                             </div>
                             <div class="form-group">
-                                <label for="oppPricePerManager">Price per Manager/Month</label>
-                                <input type="number" id="oppPricePerManager" value="295" onchange="calculateFinancials()">
-                                <div class="hint">Default: $295/manager/month</div>
+                                <label for="oppContractValue">Contract Value <span class="required">*</span></label>
+                                <input type="number" id="oppContractValue" required placeholder="Auto-calculated or enter custom">
+                                <div class="hint">Auto-filled from tier selection</div>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="oppMRR">Monthly Recurring Revenue (MRR)</label>
-                                <input type="number" id="oppMRR" readonly style="background: var(--light-gray);">
-                                <div class="hint">Auto-calculated: Managers × Price</div>
+                                <label for="oppEmployees">Employee Count</label>
+                                <input type="number" id="oppEmployees" min="0" placeholder="e.g., 250">
+                                <div class="hint">Total employees covered by this opportunity</div>
                             </div>
                             <div class="form-group">
-                                <label for="oppACV">Annual Contract Value (ACV)</label>
-                                <input type="number" id="oppACV" readonly style="background: var(--light-gray);">
-                                <div class="hint">Auto-calculated: MRR × 12</div>
+                                <label for="oppDepartments">Department Count</label>
+                                <input type="number" id="oppDepartments" min="0" placeholder="e.g., 3-5">
+                                <div class="hint">Number of departments involved</div>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="oppEmployees">Employees Covered</label>
-                            <input type="number" id="oppEmployees" min="0">
-                            <div class="hint">Total employees that will use the platform</div>
                         </div>
                     </div>
 
@@ -1668,14 +1670,13 @@
 
         // Calculate financials
         function calculateFinancials() {
-            const managers = parseInt(document.getElementById('oppManagers').value) || 0;
-            const pricePerManager = parseInt(document.getElementById('oppPricePerManager').value) || 295;
+            const tierSelect = document.getElementById('oppPricingTier');
+            const selectedOption = tierSelect.options[tierSelect.selectedIndex];
+            const tierValue = selectedOption.getAttribute('data-value');
 
-            const mrr = managers * pricePerManager;
-            const acv = mrr * 12;
-
-            document.getElementById('oppMRR').value = mrr;
-            document.getElementById('oppACV').value = acv;
+            if (tierValue && tierValue !== '0') {
+                document.getElementById('oppContractValue').value = tierValue;
+            }
         }
 
         // Save new opportunity
@@ -1689,11 +1690,10 @@
             const probability = parseInt(document.getElementById('oppProbability').value) || 0;
             const source = document.getElementById('oppSource').value;
             const closeDate = document.getElementById('oppCloseDate').value || null;
-            const managers = parseInt(document.getElementById('oppManagers').value) || 1;
-            const pricePerManager = parseInt(document.getElementById('oppPricePerManager').value) || 295;
-            const mrr = parseInt(document.getElementById('oppMRR').value) || 0;
-            const acv = parseInt(document.getElementById('oppACV').value) || 0;
+            const pricingTier = document.getElementById('oppPricingTier').value;
+            const contractValue = parseInt(document.getElementById('oppContractValue').value) || 0;
             const employees = parseInt(document.getElementById('oppEmployees').value) || null;
+            const departments = parseInt(document.getElementById('oppDepartments').value) || null;
             const nextStep = document.getElementById('oppNextStep').value;
             const notes = document.getElementById('oppNotes').value;
 
@@ -1708,11 +1708,11 @@
                         probability: probability,
                         source: source,
                         expected_close_date: closeDate,
-                        managers_count: managers,
-                        monthly_recurring_revenue: mrr,
-                        annual_contract_value: acv,
-                        value: acv,
-                        employees_covered: employees,
+                        pricing_tier: pricingTier,
+                        value: contractValue,
+                        annual_contract_value: contractValue,
+                        employee_count: employees,
+                        department_count: departments,
                         next_step: nextStep,
                         notes: notes,
                         owner_id: currentUserId
