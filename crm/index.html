@@ -1210,6 +1210,7 @@
         // Toggle between opportunity and company pipeline views
         let pipelineViewMode = 'company'; // 'opportunity' or 'company' - default to company view
         let collapsedStages = {}; // Track which stages are collapsed
+        let expandedStages = {}; // Track which stages are showing all cards (vs first 5)
         let allOpportunities = []; // Store all opportunities for filtering
         let filteredOpportunities = []; // Store filtered opportunities
 
@@ -1337,43 +1338,84 @@
                 stageDiv.appendChild(header);
 
                 if (!isCollapsed) {
-                    // Show max 10 cards initially
-                    const visibleCompanies = companies.slice(0, 10);
-                    const hasMore = companies.length > 10;
+                    // Show max 5 cards initially, with option to expand all
+                    const initialLimit = 5;
+                    const isExpanded = expandedStages[stage] || false;
+                    const visibleCompanies = isExpanded ? companies : companies.slice(0, initialLimit);
+                    const hasMore = companies.length > initialLimit;
 
                     visibleCompanies.forEach(company => {
                         const card = document.createElement('div');
                         card.className = 'opportunity-card';
-                        card.style.padding = '0.75rem'; // Compact
+                        card.style.padding = '1rem';
+                        card.style.cursor = 'pointer';
+                        card.style.transition = 'all 0.2s';
+                        card.onmouseenter = (e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+                        };
+                        card.onmouseleave = (e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '';
+                        };
                         card.onclick = () => window.location.href = `/crm/companies.html?highlight=${company.id}`;
 
                         const oppCount = company.opportunities.length;
 
+                        // Get the most recent opportunity for additional context
+                        const sortedOpps = [...company.opportunities].sort((a, b) =>
+                            new Date(b.updated_at) - new Date(a.updated_at)
+                        );
+                        const mostRecentOpp = sortedOpps[0];
+                        const nextStep = mostRecentOpp?.next_step;
+                        const expectedClose = mostRecentOpp?.expected_close_date;
+
                         card.innerHTML = `
-                            <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem;">${company.name}</div>
-                            <div style="font-size: 0.85rem; color: var(--primary-green); margin-bottom: 0.25rem; font-weight: 600;">
-                                ${oppCount} ${oppCount === 1 ? 'Opportunity' : 'Opportunities'}
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                <div style="font-weight: 600; font-size: 1rem;">${company.name}</div>
+                                <div style="font-weight: 600; color: var(--primary); font-size: 1rem;">${formatCurrency(company.totalValue)}</div>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-weight: 600; color: var(--primary);">${formatCurrency(company.totalValue)}</span>
-                                <span style="font-size: 0.75rem; color: var(--text-secondary);">${formatStage(company.mostAdvancedStage)}</span>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                ${oppCount} ${oppCount === 1 ? 'Opportunity' : 'Opportunities'} • ${formatStage(company.mostAdvancedStage)}
                             </div>
+                            ${nextStep ? `
+                                <div style="font-size: 0.85rem; color: var(--text-primary); background: var(--background); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
+                                    <strong>Next:</strong> ${nextStep}
+                                </div>
+                            ` : ''}
+                            ${expectedClose ? `
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                    📅 Expected close: ${formatDate(expectedClose)}
+                                </div>
+                            ` : ''}
                         `;
                         stageDiv.appendChild(card);
                     });
 
-                    if (hasMore) {
+                    if (hasMore && !isExpanded) {
                         const showMoreBtn = document.createElement('button');
                         showMoreBtn.className = 'btn btn-secondary';
                         showMoreBtn.style.width = '100%';
                         showMoreBtn.style.marginTop = '0.5rem';
-                        showMoreBtn.textContent = `Show ${companies.length - 10} more`;
+                        showMoreBtn.textContent = `▼ Show ${companies.length - initialLimit} more`;
                         showMoreBtn.onclick = (e) => {
                             e.stopPropagation();
-                            collapsedStages[stage] = false;
+                            expandedStages[stage] = true;
                             renderCompanyPipelineFromFiltered();
                         };
                         stageDiv.appendChild(showMoreBtn);
+                    } else if (isExpanded && hasMore) {
+                        const showLessBtn = document.createElement('button');
+                        showLessBtn.className = 'btn btn-secondary';
+                        showLessBtn.style.width = '100%';
+                        showLessBtn.style.marginTop = '0.5rem';
+                        showLessBtn.textContent = `▲ Show less`;
+                        showLessBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            expandedStages[stage] = false;
+                            renderCompanyPipelineFromFiltered();
+                        };
+                        stageDiv.appendChild(showLessBtn);
                     }
 
                     if (companies.length === 0) {
