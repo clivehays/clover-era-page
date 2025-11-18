@@ -199,48 +199,100 @@
         }
 
         .pipeline {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
             gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
         }
 
         .pipeline-stage {
+            flex: 0 0 280px;
             background: var(--light-gray);
             border-radius: 8px;
-            padding: 1rem;
-            min-height: 300px;
+            padding: 0;
+            min-height: 400px;
+            max-height: calc(100vh - 300px);
+            display: flex;
+            flex-direction: column;
         }
 
         .pipeline-stage-header {
             font-weight: 700;
             color: var(--charcoal);
-            margin-bottom: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid var(--medium-gray);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .pipeline-stage-header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
+        .pipeline-stage-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pipeline-stage-stats {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+
         .stage-count {
             background: var(--primary-green);
             color: white;
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .stage-value {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .pipeline-stage-cards {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
         .opportunity-card {
-            background: #f0fdf4;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            border-left: 4px solid var(--primary-green);
+            background: white;
+            padding: 0.875rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-green);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
 
         .opportunity-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             transform: translateY(-2px);
+            border-left-width: 4px;
         }
 
         .opportunity-card .title {
@@ -1310,129 +1362,75 @@
                 }
             });
 
+            // Render each stage column
             Object.keys(pipeline).sort((a, b) => STAGES[a].order - STAGES[b].order).forEach(stage => {
                 const companies = pipeline[stage];
-                const isCollapsed = collapsedStages[stage] || false;
-
-                // Calculate stage stats
                 const stageValue = companies.reduce((sum, c) => sum + c.totalValue, 0);
 
+                // Create stage column
                 const stageDiv = document.createElement('div');
                 stageDiv.className = 'pipeline-stage';
 
+                // Create header
                 const header = document.createElement('div');
                 header.className = 'pipeline-stage-header';
-                header.style.cursor = 'pointer';
-                header.style.userSelect = 'none';
-                header.onclick = () => toggleStageCollapse(stage);
                 header.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="font-size: 1.2rem;">${isCollapsed ? '▶' : '▼'}</span>
-                        <span>${STAGES[stage].name}</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; font-size: 0.875rem;">
-                        <span class="stage-count">${companies.length} companies</span>
-                        <span style="color: var(--primary); font-weight: 600;">${formatCurrency(stageValue)}</span>
+                    <div class="pipeline-stage-header-top">
+                        <div class="pipeline-stage-title">${STAGES[stage].name}</div>
+                        <div class="pipeline-stage-stats">
+                            <span class="stage-count">${companies.length}</span>
+                            <span class="stage-value">${formatCurrency(stageValue)}</span>
+                        </div>
                     </div>
                 `;
                 stageDiv.appendChild(header);
 
-                if (!isCollapsed) {
-                    // Show max 5 cards initially, with option to expand all
-                    const initialLimit = 5;
-                    const isExpanded = expandedStages[stage] || false;
-                    const visibleCompanies = isExpanded ? companies : companies.slice(0, initialLimit);
-                    const hasMore = companies.length > initialLimit;
+                // Create cards container
+                const cardsContainer = document.createElement('div');
+                cardsContainer.className = 'pipeline-stage-cards';
 
-                    visibleCompanies.forEach(company => {
+                // Render all company cards (simplified - no collapse/expand)
+                if (companies.length === 0) {
+                    cardsContainer.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.875rem; text-align: center; padding: 2rem 0;">No companies</div>';
+                } else {
+                    companies.forEach(company => {
                         const card = document.createElement('div');
                         card.className = 'opportunity-card';
-                        card.style.padding = '1rem';
-                        card.style.cursor = 'pointer';
-                        card.style.transition = 'all 0.2s';
-                        card.onmouseenter = (e) => {
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-                        };
-                        card.onmouseleave = (e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '';
-                        };
                         card.onclick = () => window.location.href = `/crm/companies.html?highlight=${company.id}`;
 
                         const oppCount = company.opportunities.length;
 
-                        // Get the most recent opportunity for additional context
+                        // Get the most recent opportunity for context
                         const sortedOpps = [...company.opportunities].sort((a, b) =>
                             new Date(b.updated_at) - new Date(a.updated_at)
                         );
                         const mostRecentOpp = sortedOpps[0];
                         const nextStep = mostRecentOpp?.next_step;
-                        const expectedClose = mostRecentOpp?.expected_close_date;
 
                         card.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                                <div style="font-weight: 600; font-size: 1rem;">${company.name}</div>
-                                <div style="font-weight: 600; color: var(--primary); font-size: 1rem;">${formatCurrency(company.totalValue)}</div>
+                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--charcoal); margin-bottom: 0.5rem; line-height: 1.3;">
+                                ${company.name}
                             </div>
-                            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
-                                ${oppCount} ${oppCount === 1 ? 'Opportunity' : 'Opportunities'} • ${formatStage(company.mostAdvancedStage)}
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">${oppCount} opp${oppCount !== 1 ? 's' : ''}</span>
+                                <span style="font-weight: 700; color: var(--primary); font-size: 0.95rem;">${formatCurrency(company.totalValue)}</span>
                             </div>
                             ${nextStep ? `
-                                <div style="font-size: 0.85rem; color: var(--text-primary); background: var(--background); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">
-                                    <strong>Next:</strong> ${nextStep}
-                                </div>
-                            ` : ''}
-                            ${expectedClose ? `
-                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
-                                    📅 Expected close: ${formatDate(expectedClose)}
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--medium-gray);">
+                                    <strong style="color: var(--charcoal);">Next:</strong> ${nextStep.length > 50 ? nextStep.substring(0, 50) + '...' : nextStep}
                                 </div>
                             ` : ''}
                         `;
-                        stageDiv.appendChild(card);
+                        cardsContainer.appendChild(card);
                     });
-
-                    if (hasMore && !isExpanded) {
-                        const showMoreBtn = document.createElement('button');
-                        showMoreBtn.className = 'btn btn-secondary';
-                        showMoreBtn.style.width = '100%';
-                        showMoreBtn.style.marginTop = '0.5rem';
-                        showMoreBtn.textContent = `▼ Show ${companies.length - initialLimit} more`;
-                        showMoreBtn.onclick = (e) => {
-                            e.stopPropagation();
-                            expandedStages[stage] = true;
-                            renderCompanyPipelineFromFiltered();
-                        };
-                        stageDiv.appendChild(showMoreBtn);
-                    } else if (isExpanded && hasMore) {
-                        const showLessBtn = document.createElement('button');
-                        showLessBtn.className = 'btn btn-secondary';
-                        showLessBtn.style.width = '100%';
-                        showLessBtn.style.marginTop = '0.5rem';
-                        showLessBtn.textContent = `▲ Show less`;
-                        showLessBtn.onclick = (e) => {
-                            e.stopPropagation();
-                            expandedStages[stage] = false;
-                            renderCompanyPipelineFromFiltered();
-                        };
-                        stageDiv.appendChild(showLessBtn);
-                    }
-
-                    if (companies.length === 0) {
-                        const emptyMsg = document.createElement('p');
-                        emptyMsg.style.color = 'var(--text-secondary)';
-                        emptyMsg.style.fontSize = '0.85rem';
-                        emptyMsg.style.marginTop = '0.5rem';
-                        emptyMsg.textContent = 'No companies';
-                        stageDiv.appendChild(emptyMsg);
-                    }
                 }
 
+                stageDiv.appendChild(cardsContainer);
                 container.appendChild(stageDiv);
             });
 
             document.getElementById('pipelineLoading').style.display = 'none';
-            container.style.display = 'grid';
+            container.style.display = 'flex';
         }
 
         // Old renderCompanyPipeline for compatibility
