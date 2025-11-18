@@ -111,6 +111,34 @@
     }
     </script>
 
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloverera.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Solutions",
+          "item": "https://cloverera.com/#solutions"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Reduce Employee Turnover",
+          "item": "https://cloverera.com/reduce-employee-turnover.html"
+        }
+      ]
+    }
+    </script>
+
     <style>
         :root {
             --teal: #46AEB8;
@@ -133,6 +161,42 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            background: var(--light-gray);
+            padding: 1rem 2rem;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: var(--teal);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--deep-teal);
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-current {
+            color: var(--text-primary);
+            font-weight: 500;
         }
 
         /* Hero Section */
@@ -290,6 +354,17 @@
 <body>
     <script src="/js/header.js"></script>
 
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="/">Home</a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="/#solutions">Solutions</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Reduce Employee Turnover</span>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <section class="hero">
         <h1>Reduce Employee Turnover & Increase Employee Retention</h1>
@@ -311,6 +386,8 @@
         </ul>
 
         <p>The real tragedy? <strong>Most departures are preventable.</strong> Exit interviews reveal that 67% of resignations stem from issues that existed for 4-6 months before the employee quit—problems that could have been addressed if managers had known about them in time.</p>
+
+        <p>Related: <a href="/burnout/" style="color: var(--teal); text-decoration: underline;">Employee burnout</a> is one of the leading causes of turnover. Learn how to identify and address it before your best people leave.</p>
     </section>
 
     <!-- Why Traditional Methods Fail -->
@@ -330,6 +407,8 @@
             <h3>The Fundamental Problem</h3>
             <p><strong>Traditional retention strategies operate on outdated information.</strong> You're trying to reduce employee turnover using data that's weeks or months old, after at-risk employees have already mentally checked out and started interviewing elsewhere.</p>
         </div>
+
+        <p>See why we're in a <a href="/retention-crisis/" style="color: var(--teal); text-decoration: underline;">retention crisis</a> and how forward-thinking companies are solving it.</p>
     </section>
 
     <!-- Solution Section -->
@@ -457,9 +536,39 @@
     </section>
 
     <!-- Footer -->
-    <footer style="background: var(--charcoal); color: var(--white); padding: 3rem 2rem; text-align: center;">
-        <p>© 2025 Clover ERA. All rights reserved. | <a href="/privacy-policy.html" style="color: var(--teal);">Privacy Policy</a> | <a href="/terms.html" style="color: var(--teal);">Terms of Service</a></p>
-        <p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Phone: <a href="tel:+12129184448" style="color: var(--teal);">(212) 918-4448</a> | Email: <a href="mailto:contact@cloverera.com" style="color: var(--teal);">contact@cloverera.com</a></p>
+    <footer style="background: var(--charcoal); color: var(--white); padding: 3rem 2rem;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem; text-align: left;">
+                <div>
+                    <h4 style="color: var(--teal); margin-bottom: 1rem;">Solutions</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="/burnout/" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">Burnout Prevention</a></li>
+                        <li><a href="/retention-crisis/" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">Retention Crisis</a></li>
+                        <li><a href="/employee-stress/" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">Stress Management</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--teal); margin-bottom: 1rem;">Resources</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="/how-it-works.html" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">How It Works</a></li>
+                        <li><a href="/calculator/" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">ROI Calculator</a></li>
+                        <li><a href="/pricing/" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: var(--teal); margin-bottom: 1rem;">Get Started</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="https://calendly.com/clive-hays-cloverera/30min" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">Book a Demo</a></li>
+                        <li><a href="/30-day-free-pilot/" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">Free Trial</a></li>
+                        <li><a href="/contact.html" style="color: rgba(255,255,255,0.7); text-decoration: none; display: block; padding: 0.25rem 0;">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>© 2025 Clover ERA. All rights reserved. | <a href="/privacy-policy.html" style="color: var(--teal);">Privacy Policy</a> | <a href="/terms.html" style="color: var(--teal);">Terms of Service</a></p>
+                <p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Phone: <a href="tel:+12129184448" style="color: var(--teal);">(212) 918-4448</a> | Email: <a href="mailto:contact@cloverera.com" style="color: var(--teal);">contact@cloverera.com</a></p>
+            </div>
+        </div>
     </footer>
 
     <script>
