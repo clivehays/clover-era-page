@@ -364,7 +364,8 @@
                     <!-- Action Buttons -->
                     <div class="action-buttons">
                         <button type="button" class="btn btn-secondary" onclick="saveDraft()">💾 Save Draft</button>
-                        <button type="button" class="btn btn-primary" onclick="publishArticle()">🚀 Publish</button>
+                        <button type="button" class="btn btn-primary" onclick="publishArticle()" id="publishBtn">🚀 Publish</button>
+                        <button type="button" class="btn btn-primary" onclick="updateAndRepublish()" id="republishBtn" style="display: none;">📝 Update & Republish</button>
                     </div>
                 </form>
             </div>
@@ -669,6 +670,43 @@
             }
         }
 
+        async function updateAndRepublish() {
+            try {
+                // First save the current changes
+                await saveDraft(true);
+
+                const confirmed = confirm('Update and republish this article? The changes will be live in ~1 minute.');
+                if (!confirmed) return;
+
+                // Trigger GitHub Action to regenerate static files
+                showAlert('Regenerating article... This will take ~1 minute. 🔄');
+
+                try {
+                    await fetch('https://api.github.com/repos/clivehays/clover-era-page/dispatches', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            event_type: 'publish-blog-article',
+                            client_payload: {
+                                article_id: articleId
+                            }
+                        })
+                    });
+                    showAlert('Article updated! Changes will be live in ~1 minute. 🚀', 'success');
+                } catch (triggerError) {
+                    console.warn('Could not trigger GitHub Action:', triggerError);
+                    showAlert('Article saved! Changes will be live within 5 minutes (next scheduled run).', 'success');
+                }
+
+            } catch (error) {
+                console.error('Error updating article:', error);
+                showAlert('Error updating article: ' + error.message, 'error');
+            }
+        }
+
         async function loadArticle(id) {
             try {
                 const { data: article, error } = await supabase
@@ -696,6 +734,15 @@
 
                 document.getElementById('pageTitle').textContent = `Edit: ${article.title}`;
                 document.getElementById('statusBadge').textContent = article.status;
+
+                // Show appropriate buttons based on status
+                if (article.status === 'published') {
+                    document.getElementById('publishBtn').style.display = 'none';
+                    document.getElementById('republishBtn').style.display = 'flex';
+                } else {
+                    document.getElementById('publishBtn').style.display = 'flex';
+                    document.getElementById('republishBtn').style.display = 'none';
+                }
 
                 updateCharCount('title', 'titleCount', 255);
                 updateCharCount('excerpt', 'excerptCount', 300);
