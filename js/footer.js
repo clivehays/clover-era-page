@@ -92,6 +92,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 </ul>
             </div>
             <div class="footer-section">
+                <h4>RESOURCES</h4>
+                <ul>
+                    <li><a href="/Blog/">Blog</a></li>
+                    <li><a href="/how-it-works.html">How It Works</a></li>
+                    <li><a href="/our-science.html">The CLOVER Framework</a></li>
+                    <li><a href="/calculator/">ROI Calculator</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
                 <h4>GET STARTED</h4>
                 <ul>
                     <li><a href="/calculator/">ROI Calculator</a></li>
