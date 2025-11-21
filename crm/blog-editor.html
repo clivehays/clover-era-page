@@ -379,6 +379,15 @@
                     </div>
                 </div>
 
+                <!-- Author -->
+                <div class="sidebar-section">
+                    <h3>Author</h3>
+                    <div class="form-group">
+                        <label for="authorName">Author Name</label>
+                        <input type="text" id="authorName" placeholder="Enter author name..." maxlength="255">
+                    </div>
+                </div>
+
                 <!-- Category & Tags -->
                 <div class="sidebar-section">
                     <h3>Organization</h3>
@@ -571,6 +580,7 @@
                     excerpt: document.getElementById('excerpt').value,
                     content: tinymce.get('content').getContent(),
                     featured_image: document.getElementById('featuredImage').value || null,
+                    author_name: document.getElementById('authorName').value || 'Clover ERA Team',
                     category: document.getElementById('category').value || null,
                     tags: currentTags,
                     meta_title: document.getElementById('metaTitle').value || null,
@@ -674,6 +684,7 @@
                 document.getElementById('excerpt').value = article.excerpt || '';
                 tinymce.get('content').setContent(article.content);
                 document.getElementById('featuredImage').value = article.featured_image || '';
+                document.getElementById('authorName').value = article.author_name || '';
                 document.getElementById('category').value = article.category || '';
                 document.getElementById('metaTitle').value = article.meta_title || '';
                 document.getElementById('metaDescription').value = article.meta_description || '';

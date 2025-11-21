@@ -68,7 +68,7 @@ function generateSchemaMarkup(article, publishDate, readTime, wordCount) {
         "dateModified": new Date(article.updated_at).toISOString(),
         "author": {
             "@type": "Person",
-            "name": "Clover ERA Team"
+            "name": article.author_name || "Clover ERA Team"
         },
         "publisher": {
             "@type": "Organization",
@@ -527,6 +527,7 @@ function generateArticleHTML(article) {
             ${article.category ? `<div class="article-category">${escapeHtml(article.category)}</div>` : ''}
             <h1 class="article-title">${escapeHtml(article.title)}</h1>
             <div class="article-meta">
+                <span>✍️ ${escapeHtml(article.author_name || 'Clover ERA Team')}</span>
                 <span>📅 ${formatDate(article.published_at)}</span>
                 <span>⏱️ ${readTime} min read</span>
                 ${article.view_count ? `<span>👁️ ${article.view_count} views</span>` : ''}
