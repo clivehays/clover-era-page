@@ -672,11 +672,36 @@
 
         async function updateAndRepublish() {
             try {
-                // First save the current changes
-                await saveDraft(true);
-
                 const confirmed = confirm('Update and republish this article? The changes will be live in ~1 minute.');
                 if (!confirmed) return;
+
+                updateSaveStatus('saving');
+
+                // Save the changes with published status
+                const data = {
+                    title: document.getElementById('title').value,
+                    slug: document.getElementById('slug').value,
+                    excerpt: document.getElementById('excerpt').value,
+                    content: tinymce.get('content').getContent(),
+                    featured_image: document.getElementById('featuredImage').value || null,
+                    author_name: document.getElementById('authorName').value || 'Clover ERA Team',
+                    category: document.getElementById('category').value || null,
+                    tags: currentTags,
+                    meta_title: document.getElementById('metaTitle').value || null,
+                    meta_description: document.getElementById('metaDescription').value || null,
+                    author_id: currentUser.id,
+                    status: 'published',
+                    published_at: new Date().toISOString()
+                };
+
+                const { error } = await supabase
+                    .from('blog_articles')
+                    .update(data)
+                    .eq('id', articleId);
+
+                if (error) throw error;
+
+                updateSaveStatus('saved');
 
                 // Trigger GitHub Action to regenerate static files
                 showAlert('Regenerating article... This will take ~1 minute. 🔄');
