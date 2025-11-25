@@ -675,7 +675,8 @@
 
             } catch (error) {
                 console.error('Error submitting application:', error);
-                alert('There was an error submitting your application. Please try again or contact clive.hays@cloverera.com');
+                console.error('Error details:', error.message, error.details, error.hint);
+                alert('There was an error submitting your application. Error: ' + (error.message || JSON.stringify(error)) + '\n\nPlease try again or contact clive.hays@cloverera.com');
 
                 // Show form again
                 document.getElementById('applicationForm').style.display = 'block';
