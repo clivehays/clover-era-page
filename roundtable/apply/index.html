@@ -500,14 +500,14 @@
         // Initialize Supabase
         const SUPABASE_URL = 'https://dvvsphsvcpxkplumutyc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentCohort = null;
 
         // Load cohort information
         async function loadCohortInfo() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('roundtable_cohorts')
                     .select('*')
                     .eq('status', 'upcoming')
@@ -663,7 +663,7 @@
                 };
 
                 // Submit to Supabase
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('roundtable_applications')
                     .insert([applicationData])
                     .select();
