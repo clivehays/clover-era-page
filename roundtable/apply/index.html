@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply - Retention Reality Roundtable | Clover ERA</title>
+    <meta name="description" content="Apply for the Retention Reality Roundtable - a conversation for managers dealing with real retention challenges.">
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --error-red: #DC2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--light-gray);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--deep-teal), var(--teal));
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: 3rem auto;
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .form-section h2 {
+            font-size: 1.5rem;
+            color: var(--deep-teal);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            margin-top: 0.5rem;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            margin: 0.75rem 0;
+        }
+
+        .radio-option label,
+        .checkbox-option label {
+            display: flex;
+            align-items: start;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 0.75rem;
+            margin-top: 0.25rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .char-count {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+
+        .required {
+            color: var(--error-red);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        input.error,
+        select.error,
+        textarea.error {
+            border-color: var(--error-red);
+        }
+
+        .btn-submit {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .privacy-note {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--medium-gray);
+            border-top: 4px solid var(--teal);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 2rem 1rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Apply for the Retention Reality Roundtable</h1>
+        <p>Takes about 3 minutes. I review every application personally.</p>
+    </div>
+
+    <div class="form-container">
+        <form id="applicationForm">
+
+            <!-- Section 1: Basic Info -->
+            <div class="form-section">
+                <h2>Basic Information</h2>
+
+                <div class="form-group">
+                    <label for="fullName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Your full name" required>
+                    <div class="error-message">Please enter your full name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="Work email preferred" required>
+                    <div class="error-message">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="linkedinUrl">LinkedIn URL <span class="required">*</span></label>
+                    <input type="url" id="linkedinUrl" name="linkedinUrl" placeholder="linkedin.com/in/yourprofile" required>
+                    <div class="error-message">Please enter a valid LinkedIn URL</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="companyName">Company Name <span class="required">*</span></label>
+                    <input type="text" id="companyName" name="companyName" placeholder="Company name" required>
+                    <div class="error-message">Please enter your company name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Your Title/Role <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" placeholder="e.g., Engineering Manager, VP Product" required>
+                    <div class="error-message">Please enter your title</div>
+                </div>
+            </div>
+
+            <!-- Section 2: Qualification -->
+            <div class="form-section">
+                <h2>Qualification</h2>
+
+                <div class="form-group">
+                    <label>How many people report directly to you? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <label><input type="radio" name="directReports" value="1-5" required> 1-5</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="directReports" value="6-10"> 6-10</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="directReports" value="11-20"> 11-20</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="directReports" value="20+"> 20+</label>
+                        </div>
+                    </div>
+                    <div class="error-message">Please select number of direct reports</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Total employees at your company? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <label><input type="radio" name="companySize" value="Under 50" required> Under 50</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="companySize" value="50-100"> 50-100</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="companySize" value="100-200"> 100-200</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="companySize" value="200-500"> 200-500</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="companySize" value="500+"> 500+</label>
+                        </div>
+                    </div>
+                    <div class="error-message">Please select company size</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="industry">Industry <span class="required">*</span></label>
+                    <select id="industry" name="industry" required>
+                        <option value="">Select industry</option>
+                        <option value="SaaS / Software">SaaS / Software</option>
+                        <option value="Tech Services">Tech Services</option>
+                        <option value="FinTech">FinTech</option>
+                        <option value="HealthTech">HealthTech</option>
+                        <option value="Other Tech">Other Tech</option>
+                        <option value="Non-Tech (please specify)">Non-Tech (please specify)</option>
+                    </select>
+                    <div class="error-message">Please select an industry</div>
+                </div>
+
+                <div class="form-group hidden" id="industryOtherGroup">
+                    <label for="industryOther">Please specify industry <span class="required">*</span></label>
+                    <input type="text" id="industryOther" name="industryOther" placeholder="Specify your industry">
+                    <div class="error-message">Please specify your industry</div>
+                </div>
+            </div>
+
+            <!-- Section 3: Engagement Filter -->
+            <div class="form-section">
+                <h2>Your Experience</h2>
+
+                <div class="form-group">
+                    <label>In the last 12 months, how many people on your team have resigned? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <label><input type="radio" name="resignations12mo" value="0" required> 0</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="resignations12mo" value="1-2"> 1-2</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="resignations12mo" value="3-5"> 3-5</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="resignations12mo" value="6+"> 6+</label>
+                        </div>
+                    </div>
+                    <div class="error-message">Please select number of resignations</div>
+                </div>
+
+                <div class="form-group">
+                    <label>How many of those departures surprised you? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <label><input type="radio" name="surpriseDepartures" value="None, I saw them all coming" required> None, I saw them all coming</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="surpriseDepartures" value="A few caught me off guard"> A few caught me off guard</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="surpriseDepartures" value="Most were a surprise"> Most were a surprise</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="surpriseDepartures" value="All of them blindsided me"> All of them blindsided me</label>
+                        </div>
+                    </div>
+                    <div class="error-message">Please select an option</div>
+                </div>
+
+                <div class="form-group">
+                    <label>When you've raised flight risk concerns to leadership, what typically happens? <span class="required">*</span><br>
+                    <small style="color: var(--text-secondary);">(Select all that apply)</small></label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <label><input type="checkbox" name="escalationExperience" value="They take action"> They take action</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <label><input type="checkbox" name="escalationExperience" value="They say they'll look into it but nothing changes"> They say they'll look into it but nothing changes</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <label><input type="checkbox" name="escalationExperience" value="They ask why I can't keep my team happy"> They ask why I can't keep my team happy</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <label><input type="checkbox" name="escalationExperience" value="I've stopped raising concerns"> I've stopped raising concerns</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <label><input type="checkbox" name="escalationExperience" value="I've never raised concerns"> I've never raised concerns</label>
+                        </div>
+                    </div>
+                    <div class="error-message">Please select at least one option</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentChallenge">What's the biggest retention challenge you're facing right now? <span class="required">*</span><br>
+                    <small style="color: var(--text-secondary);">2-3 sentences is perfect</small></label>
+                    <textarea id="currentChallenge" name="currentChallenge" placeholder="Describe your retention challenge..." maxlength="500" required></textarea>
+                    <div class="char-count"><span id="charCount">0</span> / 500 characters</div>
+                    <div class="error-message">Please enter at least 50 characters</div>
+                </div>
+            </div>
+
+            <!-- Section 4: Intent Signal -->
+            <div class="form-section">
+                <h2>Looking Ahead</h2>
+
+                <div class="form-group">
+                    <label>If this roundtable is valuable, would you be open to introducing the concepts to your CEO or leadership team? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <label><input type="radio" name="ceoIntroOpenness" value="Yes, I'd want them to hear this" required> Yes, I'd want them to hear this</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="ceoIntroOpenness" value="Maybe, depends on what I learn"> Maybe, depends on what I learn</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="ceoIntroOpenness" value="No, I'm here for my own development"> No, I'm here for my own development</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="ceoIntroOpenness" value="My CEO would never go for this"> My CEO would never go for this</label>
+                        </div>
+                    </div>
+                    <div class="error-message">Please select an option</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="referralSource">How did you hear about this roundtable? <span class="required">*</span></label>
+                    <select id="referralSource" name="referralSource" required>
+                        <option value="">Select source</option>
+                        <option value="LinkedIn post">LinkedIn post</option>
+                        <option value="Clive's content">Clive's content</option>
+                        <option value="Referred by colleague">Referred by colleague</option>
+                        <option value="Google search">Google search</option>
+                        <option value="Other (please specify)">Other (please specify)</option>
+                    </select>
+                    <div class="error-message">Please select how you heard about this</div>
+                </div>
+
+                <div class="form-group hidden" id="referralSourceOtherGroup">
+                    <label for="referralSourceOther">Please specify <span class="required">*</span></label>
+                    <input type="text" id="referralSourceOther" name="referralSourceOther" placeholder="How did you hear about this?">
+                    <div class="error-message">Please specify how you heard about this</div>
+                </div>
+            </div>
+
+            <!-- Section 5: Availability -->
+            <div class="form-section">
+                <h2>Availability</h2>
+
+                <div class="form-group">
+                    <label>Can you attend on <strong><span id="cohortDate">the scheduled date</span></strong> at <strong><span id="cohortTime">the scheduled time</span></strong>? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <label><input type="radio" name="availableForDate" value="yes" required> Yes, I'm available</label>
+                        </div>
+                        <div class="radio-option">
+                            <label><input type="radio" name="availableForDate" value="no"> No, but notify me about future cohorts</label>
+                        </div>
+                    </div>
+                    <div class="error-message">Please select your availability</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+
+            <p class="privacy-note">Your information stays with me. No spam, no selling your data, no sharing with third parties.</p>
+        </form>
+
+        <div class="loading" id="loadingDiv">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem; color: var(--text-secondary);">Submitting your application...</p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://dvvsphsvcpxkplumutyc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentCohort = null;
+
+        // Load cohort information
+        async function loadCohortInfo() {
+            try {
+                const { data, error } = await supabase
+                    .from('roundtable_cohorts')
+                    .select('*')
+                    .eq('status', 'upcoming')
+                    .order('date', { ascending: true })
+                    .limit(1)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    currentCohort = data;
+                    const date = new Date(data.date);
+                    const dateStr = date.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    const timeStr = data.time + ' ' + data.timezone;
+
+                    document.getElementById('cohortDate').textContent = dateStr;
+                    document.getElementById('cohortTime').textContent = timeStr;
+                }
+            } catch (error) {
+                console.error('Error loading cohort info:', error);
+            }
+        }
+
+        // Character counter
+        const challengeField = document.getElementById('currentChallenge');
+        const charCount = document.getElementById('charCount');
+
+        challengeField.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+
+        // Show/hide conditional fields
+        document.getElementById('industry').addEventListener('change', function() {
+            const otherGroup = document.getElementById('industryOtherGroup');
+            const otherField = document.getElementById('industryOther');
+
+            if (this.value === 'Non-Tech (please specify)') {
+                otherGroup.classList.remove('hidden');
+                otherField.setAttribute('required', 'required');
+            } else {
+                otherGroup.classList.add('hidden');
+                otherField.removeAttribute('required');
+                otherField.value = '';
+            }
+        });
+
+        document.getElementById('referralSource').addEventListener('change', function() {
+            const otherGroup = document.getElementById('referralSourceOtherGroup');
+            const otherField = document.getElementById('referralSourceOther');
+
+            if (this.value === 'Other (please specify)') {
+                otherGroup.classList.remove('hidden');
+                otherField.setAttribute('required', 'required');
+            } else {
+                otherGroup.classList.add('hidden');
+                otherField.removeAttribute('required');
+                otherField.value = '';
+            }
+        });
+
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            const form = document.getElementById('applicationForm');
+
+            // Clear all previous errors
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+
+            // Validate LinkedIn URL
+            const linkedinUrl = document.getElementById('linkedinUrl').value;
+            if (!linkedinUrl.includes('linkedin.com')) {
+                showError('linkedinUrl', 'Please enter a valid LinkedIn URL');
+                isValid = false;
+            }
+
+            // Validate current challenge length
+            const challenge = document.getElementById('currentChallenge').value;
+            if (challenge.length < 50) {
+                showError('currentChallenge', 'Please enter at least 50 characters');
+                isValid = false;
+            }
+
+            // Validate at least one checkbox selected for escalation experience
+            const escalationChecked = document.querySelectorAll('input[name="escalationExperience"]:checked');
+            if (escalationChecked.length === 0) {
+                const escalationGroup = document.querySelector('input[name="escalationExperience"]').closest('.form-group');
+                escalationGroup.querySelector('.error-message').classList.add('show');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorMsg = field.parentElement.querySelector('.error-message');
+
+            field.classList.add('error');
+            if (errorMsg) {
+                errorMsg.textContent = message;
+                errorMsg.classList.add('show');
+            }
+        }
+
+        // Form submission
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            // Show loading, hide form
+            document.getElementById('applicationForm').style.display = 'none';
+            document.getElementById('loadingDiv').classList.add('show');
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                // Collect form data
+                const formData = new FormData(e.target);
+
+                // Get escalation experience checkboxes
+                const escalationExperience = Array.from(
+                    document.querySelectorAll('input[name="escalationExperience"]:checked')
+                ).map(cb => cb.value);
+
+                // Prepare data for submission
+                const applicationData = {
+                    cohort_id: currentCohort?.id || null,
+                    full_name: formData.get('fullName'),
+                    email: formData.get('email'),
+                    linkedin_url: formData.get('linkedinUrl'),
+                    company_name: formData.get('companyName'),
+                    title: formData.get('title'),
+                    direct_reports: formData.get('directReports'),
+                    company_size: formData.get('companySize'),
+                    industry: formData.get('industry'),
+                    industry_other: formData.get('industryOther') || null,
+                    resignations_12mo: formData.get('resignations12mo'),
+                    surprise_departures: formData.get('surpriseDepartures'),
+                    escalation_experience: escalationExperience,
+                    current_challenge: formData.get('currentChallenge'),
+                    ceo_intro_openness: formData.get('ceoIntroOpenness'),
+                    referral_source: formData.get('referralSource'),
+                    referral_source_other: formData.get('referralSourceOther') || null,
+                    available_for_date: formData.get('availableForDate') === 'yes'
+                };
+
+                // Submit to Supabase
+                const { data, error } = await supabase
+                    .from('roundtable_applications')
+                    .insert([applicationData])
+                    .select();
+
+                if (error) throw error;
+
+                // Redirect to thank you page
+                window.location.href = '../thank-you/';
+
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                alert('There was an error submitting your application. Please try again or contact clive@cloverera.com');
+
+                // Show form again
+                document.getElementById('applicationForm').style.display = 'block';
+                document.getElementById('loadingDiv').classList.remove('show');
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        // Load cohort info on page load
+        loadCohortInfo();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Retention Reality Roundtable | Clover ERA</title>
+    <meta name="description" content="A 60-minute conversation for managers tired of being surprised by resignations and blamed for departures they saw coming.">
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --yellow: #FFD93D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--deep-teal), var(--teal));
+            color: var(--white);
+            padding: 4rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero .subheadline {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .hero .description {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.95;
+            line-height: 1.7;
+        }
+
+        .btn-primary {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 1.2rem 3rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin: 1rem 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-alt {
+            background: var(--light-gray);
+        }
+
+        .section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            color: var(--charcoal);
+            font-weight: 700;
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--deep-teal);
+            font-weight: 600;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .item {
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .item h3 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 1.5rem 0;
+        }
+
+        ul li {
+            padding: 0.8rem 0 0.8rem 2rem;
+            position: relative;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        ul li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            color: var(--teal);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .qualification-list {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .disqualification {
+            background: #FFF3E0;
+            padding: 1.5rem;
+            border-left: 4px solid #FF9800;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .bio-section {
+            display: flex;
+            gap: 2rem;
+            align-items: start;
+            margin: 2rem 0;
+        }
+
+        .bio-text {
+            flex: 1;
+        }
+
+        .next-cohort {
+            background: linear-gradient(135deg, var(--deep-teal), var(--teal));
+            color: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .next-cohort h3 {
+            color: var(--white);
+            margin-top: 0;
+        }
+
+        .next-cohort p {
+            color: var(--white);
+            opacity: 0.95;
+            margin: 0.5rem 0;
+            font-size: 1.15rem;
+        }
+
+        .cohort-detail {
+            display: flex;
+            margin: 0.8rem 0;
+        }
+
+        .cohort-label {
+            font-weight: 700;
+            min-width: 100px;
+        }
+
+        .faq-item {
+            margin: 2rem 0;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .final-cta {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--charcoal), var(--deep-teal));
+            color: var(--white);
+        }
+
+        .final-cta h2 {
+            color: var(--white);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .subheadline {
+                font-size: 1.3rem;
+            }
+
+            .hero .description {
+                font-size: 1.1rem;
+            }
+
+            .section h2 {
+                font-size: 1.8rem;
+            }
+
+            .bio-section {
+                flex-direction: column;
+            }
+
+            .btn-primary {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>The Retention Reality Roundtable</h1>
+        <p class="subheadline">Where managers talk about what's actually happening.<br>Not what they tell HR.</p>
+        <p class="description">
+            A 60-minute conversation for managers who are tired of being surprised by resignations and blamed for departures they saw coming.
+        </p>
+        <p class="description">
+            This isn't a webinar. It's 8-10 managers from different companies talking about what's actually happening on their teams.
+        </p>
+        <a href="apply/" class="btn-primary">Apply Now</a>
+    </section>
+
+    <!-- What You'll Get -->
+    <section class="section">
+        <h2>What You'll Leave With</h2>
+        <div class="items-grid">
+            <div class="item">
+                <h3>Frameworks for Spotting Disengagement Early</h3>
+                <p>The signals that show up 60-90 days before a resignation - and how to see them before it's too late.</p>
+            </div>
+            <div class="item">
+                <h3>Language for Escalating Without Getting Blamed</h3>
+                <p>How to tell leadership someone's a flight risk without it becoming your problem.</p>
+            </div>
+            <div class="item">
+                <h3>Tactics That Actually Work</h3>
+                <p>What other managers are doing to keep their best people - usually not what HR recommends.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Format -->
+    <section class="section section-alt">
+        <h2>How It Works</h2>
+        <p><strong>60 minutes. 8-10 managers. Real conversation.</strong></p>
+        <p>No slides. No pitch. No HR-approved talking points.</p>
+        <p>Chatham House rules: Share what you learn, never who said it.</p>
+        <p>Facilitated by Clive Hays, who's spent 20 years watching Fortune 500 companies lose their best people and finally figured out why.</p>
+    </section>
+
+    <!-- Who This Is For -->
+    <section class="section">
+        <h2>This Is For You If...</h2>
+        <div class="qualification-list">
+            <ul>
+                <li>You manage a team at a tech company (100-500 employees)</li>
+                <li>You've had someone resign in the last year and didn't see it coming</li>
+                <li>You've tried to escalate retention concerns and nothing changed</li>
+                <li>You're tired of being surprised by departures and blamed when they happen</li>
+            </ul>
+        </div>
+        <div class="disqualification">
+            <strong>This isn't for HR professionals, consultants, or anyone looking to sell to the group. Managers only.</strong>
+        </div>
+    </section>
+
+    <!-- About the Facilitator -->
+    <section class="section section-alt">
+        <h2>Who's Running This</h2>
+        <div class="bio-section">
+            <div class="bio-text">
+                <p>Clive Hays spent 20 years implementing transformation programs at Fortune 500 companies. He watched them obsess over operational efficiency while bleeding millions in turnover nobody was tracking.</p>
+                <p>That's what led him to co-found Clover ERA - a system that catches resignation intent 60-90 days before notice.</p>
+                <p>His recent LinkedIn posts on the real cost of turnover have reached over 200,000 people. The comments are filled with managers saying "this is exactly what's happening on my team."</p>
+                <p>This roundtable is where those conversations happen live.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Next Cohort -->
+    <section class="section">
+        <h2>Next Roundtable</h2>
+        <div class="next-cohort">
+            <div id="cohort-info">
+                <p><strong class="cohort-label">Date:</strong> <span id="cohort-date">Loading...</span></p>
+                <p><strong class="cohort-label">Time:</strong> <span id="cohort-time">Loading...</span></p>
+                <p><strong class="cohort-label">Format:</strong> Virtual (Zoom link provided upon acceptance)</p>
+                <p><strong class="cohort-label">Cost:</strong> Free</p>
+                <p><strong class="cohort-label">Spots:</strong> <span id="cohort-spots">10</span> (application required)</p>
+            </div>
+            <a href="apply/" class="btn-primary" style="margin-top: 2rem;">Apply Now</a>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section-alt">
+        <h2>FAQ</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">Q: Why is this free?</div>
+            <div class="faq-answer">A: Because the value for me is meeting managers who are living this problem. Some of you will want to introduce these ideas to your CEO. Some won't. Either way, you'll leave with something useful.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q: Why do I need to apply?</div>
+            <div class="faq-answer">A: To keep the group small and relevant. This only works if everyone in the room is a manager dealing with real retention challenges. No consultants, no vendors, no observers.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q: Will this be recorded?</div>
+            <div class="faq-answer">A: Yes, but only shared with attendees. Chatham House rules apply - share what you learn, never who said it.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q: What if I can't make the scheduled time?</div>
+            <div class="faq-answer">A: Apply anyway. If you're a fit but the timing doesn't work, I'll notify you when the next cohort is scheduled.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Q: Is this a sales pitch for Clover ERA?</div>
+            <div class="faq-answer">A: No. I'll mention what we do if it's relevant, but this isn't a demo or a pitch session. The roundtable is valuable on its own.</div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>Ready to Talk About What's Actually Happening?</h2>
+        <a href="apply/" class="btn-primary">Apply for the Next Cohort</a>
+    </section>
+
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://dvvsphsvcpxkplumutyc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Load next cohort information
+        async function loadCohortInfo() {
+            try {
+                const { data, error } = await supabase
+                    .from('roundtable_cohorts')
+                    .select('*')
+                    .eq('status', 'upcoming')
+                    .order('date', { ascending: true })
+                    .limit(1)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    // Format date
+                    const date = new Date(data.date);
+                    const dateStr = date.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    // Format time
+                    const timeStr = data.time + ' ' + data.timezone;
+
+                    document.getElementById('cohort-date').textContent = dateStr;
+                    document.getElementById('cohort-time').textContent = timeStr;
+                    document.getElementById('cohort-spots').textContent = data.max_attendees;
+                } else {
+                    document.getElementById('cohort-date').textContent = 'TBA';
+                    document.getElementById('cohort-time').textContent = 'TBA';
+                }
+            } catch (error) {
+                console.error('Error loading cohort info:', error);
+                document.getElementById('cohort-date').textContent = 'Check back soon';
+                document.getElementById('cohort-time').textContent = 'Check back soon';
+            }
+        }
+
+        // Load cohort info on page load
+        loadCohortInfo();
+    </script>
+
+</body>
+</html>
