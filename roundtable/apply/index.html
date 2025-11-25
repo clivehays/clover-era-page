@@ -662,6 +662,9 @@
                     available_for_date: formData.get('availableForDate') === 'yes'
                 };
 
+                // Log the data being submitted for debugging
+                console.log('Submitting application data:', applicationData);
+
                 // Submit to Supabase
                 const { data, error } = await supabaseClient
                     .from('roundtable_applications')
