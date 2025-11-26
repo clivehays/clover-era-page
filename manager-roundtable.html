@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>Manager Roundtable | Clover ERA Leadership Sessions</title>
+    <meta name="description" content="Join exclusive manager roundtables on retention, burnout prevention, and team leadership. Connect with peers, share insights, and transform your management approach.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cloverera.com/manager-roundtable.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <meta name="theme-color" content="#46AEB8">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Corporate color palette */
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --bronze: #C9A667;
+
+            /* Neutral colors */
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --dark-gray: #6B7280;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+
+            /* Status colors */
+            --success-green: #10B981;
+            --warning-amber: #F59E0B;
+            --error-red: #EF4444;
+
+            /* Spacing system */
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --spacing-xl: 48px;
+            --spacing-2xl: 64px;
+            --spacing-3xl: 96px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--white);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--deep-teal) 0%, var(--primary-teal) 100%);
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Info Bar */
+        .info-bar {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .info-bar p {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .info-bar strong {
+            color: var(--primary-teal);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        /* Roundtable Cards Grid */
+        .roundtables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .roundtable-card {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roundtable-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(70, 174, 184, 0.15);
+            border-color: var(--primary-teal);
+        }
+
+        .roundtable-card.full {
+            opacity: 0.7;
+            border-color: var(--dark-gray);
+        }
+
+        .roundtable-card.closed {
+            opacity: 0.6;
+            border-color: var(--dark-gray);
+        }
+
+        .card-header {
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-topic {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .detail-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-teal);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .status-available {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-limited {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-amber);
+        }
+
+        .status-full {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--dark-gray);
+        }
+
+        .status-closed {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-red);
+        }
+
+        .btn-register {
+            width: 100%;
+            background: var(--primary-teal);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.3);
+        }
+
+        .btn-register:disabled {
+            background: var(--medium-gray);
+            color: var(--dark-gray);
+            cursor: not-allowed;
+        }
+
+        .btn-waitlist {
+            background: var(--warning-amber);
+        }
+
+        .btn-waitlist:hover:not(:disabled) {
+            background: #D97706;
+        }
+
+        /* Benefits Section */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-card {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .benefit-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Topics Section */
+        .topics-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .topic-item {
+            background: var(--white);
+            border-left: 4px solid var(--primary-teal);
+            padding: 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .topic-item h3 {
+            font-size: 1.2rem;
+            color: var(--primary-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-item p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary-teal);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .roundtables-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topics-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary-teal);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Manager Roundtable Sessions</h1>
+        <p>Peer-to-Peer Leadership Discussions for Modern Managers</p>
+        <p class="hero-subtitle">
+            Join exclusive 30-minute roundtables with fellow managers to discuss real challenges,
+            share proven strategies, and transform your approach to team leadership.
+        </p>
+    </section>
+
+    <!-- Info Bar -->
+    <section class="info-bar">
+        <p>
+            <strong>Free</strong> • <strong>30 Minutes</strong> • <strong>Max 6 Managers</strong> • <strong>No Sales Pitch</strong>
+        </p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Upcoming Sessions Section -->
+        <section class="section">
+            <h2 class="section-title">Upcoming Roundtable Sessions</h2>
+            <p class="section-subtitle">
+                Select a session below to register. Sessions fill quickly with only 6 spots per roundtable.
+            </p>
+
+            <div id="roundtables-container" class="loading">
+                <div class="spinner"></div>
+                <p>Loading upcoming sessions...</p>
+            </div>
+        </section>
+
+        <!-- What You'll Gain Section -->
+        <section class="section">
+            <h2 class="section-title">What You'll Gain</h2>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Practical Tactics</h3>
+                    <p>Walk away with at least one actionable strategy you can implement immediately to improve team retention and engagement.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">🤝</div>
+                    <h3>Peer Insights</h3>
+                    <p>Learn from managers facing similar challenges and discover what's actually working in the field.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">🧠</div>
+                    <h3>Neuroscience-Backed</h3>
+                    <p>Understand the brain science behind employee behavior and how to use it to prevent resignations and burnout.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Time-Efficient</h3>
+                    <p>Just 30 minutes of your time for insights that could save you months of turnover headaches.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rotating Topics Section -->
+        <section class="section">
+            <h2 class="section-title">Our Rotating Topics</h2>
+            <p class="section-subtitle">
+                We rotate through four core topics that address the biggest challenges managers face today.
+            </p>
+
+            <div class="topics-list">
+                <div class="topic-item">
+                    <h3>The 30-Day Warning System</h3>
+                    <p>How to identify the warning signs 30 days before a team member resigns, and what to do about it.</p>
+                </div>
+
+                <div class="topic-item">
+                    <h3>The Workload Balance Equation</h3>
+                    <p>Preventing burnout without sacrificing results—finding the sustainable performance sweet spot.</p>
+                </div>
+
+                <div class="topic-item">
+                    <h3>Communication Breakdowns</h3>
+                    <p>Fixing the communication patterns that cost you your best people and create inefficiency.</p>
+                </div>
+
+                <div class="topic-item">
+                    <h3>From Stuck in the Middle to Strategic Leader</h3>
+                    <p>The manager transformation journey—moving beyond task management to strategic leadership.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Clover ERA | <a href="/privacy-policy.html">Privacy Policy</a> | <a href="/terms.html">Terms</a> | <a href="/">Back to Home</a></p>
+    </footer>
+
+    <script>
+        // Roundtable topic descriptions
+        const topicDescriptions = {
+            'The 30-Day Warning System': 'Learn to spot the warning signs 30 days before someone quits and implement proven intervention strategies.',
+            'The Workload Balance Equation': 'Discover how to prevent burnout without sacrificing results through sustainable performance management.',
+            'Communication Breakdowns': 'Identify and fix communication patterns that cost you your best people and create team inefficiency.',
+            'From Stuck in the Middle to Strategic Leader': 'Transform from tactical task manager to strategic leader who empowers and develops teams.'
+        };
+
+        // Fetch and display roundtables
+        async function loadRoundtables() {
+            try {
+                const response = await fetch('/api/roundtables/upcoming');
+                const roundtables = await response.json();
+
+                const container = document.getElementById('roundtables-container');
+
+                if (!roundtables || roundtables.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            <p style="font-size: 1.2rem; margin-bottom: 1rem;">No upcoming sessions scheduled at the moment.</p>
+                            <p>Check back soon or <a href="/contact.html" style="color: var(--primary-teal);">contact us</a> to be notified when new sessions are available.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.className = 'roundtables-grid';
+                container.innerHTML = roundtables.map(rt => createRoundtableCard(rt)).join('');
+
+            } catch (error) {
+                console.error('Error loading roundtables:', error);
+                document.getElementById('roundtables-container').innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--error-red);">
+                        <p>Unable to load sessions. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function createRoundtableCard(roundtable) {
+            const date = new Date(roundtable.scheduled_at);
+            const now = new Date();
+            const twoHoursBefore = new Date(date.getTime() - (2 * 60 * 60 * 1000));
+
+            const isClosed = now >= twoHoursBefore;
+            const isFull = roundtable.registered_count >= roundtable.max_participants;
+            const isLimited = roundtable.registered_count >= roundtable.max_participants - 2;
+
+            let statusBadge = '';
+            let buttonText = 'Register Now';
+            let buttonClass = 'btn-register';
+            let buttonDisabled = false;
+            let cardClass = 'roundtable-card';
+
+            if (isClosed) {
+                statusBadge = '<span class="status-badge status-closed">Registration Closed</span>';
+                buttonDisabled = true;
+                buttonText = 'Registration Closed';
+                cardClass += ' closed';
+            } else if (isFull) {
+                statusBadge = '<span class="status-badge status-full">Full - Join Waitlist</span>';
+                buttonText = 'Join Waitlist';
+                buttonClass += ' btn-waitlist';
+                cardClass += ' full';
+            } else if (isLimited) {
+                const spotsLeft = roundtable.max_participants - roundtable.registered_count;
+                statusBadge = `<span class="status-badge status-limited">Only ${spotsLeft} Spots Left!</span>`;
+            } else {
+                const spotsLeft = roundtable.max_participants - roundtable.registered_count;
+                statusBadge = `<span class="status-badge status-available">${spotsLeft} Spots Available</span>`;
+            }
+
+            const description = topicDescriptions[roundtable.topic] || roundtable.description || '';
+
+            return `
+                <div class="${cardClass}">
+                    <div class="card-header">
+                        <h3 class="card-topic">${roundtable.topic}</h3>
+                    </div>
+
+                    <p class="card-description">${description}</p>
+
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span><strong>${formatDate(date)}</strong></span>
+                        </div>
+
+                        <div class="detail-item">
+                            <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span><strong>${formatTime(date)}</strong> (30 minutes)</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            <span>${roundtable.registered_count}/${roundtable.max_participants} Registered</span>
+                        </div>
+                    </div>
+
+                    ${statusBadge}
+
+                    <button
+                        class="${buttonClass}"
+                        onclick="registerForRoundtable('${roundtable.id}', ${isFull})"
+                        ${buttonDisabled ? 'disabled' : ''}
+                    >
+                        ${buttonText}
+                    </button>
+                </div>
+            `;
+        }
+
+        function formatDate(date) {
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            });
+        }
+
+        function registerForRoundtable(roundtableId, isWaitlist) {
+            // Redirect to registration form with roundtable ID and waitlist flag
+            window.location.href = `/manager-roundtable-register.html?id=${roundtableId}${isWaitlist ? '&waitlist=true' : ''}`;
+        }
+
+        // Load roundtables on page load
+        document.addEventListener('DOMContentLoaded', loadRoundtables);
+    </script>
+</body>
+</html>

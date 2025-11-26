@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registration Confirmed | Manager Roundtable</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <meta name="theme-color" content="#46AEB8">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success-green: #10B981;
+            --warning-amber: #F59E0B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--light-gray);
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirmation-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+        }
+
+        .success-icon svg {
+            width: 50px;
+            height: 50px;
+            color: var(--success-green);
+        }
+
+        .waitlist-icon {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .waitlist-icon svg {
+            color: var(--warning-amber);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .session-details {
+            background: var(--light-gray);
+            border-left: 4px solid var(--primary-teal);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .session-details h2 {
+            font-size: 1.3rem;
+            color: var(--primary-teal);
+            margin-bottom: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-row svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-teal);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .detail-row span {
+            color: var(--text-primary);
+        }
+
+        .info-box {
+            background: rgba(70, 174, 184, 0.1);
+            border: 1px solid var(--primary-teal);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .info-box h3 {
+            color: var(--primary-teal);
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-box p {
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .info-box li {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .waitlist-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-amber);
+        }
+
+        .waitlist-box h3 {
+            color: var(--warning-amber);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-teal);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-teal);
+            border: 2px solid var(--primary-teal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary-teal);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .confirmation-card {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="confirmation-card" id="confirmation-content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading confirmation details...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const registrationId = urlParams.get('registration');
+
+        if (!registrationId) {
+            window.location.href = '/manager-roundtable.html';
+        }
+
+        async function loadConfirmation() {
+            try {
+                const response = await fetch(`/api/roundtables/registration/${registrationId}`);
+
+                if (!response.ok) {
+                    throw new Error('Registration not found');
+                }
+
+                const registration = await response.json();
+                displayConfirmation(registration);
+
+            } catch (error) {
+                console.error('Error loading confirmation:', error);
+                document.getElementById('confirmation-content').innerHTML = `
+                    <div style="text-align: center; color: var(--text-secondary);">
+                        <p style="font-size: 1.2rem; margin-bottom: 1rem;">Unable to load confirmation details.</p>
+                        <p>Please check your email for your registration confirmation.</p>
+                        <div style="margin-top: 2rem;">
+                            <a href="/manager-roundtable.html" class="btn btn-primary">View All Sessions</a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function displayConfirmation(registration) {
+            const date = new Date(registration.roundtable.scheduled_at);
+            const isWaitlist = registration.is_waitlist;
+
+            const content = document.getElementById('confirmation-content');
+            content.innerHTML = `
+                <div class="${isWaitlist ? 'waitlist-icon' : 'success-icon'}">
+                    ${isWaitlist ?
+                        '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' :
+                        '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'
+                    }
+                </div>
+
+                <h1>${isWaitlist ? 'Added to Waitlist!' : 'You\'re Registered!'}</h1>
+                <p class="subtitle">
+                    ${isWaitlist ?
+                        'We\'ve added you to the waitlist and will notify you if a spot opens up.' :
+                        'Your spot has been confirmed for the Manager Roundtable session.'
+                    }
+                </p>
+
+                <div class="session-details">
+                    <h2>${registration.roundtable.topic}</h2>
+                    <div class="detail-row">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span><strong>${formatDate(date)}</strong></span>
+                    </div>
+                    <div class="detail-row">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span><strong>${formatTime(date)}</strong> (30 minutes)</span>
+                    </div>
+                    <div class="detail-row">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <span>Confirmation sent to <strong>${registration.email}</strong></span>
+                    </div>
+                </div>
+
+                ${isWaitlist ? `
+                    <div class="info-box waitlist-box">
+                        <h3>⏳ You're on the Waitlist</h3>
+                        <p><strong>What happens next:</strong></p>
+                        <ul>
+                            <li>If a spot opens up, you'll receive an email notification immediately</li>
+                            <li>The notification will include your Zoom meeting link</li>
+                            <li>You'll have 2 hours to confirm your attendance</li>
+                            <li>We'll keep you updated on your waitlist position</li>
+                        </ul>
+                        <p style="margin-top: 1rem;">We'll also notify you about future sessions on this topic.</p>
+                    </div>
+                ` : `
+                    <div class="info-box">
+                        <h3>📧 Check Your Email</h3>
+                        <p><strong>We've sent you a confirmation email that includes:</strong></p>
+                        <ul>
+                            <li>A calendar invite (.ics file) to add this session to your calendar</li>
+                            <li>The Zoom meeting link to join the roundtable</li>
+                            <li>Session details and what to prepare</li>
+                            <li>A reminder 24 hours before the session</li>
+                        </ul>
+                        <p style="margin-top: 1rem;"><strong>Don't see it?</strong> Check your spam folder or contact us at <a href="mailto:contact@cloverera.com" style="color: var(--primary-teal);">contact@cloverera.com</a></p>
+                    </div>
+                `}
+
+                <div class="info-box">
+                    <h3>💡 Before the Session</h3>
+                    <p>To get the most value from this roundtable:</p>
+                    <ul>
+                        <li>Think about your biggest challenge with ${getTopicContext(registration.roundtable.topic)}</li>
+                        <li>Prepare any questions you'd like to discuss with fellow managers</li>
+                        <li>Join 2 minutes early to ensure your tech setup works</li>
+                        <li>Come ready to share and learn from peers</li>
+                    </ul>
+                </div>
+
+                <div class="button-group">
+                    <a href="/manager-roundtable.html" class="btn btn-secondary">View Other Sessions</a>
+                    <a href="/" class="btn btn-primary">Back to Home</a>
+                </div>
+
+                <p style="margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    Questions? Email us at <a href="mailto:contact@cloverera.com" style="color: var(--primary-teal);">contact@cloverera.com</a>
+                    or call <a href="tel:+12129184448" style="color: var(--primary-teal);">(212) 918-4448</a>
+                </p>
+            `;
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            });
+        }
+
+        function getTopicContext(topic) {
+            const contexts = {
+                'The 30-Day Warning System': 'spotting resignation warning signs',
+                'The Workload Balance Equation': 'preventing team burnout',
+                'Communication Breakdowns': 'communication issues on your team',
+                'From Stuck in the Middle to Strategic Leader': 'evolving as a strategic leader'
+            };
+            return contexts[topic] || 'team management';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadConfirmation);
+    </script>
+</body>
+</html>
