@@ -580,11 +580,93 @@
     </div>
 </div>
 
+<!-- Cohort Modal -->
+<div id="cohortModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="cohortModalTitle">Create New Cohort</h2>
+            <button class="close-btn" onclick="closeCohortModal()">&times;</button>
+        </div>
+
+        <form id="cohortForm" onsubmit="saveCohort(event)">
+            <input type="hidden" id="cohortId">
+
+            <div class="detail-section">
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortDate">Date *</label></div>
+                    <div class="detail-value">
+                        <input type="date" id="cohortDate" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortTime">Time *</label></div>
+                    <div class="detail-value">
+                        <input type="time" id="cohortTime" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortTimezone">Timezone *</label></div>
+                    <div class="detail-value">
+                        <select id="cohortTimezone" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                            <option value="America/New_York">Eastern Time (ET)</option>
+                            <option value="America/Chicago">Central Time (CT)</option>
+                            <option value="America/Denver">Mountain Time (MT)</option>
+                            <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                            <option value="Europe/London">London (GMT/BST)</option>
+                            <option value="Europe/Paris">Central European (CET)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortMaxAttendees">Max Attendees *</label></div>
+                    <div class="detail-value">
+                        <input type="number" id="cohortMaxAttendees" value="10" min="1" max="50" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortStatus">Status *</label></div>
+                    <div class="detail-value">
+                        <select id="cohortStatus" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                            <option value="upcoming">Upcoming</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortMeetingLink">Meeting Link</label></div>
+                    <div class="detail-value">
+                        <input type="url" id="cohortMeetingLink" placeholder="https://teams.microsoft.com/..." style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortTheme">Theme/Topic</label></div>
+                    <div class="detail-value">
+                        <input type="text" id="cohortTheme" placeholder="e.g., Managing Surprise Resignations" style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><label for="cohortDeadline">Registration Deadline</label></div>
+                    <div class="detail-value">
+                        <input type="date" id="cohortDeadline" style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-success">Save Cohort</button>
+                <button type="button" class="btn btn-danger" onclick="closeCohortModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" id="deleteCohortBtn" onclick="deleteCohort()" style="display: none; margin-left: auto;">Delete Cohort</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     // Initialize Supabase
     const SUPABASE_URL = 'https://dvvsphsvcpxkplumutyc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let applications = [];
     let cohorts = [];
@@ -865,13 +947,109 @@
         }).join('');
     }
 
-    // Placeholder functions
+    // Cohort management functions
+    let currentCohort = null;
+
     function showCreateCohort() {
-        alert('Create cohort functionality - integrate with a form or modal');
+        currentCohort = null;
+        document.getElementById('cohortModalTitle').textContent = 'Create New Cohort';
+        document.getElementById('cohortForm').reset();
+        document.getElementById('cohortId').value = '';
+        document.getElementById('cohortTimezone').value = 'America/New_York';
+        document.getElementById('cohortMaxAttendees').value = '10';
+        document.getElementById('cohortStatus').value = 'upcoming';
+        document.getElementById('deleteCohortBtn').style.display = 'none';
+        document.getElementById('cohortModal').classList.add('show');
     }
 
     function editCohort(id) {
-        alert('Edit cohort functionality - integrate with a form or modal');
+        currentCohort = cohorts.find(c => c.id === id);
+        if (!currentCohort) return;
+
+        document.getElementById('cohortModalTitle').textContent = 'Edit Cohort';
+        document.getElementById('cohortId').value = currentCohort.id;
+        document.getElementById('cohortDate').value = currentCohort.date;
+        document.getElementById('cohortTime').value = currentCohort.time;
+        document.getElementById('cohortTimezone').value = currentCohort.timezone || 'America/New_York';
+        document.getElementById('cohortMaxAttendees').value = currentCohort.max_attendees;
+        document.getElementById('cohortStatus').value = currentCohort.status;
+        document.getElementById('cohortMeetingLink').value = currentCohort.zoom_link || '';
+        document.getElementById('cohortTheme').value = currentCohort.theme || '';
+        document.getElementById('cohortDeadline').value = currentCohort.registration_deadline || '';
+        document.getElementById('deleteCohortBtn').style.display = 'block';
+        document.getElementById('cohortModal').classList.add('show');
+    }
+
+    function closeCohortModal() {
+        document.getElementById('cohortModal').classList.remove('show');
+        currentCohort = null;
+    }
+
+    async function saveCohort(event) {
+        event.preventDefault();
+
+        const cohortData = {
+            date: document.getElementById('cohortDate').value,
+            time: document.getElementById('cohortTime').value,
+            timezone: document.getElementById('cohortTimezone').value,
+            max_attendees: parseInt(document.getElementById('cohortMaxAttendees').value),
+            status: document.getElementById('cohortStatus').value,
+            zoom_link: document.getElementById('cohortMeetingLink').value || null,
+            theme: document.getElementById('cohortTheme').value || null,
+            registration_deadline: document.getElementById('cohortDeadline').value || null
+        };
+
+        try {
+            const cohortId = document.getElementById('cohortId').value;
+
+            if (cohortId) {
+                // Update existing cohort
+                const { error } = await supabase
+                    .from('roundtable_cohorts')
+                    .update(cohortData)
+                    .eq('id', cohortId);
+
+                if (error) throw error;
+                alert('Cohort updated successfully!');
+            } else {
+                // Create new cohort
+                const { error } = await supabase
+                    .from('roundtable_cohorts')
+                    .insert([cohortData]);
+
+                if (error) throw error;
+                alert('Cohort created successfully!');
+            }
+
+            closeCohortModal();
+            loadCohorts();
+        } catch (error) {
+            console.error('Error saving cohort:', error);
+            alert('Error saving cohort: ' + error.message);
+        }
+    }
+
+    async function deleteCohort() {
+        if (!currentCohort) return;
+
+        const confirmDelete = confirm(`Are you sure you want to delete the cohort on ${currentCohort.date}? This cannot be undone.`);
+        if (!confirmDelete) return;
+
+        try {
+            const { error } = await supabase
+                .from('roundtable_cohorts')
+                .delete()
+                .eq('id', currentCohort.id);
+
+            if (error) throw error;
+
+            alert('Cohort deleted successfully!');
+            closeCohortModal();
+            loadCohorts();
+        } catch (error) {
+            console.error('Error deleting cohort:', error);
+            alert('Error deleting cohort: ' + error.message);
+        }
     }
 
     function sortTable(column) {
