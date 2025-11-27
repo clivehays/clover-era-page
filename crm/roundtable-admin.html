@@ -635,6 +635,15 @@
                     </div>
                 </div>
                 <div class="detail-row">
+                    <div class="detail-label"><label for="cohortIsFull">Mark as Full</label></div>
+                    <div class="detail-value">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="cohortIsFull" style="width: 18px; height: 18px; cursor: pointer;">
+                            <span>Display as fully booked (overrides actual count)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="detail-row">
                     <div class="detail-label"><label for="cohortMeetingLink">Meeting Link</label></div>
                     <div class="detail-value">
                         <input type="url" id="cohortMeetingLink" placeholder="https://teams.microsoft.com/..." style="width: 100%; padding: 0.5rem; border: 1px solid var(--medium-gray); border-radius: 4px;">
@@ -983,6 +992,7 @@
         document.getElementById('cohortTimezone').value = 'America/New_York';
         document.getElementById('cohortMaxAttendees').value = '10';
         document.getElementById('cohortStatus').value = 'upcoming';
+        document.getElementById('cohortIsFull').checked = false;
         document.getElementById('deleteCohortBtn').style.display = 'none';
         document.getElementById('cohortModal').classList.add('show');
     }
@@ -998,6 +1008,7 @@
         document.getElementById('cohortTimezone').value = currentCohort.timezone || 'America/New_York';
         document.getElementById('cohortMaxAttendees').value = currentCohort.max_attendees;
         document.getElementById('cohortStatus').value = currentCohort.status;
+        document.getElementById('cohortIsFull').checked = currentCohort.is_full || false;
         document.getElementById('cohortMeetingLink').value = currentCohort.zoom_link || '';
         document.getElementById('cohortTheme').value = currentCohort.theme || '';
         document.getElementById('cohortDeadline').value = currentCohort.registration_deadline || '';
@@ -1019,6 +1030,7 @@
             timezone: document.getElementById('cohortTimezone').value,
             max_attendees: parseInt(document.getElementById('cohortMaxAttendees').value),
             status: document.getElementById('cohortStatus').value,
+            is_full: document.getElementById('cohortIsFull').checked,
             zoom_link: document.getElementById('cohortMeetingLink').value || null,
             theme: document.getElementById('cohortTheme').value || null,
             registration_deadline: document.getElementById('cohortDeadline').value || null
