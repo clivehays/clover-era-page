@@ -576,6 +576,7 @@
             <button class="btn btn-success" onclick="updateStatus('accepted')">Accept</button>
             <button class="btn btn-primary" onclick="updateStatus('waitlisted')">Waitlist</button>
             <button class="btn btn-danger" onclick="updateStatus('declined')">Decline</button>
+            <button class="btn btn-danger" onclick="deleteApplication()" style="margin-left: auto;">Delete Application</button>
         </div>
     </div>
 </div>
@@ -899,6 +900,30 @@
     function closeModal() {
         document.getElementById('applicationModal').classList.remove('show');
         currentApplication = null;
+    }
+
+    // Delete application
+    async function deleteApplication() {
+        if (!currentApplication) return;
+
+        const confirmDelete = confirm(`Are you sure you want to delete the application from ${currentApplication.full_name}? This cannot be undone.`);
+        if (!confirmDelete) return;
+
+        try {
+            const { error } = await supabase
+                .from('roundtable_applications')
+                .delete()
+                .eq('id', currentApplication.id);
+
+            if (error) throw error;
+
+            alert('Application deleted successfully!');
+            closeModal();
+            loadApplications();
+        } catch (error) {
+            console.error('Error deleting application:', error);
+            alert('Error deleting application: ' + error.message);
+        }
     }
 
     // Load cohorts
