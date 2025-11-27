@@ -182,7 +182,11 @@
             color: var(--white);
             padding: 2.5rem;
             border-radius: 12px;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
+        }
+
+        .next-cohort.cohort-full {
+            background: linear-gradient(135deg, #6B7280, #9CA3AF);
         }
 
         .next-cohort h3 {
@@ -200,6 +204,42 @@
         .cohort-detail {
             display: flex;
             margin: 0.8rem 0;
+        }
+
+        .availability-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+
+        .badge-available {
+            background: #10B981;
+            color: white;
+        }
+
+        .badge-limited {
+            background: #F59E0B;
+            color: white;
+        }
+
+        .badge-full {
+            background: #EF4444;
+            color: white;
+        }
+
+        .cohort-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .cohort-date-large {
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         .cohort-label {
@@ -345,18 +385,13 @@
         </div>
     </section>
 
-    <!-- Next Cohort -->
+    <!-- Upcoming Cohorts -->
     <section class="section">
-        <h2>Next Roundtable</h2>
-        <div class="next-cohort">
-            <div id="cohort-info">
-                <p><strong class="cohort-label">Date:</strong> <span id="cohort-date">Loading...</span></p>
-                <p><strong class="cohort-label">Time:</strong> <span id="cohort-time">Loading...</span></p>
-                <p><strong class="cohort-label">Format:</strong> Virtual (Zoom link provided upon acceptance)</p>
-                <p><strong class="cohort-label">Cost:</strong> Free</p>
-                <p><strong class="cohort-label">Spots:</strong> <span id="cohort-spots">10</span> (application required)</p>
+        <h2>Upcoming Roundtables</h2>
+        <div id="cohorts-container">
+            <div class="next-cohort" style="opacity: 0.7;">
+                <p style="text-align: center;">Loading upcoming sessions...</p>
             </div>
-            <a href="apply/" class="btn-primary" style="margin-top: 2rem;">Apply Now</a>
         </div>
     </section>
 
@@ -402,43 +437,134 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Load next cohort information
+        // Format time for display (e.g., "12:00 PM EST")
+        function formatTime(timeStr, timezone) {
+            // Parse time string (e.g., "12:00:00" or "12:00")
+            const parts = timeStr.split(':');
+            let hours = parseInt(parts[0], 10);
+            const minutes = parts[1] || '00';
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+
+            // Simplify timezone display
+            const tzMap = {
+                'America/New_York': 'EST',
+                'America/Chicago': 'CST',
+                'America/Denver': 'MST',
+                'America/Los_Angeles': 'PST',
+                'UTC': 'UTC'
+            };
+            const tzShort = tzMap[timezone] || timezone;
+
+            return `${hours}:${minutes} ${ampm} ${tzShort}`;
+        }
+
+        // Load cohorts with availability
         async function loadCohortInfo() {
+            const container = document.getElementById('cohorts-container');
+
             try {
-                const { data, error } = await supabaseClient
+                // Get upcoming cohorts (limit to 4 to show mix of available and full)
+                const { data: cohorts, error: cohortsError } = await supabaseClient
                     .from('roundtable_cohorts')
                     .select('*')
                     .eq('status', 'upcoming')
                     .order('date', { ascending: true })
-                    .limit(1)
-                    .single();
+                    .limit(4);
 
-                if (error) throw error;
+                if (cohortsError) throw cohortsError;
 
-                if (data) {
-                    // Format date
-                    const date = new Date(data.date);
+                if (!cohorts || cohorts.length === 0) {
+                    container.innerHTML = `
+                        <div class="next-cohort">
+                            <h3>Next Cohort Coming Soon</h3>
+                            <p>We're scheduling our next roundtable. Apply now to be notified when dates are announced.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Get accepted application counts for each cohort
+                const cohortIds = cohorts.map(c => c.id);
+                const { data: appCounts, error: appError } = await supabaseClient
+                    .from('roundtable_applications')
+                    .select('cohort_id')
+                    .in('cohort_id', cohortIds)
+                    .eq('status', 'accepted');
+
+                // Count accepted applications per cohort
+                const acceptedCounts = {};
+                if (appCounts) {
+                    appCounts.forEach(app => {
+                        acceptedCounts[app.cohort_id] = (acceptedCounts[app.cohort_id] || 0) + 1;
+                    });
+                }
+
+                // Separate cohorts into available and full
+                const cohortsWithAvailability = cohorts.map(cohort => {
+                    const accepted = acceptedCounts[cohort.id] || 0;
+                    const spotsRemaining = cohort.max_attendees - accepted;
+                    return { ...cohort, accepted, spotsRemaining };
+                });
+
+                const availableCohorts = cohortsWithAvailability.filter(c => c.spotsRemaining > 0);
+                const fullCohorts = cohortsWithAvailability.filter(c => c.spotsRemaining <= 0);
+
+                // Show up to 2 available cohorts, then any full ones
+                const cohortsToShow = [...availableCohorts.slice(0, 2), ...fullCohorts.slice(0, 2)].slice(0, 3);
+
+                // Generate HTML
+                let html = '';
+                cohortsToShow.forEach(cohort => {
+                    const date = new Date(cohort.date);
                     const dateStr = date.toLocaleDateString('en-US', {
                         weekday: 'long',
-                        year: 'numeric',
                         month: 'long',
-                        day: 'numeric'
+                        day: 'numeric',
+                        year: 'numeric'
                     });
+                    const timeStr = formatTime(cohort.time, cohort.timezone);
+                    const isFull = cohort.spotsRemaining <= 0;
+                    const isLimited = cohort.spotsRemaining <= 3 && cohort.spotsRemaining > 0;
 
-                    // Format time
-                    const timeStr = data.time + ' ' + data.timezone;
+                    let badgeHtml = '';
+                    if (isFull) {
+                        badgeHtml = '<span class="availability-badge badge-full">FULL</span>';
+                    } else if (isLimited) {
+                        badgeHtml = `<span class="availability-badge badge-limited">${cohort.spotsRemaining} spots left</span>`;
+                    } else {
+                        badgeHtml = `<span class="availability-badge badge-available">${cohort.spotsRemaining} spots available</span>`;
+                    }
 
-                    document.getElementById('cohort-date').textContent = dateStr;
-                    document.getElementById('cohort-time').textContent = timeStr;
-                    document.getElementById('cohort-spots').textContent = data.max_attendees;
-                } else {
-                    document.getElementById('cohort-date').textContent = 'TBA';
-                    document.getElementById('cohort-time').textContent = 'TBA';
-                }
+                    html += `
+                        <div class="next-cohort ${isFull ? 'cohort-full' : ''}">
+                            <div class="cohort-header">
+                                <span class="cohort-date-large">${dateStr}</span>
+                                ${badgeHtml}
+                            </div>
+                            <div class="cohort-detail">
+                                <span class="cohort-label">Time:</span>
+                                <span>${timeStr}</span>
+                            </div>
+                            <div class="cohort-detail">
+                                <span class="cohort-label">Format:</span>
+                                <span>60-minute Zoom call with 8-10 managers</span>
+                            </div>
+                            ${!isFull ? '<a href="apply/" class="btn-primary" style="margin-top: 1rem;">Apply for This Session</a>' : '<p style="margin-top: 1rem; opacity: 0.8;"><em>This session is full. Apply to join the waitlist or select another date.</em></p>'}
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
             } catch (error) {
                 console.error('Error loading cohort info:', error);
-                document.getElementById('cohort-date').textContent = 'Check back soon';
-                document.getElementById('cohort-time').textContent = 'Check back soon';
+                container.innerHTML = `
+                    <div class="next-cohort">
+                        <h3>Next Cohort Coming Soon</h3>
+                        <p>Check back soon for upcoming session dates, or apply now to be notified.</p>
+                    </div>
+                `;
             }
         }
 
