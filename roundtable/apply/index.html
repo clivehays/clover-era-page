@@ -504,16 +504,51 @@
 
         let currentCohort = null;
 
+        // Format time for display (e.g., "12:00 PM EST")
+        function formatTime(timeStr, timezone) {
+            const parts = timeStr.split(':');
+            let hours = parseInt(parts[0], 10);
+            const minutes = parts[1] || '00';
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+
+            const tzMap = {
+                'America/New_York': 'EST',
+                'America/Chicago': 'CST',
+                'America/Denver': 'MST',
+                'America/Los_Angeles': 'PST',
+                'Europe/London': 'GMT',
+                'Europe/Paris': 'CET',
+                'UTC': 'UTC'
+            };
+            const tzShort = tzMap[timezone] || timezone;
+
+            return `${hours}:${minutes} ${ampm} ${tzShort}`;
+        }
+
+        // Get cohort ID from URL parameter
+        function getCohortIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('cohort');
+        }
+
         // Load cohort information
         async function loadCohortInfo() {
             try {
-                const { data, error } = await supabaseClient
+                const cohortId = getCohortIdFromUrl();
+                let query = supabaseClient
                     .from('roundtable_cohorts')
-                    .select('*')
-                    .eq('status', 'upcoming')
-                    .order('date', { ascending: true })
-                    .limit(1)
-                    .single();
+                    .select('*');
+
+                if (cohortId) {
+                    // Load specific cohort from URL parameter
+                    query = query.eq('id', cohortId);
+                } else {
+                    // Fall back to next upcoming cohort
+                    query = query.eq('status', 'upcoming').order('date', { ascending: true }).limit(1);
+                }
+
+                const { data, error } = await query.single();
 
                 if (error) throw error;
 
@@ -526,13 +561,16 @@
                         day: 'numeric',
                         year: 'numeric'
                     });
-                    const timeStr = data.time + ' ' + data.timezone;
+                    const timeStr = formatTime(data.time, data.timezone);
 
                     document.getElementById('cohortDate').textContent = dateStr;
                     document.getElementById('cohortTime').textContent = timeStr;
                 }
             } catch (error) {
                 console.error('Error loading cohort info:', error);
+                // If specific cohort not found, show generic message
+                document.getElementById('cohortDate').textContent = 'the scheduled date';
+                document.getElementById('cohortTime').textContent = 'the scheduled time';
             }
         }
 
