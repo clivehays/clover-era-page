@@ -514,8 +514,8 @@
                 const availableCohorts = cohortsWithAvailability.filter(c => c.spotsRemaining > 0 && !c.is_full);
                 const fullCohorts = cohortsWithAvailability.filter(c => c.spotsRemaining <= 0 || c.is_full);
 
-                // Show up to 2 available cohorts, then any full ones
-                const cohortsToShow = [...availableCohorts.slice(0, 2), ...fullCohorts.slice(0, 2)].slice(0, 3);
+                // Show up to 2 available cohorts + up to 3 full ones (for social proof)
+                const cohortsToShow = [...availableCohorts.slice(0, 2), ...fullCohorts.slice(0, 3)];
 
                 // Generate HTML
                 let html = '';
