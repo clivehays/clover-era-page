@@ -1045,8 +1045,8 @@
                             <div class="roi-metric-label">Return on Investment</div>
                         </div>
                         <div class="roi-metric">
-                            <div class="roi-metric-value" id="paybackPeriod">1.3</div>
-                            <div class="roi-metric-label">Months to Payback</div>
+                            <div class="roi-metric-value" id="paybackPeriod">2-3</div>
+                            <div class="roi-metric-label">Prevented Departures (90 days)</div>
                         </div>
                         <div class="roi-metric">
                             <div class="roi-metric-value" id="reducedTurnover">67%</div>
@@ -1183,10 +1183,9 @@
             
             const totalLoss = turnoverCost + productivityCost + absenteeismCost;
             
-            // Calculate Clover Era investment
-            const numberOfTeams = Math.ceil(employees / 15);
-            const monthlyCloverCost = numberOfTeams * 295;
-            const annualCloverCost = monthlyCloverCost * 12;
+            // Calculate Clover Era investment (90-day pilot $24K, annual $96K)
+            const pilotCost = 24000;
+            const annualCloverCost = 96000;
             
             // Calculate improvements with Clover Era
             const reducedTurnoverRate = turnoverRate * 0.5;
@@ -1208,8 +1207,11 @@
             // Calculate savings and ROI
             const grossSavings = totalLoss - newTotalCost;
             const netSavings = grossSavings - annualCloverCost;
-            const roi = ((netSavings / annualCloverCost) * 100).toFixed(0);
-            const paybackPeriod = (annualCloverCost / (grossSavings / 12)).toFixed(1);
+            let rawRoi = ((netSavings / annualCloverCost) * 100);
+            // Cap ROI at 300-500% range for conservative estimates
+            const roi = Math.min(500, Math.max(rawRoi, 0)).toFixed(0);
+            // Calculate prevented departures in 90-day pilot
+            const preventedDepartures = Math.max(2, Math.min(3, Math.round((annualTurnoverCount * 0.5) / 4)));
             
             // Update main results
             document.getElementById('totalLoss').textContent = `$${Math.round(totalLoss).toLocaleString()}`;
@@ -1219,9 +1221,9 @@
             
             // Update ROI metrics
             document.getElementById('roiPercentage').textContent = `${roi}%`;
-            document.getElementById('paybackPeriod').textContent = paybackPeriod;
+            document.getElementById('paybackPeriod').textContent = `${preventedDepartures}`;
             document.getElementById('annualSavings').textContent = `$${Math.round(netSavings).toLocaleString()}`;
-            document.getElementById('cloverInvestment').textContent = `$${Math.round(annualCloverCost).toLocaleString()}`;
+            document.getElementById('cloverInvestment').textContent = `$24K pilot → $96K annual`;
             
             // Store these values for PDF generation
             window.calculatorData = {
@@ -1235,9 +1237,10 @@
                 productivityCost,
                 absenteeismCost,
                 annualCloverCost,
+                pilotCost,
                 netSavings,
                 roi,
-                paybackPeriod
+                preventedDepartures
             };
             
             // Update comparison table
@@ -1459,19 +1462,19 @@
                 doc.setFontSize(28);
                 doc.setFont(undefined, 'bold');
                 doc.text(`${data.roi}%`, 50, 60, { align: 'center' });
-                doc.text(`${data.paybackPeriod}`, 105, 60, { align: 'center' });
-                doc.text(`${Math.round(data.netSavings).toLocaleString()}`, 145, 60, { align: 'center' });
-                
+                doc.text(`${data.preventedDepartures}`, 105, 60, { align: 'center' });
+                doc.text(`$${Math.round(data.netSavings).toLocaleString()}`, 145, 60, { align: 'center' });
+
                 doc.setFontSize(10);
                 doc.setFont(undefined, 'normal');
                 doc.text('Return on Investment', 50, 72, { align: 'center' });
-                doc.text('Months to Payback', 105, 72, { align: 'center' });
+                doc.text('Prevented Departures (90 days)', 105, 72, { align: 'center' });
                 doc.text('Annual Savings', 145, 72, { align: 'center' });
-                
+
                 // Investment amount
                 doc.setTextColor(80, 80, 80);
                 doc.setFontSize(11);
-                doc.text(`Clover ERA Investment: ${Math.round(data.annualCloverCost).toLocaleString()}/year`, 105, 95, { align: 'center' });
+                doc.text('Clover ERA Investment: $24K pilot (90 days) → $96K annual', 105, 95, { align: 'center' });
                 
                 // Transformation Impact table
                 doc.setTextColor(0, 0, 0);
@@ -1521,10 +1524,10 @@
                 y = 212;
                 
                 const steps = [
-                    '1. Schedule a personalized demo to see Clover Era in action',
-                    '2. Start your 30-day free trial with no commitment',
+                    '1. Schedule Your Turnover Analysis to see Clover ERA in action',
+                    '2. Start your 90-day pilot program',
                     '3. Get your team onboarded in less than 24 hours',
-                    '4. See measurable results within the first 2 weeks'
+                    '4. First at-risk signals within 30 days'
                 ];
                 
                 steps.forEach(step => {
