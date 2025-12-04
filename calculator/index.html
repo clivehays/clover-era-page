@@ -1349,17 +1349,17 @@
                 doc.setFontSize(20);
                 doc.text('Executive Summary', 20, 90);
                 
-                // Critical Alert Box - Coral background
+                // Annual Cost Box - Coral background
                 doc.setFillColor(255, 107, 107);
                 doc.rect(20, 100, 170, 35, 'F');
-                
+
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(12);
-                doc.text('CRITICAL BUSINESS IMPACT ALERT', 105, 110, { align: 'center' });
+                doc.text('YOUR ANNUAL TURNOVER COST', 105, 110, { align: 'center' });
                 doc.setFontSize(24);
-                doc.text(`${Math.round(data.totalLoss).toLocaleString()}`, 105, 123, { align: 'center' });
+                doc.text(`$${Math.round(data.totalLoss).toLocaleString()}`, 105, 123, { align: 'center' });
                 doc.setFontSize(10);
-                doc.text('Annual losses from disengagement, burnout & turnover', 105, 130, { align: 'center' });
+                doc.text('What employee turnover, disengagement, and burnout are costing your organization annually.', 105, 130, { align: 'center' });
                 
                 // Your Current Situation
                 doc.setTextColor(0, 0, 0);
@@ -1380,7 +1380,7 @@
                 y += 8;
                 doc.text('Average Salary:', leftCol, y);
                 doc.setFont(undefined, 'bold');
-                doc.text(`${data.avgSalary.toLocaleString()}`, rightCol, y);
+                doc.text(`$${data.avgSalary.toLocaleString()}`, rightCol, y);
                 
                 doc.setFont(undefined, 'normal');
                 y += 8;
@@ -1407,142 +1407,199 @@
                 doc.text('Annual Cost Breakdown', 20, 215);
                 
                 // Cost items with colored bars
-                y = 227;
+                y = 225;
                 doc.setFontSize(11);
-                
-                // Turnover bar
+
+                // Turnover Costs
                 doc.setFillColor(255, 107, 107);
                 doc.rect(25, y-5, 3, 6, 'F');
                 doc.setTextColor(80, 80, 80);
-                doc.text('Turnover Costs', 32, y);
+                doc.text('Turnover Costs:', 32, y);
                 doc.setFont(undefined, 'bold');
-                doc.text(`${Math.round(data.turnoverCost).toLocaleString()}`, 150, y, { align: 'right' });
-                
-                // Productivity bar
+                doc.text(`$${Math.round(data.turnoverCost).toLocaleString()}`, 150, y, { align: 'right' });
                 doc.setFont(undefined, 'normal');
-                y += 10;
+                doc.setFontSize(9);
+                doc.setTextColor(120, 120, 120);
+                doc.text('(Recruiting, onboarding, ramp time, knowledge loss)', 32, y + 5);
+
+                // Lost Productivity
+                doc.setFontSize(11);
+                doc.setTextColor(80, 80, 80);
+                y += 18;
+                doc.setFillColor(255, 107, 107);
                 doc.rect(25, y-5, 3, 6, 'F');
-                doc.text('Lost Productivity', 32, y);
+                doc.text('Lost Productivity:', 32, y);
                 doc.setFont(undefined, 'bold');
-                doc.text(`${Math.round(data.productivityCost).toLocaleString()}`, 150, y, { align: 'right' });
-                
-                // Absenteeism bar
+                doc.text(`$${Math.round(data.productivityCost).toLocaleString()}`, 150, y, { align: 'right' });
                 doc.setFont(undefined, 'normal');
-                y += 10;
+                doc.setFontSize(9);
+                doc.setTextColor(120, 120, 120);
+                doc.text('(Disengaged employees performing at 50-70%)', 32, y + 5);
+
+                // Absenteeism
+                doc.setFontSize(11);
+                doc.setTextColor(80, 80, 80);
+                y += 18;
+                doc.setFillColor(255, 107, 107);
                 doc.rect(25, y-5, 3, 6, 'F');
-                doc.text('Absenteeism', 32, y);
+                doc.text('Absenteeism:', 32, y);
                 doc.setFont(undefined, 'bold');
-                doc.text(`${Math.round(data.absenteeismCost).toLocaleString()}`, 150, y, { align: 'right' });
+                doc.text(`$${Math.round(data.absenteeismCost).toLocaleString()}`, 150, y, { align: 'right' });
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(120, 120, 120);
+                doc.text('(Unplanned absences from burnout and disengagement)', 32, y + 5);
                 
                 // Daily loss
                 doc.setFont(undefined, 'normal');
+                doc.setTextColor(80, 80, 80);
                 y += 20;
                 doc.setFontSize(11);
-                doc.text('Every day you delay costs your organization:', 55, y);
+                doc.text('Every day you delay costs your organization:', 32, y);
                 doc.setTextColor(255, 107, 107);
                 doc.setFontSize(14);
                 doc.setFont(undefined, 'bold');
-                doc.text(`${Math.round(data.totalLoss / 365).toLocaleString()}`, 150, y);
+                doc.text(`$${Math.round(data.totalLoss / 365).toLocaleString()}`, 150, y, { align: 'right' });
                 
                 // Page 2
                 doc.addPage();
-                
-                // Your ROI section
+
+                // What a 90-Day Pilot Looks Like section
                 doc.setTextColor(0, 0, 0);
                 doc.setFont(undefined, 'normal');
-                doc.setFontSize(20);
-                doc.text('Your ROI with Clover Era', 20, 30);
-                
-                // ROI Box - Teal background
+                doc.setFontSize(18);
+                doc.text('What a 90-Day Pilot Looks Like', 20, 25);
+
+                // THE PILOT Box - Teal background
                 doc.setFillColor(70, 174, 184);
-                doc.rect(20, 40, 170, 45, 'F');
-                
-                // ROI metrics in white
+                doc.rect(20, 32, 170, 45, 'F');
+
                 doc.setTextColor(255, 255, 255);
-                doc.setFontSize(28);
+                doc.setFontSize(11);
+                doc.text('THE PILOT', 105, 42, { align: 'center' });
+
+                doc.setFontSize(20);
                 doc.setFont(undefined, 'bold');
-                doc.text(`${data.roi}%`, 50, 60, { align: 'center' });
-                doc.text(`${data.preventedDepartures}`, 105, 60, { align: 'center' });
-                doc.text(`$${Math.round(data.netSavings).toLocaleString()}`, 145, 60, { align: 'center' });
+                doc.text('$24,000  |  90 Days  |  One Department', 105, 55, { align: 'center' });
 
                 doc.setFontSize(10);
                 doc.setFont(undefined, 'normal');
-                doc.text('Return on Investment', 50, 72, { align: 'center' });
-                doc.text('Prevented Departures (90 days)', 105, 72, { align: 'center' });
-                doc.text('Annual Savings', 145, 72, { align: 'center' });
+                doc.text('Start with your highest-turnover department. Implement the early warning system.', 105, 67, { align: 'center' });
+                doc.text('Train managers to act on signals.', 105, 73, { align: 'center' });
 
-                // Investment amount
+                // Pilot description
                 doc.setTextColor(80, 80, 80);
                 doc.setFontSize(11);
-                doc.text('Clover ERA Investment: $24K pilot (90 days) → $96K annual', 105, 95, { align: 'center' });
-                
-                // Transformation Impact table
+                doc.text('Most pilots prevent 2-3 departures in 90 days.', 20, 90);
+                doc.setFont(undefined, 'bold');
+                doc.text('At $180K-$260K per departure, that\'s $360K-$780K saved on a $24K investment.', 20, 98);
+
+                // TYPICAL PILOT RESULTS section
+                doc.setFont(undefined, 'normal');
                 doc.setTextColor(0, 0, 0);
-                doc.setFontSize(16);
-                doc.text('Transformation Impact', 20, 115);
-                
-                // Table header - teal background
-                doc.setFillColor(70, 174, 184);
-                doc.rect(20, 125, 170, 10, 'F');
-                
-                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.text('TYPICAL PILOT RESULTS', 20, 115);
+
+                doc.setFontSize(11);
+                doc.setTextColor(80, 80, 80);
+                const leftCol = 25;
+                const rightCol = 130;
+                y = 127;
+
+                const results = [
+                    ['Departures Prevented:', '2-3 employees'],
+                    ['Savings:', '$360K-$780K'],
+                    ['Investment:', '$24K'],
+                    ['Time to First Signal:', '30 days'],
+                    ['Time to First Save:', '60-67 days']
+                ];
+
+                results.forEach(row => {
+                    doc.setFont(undefined, 'normal');
+                    doc.text(row[0], leftCol, y);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(row[1], rightCol, y);
+                    y += 8;
+                });
+
+                // Social Proof section - Quote box with light teal background
+                doc.setFillColor(230, 247, 248);
+                doc.rect(20, 168, 170, 28, 'F');
+
+                doc.setTextColor(70, 174, 184);
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'bold');
+                doc.text('FROM A RECENT PILOT', 25, 175);
+
+                doc.setTextColor(60, 60, 60);
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'italic');
+                doc.text('"We prevented 3 engineering departures in 67 days. That\'s $540K saved on a $24K pilot.', 25, 183);
+                doc.text('Expanded to full company immediately."  — VP Engineering, 450-person tech company', 25, 190);
+
+                // THE PATH FORWARD section
+                doc.setTextColor(0, 0, 0);
                 doc.setFontSize(11);
                 doc.setFont(undefined, 'bold');
-                doc.text('Metric', 30, 131);
-                doc.text('Current State', 90, 131);
-                doc.text('With Clover Era', 140, 131);
-                
-                // Table rows
-                doc.setTextColor(80, 80, 80);
-                doc.setFont(undefined, 'normal');
-                y = 145;
-                
-                const rows = [
-                    ['Annual Turnover', `${Math.round(data.employees * data.turnoverRate / 100)} employees`, `${Math.round(data.employees * data.turnoverRate * 0.5 / 100)} employees`],
-                    ['Engagement Score', `${data.engagementRate}%`, `${Math.min(75, data.engagementRate + 40)}%`],
-                    ['Productivity Loss', '34%', '8%'],
-                    ['Annual Cost', `${Math.round(data.totalLoss).toLocaleString()}`, `${Math.round(data.totalLoss * 0.3).toLocaleString()}`]
-                ];
-                
-                rows.forEach(row => {
-                    doc.text(row[0], 30, y);
-                    doc.setTextColor(239, 68, 68); // Red for current
-                    doc.text(row[1], 90, y);
-                    doc.setTextColor(16, 185, 129); // Green for improved
-                    doc.text(row[2], 140, y);
-                    doc.setTextColor(80, 80, 80);
-                    y += 10;
-                });
-                
-                // Recommended Next Steps
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(16);
-                doc.text('Recommended Next Steps', 20, 200);
-                
-                doc.setFontSize(11);
-                doc.setTextColor(80, 80, 80);
-                y = 212;
-                
-                const steps = [
-                    '1. Schedule Your Turnover Analysis to see Clover ERA in action',
-                    '2. Start your 90-day pilot program',
-                    '3. Get your team onboarded in less than 24 hours',
-                    '4. First at-risk signals within 30 days'
-                ];
-                
-                steps.forEach(step => {
-                    // Teal bullet
-                    doc.setFillColor(70, 174, 184);
-                    doc.circle(25, y-2, 2, 'F');
-                    doc.text(step, 30, y);
-                    y += 10;
-                });
-                
-                // Footer
+                doc.text('THE PATH FORWARD', 20, 205);
+
                 doc.setFontSize(9);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(80, 80, 80);
+                doc.text('After proving ROI in one department, most companies expand company-wide at $96K/year.', 20, 213);
+                doc.setFont(undefined, 'bold');
+                doc.text('If we don\'t prevent at least 2 departures in your pilot, you don\'t expand. Simple.', 20, 220);
+
+                // Recommended Next Steps section
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'bold');
+                doc.text('Recommended Next Steps', 20, 232);
+
+                doc.setFontSize(8);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(80, 80, 80);
+                y = 240;
+
+                const nextSteps = [
+                    ['1. Schedule your Turnover Analysis (15 minutes)', 'We identify your highest-risk department and calculate your specific cost.'],
+                    ['2. Start a 90-day pilot in that department ($24K)', 'Implement the system. Train managers. Surface early warning signals.'],
+                    ['3. Prevent 2-3 departures. Document savings.', 'You\'ll have the data to make the case internally.'],
+                    ['4. Expand company-wide ($96K/year)', 'Scale to all departments after proving ROI.']
+                ];
+
+                nextSteps.forEach(step => {
+                    doc.setFillColor(70, 174, 184);
+                    doc.circle(24, y - 1, 1.2, 'F');
+                    doc.setFont(undefined, 'bold');
+                    doc.text(step[0], 28, y);
+                    doc.setFont(undefined, 'normal');
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(step[1], 32, y + 4);
+                    doc.setTextColor(80, 80, 80);
+                    y += 11;
+                });
+
+                // CTA Box - Teal background
+                doc.setFillColor(70, 174, 184);
+                doc.rect(40, 285, 130, 15, 'F');
+
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'bold');
+                doc.text('Schedule Your Turnover Analysis', 105, 292, { align: 'center' });
+                doc.setFontSize(7);
+                doc.setFont(undefined, 'normal');
+                doc.text('15 minutes. No pitch. Just your real numbers.', 105, 297, { align: 'center' });
+
+                // Clickable link
+                const linkUrl = 'https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled';
+                doc.link(40, 285, 130, 15, { url: linkUrl });
+
+                // Footer
+                doc.setFontSize(7);
                 doc.setTextColor(128, 128, 128);
-                doc.text('Clover ERA | Neuroscience-Powered Employee Engagement Platform', 105, 270, { align: 'center' });
-                doc.text('Contact: contact@cloverera.com | www.cloverera.com', 105, 276, { align: 'center' });
+                doc.text('Clover ERA | Employee Turnover Prevention | contact@cloverera.com | www.cloverera.com', 105, 307, { align: 'center' });
                 
                 // Save PDF
                 doc.save('CloverERA_ROI_Report.pdf');
