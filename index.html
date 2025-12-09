@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stop Losing $5.4M to Employee Turnover | Clover ERA</title>
-    <meta name="description" content="Reduce employee turnover by 22% in 90 days. Real-time check-ins identify at-risk employees before they quit. 12:1 ROI. Start in 48 hours.">
+    <title>Stop Losing $5.4M to Turnover You Didn't See Coming | Clover ERA</title>
+    <meta name="description" content="Employee turnover costs $5.4M annually for a 300-person company. Most managers find out someone's leaving the day they resign. Clover ERA surfaces the signals 60-90 days earlier.">
 
     <style>
         :root {
@@ -34,30 +34,17 @@
         .hero {
             background: linear-gradient(135deg, var(--deep-teal), var(--teal));
             color: var(--white);
-            padding: 3rem 2rem 3rem;
+            padding: 3rem 2rem 4rem;
             text-align: center;
-            min-height: 500px;
+            min-height: 600px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            margin-top: 0;
-            line-height: 1.2;
-        }
-
-        .hero .highlight {
-            color: #FFD93D;
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .btn-primary {
@@ -120,12 +107,7 @@
             font-size: 1rem;
         }
 
-        /* Problem Section */
-        .problem-section {
-            padding: 6rem 2rem;
-            background: var(--light-gray);
-        }
-
+        /* Section Styles */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -134,114 +116,78 @@
         h2 {
             font-size: 2.5rem;
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
             color: var(--text-primary);
         }
 
-        .problem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .problem-box {
+        /* Story Block Styles */
+        .story-block {
             background: var(--white);
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
         }
 
-        .problem-box h3 {
-            color: var(--teal);
+        .story-block p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
             margin-bottom: 1rem;
-            font-size: 1.5rem;
         }
 
-        .problem-box ul {
-            list-style: none;
-            padding-left: 0;
+        .story-block p:last-child {
+            margin-bottom: 0;
         }
 
-        .problem-box li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .problem-box li::before {
-            content: '✗';
-            position: absolute;
-            left: 0;
-            color: #EF4444;
-            font-weight: bold;
-        }
-
-        /* How It Works */
-        .how-it-works {
-            padding: 6rem 2rem;
-            background: var(--white);
-        }
-
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
+        /* Callout Box */
+        .callout-box {
+            background: rgba(70, 174, 184, 0.1);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border: 2px solid var(--teal);
             margin-top: 3rem;
         }
 
+        /* Steps */
         .step {
-            text-align: center;
-        }
-
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 70px;
-            height: 70px;
-            background: var(--teal);
-            color: var(--white);
-            border-radius: 50%;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 3rem;
         }
 
         .step h3 {
-            margin-bottom: 1rem;
             font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
         }
 
         .step p {
             color: var(--text-secondary);
-            line-height: 1.6;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
         }
 
         /* Case Studies */
-        .case-studies {
-            padding: 6rem 2rem;
-            background: var(--light-gray);
-        }
-
         .case-study {
             background: var(--white);
             padding: 2.5rem;
             border-radius: 8px;
             margin-bottom: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 6px solid var(--teal);
         }
 
         .case-study h3 {
-            color: var(--teal);
-            margin-bottom: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
         }
 
-        .results {
+        .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
-            margin-top: 1.5rem;
+            margin: 2rem 0;
         }
 
         .result-item {
@@ -256,6 +202,11 @@
             font-weight: 800;
             color: var(--teal);
             display: block;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         /* ROI Calculator */
@@ -325,7 +276,7 @@
 
         .comparison-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
             max-width: 900px;
             margin: 0 auto;
@@ -341,6 +292,13 @@
         .comparison-card h3 {
             margin-bottom: 1.5rem;
             text-align: center;
+        }
+
+        .comparison-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
         }
 
         .comparison-card.winner {
@@ -415,68 +373,47 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            /* Prevent horizontal scroll */
             body {
                 overflow-x: hidden;
                 max-width: 100vw;
             }
 
-            /* Hero section mobile */
             .hero {
                 padding: 2rem 1rem;
                 min-height: auto;
             }
 
-            .hero p {
-                font-size: 1.1rem !important;
+            .hero-content h1 {
+                font-size: 1.4rem !important;
             }
 
-            .hero-content {
-                margin-top: 1rem !important;
-            }
-
-            /* Hero H1s - use more specific selectors to override inline styles */
-            .hero .hero-content h1:nth-of-type(1) {
-                font-size: 1.6rem !important;
-            }
-
-            .hero .hero-content h1:nth-of-type(2) {
+            .hero-content .hero-cost {
                 font-size: 2.5rem !important;
             }
 
-            .hero .hero-content h1:nth-of-type(2) span {
-                color: #FFD700 !important;
+            .hero-content .hero-scale {
+                font-size: 1.4rem !important;
             }
 
-            .hero .hero-content h1:nth-of-type(3) {
-                font-size: 1.6rem !important;
+            .hero-body p {
+                font-size: 1rem !important;
             }
 
-            /* Hero CTA buttons - fix centering */
-            .hero .hero-cta-group,
             .hero-cta-group {
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 1rem !important;
                 align-items: center !important;
-                justify-content: center !important;
-                margin: 0 auto !important;
-                width: 100% !important;
             }
 
-            .hero .hero-cta-group a,
             .hero-cta-group a {
                 display: block !important;
                 width: 100% !important;
                 max-width: 300px !important;
                 padding: 1rem 1.5rem !important;
                 font-size: 0.95rem !important;
-                margin: 0 auto !important;
-                text-align: center !important;
-                box-sizing: border-box !important;
             }
 
-            /* Headings */
             h2 {
                 font-size: 1.8rem !important;
             }
@@ -485,7 +422,6 @@
                 font-size: 1.3rem !important;
             }
 
-            /* Stats bar */
             .stats-bar {
                 padding: 2rem 1rem !important;
             }
@@ -495,65 +431,37 @@
                 gap: 1rem !important;
             }
 
-            .stat-item {
-                padding: 1rem !important;
-                min-height: 100px;
-            }
-
             .stat-value {
                 font-size: 1.8rem !important;
             }
 
             .stat-label {
-                font-size: 0.7rem !important;
+                font-size: 0.75rem !important;
                 line-height: 1.3 !important;
-                word-wrap: break-word !important;
-                overflow-wrap: break-word !important;
-                display: block !important;
             }
 
-            /* Section padding */
             section {
                 padding: 3rem 1rem !important;
             }
 
-            /* Problem section and grids */
-            .problem-grid,
-            .comparison-grid,
-            .steps-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1.5rem !important;
-            }
-
-            /* Fix ALL grid minmax issues - override inline styles */
-            div[style*="grid-template-columns"][style*="minmax"] {
-                grid-template-columns: 1fr !important;
-            }
-
-            /* Case studies - fix minmax issue */
-            .results-section > div > div {
-                grid-template-columns: 1fr !important;
-            }
-
-            /* Problem boxes */
-            .problem-box {
+            .story-block {
                 padding: 1.5rem !important;
             }
 
-            /* Stats grids inside case studies */
-            .results-section .stat-item,
-            div[style*="grid-template-columns: repeat(2, 1fr)"] {
-                gap: 0.75rem !important;
+            .story-block p {
+                font-size: 1rem !important;
             }
 
-            /* Calculator */
-            .calculator-section {
-                padding: 3rem 0.5rem !important;
+            .results-grid {
+                grid-template-columns: 1fr 1fr !important;
             }
 
-            .calculator-section .container {
-                max-width: 100% !important;
-                padding: 0 0.5rem !important;
+            .result-value {
+                font-size: 1.5rem !important;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr !important;
             }
 
             .calc-inputs {
@@ -561,120 +469,17 @@
             }
 
             .calculator {
-                padding: 0.5rem !important;
-                max-width: 100% !important;
-                margin: 0 !important;
-                box-sizing: border-box !important;
-            }
-
-            /* Calculator - Turnover Cost (larger) */
-            .calculator-section #calcResult,
-            #calcResult {
-                font-size: 1.5rem !important;
-                font-weight: 700 !important;
-                word-wrap: break-word !important;
-                overflow-wrap: break-word !important;
-                white-space: normal !important;
-                max-width: 100% !important;
-                display: block !important;
-                overflow: hidden !important;
-                line-height: 1.2 !important;
-            }
-
-            /* Calculator - Savings Amount (smaller) */
-            .calculator-section #savingsAmount,
-            #savingsAmount {
-                font-size: 1.3rem !important;
-                font-weight: 700 !important;
-                word-wrap: break-word !important;
-                overflow-wrap: break-word !important;
-                white-space: normal !important;
-                max-width: 100% !important;
-                display: block !important;
-                overflow: hidden !important;
-                line-height: 1.2 !important;
-            }
-
-            .calc-result {
-                padding: 0.4rem !important;
-                overflow: hidden !important;
-                max-width: 100% !important;
-                box-sizing: border-box !important;
-            }
-
-            .calc-result h3 {
-                font-size: 0.85rem !important;
-                line-height: 1.3 !important;
-                word-wrap: break-word !important;
-                margin-bottom: 0.5rem !important;
-            }
-
-            .calc-result p {
-                font-size: 0.7rem !important;
-                line-height: 1.3 !important;
-            }
-
-            /* CTA section */
-            .cta-section {
-                padding: 3rem 1rem !important;
-            }
-
-            .cta-section h2 {
-                font-size: 2rem !important;
-            }
-
-            .cta-section p {
-                font-size: 1rem !important;
-            }
-
-            .cta-section ul {
-                max-width: 100% !important;
-                padding: 0 1rem !important;
-            }
-
-            .cta-section li {
-                font-size: 1rem !important;
-                padding-left: 1.5rem !important;
-            }
-
-            section.cta-section div[style*="display"],
-            .cta-section > div > div {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                margin: 0 auto !important;
-                width: 100% !important;
-            }
-
-            section.cta-section a,
-            .cta-section a {
-                display: block !important;
-                width: 100% !important;
-                max-width: 300px !important;
-                padding: 1rem 1.5rem !important;
-                font-size: 1rem !important;
-                margin: 0 auto !important;
-                text-align: center !important;
-                box-sizing: border-box !important;
-            }
-
-            /* Step numbers */
-            .step-number {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 1.5rem !important;
-                background-size: 45px 45px !important;
-            }
-
-            /* Testimonial and comparison boxes */
-            div[style*="max-width: 700px"],
-            div[style*="max-width: 800px"],
-            div[style*="max-width: 900px"] {
                 padding: 1.5rem !important;
             }
 
-            /* What Actually Works badge - fix mobile overlap */
+            #calcResult {
+                font-size: 2rem !important;
+            }
+
+            #savingsAmount {
+                font-size: 1.5rem !important;
+            }
+
             .winner-badge {
                 position: relative !important;
                 top: 0 !important;
@@ -690,15 +495,10 @@
                 padding-top: 1.5rem !important;
             }
 
-            /* Questions/Call layout - stack vertically */
-            .cta-section p:has(a[href^="tel"]) {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 0.5rem !important;
-                align-items: center !important;
+            .cta-section h2 {
+                font-size: 1.8rem !important;
             }
 
-            /* Footer */
             footer {
                 padding: 2rem 1rem !important;
             }
@@ -716,36 +516,47 @@
     <!-- HERO SECTION -->
     <section class="hero" id="main">
         <div class="hero-content" style="margin-top: 3rem;">
-            <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3;">
-                You're Losing
+            <!-- Primary Headline (smaller, story setup) -->
+            <h1 style="font-size: 1.8rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.4; color: rgba(255,255,255,0.95);">
+                An engineering director lost her best engineer last year.
             </h1>
 
-            <h1 style="font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;">
-                <span style="color: #FFD700;">$5.4 Million</span>
+            <!-- Secondary Headline (large, the cost) -->
+            <h1 class="hero-cost" style="font-size: 4rem; font-weight: 900; margin: 0.5rem 0; line-height: 1.1;">
+                <span style="color: #FFD700;">$280,000 to replace him.</span>
             </h1>
 
-            <h1 style="font-size: 2.5rem; font-weight: 700; margin-top: 0.5rem; margin-bottom: 2rem; line-height: 1.3;">
-                Per Year To Employee Turnover
+            <!-- Third Headline (medium, the scale) -->
+            <h1 class="hero-scale" style="font-size: 1.8rem; font-weight: 600; margin-top: 0.5rem; margin-bottom: 2rem; line-height: 1.4; color: rgba(255,255,255,0.95);">
+                Multiply that by everyone who quit last year.
             </h1>
 
-            <p class="hero-subtitle" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.95); margin-bottom: 2rem; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.7;">
-                Every employee who quits costs $120K-$180K in recruiting, training, and lost productivity. At 20% annual turnover, that's 60 people leaving annually — $5.4M walking out the door.
-            </p>
+            <!-- Hero Body Copy -->
+            <div class="hero-body" style="max-width: 800px; margin: 0 auto 2.5rem; text-align: left;">
+                <p style="font-size: 1.15rem; color: rgba(255,255,255,0.95); margin-bottom: 1rem; line-height: 1.7;">
+                    She had no idea he was looking.
+                </p>
+                <p style="font-size: 1.15rem; color: rgba(255,255,255,0.95); margin-bottom: 1rem; line-height: 1.7;">
+                    He'd asked about a promotion path four months earlier. His skip-level said "we'll figure it out." Then nothing.
+                </p>
+                <p style="font-size: 1.15rem; color: rgba(255,255,255,0.95); margin-bottom: 1rem; line-height: 1.7;">
+                    He didn't push back. He just started taking recruiter calls.
+                </p>
+                <p style="font-size: 1.15rem; color: rgba(255,255,255,0.95); margin-bottom: 1rem; line-height: 1.7;">
+                    She found out the day he resigned.
+                </p>
+                <p style="font-size: 1.15rem; color: rgba(255,255,255,0.95); margin-bottom: 0; line-height: 1.7;">
+                    This happens 60 times a year in a 300-person company. That's $5.4 million walking out the door. Not because managers don't care. Because they can't see what's happening until it's too late.
+                </p>
+            </div>
 
-            <p class="hero-value-prop" style="font-size: 1.35rem; color: var(--white); font-weight: 600; margin-bottom: 1rem; line-height: 1.6;">
-                Clover ERA prevents 13+ departures in 90 days, saving you $1.2M+ annually.
-            </p>
-
-            <p class="hero-tagline" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500; margin-bottom: 3rem;">
-                No surveys. No consultants. No extra work for managers.
-            </p>
-
+            <!-- Hero CTA Group -->
             <div class="hero-cta-group" style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
                 <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="btn-primary" style="background: var(--charcoal); color: var(--white); padding: 1.2rem 2.5rem; border-radius: 8px; font-size: 1rem; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); transition: all 0.3s;">
                     Schedule Your Free Turnover Analysis
                 </a>
                 <a href="#calculator" class="btn-secondary" style="background: var(--white); color: var(--charcoal); padding: 1.2rem 2.5rem; border: 2px solid var(--white); border-radius: 8px; font-size: 1rem; font-weight: 600; text-decoration: none; transition: all 0.3s;">
-                    Calculate Your Turnover Cost
+                    Calculate What This Is Costing You
                 </a>
             </div>
         </div>
@@ -756,309 +567,251 @@
         <div class="stats-container">
             <div class="stat-item">
                 <span class="stat-value">$5.4M</span>
-                <span class="stat-label">Your Annual Loss (300 employees @ 20% turnover)</span>
+                <span class="stat-label">What a 300-person company loses annually</span>
             </div>
             <div class="stat-item">
                 <span class="stat-value">22%</span>
-                <span class="stat-label">Average Reduction in First 90 Days</span>
+                <span class="stat-label">Average reduction in 90 days</span>
             </div>
             <div class="stat-item">
                 <span class="stat-value">90 Days</span>
-                <span class="stat-label">From Setup to Results</span>
+                <span class="stat-label">From setup to first prevented resignation</span>
             </div>
             <div class="stat-item">
                 <span class="stat-value">12:1</span>
-                <span class="stat-label">Average ROI in Year One</span>
+                <span class="stat-label">Typical first-year ROI</span>
             </div>
         </div>
     </section>
 
     <!-- Problem Section -->
-    <section class="problem-section" style="padding: 6rem 2rem; background: var(--light-gray);">
-        <div class="problem-content" style="max-width: 1200px; margin: 0 auto;">
+    <section style="padding: 6rem 2rem; background: var(--light-gray);">
+        <div style="max-width: 900px; margin: 0 auto;">
 
             <!-- HEADLINE -->
-            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">
-                Why You're Losing $5.4M Per Year
+            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+                The Resignation Was Never the Beginning
             </h2>
-            <p style="text-align: center; color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 4rem; max-width: 800px; margin-left: auto; margin-right: auto;">
-                Your best people are quitting. Not because of salary. Because their manager didn't know they were struggling until the exit interview.
+            <p style="text-align: center; color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 4rem;">
+                It was the end. The signals started 60-90 days earlier. Nobody saw them.
             </p>
 
-            <!-- THREE COLUMN GRID -->
-            <div class="problem-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
-
-                <!-- COLUMN 1: WHAT'S HAPPENING -->
-                <div class="problem-box" style="background: var(--white); padding: 2.5rem; border-radius: 8px; border-left: 4px solid #FF6B6B; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
-                    <h3 style="color: #FF6B6B; margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 700;">What's Happening</h3>
-                    <ul style="list-style: none; padding-left: 0;">
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Employees quit without warning</strong><br>
-                            <span style="font-size: 0.9rem;">Exit interviews reveal problems that existed for 4-6 months</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Replacements cost $120K-$180K each</strong><br>
-                            <span style="font-size: 0.9rem;">Recruiting fees ($18K-$45K) + 6 months to full productivity</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Top performers leave first</strong><br>
-                            <span style="font-size: 0.9rem;">They have options and aren't waiting around for things to improve</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6;">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Remaining team morale collapses</strong><br>
-                            <span style="font-size: 0.9rem;">Each departure triggers 2-3 more within 90 days</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- COLUMN 2: WHAT'S CAUSING IT -->
-                <div class="problem-box" style="background: var(--white); padding: 2.5rem; border-radius: 8px; border-left: 4px solid #FF6B6B; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
-                    <h3 style="color: #FF6B6B; margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 700;">What's Causing It</h3>
-                    <ul style="list-style: none; padding-left: 0;">
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Managers are flying blind</strong><br>
-                            <span style="font-size: 0.9rem;">No daily signal about who's struggling until it's too late</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Annual surveys measure the past</strong><br>
-                            <span style="font-size: 0.9rem;">Q4 survey tells you about Q2 problems when people already quit</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>HR sees data but can't act on it</strong><br>
-                            <span style="font-size: 0.9rem;">Reports sit in decks while problems fester for months</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6;">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Problems stay hidden until resignation</strong><br>
-                            <span style="font-size: 0.9rem;">"Everything's fine" until they hand you a 2-week notice</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- COLUMN 3: WHY OTHER SOLUTIONS FAIL -->
-                <div class="problem-box" style="background: var(--white); padding: 2.5rem; border-radius: 8px; border-left: 4px solid #FF6B6B; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
-                    <h3 style="color: #FF6B6B; margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 700;">Why Other Solutions Fail</h3>
-                    <ul style="list-style: none; padding-left: 0;">
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Annual surveys: Too slow, too late</strong><br>
-                            <span style="font-size: 0.9rem;">Cost $50K-$100K, results arrive 8 weeks after the survey</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Pulse surveys: Managers ignore them</strong><br>
-                            <span style="font-size: 0.9rem;">Data without action items gets filed and forgotten</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6; border-bottom: 1px solid var(--medium-gray);">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>1-on-1s: Inconsistent execution</strong><br>
-                            <span style="font-size: 0.9rem;">Canceled 50% of the time, employees don't share real issues</span>
-                        </li>
-                        <li style="padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; line-height: 1.6;">
-                            <span style="position: absolute; left: 0; color: #FF6B6B; font-weight: bold; font-size: 1.2rem;">✗</span>
-                            <strong>Exit interviews: Closing the barn door</strong><br>
-                            <span style="font-size: 0.9rem;">Finding out why they left doesn't bring them back</span>
-                        </li>
-                    </ul>
-                </div>
-
+            <!-- Story Block 1 -->
+            <div class="story-block">
+                <p>A healthcare company lost 14 people last quarter.</p>
+                <p>Exit interviews all said variations of the same thing: "I tried to raise it. Nothing changed."</p>
+                <p>The problems weren't hidden. They were invisible to the people who could fix them.</p>
             </div>
 
-            <!-- SOLUTION CALLOUT BOX -->
-            <div class="solution-highlight" style="background: rgba(70, 174, 184, 0.1); padding: 2.5rem; border-radius: 8px; margin-top: 4rem; border: 2px solid var(--teal);">
-                <h3 style="color: var(--teal); font-size: 1.8rem; margin-bottom: 1rem; font-weight: 700; text-align: center;">What Actually Works</h3>
-                <p style="color: var(--text-secondary); font-size: 1.15rem; line-height: 1.7; margin-bottom: 1.5rem; text-align: center; max-width: 800px; margin-left: auto; margin-right: auto;">
-                    Daily 30-second check-ins that give managers real-time signals about team health. When someone's struggling, their manager knows TODAY and can intervene BEFORE they update their LinkedIn profile.
+            <!-- Story Block 2 -->
+            <div class="story-block">
+                <p>A VP told me last month that her best performer resigned without warning.</p>
+                <p>I asked when the warning signs started.</p>
+                <p>She said there weren't any.</p>
+                <p>I asked when he last raised a concern in a 1-on-1.</p>
+                <p>She couldn't remember. The 1-on-1s had been getting shorter. She thought that meant things were going well.</p>
+                <p style="font-weight: 600; color: var(--text-primary);">It meant he'd stopped trying.</p>
+            </div>
+
+            <!-- Story Block 3 -->
+            <div class="story-block">
+                <p>Most managers aren't bad at their jobs.</p>
+                <p style="font-weight: 600; color: var(--text-primary);">They're flying blind.</p>
+                <p>Annual surveys tell you what people felt six months ago. Pulse surveys get ignored. 1-on-1s get canceled. Exit interviews tell you why someone left after they're already gone.</p>
+                <p>By the time a problem is visible, the decision is already made.</p>
+            </div>
+
+            <!-- Callout Box -->
+            <div class="callout-box">
+                <h3 style="color: var(--teal); font-size: 1.6rem; margin-bottom: 1rem; font-weight: 700; text-align: center;">The Question Nobody Asks</h3>
+                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1rem;">
+                    What if managers could see the shift from "I'm good" to "I'm fine" to "I'm looking" before it turned into a resignation letter?
                 </p>
-                <p style="color: var(--text-primary); font-weight: 700; font-size: 1.3rem; text-align: center;">
-                    Result: 20-30% reduction in turnover. $1.2M+ in savings. 90 days to see it happen.
+                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1rem;">
+                    Not surveillance. Not tracking individuals. Just visibility into patterns that are already there.
+                </p>
+                <p style="color: var(--text-primary); font-weight: 700; font-size: 1.2rem; text-align: center;">
+                    That's what changes a $5.4M problem into a $1.2M savings.
                 </p>
             </div>
 
         </div>
     </section>
 
-    <!-- HOW IT WORKS -->
-    <section class="how-it-works" style="background: var(--white); padding: 6rem 2rem;">
-        <div style="max-width: 1200px; margin: 0 auto;">
+    <!-- HOW IT WORKS SECTION -->
+    <section style="background: var(--white); padding: 6rem 2rem;">
+        <div style="max-width: 900px; margin: 0 auto;">
 
             <!-- HEADLINE -->
-            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">
-                How Clover ERA Stops The Bleeding
+            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+                What the Companies Who Keep Their People Do Differently
             </h2>
-            <p style="text-align: center; color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 4rem; max-width: 800px; margin-left: auto; margin-right: auto;">
-                Your employees spend 30 seconds per day. Your managers get the insights they need to prevent departures.
+            <p style="text-align: center; color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 4rem;">
+                It's not ping pong tables. It's not unlimited PTO. It's knowing what's wrong before someone quits.
             </p>
 
-            <!-- THREE STEPS -->
-            <div class="steps-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin-top: 3rem;">
-
-                <!-- STEP 1 -->
-                <div class="step" style="text-align: center;">
-                    <span class="step-number" style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: var(--white) url('images/1-Daily-Question.png') center center / 50px 50px no-repeat; color: var(--white); border-radius: 50%; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(70, 174, 184, 0.3);"></span>
-                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Employees Answer One Daily Question</h3>
-                    <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
-                        Each working day, your team answers one question about how they're doing. Takes less than 30 seconds. Completely anonymous. No surveys, no meetings, no disruption to their workflow.
-                    </p>
-                </div>
-
-                <!-- STEP 2 -->
-                <div class="step" style="text-align: center;">
-                    <span class="step-number" style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: var(--white) url('images/Real-Time-Intelligence.png') center center / 50px 50px no-repeat; color: var(--white); border-radius: 50%; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(70, 174, 184, 0.3);"></span>
-                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Managers Get Real-Time Intelligence</h3>
-                    <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
-                        Managers see real-time dashboards showing team health patterns. Weekly reports identify specific problems affecting the team and exactly what actions to take. The system is anonymous—you can't pinpoint individuals, but you CAN address the problems affecting them.
-                    </p>
-                </div>
-
-                <!-- STEP 3 -->
-                <div class="step" style="text-align: center;">
-                    <span class="step-number" style="display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px; background: var(--white) url('images/Small-actions.png') center center / 50px 50px no-repeat; color: var(--white); border-radius: 50%; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(70, 174, 184, 0.3);"></span>
-                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">Small Actions Prevent Big Problems</h3>
-                    <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
-                        Managers take small daily and weekly incremental actions based on what the system reveals. When burnout patterns emerge, they adjust workloads. When communication breaks down, they create space for conversations. Problems get solved before they become resignations.
-                    </p>
-                </div>
-
+            <!-- Step 1 -->
+            <div class="step">
+                <h3 style="color: var(--teal);">One Question Per Day</h3>
+                <p>Every morning, your team answers one question about how they're doing.</p>
+                <p>Takes less than 30 seconds. Completely anonymous. No surveys, no meetings, no manager breathing down their neck.</p>
+                <p>The anonymity is what makes it work. People answer honestly because there's no consequence.</p>
             </div>
 
-            <!-- TESTIMONIAL BOX -->
-            <div style="max-width: 700px; margin: 4rem auto 0; text-align: center; padding: 2.5rem; background: rgba(70, 174, 184, 0.05); border-radius: 8px; border: 2px solid var(--primary-teal);">
-                <p style="color: var(--text-primary); font-size: 1.3rem; font-weight: 600; line-height: 1.6; margin-bottom: 1rem; font-style: italic;">
-                    "The anonymity is what makes this work. My team answers honestly because there's no fear. And I get the insights I need without creating a surveillance state."
+            <!-- Step 2 -->
+            <div class="step">
+                <h3 style="color: var(--teal);">Patterns Surface Before Problems Explode</h3>
+                <p>Managers see real-time dashboards. Not individual responses. Team patterns.</p>
+                <p>When "good" becomes "okay" across half the team, that's a signal. When workload scores drop after a reorg, that's a signal.</p>
+                <p>The system doesn't tell managers who's struggling. It tells them something IS struggling and what to do about it.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <h3 style="color: var(--teal);">Small Actions Today Prevent Resignations Next Quarter</h3>
+                <p>A 5-minute conversation this week is worth more than a counter-offer next month.</p>
+                <p>The system tells managers exactly what actions to take based on what the patterns reveal. Adjust workloads. Create space for feedback. Address the tension that's building before it becomes a two-week notice.</p>
+                <p>Most of the fixes take less time than the exit interview would.</p>
+            </div>
+
+            <!-- Testimonial Box -->
+            <div style="max-width: 700px; margin: 3rem auto 0; text-align: center; padding: 2.5rem; background: rgba(70, 174, 184, 0.05); border-radius: 8px; border: 2px solid var(--teal);">
+                <p style="color: var(--text-primary); font-size: 1.2rem; font-weight: 600; line-height: 1.6; margin-bottom: 1rem; font-style: italic;">
+                    "The anonymity is what makes this work. My team answers honestly because there's no fear. I get the insights I need without creating a surveillance culture."
                 </p>
                 <p style="color: var(--text-secondary); font-size: 1rem; font-weight: 500;">
-                    — Director of Engineering, 180-person tech company
+                    Director of Engineering, 180-person tech company
                 </p>
             </div>
 
-            <!-- COMPARISON BOX -->
-            <div style="max-width: 800px; margin: 3rem auto 0; text-align: center; padding: 2.5rem; background: var(--light-gray); border-radius: 8px; border-left: 4px solid var(--primary-teal);">
-                <h3 style="color: var(--primary-teal); margin-bottom: 1.5rem; font-size: 1.6rem; font-weight: 700;">Why This Works When Surveys Fail</h3>
-                <div style="text-align: left; max-width: 650px; margin: 0 auto;">
-                    <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
-                        <strong style="color: var(--text-primary);">Annual surveys</strong> ask "how did you feel last quarter?" and get dishonest answers because employees know it's not anonymous enough.
-                    </p>
-                    <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
-                        <strong style="color: var(--text-primary);">Clover ERA</strong> asks "how are you feeling today?" with complete anonymity, daily. The patterns reveal problems while there's still time to fix them.
-                    </p>
-                    <p style="color: var(--text-primary); font-size: 1.1rem; line-height: 1.7; font-weight: 600; margin-top: 1.5rem; text-align: center;">
-                        No finger-pointing. No witch hunts. Just actionable intelligence that keeps people from quitting.
-                    </p>
-                </div>
+            <!-- Why This Works Box -->
+            <div style="max-width: 800px; margin: 3rem auto 0; text-align: left; padding: 2.5rem; background: var(--light-gray); border-radius: 8px; border-left: 4px solid var(--teal);">
+                <h3 style="color: var(--teal); margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">Why Surveys Fail and This Doesn't</h3>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
+                    Annual surveys ask "how did you feel last quarter?" People give safe answers because they don't trust that it's really anonymous.
+                </p>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
+                    This asks "how are you feeling today?" with complete anonymity, daily. There's no identifying who said what because the system doesn't track it.
+                </p>
+                <p style="color: var(--text-primary); font-size: 1.1rem; line-height: 1.7; font-weight: 600;">
+                    The patterns reveal problems while there's still time to fix them. That's the difference between an exit interview and a save.
+                </p>
             </div>
 
         </div>
     </section>
 
     <!-- CASE STUDIES SECTION -->
-    <section class="results-section" style="background: var(--light-gray); padding: 6rem 2rem;">
-        <div class="results-content" style="max-width: 1100px; margin: 0 auto;">
-            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">
-                Real Results From Companies Like Yours
+    <section style="background: var(--light-gray); padding: 6rem 2rem;">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+                What It Looks Like When It Works
             </h2>
-            <p style="text-align: center; font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 4rem; max-width: 750px; margin-left: auto; margin-right: auto;">
-                These aren't testimonials. They're audited results from real deployments.
+            <p style="text-align: center; font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 4rem;">
+                These aren't testimonials. They're what happened when managers could finally see what was coming.
             </p>
 
-            <!-- Case Studies Grid -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2.5rem; margin-bottom: 3rem;">
+            <!-- Case Study 1 -->
+            <div class="case-study">
+                <h3>The Engineering Team That Stopped the Bleeding</h3>
 
-                <!-- Case Study 1: Tech Company -->
-                <div style="background: var(--white); border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); border-left: 6px solid var(--primary-teal);">
-                    <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">
-                        Tech Company (450 employees)
-                    </h3>
-                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.6;">
-                        <strong style="color: var(--text-primary);">Problem:</strong> Losing 8-10 engineers per quarter. Replacing each one cost $180K (recruiting + 6-month ramp time).
-                    </p>
-                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6;">
-                        <strong style="color: var(--text-primary);">What They Did:</strong> Implemented Clover ERA's weekly check-ins and manager alerts.
-                    </p>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
+                    A 450-person tech company was losing 8-10 engineers per quarter. Each one cost $180K to replace between recruiting fees, onboarding, and the six months it took to get someone productive.
+                </p>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                    They'd tried annual surveys. Results arrived eight weeks later. By then, three more people had quit.
+                </p>
 
-                    <!-- Stats Grid -->
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">30%</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">Turnover Reduction</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">$1.4M</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">Annual Savings</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">67 Days</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">Time to First Result</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">14.6x</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">ROI in Year One</div>
-                        </div>
+                <p style="color: var(--text-primary); font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">What Changed:</p>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                    Within the first 60 days, the system flagged a pattern: workload scores were dropping in two specific teams. Both had shipped major releases in the prior month. Managers adjusted timelines, created breathing room, and had conversations they wouldn't have known to have.
+                </p>
+
+                <!-- Results Grid -->
+                <div class="results-grid">
+                    <div class="result-item">
+                        <span class="result-value">30%</span>
+                        <span class="result-label">Turnover reduction</span>
                     </div>
-
-                    <p style="font-size: 0.95rem; font-style: italic; color: var(--text-secondary); line-height: 1.6; border-top: 1px solid var(--light-gray); padding-top: 1.5rem;">
-                        "We went from losing 2-3 engineers a month to losing 1-2 per quarter. The system caught burnout before it became resignation."
-                    </p>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem; font-weight: 500;">
-                        — VP of Engineering
-                    </p>
+                    <div class="result-item">
+                        <span class="result-value">$1.4M</span>
+                        <span class="result-label">Annual savings</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-value">67 Days</span>
+                        <span class="result-label">To first result</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-value">14.6x</span>
+                        <span class="result-label">Year one ROI</span>
+                    </div>
                 </div>
 
-                <!-- Case Study 2: Healthcare Provider -->
-                <div style="background: var(--white); border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); border-left: 6px solid var(--primary-teal);">
-                    <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">
-                        Healthcare Provider (280 employees)
-                    </h3>
-                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.6;">
-                        <strong style="color: var(--text-primary);">Problem:</strong> 18% annual turnover. Burnout was obvious but no early warning system existed.
-                    </p>
-                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6;">
-                        <strong style="color: var(--text-primary);">What They Did:</strong> Used Clover ERA to identify burnout signals and trigger manager interventions.
-                    </p>
-
-                    <!-- Stats Grid -->
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">20%</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">Turnover Reduction</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">$890K</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">First-Year Savings</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">14</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">Resignations Prevented</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
-                            <div style="font-size: 2.2rem; font-weight: 700; color: var(--primary-teal); margin-bottom: 0.25rem;">9.3x</div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">ROI in Year One</div>
-                        </div>
-                    </div>
-
-                    <p style="font-size: 0.95rem; font-style: italic; color: var(--text-secondary); line-height: 1.6; border-top: 1px solid var(--light-gray); padding-top: 1.5rem;">
-                        "The alerts gave us time to fix issues before people mentally checked out. We saved 14 resignations in the first 6 months."
-                    </p>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem; font-weight: 500;">
-                        — Director of Operations
-                    </p>
-                </div>
-
+                <p style="font-size: 1rem; font-style: italic; color: var(--text-secondary); line-height: 1.6; border-top: 1px solid var(--medium-gray); padding-top: 1.5rem; margin-top: 1rem;">
+                    "We went from losing 2-3 engineers a month to losing maybe one per quarter. The system caught burnout patterns before they turned into resignation letters."
+                </p>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem; font-weight: 500;">
+                    VP of Engineering
+                </p>
             </div>
+
+            <!-- Case Study 2 -->
+            <div class="case-study">
+                <h3>14 Resignations That Didn't Happen</h3>
+
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
+                    A 280-person healthcare provider had 18% annual turnover. Everyone knew burnout was a problem. Nobody knew where it was worst until someone quit.
+                </p>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                    Exit interviews kept saying the same thing: "I was drowning and nobody noticed."
+                </p>
+
+                <p style="color: var(--text-primary); font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">What Changed:</p>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
+                    Six weeks in, the system surfaced a pattern: one department's stress signals were twice as high as the rest of the company. The department head had no idea.
+                </p>
+                <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                    Turns out they'd been absorbing work from a team that had been downsized. Nobody had adjusted expectations. One conversation with leadership. Workloads redistributed. Problem solved before anyone resigned.
+                </p>
+
+                <!-- Results Grid -->
+                <div class="results-grid">
+                    <div class="result-item">
+                        <span class="result-value">20%</span>
+                        <span class="result-label">Turnover reduction</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-value">$890K</span>
+                        <span class="result-label">First-year savings</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-value">14</span>
+                        <span class="result-label">Resignations prevented</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-value">9.3x</span>
+                        <span class="result-label">Year one ROI</span>
+                    </div>
+                </div>
+
+                <p style="font-size: 1rem; font-style: italic; color: var(--text-secondary); line-height: 1.6; border-top: 1px solid var(--medium-gray); padding-top: 1.5rem; margin-top: 1rem;">
+                    "We saved 14 people who would have quit. Not with counter-offers. With conversations that happened early enough to actually fix the problem."
+                </p>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem; font-weight: 500;">
+                    Director of Operations
+                </p>
+            </div>
+
         </div>
     </section>
 
     <!-- ROI Calculator -->
     <section class="calculator-section" id="calculator">
         <div class="container">
-            <h2>Calculate What Turnover Is Actually Costing You</h2>
+            <h2>What Is This Actually Costing You?</h2>
+            <p style="text-align: center; color: var(--text-secondary); font-size: 1.15rem; margin-bottom: 3rem;">
+                Most companies underestimate turnover cost by 40%. Plug in your numbers.
+            </p>
             <div class="calculator">
                 <div class="calc-inputs">
                     <div class="calc-input">
@@ -1078,41 +831,38 @@
                 <div class="calc-result">
                     <h3>Your Annual Turnover Cost:</h3>
                     <div id="calcResult">$6,750,000</div>
-                    <p style="margin-top: 1rem; color: var(--text-secondary);">Based on industry-standard 150% replacement cost</p>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">(Based on industry-standard 150% replacement cost per employee)</p>
 
-                    <h3 style="margin-top: 2rem;">Potential Annual Savings (22% reduction):</h3>
+                    <h3 style="margin-top: 2rem;">If you reduced turnover by 22%:</h3>
                     <div id="savingsAmount">$1,485,000</div>
+                    <p style="margin-top: 0.5rem; color: var(--text-secondary); font-weight: 500;">That's not a projection. That's the average result in the first 90 days.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Comparison -->
+    <!-- Comparison Section -->
     <section class="comparison">
         <div class="container">
-            <h2>Annual Surveys vs. Clover ERA</h2>
-            <div class="comparison-grid">
+            <h2>The Difference Between Knowing and Guessing</h2>
+            <div class="comparison-grid" style="margin-top: 3rem;">
                 <div class="comparison-card">
                     <h3>Annual Engagement Surveys</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 0.5rem 0;">✗ Measure engagement once per year</li>
-                        <li style="padding: 0.5rem 0;">✗ Results arrive 6 weeks after survey</li>
-                        <li style="padding: 0.5rem 0;">✗ Generic company-wide reports</li>
-                        <li style="padding: 0.5rem 0;">✗ No manager action prompts</li>
-                        <li style="padding: 0.5rem 0;">✗ Employees already quit by next survey</li>
-                    </ul>
+                    <p>Measure engagement once per year.</p>
+                    <p>Results arrive 6-8 weeks after the survey closes. By then, the problems have either resolved themselves or turned into resignations.</p>
+                    <p>Data goes to HR. HR puts it in a deck. Deck gets presented. Nothing changes at the manager level where it matters.</p>
+                    <p>Employees don't trust it's anonymous. They give safe answers. The real problems stay hidden.</p>
+                    <p style="font-weight: 600; color: var(--text-primary); margin-top: 1rem;">Cost: $50K-$100K per year for data you can't act on fast enough.</p>
                 </div>
 
                 <div class="comparison-card winner">
                     <span class="winner-badge">What Actually Works</span>
                     <h3>Clover ERA</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 0.5rem 0;">✓ Daily check-ins (less than 30 seconds)</li>
-                        <li style="padding: 0.5rem 0;">✓ Real time employee data</li>
-                        <li style="padding: 0.5rem 0;">✓ Anonymous input</li>
-                        <li style="padding: 0.5rem 0;">✓ Manager Specific Guided micro-actions</li>
-                        <li style="padding: 0.5rem 0;">✓ Prevent resignations before they happen</li>
-                    </ul>
+                    <p>30 seconds per day. Anonymous. No survey fatigue.</p>
+                    <p>Managers see patterns in real-time. Not reports that arrive next quarter.</p>
+                    <p>The system tells managers what to do, not just what's wrong. Specific actions based on what the patterns reveal.</p>
+                    <p>Complete anonymity means honest answers. You can't identify individuals, but you CAN fix what's affecting them.</p>
+                    <p style="font-weight: 600; color: var(--text-primary); margin-top: 1rem;">Cost: $96K per year for a system that pays for itself in the first 90 days.</p>
                 </div>
             </div>
         </div>
@@ -1120,50 +870,56 @@
 
     <!-- FINAL CTA SECTION -->
     <section class="cta-section" style="background: var(--teal); padding: 6rem 2rem; text-align: center; color: var(--white);">
-        <div style="max-width: 900px; margin: 0 auto;">
+        <div style="max-width: 800px; margin: 0 auto;">
 
-            <h2 style="color: var(--white); font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2;">
-                Ready To Stop Losing People?
+            <h2 style="color: var(--white); font-size: 2.5rem; font-weight: 800; margin-bottom: 2rem; line-height: 1.3;">
+                How Many of Your Managers Found Out Someone Was Leaving the Day They Resigned?
             </h2>
 
-            <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.3rem; line-height: 1.6; margin-bottom: 1.5rem;">
-                Schedule a 15-minute Turnover Analysis. We'll show you:
+            <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.15rem; line-height: 1.7; margin-bottom: 1rem; text-align: left;">
+                That's not a rhetorical question.
+            </p>
+            <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.15rem; line-height: 1.7; margin-bottom: 1.5rem; text-align: left;">
+                If the answer is "more than zero," there's a visibility problem. Not a management problem. Not a culture problem. A visibility problem.
+            </p>
+            <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.15rem; line-height: 1.7; margin-bottom: 1.5rem; text-align: left;">
+                Schedule a 15-minute Turnover Analysis. No pitch. No pressure. We'll look at your actual turnover data and tell you where the gaps are.
+            </p>
+            <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.15rem; line-height: 1.7; margin-bottom: 2rem; text-align: left;">
+                If Clover ERA makes sense for your situation, we'll tell you. If it doesn't, we'll tell you that too.
             </p>
 
-            <ul style="list-style: none; padding: 0; margin: 2rem auto 3rem; max-width: 600px; text-align: left;">
-                <li style="padding: 0.75rem 0; color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; position: relative; padding-left: 2rem;">
-                    <span style="position: absolute; left: 0; font-weight: bold; font-size: 1.3rem;">✓</span>
-                    Exactly where you're losing people (departments, roles, tenure)
-                </li>
-                <li style="padding: 0.75rem 0; color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; position: relative; padding-left: 2rem;">
-                    <span style="position: absolute; left: 0; font-weight: bold; font-size: 1.3rem;">✓</span>
-                    What it's costing you annually in hard dollars
-                </li>
-                <li style="padding: 0.75rem 0; color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; position: relative; padding-left: 2rem;">
-                    <span style="position: absolute; left: 0; font-weight: bold; font-size: 1.3rem;">✓</span>
-                    How to reduce it by 20-30% in the next 90 days
-                </li>
-                <li style="padding: 0.75rem 0; color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; position: relative; padding-left: 2rem;">
-                    <span style="position: absolute; left: 0; font-weight: bold; font-size: 1.3rem;">✓</span>
-                    Whether Clover ERA makes sense for your situation
-                </li>
-            </ul>
-
-            <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.15rem; margin-bottom: 3rem; font-weight: 500;">
-                No pitch. No pressure. Just data about your specific turnover problem.
-            </p>
+            <p style="color: var(--white); font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">What You'll Get:</p>
+            <div style="text-align: left; max-width: 600px; margin: 0 auto 2.5rem;">
+                <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.05rem; line-height: 1.7; margin-bottom: 0.75rem; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0;">&#8226;</span>
+                    Where you're losing people (departments, roles, tenure patterns)
+                </p>
+                <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.05rem; line-height: 1.7; margin-bottom: 0.75rem; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0;">&#8226;</span>
+                    What it's costing you in actual dollars
+                </p>
+                <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.05rem; line-height: 1.7; margin-bottom: 0.75rem; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0;">&#8226;</span>
+                    Whether early intervention would have changed the outcome
+                </p>
+                <p style="color: rgba(255, 255, 255, 0.95); font-size: 1.05rem; line-height: 1.7; margin-bottom: 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0;">&#8226;</span>
+                    What a 22% reduction would mean for your specific numbers
+                </p>
+            </div>
 
             <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
                 <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" style="background: var(--charcoal); color: var(--white); padding: 1.2rem 3rem; border-radius: 8px; font-size: 1.1rem; font-weight: 600; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); transition: all 0.3s;">
-                    Schedule Your Free Analysis
+                    Schedule Your Free Turnover Analysis
                 </a>
                 <a href="#calculator" style="background: var(--white); color: var(--teal); padding: 1.2rem 3rem; border-radius: 8px; font-size: 1.1rem; font-weight: 600; text-decoration: none; transition: all 0.3s;">
-                    Calculate Your Cost
+                    Calculate Your Cost First
                 </a>
             </div>
 
             <p style="margin-top: 2rem; font-size: 0.95rem; color: rgba(255, 255, 255, 0.8);">
-                Questions? Call <a href="tel:+12129184448" style="color: var(--white); text-decoration: underline; font-weight: 600;">(212) 918-4448</a> or <a href="mailto:contact@cloverera.com" style="color: var(--white); text-decoration: underline; font-weight: 600;">email our team</a>
+                Questions? Call <a href="tel:+12129184448" style="color: var(--white); text-decoration: underline; font-weight: 600;">(212) 918-4448</a> or email <a href="mailto:contact@cloverera.com" style="color: var(--white); text-decoration: underline; font-weight: 600;">contact@cloverera.com</a>
             </p>
 
         </div>
@@ -1216,7 +972,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p>© 2025 Clover ERA. All rights reserved.</p>
+            <p>&copy; 2025 Clover ERA. All rights reserved.</p>
         </div>
     </footer>
 
