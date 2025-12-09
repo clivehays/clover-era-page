@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .mobile-menu-toggle {
                 display: flex !important;
             }
-            
+
             .nav-links {
                 display: none;
                 position: fixed;
@@ -214,10 +214,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 border-bottom: 2px solid #46AEB8;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
                 z-index: 998;
+                align-items: center;
+                text-align: center;
             }
-            
+
             .nav-links.active {
                 display: flex !important;
+            }
+
+            .nav-dropdown {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-dropdown-toggle {
+                justify-content: center;
             }
 
             .nav-dropdown-menu {
@@ -235,6 +248,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 background: #F5F7FA;
                 border-radius: 0;
                 transition: all 0.3s ease;
+                text-align: center;
+            }
+
+            .nav-dropdown-menu a {
+                text-align: center;
             }
 
             .nav-dropdown.active .nav-dropdown-menu {
@@ -288,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         SOLUTIONS <span style="font-size: 0.8rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
-                        <a href="/locations/" class="featured-link">UK & Ireland Engagement Solutions</a>
+                        <a href="/reduce-employee-turnover.html" class="featured-link">Reduce Turnover</a>
+                        <a href="/locations/">UK & Ireland Engagement Solutions</a>
                     </div>
                 </div>
                 <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="nav-cta">SCHEDULE ANALYSIS</a>
