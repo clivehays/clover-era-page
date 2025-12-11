@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply - Retention Reality Roundtable | Clover ERA</title>
-    <meta name="description" content="Apply for the Retention Reality Roundtable - a conversation for managers dealing with real retention challenges.">
+    <title>Apply - Manager Roundtable | Clover ERA</title>
+    <meta name="description" content="Apply for the Manager Roundtable - AI Won't Take Your Job. It'll Take Your Team.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
     <style>
         :root {
             --teal: #46AEB8;
             --deep-teal: #0D7C88;
             --charcoal: #1F2937;
+            --dark-charcoal: #111827;
             --white: #FFFFFF;
+            --warm-white: #FDFBF7;
             --light-gray: #F8F9FA;
             --medium-gray: #E5E7EB;
             --text-primary: #111827;
             --text-secondary: #4B5563;
+            --coral: #E07A5F;
             --error-red: #DC2626;
         }
 
@@ -29,48 +37,100 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
-            background: var(--light-gray);
+            background: var(--warm-white);
         }
 
         .header {
-            background: linear-gradient(135deg, var(--deep-teal), var(--teal));
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 50%, var(--deep-teal) 100%);
             color: var(--white);
-            padding: 2rem;
+            padding: 3rem 2rem;
             text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .header-label {
+            display: inline-block;
+            background: rgba(70, 174, 184, 0.2);
+            border: 1px solid rgba(70, 174, 184, 0.4);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+            color: var(--teal);
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
         }
 
         .header p {
-            font-size: 1.1rem;
-            opacity: 0.95;
+            font-size: 1.05rem;
+            opacity: 0.9;
         }
 
         .form-container {
             max-width: 700px;
-            margin: 3rem auto;
+            margin: -2rem auto 3rem;
             background: var(--white);
             padding: 3rem;
             border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-intro {
+            text-align: center;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .form-intro p {
+            color: var(--text-secondary);
+            font-size: 1rem;
         }
 
         .form-section {
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             padding-bottom: 2rem;
-            border-bottom: 2px solid var(--medium-gray);
+            border-bottom: 1px solid var(--medium-gray);
         }
 
         .form-section:last-of-type {
             border-bottom: none;
+            margin-bottom: 2rem;
         }
 
         .form-section h2 {
-            font-size: 1.5rem;
-            color: var(--deep-teal);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--charcoal);
             margin-bottom: 1.5rem;
         }
 
@@ -83,6 +143,12 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        label small {
+            font-weight: 400;
+            color: var(--text-secondary);
         }
 
         input[type="text"],
@@ -91,12 +157,13 @@
         select,
         textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.85rem 1rem;
             border: 2px solid var(--medium-gray);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1rem;
             font-family: inherit;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--white);
         }
 
         input:focus,
@@ -104,6 +171,7 @@
         textarea:focus {
             outline: none;
             border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
         }
 
         textarea {
@@ -113,29 +181,38 @@
 
         .radio-group,
         .checkbox-group {
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
         }
 
         .radio-option,
         .checkbox-option {
-            margin: 0.75rem 0;
+            margin: 0.6rem 0;
         }
 
         .radio-option label,
         .checkbox-option label {
             display: flex;
-            align-items: start;
+            align-items: flex-start;
             font-weight: 400;
             cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .radio-option label:hover,
+        .checkbox-option label:hover {
+            background: var(--light-gray);
         }
 
         .radio-option input[type="radio"],
         .checkbox-option input[type="checkbox"] {
             margin-right: 0.75rem;
-            margin-top: 0.25rem;
+            margin-top: 0.2rem;
             width: 18px;
             height: 18px;
             cursor: pointer;
+            accent-color: var(--teal);
         }
 
         .char-count {
@@ -146,7 +223,7 @@
         }
 
         .required {
-            color: var(--error-red);
+            color: var(--coral);
         }
 
         .error-message {
@@ -167,21 +244,23 @@
         }
 
         .btn-submit {
-            background: var(--charcoal);
+            background: var(--coral);
             color: var(--white);
-            padding: 1rem 3rem;
+            padding: 1.1rem 3rem;
             border: none;
             border-radius: 8px;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
             width: 100%;
+            font-family: inherit;
         }
 
         .btn-submit:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+            background: #c96a52;
         }
 
         .btn-submit:disabled {
@@ -193,13 +272,13 @@
             text-align: center;
             font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-top: 1rem;
+            margin-top: 1.25rem;
         }
 
         .loading {
             display: none;
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
         }
 
         .loading.show {
@@ -210,10 +289,10 @@
             border: 4px solid var(--medium-gray);
             border-top: 4px solid var(--teal);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            margin: 0 auto 1.5rem;
         }
 
         @keyframes spin {
@@ -225,14 +304,52 @@
             display: none;
         }
 
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--white);
+        }
+
+        .session-info {
+            background: rgba(70, 174, 184, 0.1);
+            border: 1px solid rgba(70, 174, 184, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .session-info p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .session-info strong {
+            color: var(--deep-teal);
+        }
+
         @media (max-width: 768px) {
             .form-container {
-                margin: 2rem 1rem;
+                margin: -1.5rem 1rem 2rem;
                 padding: 2rem 1.5rem;
             }
 
+            .header {
+                padding: 2.5rem 1.5rem;
+            }
+
             .header h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
+            }
+
+            .btn-submit {
+                padding: 1rem 2rem;
             }
         }
     </style>
@@ -242,16 +359,29 @@
 <body>
 
     <div class="header">
-        <h1>Apply for the Retention Reality Roundtable</h1>
-        <p>Takes about 3 minutes. I review every application personally.</p>
+        <div class="header-content">
+            <a href="../" class="back-link">← Back to Roundtable Info</a>
+            <span class="header-label">Manager Roundtable</span>
+            <h1>AI Won't Take Your Job. It'll Take Your Team.</h1>
+            <p>Takes about 3 minutes. I review every application personally.</p>
+        </div>
     </div>
 
     <div class="form-container">
+        <div class="form-intro">
+            <p>This roundtable is for managers navigating the AI shift. We keep groups small (8 max) so everyone can speak openly. Tell me a bit about yourself so I can make sure it's a good fit.</p>
+        </div>
+
         <form id="applicationForm">
+
+            <!-- Session Info (if specific cohort) -->
+            <div class="session-info hidden" id="sessionInfo">
+                <p>Applying for: <strong><span id="sessionDate">Loading...</span></strong> at <strong><span id="sessionTime">Loading...</span></strong></p>
+            </div>
 
             <!-- Section 1: Basic Info -->
             <div class="form-section">
-                <h2>Basic Information</h2>
+                <h2>About You</h2>
 
                 <div class="form-group">
                     <label for="fullName">Full Name <span class="required">*</span></label>
@@ -273,7 +403,7 @@
 
                 <div class="form-group">
                     <label for="companyName">Company Name <span class="required">*</span></label>
-                    <input type="text" id="companyName" name="companyName" placeholder="Company name" required>
+                    <input type="text" id="companyName" name="companyName" placeholder="Where you work" required>
                     <div class="error-message">Please enter your company name</div>
                 </div>
 
@@ -286,7 +416,7 @@
 
             <!-- Section 2: Qualification -->
             <div class="form-section">
-                <h2>Qualification</h2>
+                <h2>Your Team</h2>
 
                 <div class="form-group">
                     <label>How many people report directly to you? <span class="required">*</span></label>
@@ -350,7 +480,7 @@
                 </div>
             </div>
 
-            <!-- Section 3: Engagement Filter -->
+            <!-- Section 3: Experience -->
             <div class="form-section">
                 <h2>Your Experience</h2>
 
@@ -394,7 +524,7 @@
 
                 <div class="form-group">
                     <label>When you've raised flight risk concerns to leadership, what typically happens? <span class="required">*</span><br>
-                    <small style="color: var(--text-secondary);">(Select all that apply)</small></label>
+                    <small>(Select all that apply)</small></label>
                     <div class="checkbox-group">
                         <div class="checkbox-option">
                             <label><input type="checkbox" name="escalationExperience" value="They take action"> They take action</label>
@@ -416,9 +546,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="currentChallenge">What's the biggest retention challenge you're facing right now? <span class="required">*</span><br>
-                    <small style="color: var(--text-secondary);">2-3 sentences is perfect</small></label>
-                    <textarea id="currentChallenge" name="currentChallenge" placeholder="Describe your retention challenge..." maxlength="500" required></textarea>
+                    <label for="currentChallenge">What's the biggest challenge you're facing with your team right now? <span class="required">*</span><br>
+                    <small>Could be retention, engagement, navigating AI changes, or something else. 2-3 sentences is perfect.</small></label>
+                    <textarea id="currentChallenge" name="currentChallenge" placeholder="Tell me what's on your mind..." maxlength="500" required></textarea>
                     <div class="char-count"><span id="charCount">0</span> / 500 characters</div>
                     <div class="error-message">Please enter at least 50 characters</div>
                 </div>
@@ -478,7 +608,7 @@
                             <label><input type="radio" name="availableForDate" value="yes" required> Yes, I'm available</label>
                         </div>
                         <div class="radio-option">
-                            <label><input type="radio" name="availableForDate" value="no"> No, but notify me about future cohorts</label>
+                            <label><input type="radio" name="availableForDate" value="no"> No, but notify me about future sessions</label>
                         </div>
                     </div>
                     <div class="error-message">Please select your availability</div>
@@ -487,12 +617,12 @@
 
             <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
 
-            <p class="privacy-note">Your information stays with me. No spam, no selling your data, no sharing with third parties.</p>
+            <p class="privacy-note">Your information stays with me. No spam, no selling your data, no sharing.</p>
         </form>
 
         <div class="loading" id="loadingDiv">
             <div class="spinner"></div>
-            <p style="margin-top: 1rem; color: var(--text-secondary);">Submitting your application...</p>
+            <p style="color: var(--text-secondary);">Submitting your application...</p>
         </div>
     </div>
 
@@ -504,7 +634,7 @@
 
         let currentCohort = null;
 
-        // Format time for display (e.g., "12:00 PM EST")
+        // Format time for display
         function formatTime(timeStr, timezone) {
             const parts = timeStr.split(':');
             let hours = parseInt(parts[0], 10);
@@ -541,10 +671,8 @@
                     .select('*');
 
                 if (cohortId) {
-                    // Load specific cohort from URL parameter
                     query = query.eq('id', cohortId);
                 } else {
-                    // Fall back to next upcoming cohort
                     query = query.eq('status', 'upcoming').order('date', { ascending: true }).limit(1);
                 }
 
@@ -565,10 +693,16 @@
 
                     document.getElementById('cohortDate').textContent = dateStr;
                     document.getElementById('cohortTime').textContent = timeStr;
+
+                    // Show session info box if specific cohort
+                    if (cohortId) {
+                        document.getElementById('sessionInfo').classList.remove('hidden');
+                        document.getElementById('sessionDate').textContent = dateStr;
+                        document.getElementById('sessionTime').textContent = timeStr;
+                    }
                 }
             } catch (error) {
                 console.error('Error loading cohort info:', error);
-                // If specific cohort not found, show generic message
                 document.getElementById('cohortDate').textContent = 'the scheduled date';
                 document.getElementById('cohortTime').textContent = 'the scheduled time';
             }
@@ -616,25 +750,21 @@
             let isValid = true;
             const form = document.getElementById('applicationForm');
 
-            // Clear all previous errors
             document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
             document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
 
-            // Validate LinkedIn URL
             const linkedinUrl = document.getElementById('linkedinUrl').value;
             if (!linkedinUrl.includes('linkedin.com')) {
                 showError('linkedinUrl', 'Please enter a valid LinkedIn URL');
                 isValid = false;
             }
 
-            // Validate current challenge length
             const challenge = document.getElementById('currentChallenge').value;
             if (challenge.length < 50) {
                 showError('currentChallenge', 'Please enter at least 50 characters');
                 isValid = false;
             }
 
-            // Validate at least one checkbox selected for escalation experience
             const escalationChecked = document.querySelectorAll('input[name="escalationExperience"]:checked');
             if (escalationChecked.length === 0) {
                 const escalationGroup = document.querySelector('input[name="escalationExperience"]').closest('.form-group');
@@ -664,21 +794,17 @@
                 return;
             }
 
-            // Show loading, hide form
             document.getElementById('applicationForm').style.display = 'none';
             document.getElementById('loadingDiv').classList.add('show');
             document.getElementById('submitBtn').disabled = true;
 
             try {
-                // Collect form data
                 const formData = new FormData(e.target);
 
-                // Get escalation experience checkboxes
                 const escalationExperience = Array.from(
                     document.querySelectorAll('input[name="escalationExperience"]:checked')
                 ).map(cb => cb.value);
 
-                // Prepare data for submission
                 const applicationData = {
                     cohort_id: currentCohort?.id || null,
                     full_name: formData.get('fullName'),
@@ -700,10 +826,6 @@
                     available_for_date: formData.get('availableForDate') === 'yes'
                 };
 
-                // Log the data being submitted for debugging
-                console.log('Submitting application data:', applicationData);
-
-                // Submit to Supabase
                 const { data, error } = await supabaseClient
                     .from('roundtable_applications')
                     .insert([applicationData])
@@ -711,22 +833,18 @@
 
                 if (error) throw error;
 
-                // Redirect to thank you page
                 window.location.href = '../thank-you/';
 
             } catch (error) {
                 console.error('Error submitting application:', error);
-                console.error('Error details:', error.message, error.details, error.hint);
-                alert('There was an error submitting your application. Error: ' + (error.message || JSON.stringify(error)) + '\n\nPlease try again or contact clive.hays@cloverera.com');
+                alert('There was an error submitting your application. Please try again or contact clive.hays@cloverera.com');
 
-                // Show form again
                 document.getElementById('applicationForm').style.display = 'block';
                 document.getElementById('loadingDiv').classList.remove('show');
                 document.getElementById('submitBtn').disabled = false;
             }
         });
 
-        // Load cohort info on page load
         loadCohortInfo();
     </script>
 
