@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clover ERA | Stop Satisfying Turnover</title>
+    <meta name="description" content="Two paths to reducing turnover. For executives: see what it's really costing you. For managers: join other managers navigating the shift.">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
@@ -11,24 +12,28 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
     <!-- SEO -->
-    <meta name="description" content="How many people on your team are updating their LinkedIn right now? You won't find out from a survey.">
     <meta name="robots" content="noindex, nofollow">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Clover ERA | Stop Satisfying Turnover">
-    <meta property="og:description" content="How many people on your team are updating their LinkedIn right now?">
+    <meta property="og:description" content="Two paths to reducing turnover. For executives: see what it's really costing you. For managers: join other managers navigating the shift.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://cloverera.com/talk">
 
     <style>
         :root {
             --teal: #46AEB8;
-            --teal-dark: #3A9AA3;
-            --teal-light: #E8F4F4;
+            --deep-teal: #0D7C88;
             --charcoal: #1F2937;
-            --warm-white: #F9FAFB;
-            --text-gray: #4B5563;
-            --accent-coral: #E07A5F;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
         }
 
         * {
@@ -39,274 +44,383 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--warm-white);
-            color: var(--charcoal);
             line-height: 1.6;
-            min-height: 100vh;
+            color: var(--text-primary);
+            background: var(--warm-white);
         }
 
-        .container {
-            max-width: 680px;
+        /* Header */
+        .header {
+            padding: 1.5rem 2rem;
+            background: var(--white);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .header-content {
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 60px 24px;
-        }
-
-        /* Logo */
-        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 56px;
-            text-decoration: none;
+            gap: 0.75rem;
         }
 
-        .logo img {
-            height: 44px;
+        .logo {
+            height: 40px;
             width: auto;
         }
 
         .logo-text {
-            font-size: 22px;
             font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--teal);
-            text-transform: uppercase;
-        }
-
-        /* Hook Section */
-        .hook {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .hook-question {
-            font-size: clamp(28px, 5vw, 38px);
-            font-weight: 700;
-            line-height: 1.25;
+            font-size: 1.25rem;
             color: var(--charcoal);
-            margin-bottom: 24px;
+            text-decoration: none;
         }
 
-        .hook-answer {
-            font-size: 18px;
-            color: var(--text-gray);
-            max-width: 520px;
-            margin: 0 auto;
-        }
-
-        /* Truth Section */
-        .truth {
-            background: var(--charcoal);
-            color: white;
-            padding: 32px;
-            border-radius: 8px;
-            margin-bottom: 48px;
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 50%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 5rem 2rem;
+            text-align: center;
             position: relative;
         }
 
-        .truth::before {
+        .hero::before {
             content: '';
             position: absolute;
-            top: -8px;
-            left: 40px;
-            width: 16px;
-            height: 16px;
-            background: var(--charcoal);
-            transform: rotate(45deg);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
         }
 
-        .truth p {
-            font-size: 17px;
-            line-height: 1.7;
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        .truth p + p {
-            margin-top: 16px;
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
         }
 
-        .truth strong {
-            color: var(--accent-coral);
-            font-weight: 600;
+        .hero p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            opacity: 0.92;
         }
 
-        /* Proof Section */
-        .proof {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            padding: 24px;
-            background: var(--teal-light);
-            border-radius: 8px;
-            margin-bottom: 48px;
+        .hero strong {
+            color: var(--coral);
         }
 
-        .proof-number {
-            font-size: 48px;
+        .stat-box {
+            display: inline-block;
+            background: rgba(70, 174, 184, 0.15);
+            border: 1px solid rgba(70, 174, 184, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
             font-weight: 700;
             color: var(--teal);
             line-height: 1;
         }
 
-        .proof-text {
-            font-size: 15px;
-            color: var(--charcoal);
-            max-width: 200px;
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            margin-top: 0.5rem;
         }
 
         /* Paths Section */
+        .paths-section {
+            padding: 5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
         .paths-header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 3rem;
         }
 
         .paths-header h2 {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 2rem;
             color: var(--charcoal);
+            font-weight: 700;
         }
 
-        .paths {
+        .paths-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 56px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
         }
 
-        @media (max-width: 600px) {
-            .paths {
-                grid-template-columns: 1fr;
-            }
-        }
-
+        /* Executive Path Card */
         .path-card {
-            background: white;
-            border: 1px solid #E0E5E5;
-            border-radius: 12px;
-            padding: 32px 24px;
-            text-align: center;
-            transition: all 0.2s ease;
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
         }
 
-        .path-card:hover {
+        .path-card.executive {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .path-card.executive .path-label {
+            color: var(--deep-teal);
             border-color: var(--teal);
-            box-shadow: 0 8px 24px rgba(74, 155, 155, 0.12);
-            transform: translateY(-2px);
         }
 
+        .path-card.executive .path-quote {
+            color: var(--deep-teal);
+        }
+
+        .path-card.executive .btn-path {
+            background: var(--deep-teal);
+            color: var(--white);
+        }
+
+        .path-card.executive .btn-path:hover {
+            background: var(--teal);
+            box-shadow: 0 8px 25px rgba(70, 174, 184, 0.35);
+        }
+
+        /* Manager Path Card */
+        .path-card.manager {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, #2d3748 100%);
+            color: var(--white);
+            border: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .path-card.manager::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .path-card.manager .path-label {
+            color: var(--coral);
+            border-color: var(--coral);
+            position: relative;
+            z-index: 1;
+        }
+
+        .path-card.manager .path-quote {
+            color: var(--coral);
+            position: relative;
+            z-index: 1;
+        }
+
+        .path-card.manager .path-description {
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 1;
+        }
+
+        .path-card.manager .path-note {
+            color: rgba(255,255,255,0.7);
+            position: relative;
+            z-index: 1;
+        }
+
+        .path-card.manager .btn-path {
+            background: var(--coral);
+            color: var(--white);
+            position: relative;
+            z-index: 1;
+        }
+
+        .path-card.manager .btn-path:hover {
+            background: var(--dark-coral);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.4);
+        }
+
+        /* Card Elements */
         .path-label {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            color: var(--teal);
-            margin-bottom: 16px;
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.4rem 1rem;
+            border: 2px solid;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
+            width: fit-content;
         }
 
-        .path-question {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--charcoal);
-            margin-bottom: 12px;
+        .path-quote {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
             line-height: 1.3;
         }
 
         .path-description {
-            font-size: 14px;
-            color: var(--text-gray);
-            margin-bottom: 24px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
         }
 
-        .path-btn {
+        .btn-path {
             display: inline-block;
-            width: 100%;
-            padding: 14px 24px;
-            background: var(--teal);
-            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 15px;
-            transition: background 0.2s ease;
-        }
-
-        .path-btn:hover {
-            background: var(--teal-dark);
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s;
+            text-align: center;
+            margin-top: auto;
         }
 
         .path-note {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-style: italic;
         }
 
-        /* Founder Section */
-        .founder {
+        /* Author Section */
+        .author-section {
+            background: var(--light-gray);
+            padding: 4rem 2rem;
+        }
+
+        .author-content {
+            max-width: 700px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 24px;
-            background: white;
-            border: 1px solid #E0E5E5;
-            border-radius: 12px;
+            gap: 2rem;
         }
 
-        .founder-image {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
+        .author-image {
             flex-shrink: 0;
-            overflow: hidden;
         }
 
-        .founder-image img {
-            width: 100%;
-            height: 100%;
+        .author-image img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
             object-fit: cover;
+            border: 4px solid var(--white);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .founder-content {
-            flex: 1;
-        }
-
-        .founder-name {
-            font-weight: 600;
+        .author-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
             color: var(--charcoal);
-            margin-bottom: 4px;
+            margin-bottom: 0.25rem;
         }
 
-        .founder-role {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-bottom: 8px;
+        .author-info .title {
+            color: var(--deep-teal);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
         }
 
-        .founder-quote {
-            font-size: 15px;
-            color: var(--charcoal);
+        .author-info .quote {
             font-style: italic;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.6;
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            margin-top: 48px;
-            padding-top: 24px;
-            border-top: 1px solid #E0E5E5;
+            padding: 2rem;
+            background: var(--white);
+            border-top: 1px solid var(--medium-gray);
         }
 
         .footer a {
-            color: var(--text-gray);
+            color: var(--deep-teal);
             text-decoration: none;
-            font-size: 14px;
+            font-weight: 500;
         }
 
         .footer a:hover {
-            color: var(--teal);
+            text-decoration: underline;
         }
 
-        /* Animation */
-        @keyframes fadeUp {
+        /* Responsive */
+        @media (max-width: 900px) {
+            .paths-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero p {
+                font-size: 1.05rem;
+            }
+
+            .paths-section {
+                padding: 3rem 1.5rem;
+            }
+
+            .path-card {
+                padding: 2rem;
+            }
+
+            .path-quote {
+                font-size: 1.3rem;
+            }
+
+            .author-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stat-box {
+                padding: 1.25rem 2rem;
+            }
+
+            .stat-number {
+                font-size: 2.75rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -317,83 +431,96 @@
             }
         }
 
-        .hook, .truth, .proof, .paths-header, .paths, .founder {
-            animation: fadeUp 0.6s ease forwards;
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out;
         }
 
-        .truth { animation-delay: 0.1s; }
-        .proof { animation-delay: 0.2s; }
-        .paths-header { animation-delay: 0.3s; }
-        .paths { animation-delay: 0.4s; }
-        .founder { animation-delay: 0.5s; }
+        .path-card {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .path-card.executive {
+            animation-delay: 0.1s;
+        }
+
+        .path-card.manager {
+            animation-delay: 0.2s;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Logo -->
-        <a href="/" class="logo">
-            <img src="/images/Clover-era-new-logo-1.png" alt="Clover ERA">
-            <span class="logo-text">Clover ERA</span>
-        </a>
 
-        <!-- Hook -->
-        <div class="hook">
-            <h1 class="hook-question">How many people on your team are updating their LinkedIn right now?</h1>
-            <p class="hook-answer">You won't find out from a survey. And by the time they tell you, the decision's already made.</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/">
+                <img src="/images/Clover-era-new-logo-1.png" alt="Clover ERA" class="logo">
+            </a>
+            <a href="/" class="logo-text">Clover ERA</a>
         </div>
+    </header>
 
-        <!-- Truth -->
-        <div class="truth">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>How many people on your team are updating their LinkedIn right now?</h1>
+            <p>You won't find out from a survey. And by the time they tell you, the decision's already made.</p>
             <p>The exit interview will tell you it was "a better opportunity." That's the polite version.</p>
             <p>The real version? They told their manager months ago. <strong>Nothing changed.</strong> So they stopped talking and started looking.</p>
             <p>Replacing them will cost 3-4x what you're tracking. The people watching them leave? They're taking notes.</p>
-        </div>
 
-        <!-- Proof -->
-        <div class="proof">
-            <span class="proof-number">22%</span>
-            <p class="proof-text">average reduction in turnover within 12 months</p>
+            <div class="stat-box">
+                <div class="stat-number">22%</div>
+                <div class="stat-label">average reduction in turnover within 12 months</div>
+            </div>
         </div>
+    </section>
 
-        <!-- Paths -->
+    <!-- Two Paths Section -->
+    <section class="paths-section">
         <div class="paths-header">
             <h2>Here's where we start.</h2>
         </div>
 
-        <div class="paths">
-            <div class="path-card">
-                <div class="path-label">FOR EXECUTIVES</div>
-                <div class="path-question">"What's turnover actually costing us?"</div>
+        <div class="paths-grid">
+            <!-- Executive Path -->
+            <div class="path-card executive">
+                <span class="path-label">For Executives</span>
+                <div class="path-quote">"What's turnover actually costing us?"</div>
                 <p class="path-description">15-minute Turnover Analysis. Your real number. I'll show you what you're missing.</p>
-                <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="path-btn">Schedule Turnover Analysis</a>
+                <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="btn-path">Schedule Turnover Analysis</a>
                 <p class="path-note">No pitch. Just math.</p>
             </div>
 
-            <div class="path-card">
-                <div class="path-label">FOR MANAGERS</div>
-                <div class="path-question">"How do I see flight risks earlier?"</div>
-                <p class="path-description">Small group roundtable with other managers facing the same thing. Real conversation.</p>
-                <a href="/roundtable/" class="path-btn">Join the Next Roundtable</a>
+            <!-- Manager Path -->
+            <div class="path-card manager">
+                <span class="path-label">For Managers</span>
+                <div class="path-quote">"AI won't take your job. It'll take your team."</div>
+                <p class="path-description">Your role just changed. Your team noticed. A 60-minute roundtable for managers navigating the shift. 8 people. Real conversation.</p>
+                <a href="/roundtable/" class="btn-path">Join the Next Roundtable</a>
                 <p class="path-note">No pitch. Just peers.</p>
             </div>
         </div>
+    </section>
 
-        <!-- Founder -->
-        <div class="founder">
-            <div class="founder-image">
+    <!-- Author Section -->
+    <section class="author-section">
+        <div class="author-content">
+            <div class="author-image">
                 <img src="/images/Clive_Hays_Profile.jpg" alt="Clive Hays">
             </div>
-            <div class="founder-content">
-                <div class="founder-name">Clive Hays</div>
-                <div class="founder-role">Co-Founder, Clover ERA | Co-author, "The Trillion Dollar Problem"</div>
-                <p class="founder-quote">"Managers control 70% of engagement. They get 0% of the tools."</p>
+            <div class="author-info">
+                <h3>Clive Hays</h3>
+                <p class="title">Co-Founder, Clover ERA | Co-author, "The Trillion Dollar Problem"</p>
+                <p class="quote">"Managers control 70% of engagement. They get 0% of the tools."</p>
             </div>
         </div>
+    </section>
 
-        <!-- Footer -->
-        <div class="footer">
-            <a href="mailto:contact@cloverera.com">Questions? contact@cloverera.com</a>
-        </div>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Questions? <a href="mailto:contact@cloverera.com">contact@cloverera.com</a></p>
+    </footer>
+
 </body>
 </html>
