@@ -3,20 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Retention Reality Roundtable | Clover ERA</title>
-    <meta name="description" content="A 60-minute conversation for managers tired of being surprised by resignations and blamed for departures they saw coming.">
+    <title>Manager Roundtable: AI Won't Take Your Job. It'll Take Your Team. | Clover ERA</title>
+    <meta name="description" content="A 60-minute conversation for managers navigating the AI shift. Everyone's asking the wrong question. The threat isn't your role disappearing. It's your best people leaving.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Manager Roundtable: AI Won't Take Your Job. It'll Take Your Team.">
+    <meta property="og:description" content="A 60-minute conversation for managers navigating the AI shift.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/roundtable/">
 
     <style>
         :root {
             --teal: #46AEB8;
             --deep-teal: #0D7C88;
             --charcoal: #1F2937;
+            --dark-charcoal: #111827;
             --white: #FFFFFF;
+            --warm-white: #FDFBF7;
             --light-gray: #F8F9FA;
             --medium-gray: #E5E7EB;
             --text-primary: #111827;
             --text-secondary: #4B5563;
-            --yellow: #FFD93D;
+            --coral: #E07A5F;
+            --warning-orange: #F59E0B;
         }
 
         * {
@@ -33,59 +47,202 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        /* Header */
+        .header {
+            background: var(--dark-charcoal);
+            padding: 1rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--deep-teal), var(--teal));
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 50%, var(--deep-teal) 100%);
             color: var(--white);
-            padding: 4rem 2rem 4rem;
+            padding: 4rem 2rem 5rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            display: inline-block;
+            background: rgba(70, 174, 184, 0.2);
+            border: 1px solid rgba(70, 174, 184, 0.4);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            color: var(--teal);
         }
 
         .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
             margin-bottom: 1.5rem;
-            line-height: 1.2;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
         }
 
         .hero .subheadline {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            line-height: 1.3;
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+            opacity: 0.92;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .hero .description {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            opacity: 0.95;
-            line-height: 1.7;
+        .hero .format-line {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 2.5rem;
+            font-weight: 500;
         }
 
         .btn-primary {
-            background: var(--charcoal);
+            background: var(--coral);
             color: var(--white);
-            padding: 1.2rem 3rem;
-            border-radius: 8px;
+            padding: 1.1rem 2.5rem;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             display: inline-block;
-            margin: 1rem 0.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+            background: #c96a52;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1.1rem 2.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: inline-block;
+            transition: all 0.2s;
+            border: 2px solid rgba(255,255,255,0.3);
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: var(--dark-charcoal);
+            color: var(--white);
+            padding: 5rem 2rem;
+            position: relative;
+        }
+
+        .problem-section::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--coral);
+        }
+
+        .problem-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .problem-content p {
+            font-size: 1.25rem;
+            line-height: 1.9;
+            margin-bottom: 1.75rem;
+            opacity: 0.92;
+        }
+
+        .problem-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight-text {
+            color: var(--coral);
+            font-weight: 600;
+        }
+
+        .problem-callout {
+            background: rgba(70, 174, 184, 0.1);
+            border-left: 3px solid var(--teal);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            font-size: 1.15rem;
+            font-style: italic;
         }
 
         /* Content Sections */
         .section {
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
             max-width: 900px;
             margin: 0 auto;
         }
@@ -94,16 +251,27 @@
             background: var(--light-gray);
         }
 
+        .section-full {
+            max-width: 100%;
+            padding: 5rem 2rem;
+        }
+
+        .section-full .section-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
         .section h2 {
-            font-size: 2.2rem;
+            font-size: 2rem;
+            font-weight: 700;
             margin-bottom: 2rem;
             color: var(--charcoal);
-            font-weight: 700;
+            letter-spacing: -0.01em;
         }
 
         .section h3 {
-            font-size: 1.5rem;
-            margin: 2rem 0 1rem;
+            font-size: 1.35rem;
+            margin: 0 0 0.75rem;
             color: var(--deep-teal);
             font-weight: 600;
         }
@@ -115,108 +283,271 @@
             color: var(--text-primary);
         }
 
-        .items-grid {
+        /* What You'll Leave With */
+        .benefits-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2rem;
-            margin: 2rem 0;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
         }
 
-        .item {
+        .benefit-card {
             padding: 2rem;
             background: var(--white);
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--medium-gray);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .item h3 {
-            margin-top: 0;
+        .benefit-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
 
-        ul {
+        .benefit-card h3 {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .benefit-card h3::before {
+            content: '→';
+            color: var(--teal);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .benefit-card p {
+            margin-bottom: 0;
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+        }
+
+        /* Qualification Lists */
+        .qual-section {
+            margin: 3rem 0;
+        }
+
+        .qual-list {
             list-style: none;
-            padding-left: 0;
+            padding: 0;
             margin: 1.5rem 0;
         }
 
-        ul li {
-            padding: 0.8rem 0 0.8rem 2rem;
+        .qual-list li {
+            padding: 1rem 0 1rem 2.5rem;
             position: relative;
             font-size: 1.1rem;
             line-height: 1.7;
+            border-bottom: 1px solid var(--medium-gray);
         }
 
-        ul li:before {
-            content: "•";
+        .qual-list li:last-child {
+            border-bottom: none;
+        }
+
+        .qual-list li::before {
+            content: "✓";
             position: absolute;
-            left: 0.5rem;
+            left: 0;
             color: var(--teal);
-            font-weight: bold;
-            font-size: 1.5rem;
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
-        .qualification-list {
-            background: var(--white);
+        .disqual-box {
+            background: #FEF3E7;
             padding: 2rem;
             border-radius: 8px;
+            border-left: 4px solid var(--warning-orange);
             margin: 2rem 0;
         }
 
-        .disqualification {
-            background: #FFF3E0;
-            padding: 1.5rem;
-            border-left: 4px solid #FF9800;
-            margin: 2rem 0;
-            border-radius: 4px;
-        }
-
-        .bio-section {
-            display: flex;
-            gap: 2rem;
-            align-items: start;
-            margin: 2rem 0;
-        }
-
-        .bio-text {
-            flex: 1;
-        }
-
-        .next-cohort {
-            background: linear-gradient(135deg, var(--deep-teal), var(--teal));
-            color: var(--white);
-            padding: 2.5rem;
-            border-radius: 12px;
-            margin: 1.5rem 0;
-        }
-
-        .next-cohort.cohort-full {
-            background: linear-gradient(135deg, #6B7280, #9CA3AF);
-        }
-
-        .next-cohort h3 {
-            color: var(--white);
-            margin-top: 0;
-        }
-
-        .next-cohort p {
-            color: var(--white);
-            opacity: 0.95;
-            margin: 0.5rem 0;
+        .disqual-box h3 {
+            color: var(--charcoal);
+            margin-bottom: 1rem;
             font-size: 1.15rem;
         }
 
-        .cohort-detail {
+        .disqual-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .disqual-list li {
+            padding: 0.5rem 0 0.5rem 1.75rem;
+            position: relative;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .disqual-list li::before {
+            content: "✕";
+            position: absolute;
+            left: 0;
+            color: var(--warning-orange);
+            font-weight: 700;
+        }
+
+        /* How It Works */
+        .format-box {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .format-box .format-headline {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+        }
+
+        .format-details {
             display: flex;
-            margin: 0.8rem 0;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .format-detail {
+            text-align: center;
+        }
+
+        .format-detail .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--deep-teal);
+            line-height: 1;
+        }
+
+        .format-detail .label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .format-rules {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        /* Host Section */
+        .host-section {
+            display: flex;
+            gap: 2.5rem;
+            align-items: flex-start;
+            margin: 2rem 0;
+        }
+
+        .host-image {
+            flex-shrink: 0;
+        }
+
+        .host-image img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--teal);
+        }
+
+        .host-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: var(--charcoal);
+        }
+
+        .host-info .title {
+            color: var(--deep-teal);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .host-info p {
+            margin-bottom: 1rem;
+        }
+
+        .stat-highlight {
+            display: inline-block;
+            background: rgba(70, 174, 184, 0.1);
+            padding: 0.75rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 600;
+            color: var(--deep-teal);
+            margin-top: 0.5rem;
+        }
+
+        /* Cohorts Section */
+        .cohorts-section {
+            background: linear-gradient(160deg, var(--charcoal) 0%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 5rem 2rem;
+        }
+
+        .cohorts-section h2 {
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .cohorts-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cohort-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .cohort-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .cohort-card.cohort-full {
+            opacity: 0.6;
+        }
+
+        .cohort-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .cohort-date-large {
+            font-size: 1.4rem;
+            font-weight: 700;
         }
 
         .availability-badge {
             display: inline-block;
             padding: 0.4rem 1rem;
-            border-radius: 20px;
+            border-radius: 50px;
             font-weight: 700;
-            font-size: 0.9rem;
-            margin-left: 1rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
         .badge-available {
@@ -230,27 +561,29 @@
         }
 
         .badge-full {
-            background: #EF4444;
+            background: #6B7280;
             color: white;
         }
 
-        .cohort-header {
+        .cohort-detail {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .cohort-date-large {
-            font-size: 1.5rem;
-            font-weight: 700;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
         .cohort-label {
-            font-weight: 700;
-            min-width: 100px;
+            font-weight: 600;
+            min-width: 80px;
         }
 
+        .cohort-card .btn-primary {
+            margin-top: 1.25rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* FAQ Section */
         .faq-item {
             margin: 2rem 0;
             padding-bottom: 2rem;
@@ -262,178 +595,321 @@
         }
 
         .faq-question {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--charcoal);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .faq-answer {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.8;
-            color: var(--text-primary);
+            color: var(--text-secondary);
         }
 
+        /* Final CTA */
         .final-cta {
             text-align: center;
-            padding: 5rem 2rem;
-            background: linear-gradient(135deg, var(--charcoal), var(--deep-teal));
+            padding: 6rem 2rem;
+            background: var(--dark-charcoal);
             color: var(--white);
+            position: relative;
         }
 
         .final-cta h2 {
             color: var(--white);
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            line-height: 1.4;
         }
 
+        .final-cta .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.85;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--charcoal);
+            color: rgba(255,255,255,0.6);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            .hero {
+                padding: 3rem 1.5rem 4rem;
+            }
+
             .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero .subheadline {
-                font-size: 1.3rem;
-            }
-
-            .hero .description {
-                font-size: 1.1rem;
-            }
-
-            .section h2 {
                 font-size: 1.8rem;
             }
 
-            .bio-section {
-                flex-direction: column;
+            .hero .subheadline {
+                font-size: 1.1rem;
             }
 
-            .btn-primary {
-                padding: 1rem 2rem;
-                font-size: 1rem;
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 1rem;
+                display: block;
+            }
+
+            .problem-section {
+                padding: 3rem 1.5rem;
+            }
+
+            .problem-content p {
+                font-size: 1.1rem;
+            }
+
+            .section {
+                padding: 3rem 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.6rem;
+            }
+
+            .host-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .host-image {
+                margin: 0 auto;
+            }
+
+            .format-details {
+                gap: 2rem;
+            }
+
+            .cohort-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .final-cta h2 {
+                font-size: 1.5rem;
             }
         }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .benefit-card {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .benefit-card:nth-child(1) { animation-delay: 0.1s; }
+        .benefit-card:nth-child(2) { animation-delay: 0.2s; }
+        .benefit-card:nth-child(3) { animation-delay: 0.3s; }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <img src="/images/Clover-era-new-logo-1.png" alt="Clover ERA">
+                <span class="logo-text">Clover ERA</span>
+            </a>
+        </div>
+    </header>
+
     <!-- Hero Section -->
     <section class="hero">
-        <h1>The Retention Reality Roundtable</h1>
-        <p class="subheadline">Where managers talk about what's actually happening.<br>Not what they tell HR.</p>
-        <p class="description">
-            60 minutes. 8 people. The conversation you can't have at your company.
-        </p>
-        <p class="description">
-            This isn't a webinar. It's 8 managers from different companies talking about what's actually happening on their teams.
-        </p>
-        <a href="#upcoming-sessions" class="btn-primary">Apply for the Next Session</a>
+        <div class="hero-content">
+            <span class="hero-label">Manager Roundtable</span>
+            <h1>AI Won't Take Your Job.<br>It'll Take Your Team.</h1>
+            <p class="subheadline">Everyone's asking the wrong question. The threat isn't your role disappearing. It's your best people leaving while you're distracted by the AI conversation.</p>
+            <p class="format-line">60 minutes. 8 managers. The conversation no one's having yet.</p>
+            <a href="#upcoming-sessions" class="btn-primary">Apply for the Next Session</a>
+        </div>
     </section>
 
-    <!-- What You'll Get -->
-    <section class="section">
-        <h2>What You'll Leave With</h2>
-        <div class="items-grid">
-            <div class="item">
-                <h3>The Signals That Show Up Before Resignation</h3>
-                <p>What changes in the 60-90 days before someone gives notice. The patterns are consistent. Most managers miss them because nobody taught them what to watch for.</p>
-            </div>
-            <div class="item">
-                <h3>Language for Escalating Without Getting Blamed</h3>
-                <p>How to tell leadership someone's a flight risk without it becoming your problem.</p>
-            </div>
-            <div class="item">
-                <h3>What's Actually Working</h3>
-                <p>Real moves from real managers. The stuff that never makes it into an HR playbook but actually works.</p>
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="problem-content">
+            <p>Half your team's tasks just got automated. <span class="highlight-text">Nobody told them what to do with the rest.</span></p>
+            <p>They're sitting in roles that feel hollow. Wondering if anyone notices. Wondering if they're next.</p>
+            <p>That's when the LinkedIn updates start. That's when the "quick coffee chats" get scheduled. That's when you lose them.</p>
+            <p><span class="highlight-text">Not to AI. To the confusion AI created.</span></p>
+            <div class="problem-callout">
+                And you? You're being told to "figure out AI" while your team quietly checks out.
             </div>
         </div>
     </section>
 
-    <!-- Format -->
-    <section class="section section-alt">
-        <h2>How It Works</h2>
-        <p><strong>60 minutes. 8 people. Real conversation.</strong></p>
-        <p>No slides. No pitch. No HR-approved talking points.</p>
-        <p>Chatham House rules: Share what you learn, never who said it.</p>
-        <p>Facilitated by Clive Hays. 20 years at Fortune 500 companies watching leadership obsess over efficiency while managers watched their best people leave. He co-founded Clover ERA to close that gap.</p>
+    <!-- What You'll Leave With -->
+    <section class="section">
+        <h2>What You'll Leave With</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <h3>How to spot the disengagement AI creates</h3>
+                <p>The signals that show up before it becomes a resignation letter. The patterns are consistent. Most managers miss them because they're watching for the wrong things.</p>
+            </div>
+            <div class="benefit-card">
+                <h3>What to say to leadership</h3>
+                <p>When you see warning signs they're missing. Language for escalating flight risks without it becoming your problem.</p>
+            </div>
+            <div class="benefit-card">
+                <h3>What managers are doing right now</h3>
+                <p>Real moves from real managers keeping their teams while everything shifts. The stuff that never makes it into an HR playbook but actually works.</p>
+            </div>
+        </div>
     </section>
 
     <!-- Who This Is For -->
-    <section class="section">
-        <h2>This Is For You If...</h2>
-        <div class="qualification-list">
-            <ul>
-                <li>You manage a team at a company with 100+ employees</li>
-                <li>You've had someone resign in the last year and didn't see it coming</li>
-                <li>You've tried to escalate retention concerns and nothing changed</li>
-                <li>You're tired of being surprised by departures and blamed when they happen</li>
+    <section class="section section-alt">
+        <div class="qual-section">
+            <h2>This Is For You If...</h2>
+            <ul class="qual-list">
+                <li>You manage a team and feel the ground shifting under your role</li>
+                <li>You've noticed your people working differently but can't name why</li>
+                <li>You're wondering what your job actually IS now that AI handles so much</li>
+                <li>You've lost someone recently and didn't see it coming</li>
+                <li>You're tired of being told to "figure out AI" with no support</li>
             </ul>
         </div>
-        <div class="disqualification">
-            <strong>This isn't for HR professionals, consultants, or anyone looking to sell to the group. Managers only.</strong>
+
+        <div class="disqual-box">
+            <h3>This Isn't For You If...</h3>
+            <ul class="disqual-list">
+                <li>You don't currently manage people</li>
+                <li>You're looking for AI productivity hacks</li>
+                <li>You think nothing's really changing</li>
+                <li>You're in HR, consulting, or looking to sell to the group</li>
+            </ul>
         </div>
     </section>
 
-    <!-- About the Facilitator -->
+    <!-- How It Works -->
+    <section class="section">
+        <h2>How It Works</h2>
+        <div class="format-box">
+            <div class="format-headline">Small group. Real conversation. No slides.</div>
+            <div class="format-details">
+                <div class="format-detail">
+                    <div class="number">60</div>
+                    <div class="label">minutes</div>
+                </div>
+                <div class="format-detail">
+                    <div class="number">8</div>
+                    <div class="label">managers</div>
+                </div>
+                <div class="format-detail">
+                    <div class="number">0</div>
+                    <div class="label">slides</div>
+                </div>
+            </div>
+            <p class="format-rules">
+                <strong>Chatham House rules:</strong> Share what you learn, never who said it.<br>
+                This isn't a webinar. It's 8 managers from different companies asking the same question:<br>
+                <em>How do I keep my team through this?</em>
+            </p>
+        </div>
+    </section>
+
+    <!-- Who's Running This -->
     <section class="section section-alt">
         <h2>Who's Running This</h2>
-        <div class="bio-section">
-            <div class="bio-text">
-                <p>Clive Hays spent 20 years at Fortune 500 companies implementing transformation programs. He watched leadership obsess over operational efficiency while managers watched their best people walk out the door.</p>
-                <p>That gap - between what leadership tracks and what managers see - is what led him to co-found Clover ERA and co-author The Trillion Dollar Problem.</p>
-                <p>His writing on retention has reached over 1 Million people this month. Most of them are managers who've been told to "manage expectations" when they flagged a flight risk.</p>
-                <p>This roundtable is where those managers finally get to talk.</p>
+        <div class="host-section">
+            <div class="host-image">
+                <img src="/images/Clive_Hays_Profile.jpg" alt="Clive Hays">
+            </div>
+            <div class="host-info">
+                <h3>Clive Hays</h3>
+                <p class="title">Co-Founder, Clover ERA | Co-author, "The Trillion Dollar Problem"</p>
+                <p>20+ years helping companies figure out why their best people leave. Currently focused on one question: How do managers retain their teams when AI is changing everything?</p>
+                <p>Most of the managers who read his work have been told to "manage expectations" when they flagged a flight risk. This roundtable is where they finally get to talk.</p>
+                <div class="stat-highlight">1 Million+ people reached this month</div>
             </div>
         </div>
     </section>
 
-    <!-- Upcoming Cohorts -->
-    <section class="section" id="upcoming-sessions">
-        <h2>Upcoming Roundtables</h2>
-        <div id="cohorts-container">
-            <div class="next-cohort" style="opacity: 0.7;">
-                <p style="text-align: center;">Loading upcoming sessions...</p>
+    <!-- Upcoming Sessions -->
+    <section class="cohorts-section" id="upcoming-sessions">
+        <h2>Upcoming Sessions</h2>
+        <div class="cohorts-container" id="cohorts-container">
+            <div class="cohort-card" style="opacity: 0.7;">
+                <p style="text-align: center; margin: 1rem 0;">Loading upcoming sessions...</p>
             </div>
         </div>
     </section>
 
     <!-- FAQ -->
-    <section class="section section-alt">
-        <h2>FAQ</h2>
+    <section class="section">
+        <h2>Questions You Might Have</h2>
 
         <div class="faq-item">
-            <div class="faq-question">Q: Why is this free?</div>
-            <div class="faq-answer">A: Because the real value is meeting managers who are living this. Some of you will want to introduce these ideas to your leadership. Some won't. You'll leave with something useful regardless.</div>
+            <div class="faq-question">Why is this free?</div>
+            <div class="faq-answer">Because the real value is meeting managers who are living this. Some of you will want to introduce these ideas to your leadership. Some won't. You'll leave with something useful regardless.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">Q: Why do I need to apply?</div>
-            <div class="faq-answer">A: To keep the group small and relevant. This only works if everyone in the room is a manager dealing with real retention challenges. No consultants, no vendors, no observers.</div>
+            <div class="faq-question">Why do I need to apply?</div>
+            <div class="faq-answer">To keep the group small and relevant. This only works if everyone in the room is a manager dealing with real challenges. No consultants, no vendors, no observers.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">Q: Will this be recorded?</div>
-            <div class="faq-answer">A: No. This is a safe space where managers can speak openly about what's really happening on their teams. No recordings, no transcripts. What's said in the room stays in the room.</div>
+            <div class="faq-question">Is this just about AI?</div>
+            <div class="faq-answer">No. It's about keeping your team. AI is accelerating the problem, but the fundamentals are the same: your best people leave when they feel unheard, undervalued, or unclear about their future. We'll talk about what's changed and what hasn't.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">Q: What if I can't make any of the scheduled times?</div>
-            <div class="faq-answer">A: Apply anyway and select "No" for availability. I'll add you to our list and reach out when we schedule sessions that work better for your timezone or calendar.</div>
+            <div class="faq-question">Will this be recorded?</div>
+            <div class="faq-answer">No. This is a safe space where managers can speak openly. No recordings, no transcripts. What's said in the room stays in the room.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-question">Q: Is this a sales pitch for Clover ERA?</div>
-            <div class="faq-answer">A: No. I'll mention what we do if it's relevant, but this isn't a demo or a pitch session. The roundtable is valuable on its own.</div>
+            <div class="faq-question">What if I can't make the scheduled times?</div>
+            <div class="faq-answer">Apply anyway and select "No" for availability. I'll add you to our list and reach out when we schedule sessions that work better for your timezone.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Is this a sales pitch for Clover ERA?</div>
+            <div class="faq-answer">No. I'll mention what we do if it's relevant, but this isn't a demo or a pitch session. The roundtable is valuable on its own.</div>
         </div>
     </section>
 
     <!-- Final CTA -->
     <section class="final-cta">
-        <h2>Ready to Talk About What's Actually Happening?</h2>
+        <h2>Your team is watching how you navigate this.</h2>
+        <p class="subtitle">8 seats. 60 minutes. The conversation they need you to have.</p>
         <a href="#upcoming-sessions" class="btn-primary">Apply for the Next Session</a>
     </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Clover ERA. <a href="https://cloverera.com">cloverera.com</a></p>
+    </footer>
 
     <script>
         // Initialize Supabase
@@ -441,21 +917,21 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Format time for display (e.g., "12:00 PM EST")
+        // Format time for display
         function formatTime(timeStr, timezone) {
-            // Parse time string (e.g., "12:00:00" or "12:00")
             const parts = timeStr.split(':');
             let hours = parseInt(parts[0], 10);
             const minutes = parts[1] || '00';
             const ampm = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12 || 12;
 
-            // Simplify timezone display
             const tzMap = {
                 'America/New_York': 'EST',
                 'America/Chicago': 'CST',
                 'America/Denver': 'MST',
                 'America/Los_Angeles': 'PST',
+                'Europe/London': 'GMT',
+                'Europe/Paris': 'CET',
                 'UTC': 'UTC'
             };
             const tzShort = tzMap[timezone] || timezone;
@@ -468,27 +944,27 @@
             const container = document.getElementById('cohorts-container');
 
             try {
-                // Get upcoming cohorts (limit to 4 to show mix of available and full)
                 const { data: cohorts, error: cohortsError } = await supabaseClient
                     .from('roundtable_cohorts')
                     .select('*')
                     .eq('status', 'upcoming')
                     .order('date', { ascending: true })
-                    .limit(4);
+                    .limit(6);
 
                 if (cohortsError) throw cohortsError;
 
                 if (!cohorts || cohorts.length === 0) {
                     container.innerHTML = `
-                        <div class="next-cohort">
-                            <h3>Next Cohort Coming Soon</h3>
-                            <p>We're scheduling our next roundtable. Apply now to be notified when dates are announced.</p>
+                        <div class="cohort-card">
+                            <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">Next Session Coming Soon</h3>
+                            <p style="opacity: 0.9; margin-bottom: 1.5rem;">We're scheduling our next roundtable. Apply now to be first in line when dates are announced.</p>
+                            <a href="apply/" class="btn-primary">Apply to Join</a>
                         </div>
                     `;
                     return;
                 }
 
-                // Get accepted application counts for each cohort
+                // Get accepted application counts
                 const cohortIds = cohorts.map(c => c.id);
                 const { data: appCounts, error: appError } = await supabaseClient
                     .from('roundtable_applications')
@@ -496,7 +972,6 @@
                     .in('cohort_id', cohortIds)
                     .eq('status', 'accepted');
 
-                // Count accepted applications per cohort
                 const acceptedCounts = {};
                 if (appCounts) {
                     appCounts.forEach(app => {
@@ -504,7 +979,6 @@
                     });
                 }
 
-                // Separate cohorts into available and full
                 const cohortsWithAvailability = cohorts.map(cohort => {
                     const accepted = acceptedCounts[cohort.id] || 0;
                     const spotsRemaining = cohort.is_full ? 0 : (cohort.max_attendees - accepted);
@@ -513,11 +987,8 @@
 
                 const availableCohorts = cohortsWithAvailability.filter(c => c.spotsRemaining > 0 && !c.is_full);
                 const fullCohorts = cohortsWithAvailability.filter(c => c.spotsRemaining <= 0 || c.is_full);
-
-                // Show up to 2 available cohorts + up to 3 full ones (for social proof)
                 const cohortsToShow = [...availableCohorts.slice(0, 2), ...fullCohorts.slice(0, 3)];
 
-                // Generate HTML
                 let html = '';
                 cohortsToShow.forEach(cohort => {
                     const date = new Date(cohort.date);
@@ -537,11 +1008,11 @@
                     } else if (isLimited) {
                         badgeHtml = `<span class="availability-badge badge-limited">${cohort.spotsRemaining} spots left</span>`;
                     } else {
-                        badgeHtml = `<span class="availability-badge badge-available">${cohort.spotsRemaining} spots available</span>`;
+                        badgeHtml = `<span class="availability-badge badge-available">${cohort.spotsRemaining} spots</span>`;
                     }
 
                     html += `
-                        <div class="next-cohort ${isFull ? 'cohort-full' : ''}">
+                        <div class="cohort-card ${isFull ? 'cohort-full' : ''}">
                             <div class="cohort-header">
                                 <span class="cohort-date-large">${dateStr}</span>
                                 ${badgeHtml}
@@ -552,9 +1023,9 @@
                             </div>
                             <div class="cohort-detail">
                                 <span class="cohort-label">Format:</span>
-                                <span>60-minute video call with 8 people</span>
+                                <span>60-minute video call, 8 managers max</span>
                             </div>
-                            ${!isFull ? `<a href="apply/?cohort=${cohort.id}" class="btn-primary" style="margin-top: 1rem;">Apply for This Session</a>` : ''}
+                            ${!isFull ? `<a href="apply/?cohort=${cohort.id}" class="btn-primary">Apply for This Session</a>` : ''}
                         </div>
                     `;
                 });
@@ -564,15 +1035,15 @@
             } catch (error) {
                 console.error('Error loading cohort info:', error);
                 container.innerHTML = `
-                    <div class="next-cohort">
-                        <h3>Next Cohort Coming Soon</h3>
-                        <p>Check back soon for upcoming session dates, or apply now to be notified.</p>
+                    <div class="cohort-card">
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">Next Session Coming Soon</h3>
+                        <p style="opacity: 0.9; margin-bottom: 1.5rem;">Check back soon for upcoming session dates, or apply now to be notified.</p>
+                        <a href="apply/" class="btn-primary">Apply to Join</a>
                     </div>
                 `;
             }
         }
 
-        // Load cohort info on page load
         loadCohortInfo();
     </script>
 
