@@ -70,6 +70,7 @@
             --primary-teal: #46AEB8;
             --deep-teal: #0D7C88;
             --charcoal: #1F2937;
+            --dark-charcoal: #111827;
             --bronze: #C9A667;
             --white: #FFFFFF;
             --off-white: #FAFBFC;
@@ -78,6 +79,7 @@
             --dark-gray: #6B7280;
             --text-primary: #111827;
             --text-secondary: #4B5563;
+            --coral: #E07A5F;
         }
 
         body {
@@ -88,9 +90,146 @@
             overflow-x: hidden;
         }
 
+        /* Fixed Header */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--medium-gray);
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .header-logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .header-logo span {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--charcoal);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            transition: color 0.2s;
+        }
+
+        .header-nav a:hover {
+            color: var(--primary-teal);
+        }
+
+        .header-nav .nav-cta {
+            background: var(--primary-teal);
+            color: var(--white) !important;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .header-nav .nav-cta:hover {
+            background: var(--deep-teal);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 28px;
+            height: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 101;
+        }
+
+        .mobile-menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-teal);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .header-nav {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                border-bottom: 2px solid var(--primary-teal);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+
+            .header-nav.active {
+                display: flex;
+            }
+
+            .header-nav a {
+                font-size: 1rem;
+            }
+        }
+
         /* Hero Section */
         .hero {
-            padding: 8rem 2rem 4rem;
+            padding: 10rem 2rem 4rem;
+            margin-top: 0;
             background: linear-gradient(135deg, #0D7C88 0%, #46AEB8 100%);
             position: relative;
             margin-top: 0;
@@ -637,7 +776,7 @@
             }
 
             .hero {
-                padding: 5rem 1.5rem 3rem;
+                padding: 7rem 1.5rem 3rem;
             }
 
             .hero-story {
@@ -684,7 +823,27 @@
     </style>
 </head>
 <body>
-    <script src="/js/header.js"></script>
+    <!-- FIXED HEADER -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="/" class="header-logo">
+                <img src="/images/Clover-era-new-logo-1.png" alt="Clover ERA">
+                <span>Clover ERA</span>
+            </a>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="header-nav" id="headerNav">
+                <a href="https://app.cloverera.com/login">Sign In</a>
+                <a href="/how-it-works.html">How It Works</a>
+                <a href="/pricing/index.html">Pricing</a>
+                <a href="/about.html">About</a>
+                <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="nav-cta">Schedule Analysis</a>
+            </nav>
+        </div>
+    </header>
 
     <!-- HERO SECTION -->
     <section class="hero">
@@ -979,7 +1138,7 @@
                 <h4>COMPANY</h4>
                 <ul>
                     <li><a href="/about.html">About Clover Era</a></li>
-                    <li><a href="/privacy-policy.html/">Privacy Policy</a></li>
+                    <li><a href="/privacy-policy.html">Privacy Policy</a></li>
                     <li><a href="/terms.html">Terms</a></li>
                 </ul>
             </div>
@@ -1009,6 +1168,16 @@
         document.getElementById('turnover').addEventListener('input', calculateROI);
 
         calculateROI();
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const headerNav = document.getElementById('headerNav');
+        if (mobileMenuToggle && headerNav) {
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                headerNav.classList.toggle('active');
+            });
+        }
     </script>
     <script src="/js/cookie-consent.js"></script>
 </body>
