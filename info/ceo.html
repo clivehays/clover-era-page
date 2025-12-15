@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA | For CEOs</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 3rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .role-tag {
+            display: inline-block;
+            background: rgba(224, 122, 95, 0.2);
+            border: 1px solid rgba(224, 122, 95, 0.5);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            color: var(--coral);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo span {
+            color: var(--teal);
+        }
+
+        .tagline {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.85);
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--deep-teal);
+            display: inline-block;
+        }
+
+        .section p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .highlight {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .cost-highlight {
+            color: var(--coral);
+            font-weight: 700;
+        }
+
+        .lead-quote {
+            background: var(--light-gray);
+            border-left: 4px solid var(--coral);
+            padding: 1.5rem 2rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            font-style: italic;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 1.25rem;
+            width: 10px;
+            height: 10px;
+            background-color: var(--deep-teal);
+            border-radius: 50%;
+        }
+
+        .feature-list li strong {
+            color: var(--text-primary);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, var(--dark-charcoal) 0%, var(--charcoal) 100%);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+            position: relative;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .result-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            border-radius: 16px;
+        }
+
+        .result-box p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .result-number {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--coral);
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .cta-section .section-title {
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-section p {
+            margin-bottom: 0;
+        }
+
+        .cta-label {
+            color: var(--deep-teal);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .contact-footer {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .contact-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .contact-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-details {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-details a {
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .contact-details a:hover {
+            text-decoration: underline;
+        }
+
+        .book-credit {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media print {
+            body { background-color: var(--white); }
+            .header, .result-box, .contact-footer {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .content { padding: 1.5rem; }
+            .header { padding: 2rem 1.5rem; }
+            .logo { font-size: 2rem; }
+            .section-title { font-size: 1.2rem; }
+            .result-number { font-size: 1.75rem; }
+            .lead-quote { font-size: 1.1rem; padding: 1.25rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="role-tag">For CEOs</div>
+            <h1 class="logo">Clover <span>ERA</span></h1>
+            <p class="tagline">See who's leaving before they tell you</p>
+        </header>
+
+        <div class="content">
+            <section class="section">
+                <h2 class="section-title">The Strategic Problem</h2>
+                <div class="lead-quote">
+                    "Your best people won't threaten to leave. They'll just leave."
+                </div>
+                <p>
+                    By the time you hear about it, they've already accepted another offer. The decision was made weeks ago. The signals were there. They just never made it to you.
+                </p>
+                <p>
+                    Every surprise departure costs more than money. It costs momentum, culture, and the people who follow them out the door.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">What Changes With Clover ERA</h2>
+                <ul class="feature-list">
+                    <li><strong>You see resignation risk 60-90 days early</strong> — before they start looking</li>
+                    <li><strong>Your managers get alerts with specific actions</strong> — not just data</li>
+                    <li><strong>You prevent departures</strong> instead of reacting to them</li>
+                    <li><strong>You protect the culture</strong> you've built</li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">The Real Cost of Getting This Wrong</h2>
+                <p>
+                    Most companies track turnover at $25K-$50K per departure. The actual cost is <span class="cost-highlight">$180K-$400K</span> when you include productivity ramp, project delays, knowledge loss, and the departures that follow.
+                </p>
+                <div class="result-box">
+                    <p>Preventing 10 departures =</p>
+                    <div class="result-number">$2M-$4M protected</div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2 class="section-title">Next Step</h2>
+                <p>
+                    <span class="cta-label">15-minute Turnover Analysis:</span> I'll show you what turnover is actually costing your organization versus what you're tracking.
+                </p>
+            </section>
+        </div>
+
+        <footer class="contact-footer">
+            <div class="contact-name">Clive Hays, Co-Founder</div>
+            <div class="contact-details">
+                <a href="mailto:clive@cloverera.com">clive@cloverera.com</a> &nbsp;•&nbsp; 
+                <a href="https://cloverera.com">cloverera.com</a>
+            </div>
+            <div class="book-credit">Co-Author: "The Trillion Dollar Problem"</div>
+        </footer>
+    </div>
+</body>
+</html>
