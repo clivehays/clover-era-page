@@ -80,16 +80,16 @@
 
     <style>
         :root {
-            --clover-green: #46AEB8;
-            --clover-accent: #7FE5DB;
-            --clover-dark: #2C6F74;
-            --clover-gray: #6B7280;
+            --teal: #46AEB8;
+            --deep-teal: #3A9BA4;
             --coral: #FF6B6B;
+            --charcoal: #2D3748;
+            --dark-charcoal: #1a202c;
+            --warm-white: #FAF9F7;
             --white: #FFFFFF;
-            --light-bg: #F8FAFB;
-            --text-primary: #1F2937;
-            --text-secondary: #4B5563;
-            --border-light: #E5E7EB;
+            --light-gray: #F7FAFC;
+            --text-primary: #1a202c;
+            --text-secondary: #4A5568;
         }
 
         * {
@@ -107,10 +107,10 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
             color: var(--text-primary);
-            background: var(--white);
+            background: var(--warm-white);
         }
 
         .container {
@@ -120,31 +120,43 @@
         }
 
         /* Hero Section */
-        .blog-hero {
-            background: linear-gradient(135deg, var(--clover-green) 0%, var(--clover-dark) 100%);
-            padding: 8rem 2rem 5rem;
-            margin-top: 80px;
-            text-align: center;
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 50%, var(--deep-teal) 100%);
             color: var(--white);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 400px;
+            padding: 5rem 2rem 6rem;
+            position: relative;
         }
 
-        .blog-hero h1 {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 800;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
             margin-bottom: 1rem;
-            margin-top: 2rem;
             line-height: 1.2;
         }
 
-        .blog-hero p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            max-width: 700px;
-            margin: 0 auto;
+        .byline {
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
         /* Breadcrumb */
@@ -152,10 +164,12 @@
             padding: 2rem 2rem 1rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .breadcrumb a {
-            color: var(--clover-green);
+            color: var(--deep-teal);
             text-decoration: none;
         }
 
@@ -166,7 +180,7 @@
         /* Blog Posts Section */
         .blog-posts {
             padding: 3rem 2rem 5rem;
-            background: var(--white);
+            background: var(--warm-white);
         }
 
         .blog-intro {
@@ -197,7 +211,7 @@
         }
 
         .pillar-link {
-            background: var(--light-bg);
+            background: var(--light-gray);
             border-radius: 12px;
             padding: 1.5rem;
             text-decoration: none;
@@ -206,7 +220,7 @@
         }
 
         .pillar-link:hover {
-            border-color: var(--clover-green);
+            border-color: var(--teal);
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(70, 174, 184, 0.15);
         }
@@ -292,7 +306,7 @@
         }
 
         .article-category {
-            color: var(--clover-green);
+            color: var(--deep-teal);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -313,7 +327,7 @@
         }
 
         .article-item h3 a:hover {
-            color: var(--clover-green);
+            color: var(--deep-teal);
         }
 
         .article-excerpt {
@@ -327,7 +341,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--clover-green);
+            color: var(--deep-teal);
             font-weight: 600;
             text-decoration: none;
             transition: gap 0.3s;
@@ -340,8 +354,8 @@
 
         /* Newsletter Section */
         .newsletter-section {
-            background: linear-gradient(135deg, var(--clover-green), var(--clover-dark));
-            padding: 5rem 2rem;
+            background: var(--charcoal);
+            padding: 4rem 2rem;
             color: var(--white);
             text-align: center;
         }
@@ -371,22 +385,29 @@
         .newsletter-input {
             flex: 1;
             padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 50px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
             font-size: 1rem;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255,255,255,0.6);
         }
 
         .newsletter-input:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+            border-color: var(--teal);
+            background: rgba(255,255,255,0.15);
         }
 
         .newsletter-btn {
             padding: 1rem 2.5rem;
-            background: var(--white);
-            color: var(--clover-green);
+            background: var(--teal);
+            color: var(--white);
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -420,18 +441,12 @@
         }
 
         @media (max-width: 768px) {
-            .blog-hero {
-                padding: 6rem 1.5rem 4rem;
-                min-height: 350px;
+            .hero {
+                padding: 3rem 1.5rem 4rem;
             }
 
-            .blog-hero h1 {
-                font-size: 2rem;
-                margin-top: 1.5rem;
-            }
-
-            .blog-hero p {
-                font-size: 1.1rem;
+            .hero h1 {
+                font-size: 1.85rem;
             }
 
             .pillar-links {
@@ -460,8 +475,28 @@
             }
 
             .newsletter-section h2 {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
+
+            .blog-posts {
+                padding: 2rem 1.5rem 4rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out;
         }
     </style>
 </head>
@@ -470,10 +505,10 @@
     <script src="/js/header.js"></script>
 
     <!-- Hero Section -->
-    <section class="blog-hero">
-        <div class="container">
+    <section class="hero">
+        <div class="hero-content">
             <h1>Turnover Prevention Insights</h1>
-            <p>Research-backed articles on why employees leave, what makes them stay, and the manager behaviors that drive retention</p>
+            <p class="byline"><strong>Research-backed articles on why employees leave, what makes them stay, and the manager behaviors that drive retention</strong></p>
         </div>
     </section>
 
