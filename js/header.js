@@ -1,8 +1,8 @@
-// header.js - Fixed version with proper variable scoping
+// header.js - Updated navigation with pillar page structure
 document.addEventListener('DOMContentLoaded', function() {
     // Declare ALL variables at the top - ONCE
     let breadcrumbNav = null;
-    
+
     // Add favicon if not present
     if (!document.querySelector('link[rel="icon"]')) {
         const favicon = document.createElement('link');
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             nav.remove();
         }
     });
-    
+
     const headers = document.querySelectorAll('header');
     headers.forEach(header => {
         if (header.querySelector('nav') || header.querySelector('.nav-links') || header.querySelector('.navigation')) {
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
             margin-left: auto;
         }
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .nav-links a {
             text-decoration: none;
             color: #111827;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -108,8 +108,8 @@ document.addEventListener('DOMContentLoaded', function() {
             background: #FFFFFF;
             border: 1px solid #E5E9ED;
             border-radius: 10px;
-            padding: 1rem 0;
-            min-width: 250px;
+            padding: 0.75rem 0;
+            min-width: 280px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             opacity: 0;
             visibility: hidden;
@@ -126,12 +126,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         .nav-dropdown-menu a {
             display: block;
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.25rem;
             color: #111827;
             text-decoration: none;
             transition: all 0.3s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: none;
+            letter-spacing: 0;
         }
 
         .nav-dropdown-menu a:hover {
@@ -139,25 +140,36 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #46AEB8;
         }
 
-        .nav-dropdown-menu .featured-link {
-            border-bottom: 1px solid #E5E9ED;
-            margin-bottom: 0.5rem;
-            padding-bottom: 1rem;
-            font-weight: 600;
+        .nav-dropdown-menu .dropdown-description {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-top: 0.15rem;
+        }
+
+        .nav-dropdown-menu .dropdown-divider {
+            height: 1px;
+            background: #E5E9ED;
+            margin: 0.5rem 0;
         }
 
         .nav-cta {
             background: #46AEB8;
             color: #FFFFFF !important;
-            padding: 0.6rem 1.75rem;
+            padding: 0.6rem 1.25rem;
             border-radius: 8px;
             font-weight: 600;
             box-shadow: 0 2px 8px rgba(70, 174, 184, 0.15);
+            font-size: 0.8rem !important;
         }
 
         .nav-cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(70, 174, 184, 0.25);
+        }
+
+        .nav-signin {
+            color: #6B7280 !important;
+            font-size: 0.8rem !important;
         }
 
         .mobile-menu-toggle {
@@ -184,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* Fix body padding to eliminate white space */
         body {
-            padding-top: 70px !important; /* nav (70px) only */
+            padding-top: 70px !important;
             margin-top: 0 !important;
         }
 
@@ -194,6 +206,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .hero-image-container,
         main > section:first-of-type {
             margin-top: 0 !important;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -216,6 +238,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 z-index: 998;
                 align-items: center;
                 text-align: center;
+                max-height: calc(100vh - 70px);
+                overflow-y: auto;
             }
 
             .nav-links.active {
@@ -261,6 +285,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 max-height: 500px;
                 padding: 0.5rem 0;
             }
+
+            .nav-signin {
+                order: 10;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #E5E9ED;
+                width: 100%;
+            }
         }
     `;
     document.head.appendChild(styleElement);
@@ -280,37 +312,86 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span></span>
             </button>
             <div class="nav-links" id="navLinks">
-                <a href="https://app.cloverera.com/login">SIGN IN</a>
-                <a href="/how-it-works.html">HOW IT WORKS</a>
-                <a href="/calculator/index.html">ROI CALCULATOR</a>
-                <a href="https://www.cloverera.com/pricing/index.html">PRICING</a>
                 <div class="nav-dropdown">
-                    <a href="/resources-hub/index.html" class="nav-dropdown-toggle">
-                        RESOURCES <span style="font-size: 0.8rem;">▼</span>
+                    <a href="/why-employees-leave/" class="nav-dropdown-toggle">
+                        WHY PEOPLE LEAVE <span style="font-size: 0.7rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
-                        <a href="/clover-framework.html" class="featured-link">Clover Framework</a>
-                        <a href="/research/index.html" class="featured-link">Research Hub</a>
-                        <a href="/Blog/">Blog</a>
-                        <a href="/what-is-employee-engagement/">What Is Engagement?</a>
-                        <a href="/research-insights/index.html">Research Insights</a>
-                        <a href="/calculator/index.html">ROI Calculator</a>
-                        <a href="/assessment/index.html">Free Assessment</a>
-                        <a href="/implementation-guide.html">Implementation Guide</a>
-                        <a href="https://www.amazon.com/Trillion-Dollar-Problem-Employee-Engagement-ebook/dp/B0CYMC3ST1/ref=sr_1_1?crid=FIA8QK3LNQZ0&dib=eyJ2IjoiMSJ9.QImYjq6qcRR5M5fzSbzy1IVu2_5CiJxenm3uMu8aUcl0Zm3J_AVdoIA1WJCmWs-yufPlRkezuhnJurayQOLazLuWTn1XIlAntqSjdWmn-5yL0PHv6F6l-kA8t0O6EalS.nP4OcL7TscInMWUb8AW18JAlsmsQXTD-oY71REz59EU&dib_tag=se&keywords=The+trillion+Dollar+Problem&qid=1755545687&sprefix=the+trillion+dollar+problem%2Caps%2C258&sr=8-1" class="featured-link">The Trillion Dollar Problem Book</a>
-                        <a href="https://www.cloverera.com/neuroscience-of-employee-engagement/index.html">New: Neuroscience of Employee Engagement Preview</a>
+                        <a href="/why-employees-leave/">
+                            <strong>Why Employees Leave</strong>
+                            <div class="dropdown-description">The 67-day window you're not watching</div>
+                        </a>
+                        <a href="/turnover-after-restructure/">
+                            <strong>Turnover After Restructure</strong>
+                            <div class="dropdown-description">Why your best people leave after layoffs</div>
+                        </a>
+                        <a href="/manager-turnover-problem/">
+                            <strong>The Manager Problem</strong>
+                            <div class="dropdown-description">Why leaders are your biggest retention risk</div>
+                        </a>
                     </div>
                 </div>
                 <div class="nav-dropdown">
-                    <a href="/#problems" class="nav-dropdown-toggle">
-                        SOLUTIONS <span style="font-size: 0.8rem;">▼</span>
+                    <a href="/how-it-works.html" class="nav-dropdown-toggle">
+                        HOW WE FIX IT <span style="font-size: 0.7rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
-                        <a href="/reduce-employee-turnover.html" class="featured-link">Reduce Turnover</a>
-                        <a href="/locations/">UK & Ireland Engagement Solutions</a>
+                        <a href="/how-it-works.html">
+                            <strong>How It Works</strong>
+                            <div class="dropdown-description">From signals to action in 30 seconds</div>
+                        </a>
+                        <a href="/clover-framework.html">
+                            <strong>The CLOVER Framework</strong>
+                            <div class="dropdown-description">Six elements that drive retention</div>
+                        </a>
+                        <a href="/our-science.html">
+                            <strong>The Science</strong>
+                            <div class="dropdown-description">Research behind the methodology</div>
+                        </a>
                     </div>
                 </div>
-                <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="nav-cta">SCHEDULE ANALYSIS</a>
+                <div class="nav-dropdown">
+                    <a href="/case-studies/" class="nav-dropdown-toggle">
+                        PROOF <span style="font-size: 0.7rem;">▼</span>
+                    </a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/case-studies/">
+                            <strong>Early Results</strong>
+                            <div class="dropdown-description">What users are saying</div>
+                        </a>
+                        <a href="/calculator/">
+                            <strong>ROI Calculator</strong>
+                            <div class="dropdown-description">Calculate your turnover cost</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <a href="/book/" class="nav-dropdown-toggle">
+                        LEARN <span style="font-size: 0.7rem;">▼</span>
+                    </a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/book/">
+                            <strong>The Trillion Dollar Problem</strong>
+                            <div class="dropdown-description">Our book on Amazon</div>
+                        </a>
+                        <a href="/neuroscience-of-employee-engagement/">
+                            <strong>Neuroscience of Engagement</strong>
+                            <div class="dropdown-description">New book coming March 2026</div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/Blog/">
+                            <strong>Blog</strong>
+                            <div class="dropdown-description">Articles and insights</div>
+                        </a>
+                        <a href="/research/">
+                            <strong>Research</strong>
+                            <div class="dropdown-description">Data and methodology</div>
+                        </a>
+                    </div>
+                </div>
+                <a href="/pricing/">PRICING</a>
+                <a href="https://app.cloverera.com/login" class="nav-signin">SIGN IN</a>
+                <a href="/pricing/" class="nav-cta">SCHEDULE ANALYSIS</a>
             </div>
         </div>
     `;
