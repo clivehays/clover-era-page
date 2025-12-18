@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       const result = await supabase
         .from('blog_posts')
         .select('slug, updated_at')
-        .eq('published', true)
+        .not('published_at', 'is', null)
         .order('updated_at', { ascending: false });
 
       posts = result.data;
