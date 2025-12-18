@@ -3,6 +3,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Declare ALL variables at the top - ONCE
     let breadcrumbNav = null;
 
+    // Load breadcrumbs CSS
+    if (!document.querySelector('link[href="/css/breadcrumbs.css"]')) {
+        const breadcrumbCSS = document.createElement('link');
+        breadcrumbCSS.rel = 'stylesheet';
+        breadcrumbCSS.href = '/css/breadcrumbs.css';
+        document.head.appendChild(breadcrumbCSS);
+    }
+
+    // Load breadcrumbs JS
+    if (!document.querySelector('script[src="/js/breadcrumbs.js"]')) {
+        const breadcrumbScript = document.createElement('script');
+        breadcrumbScript.src = '/js/breadcrumbs.js';
+        breadcrumbScript.defer = true;
+        document.body.appendChild(breadcrumbScript);
+    }
+
     // Add favicon if not present
     if (!document.querySelector('link[rel="icon"]')) {
         const favicon = document.createElement('link');
