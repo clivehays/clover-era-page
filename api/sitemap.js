@@ -96,7 +96,8 @@ export default async function handler(req, res) {
 
     // Set headers
     res.setHeader('Content-Type', 'application/xml');
-    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    // Temporarily disable caching for testing - will re-enable once working
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 
     res.status(200).send(sitemap);
   } catch (err) {
