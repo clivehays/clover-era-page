@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     if (supabaseUrl && supabaseKey) {
       const supabase = createClient(supabaseUrl, supabaseKey);
       const result = await supabase
-        .from('blog_posts')
+        .from('blog_articles')
         .select('slug, updated_at')
         .not('published_at', 'is', null)
         .order('updated_at', { ascending: false });
