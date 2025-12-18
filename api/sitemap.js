@@ -1,9 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 // Static pages that don't change
 const staticPages = [
   { loc: 'https://cloverera.com/', changefreq: 'weekly', priority: '1.0' },
@@ -47,16 +43,31 @@ function generateUrlEntry(page, lastmod = null) {
 
 export default async function handler(req, res) {
   try {
-    // Fetch published blog posts from Supabase
-    const { data: posts, error } = await supabase
-      .from('blog_posts')
-      .select('slug, updated_at')
-      .eq('published', true)
-      .order('updated_at', { ascending: false });
+    // Create Supabase client inside handler to ensure env vars are available
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
-    if (error) {
-      console.error('Supabase error:', error);
-      // Continue with static pages only if Supabase fails
+    let posts = null;
+    let error = null;
+
+    // Only attempt Supabase connection if env vars are set
+    if (supabaseUrl && supabaseKey) {
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      const result = await supabase
+        .from('blog_posts')
+        .select('slug, updated_at')
+        .eq('published', true)
+        .order('updated_at', { ascending: false });
+
+      posts = result.data;
+      error = result.error;
+
+      if (error) {
+        console.error('Supabase error:', error);
+        // Continue with static pages only if Supabase fails
+      }
+    } else {
+      console.log('Supabase env vars not configured, returning static pages only');
     }
 
     // Generate XML for static pages
