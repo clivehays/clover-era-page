@@ -45,7 +45,8 @@ export default async function handler(req, res) {
   try {
     // Create Supabase client inside handler to ensure env vars are available
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    // Use SERVICE_KEY (same as other API endpoints) or fall back to ANON_KEY
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
 
     let posts = null;
     let error = null;
