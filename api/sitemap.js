@@ -48,11 +48,17 @@ export default async function handler(req, res) {
     // Use SERVICE_KEY (same as other API endpoints) or fall back to ANON_KEY
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
 
+    // Debug: Log env var status (not the actual values)
+    console.log('SUPABASE_URL set:', !!supabaseUrl);
+    console.log('SUPABASE_SERVICE_KEY set:', !!process.env.SUPABASE_SERVICE_KEY);
+    console.log('SUPABASE_ANON_KEY set:', !!process.env.SUPABASE_ANON_KEY);
+
     let posts = null;
     let error = null;
 
     // Only attempt Supabase connection if env vars are set
     if (supabaseUrl && supabaseKey) {
+      console.log('Attempting Supabase connection...');
       const supabase = createClient(supabaseUrl, supabaseKey);
       const result = await supabase
         .from('blog_articles')
@@ -62,6 +68,9 @@ export default async function handler(req, res) {
 
       posts = result.data;
       error = result.error;
+
+      console.log('Supabase result - posts count:', posts?.length || 0);
+      console.log('Supabase result - error:', error);
 
       if (error) {
         console.error('Supabase error:', error);
