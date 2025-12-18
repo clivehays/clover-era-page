@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h4>COMPANY</h4>
                 <ul>
                     <li><a href="/about.html">About Clover ERA</a></li>
-                    <li><a href="mailto:contact@cloverera.com">Contact</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
                     <li><a href="/privacy-policy.html">Privacy Policy</a></li>
                     <li><a href="/cookie-policy.html">Cookie Policy</a></li>
                     <li><a href="/terms.html">Terms</a></li>
