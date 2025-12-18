@@ -47,10 +47,81 @@ function escapeHtml(text) {
         .replace(/'/g, '&#039;');
 }
 
+// Default OG image for posts without featured images
+// Uses Transform-Employee-Engagement.png as default social share image
+const DEFAULT_OG_IMAGE = 'https://cloverera.com/images/Transform-Employee-Engagement.png';
+
 // Format date
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+// Check if updated date is significantly different from publish date (more than 1 day)
+function hasSignificantUpdate(publishedAt, updatedAt) {
+    if (!updatedAt) return false;
+    const published = new Date(publishedAt);
+    const updated = new Date(updatedAt);
+    const diffDays = (updated - published) / (1000 * 60 * 60 * 24);
+    return diffDays > 1;
+}
+
+// Extract H2 headings for Table of Contents
+function extractHeadings(content) {
+    const h2Regex = /<h2[^>]*>([^<]+)<\/h2>/gi;
+    const headings = [];
+    let match;
+    while ((match = h2Regex.exec(content)) !== null) {
+        const text = match[1].trim();
+        const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        headings.push({ text, id });
+    }
+    return headings;
+}
+
+// Add IDs to H2 headings in content for anchor links
+function addHeadingIds(content) {
+    return content.replace(/<h2([^>]*)>([^<]+)<\/h2>/gi, (match, attrs, text) => {
+        const id = text.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        // Only add id if not already present
+        if (attrs.includes('id=')) return match;
+        return `<h2${attrs} id="${id}">${text}</h2>`;
+    });
+}
+
+// Generate Table of Contents HTML
+function generateTableOfContents(headings) {
+    if (headings.length < 3) return ''; // Only show TOC for articles with 3+ sections
+
+    return `
+        <nav class="table-of-contents" aria-label="Table of Contents">
+            <div class="toc-header">In This Article</div>
+            <ol class="toc-list">
+                ${headings.map(h => `<li><a href="#${h.id}">${escapeHtml(h.text)}</a></li>`).join('\n                ')}
+            </ol>
+        </nav>`;
+}
+
+// Generate Related Articles HTML
+function generateRelatedArticles(relatedArticles) {
+    if (!relatedArticles || !Array.isArray(relatedArticles) || relatedArticles.length === 0) {
+        return '';
+    }
+
+    return `
+        <div class="related-articles">
+            <h2>Related Articles</h2>
+            <div class="related-grid">
+                ${relatedArticles.map(article => `
+                <a href="/Blog/${article.slug}.html" class="related-card">
+                    ${article.featured_image ? `<img src="${article.featured_image}" alt="${escapeHtml(article.title)}" class="related-image">` : ''}
+                    <div class="related-content">
+                        <h3>${escapeHtml(article.title)}</h3>
+                        ${article.excerpt ? `<p>${escapeHtml(article.excerpt.substring(0, 100))}...</p>` : ''}
+                    </div>
+                </a>`).join('')}
+            </div>
+        </div>`;
 }
 
 // Generate Schema.org markup with GEO enhancements
@@ -85,15 +156,14 @@ function generateSchemaMarkup(article, publishDate, readTime, wordCount) {
         "inLanguage": "en-US"
     };
 
-    // Add optional fields
-    if (article.featured_image) {
-        blogPostingSchema.image = {
-            "@type": "ImageObject",
-            "url": article.featured_image,
-            "width": 1200,
-            "height": 630
-        };
-    }
+    // Add image (use featured_image or default)
+    const imageUrl = article.featured_image || DEFAULT_OG_IMAGE;
+    blogPostingSchema.image = {
+        "@type": "ImageObject",
+        "url": imageUrl,
+        "width": 1200,
+        "height": 630
+    };
 
     if (article.category) {
         blogPostingSchema.articleSection = article.category;
@@ -172,6 +242,13 @@ function generateArticleHTML(article) {
     const publishDate = new Date(article.published_at).toISOString();
     const readTime = article.read_time_minutes || 5;
     const wordCount = article.content.split(/\s+/).length;
+    const authorName = article.author_name || 'Clover ERA Team';
+    const ogImage = article.featured_image || DEFAULT_OG_IMAGE;
+    const showUpdatedDate = hasSignificantUpdate(article.published_at, article.updated_at);
+
+    // Extract headings and add IDs for TOC
+    const headings = extractHeadings(article.content);
+    const contentWithIds = addHeadingIds(article.content);
 
     // Generate all Schema.org markup
     const schemas = generateSchemaMarkup(article, publishDate, readTime, wordCount);
@@ -185,6 +262,7 @@ function generateArticleHTML(article) {
     <!-- SEO Meta Tags -->
     <title>${escapeHtml(article.meta_title || article.title)}</title>
     <meta name="description" content="${escapeHtml(article.meta_description || article.excerpt || '')}">
+    <meta name="author" content="${escapeHtml(authorName)}">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <link rel="canonical" href="${article.canonical_url || `https://cloverera.com/Blog/${article.slug}.html`}">
 
@@ -198,12 +276,13 @@ function generateArticleHTML(article) {
     <meta property="og:description" content="${escapeHtml(article.meta_description || article.excerpt || '')}">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://cloverera.com/Blog/${article.slug}.html">
-    ${article.featured_image ? `<meta property="og:image" content="${article.featured_image}">
+    <meta property="og:image" content="${ogImage}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="${escapeHtml(article.title)}">` : ''}
+    <meta property="og:image:alt" content="${escapeHtml(article.title)}">
     <meta property="og:site_name" content="Clover ERA">
     <meta property="article:published_time" content="${publishDate}">
+    <meta property="article:author" content="${escapeHtml(authorName)}">
     ${article.updated_at ? `<meta property="article:modified_time" content="${new Date(article.updated_at).toISOString()}">` : ''}
     ${article.category ? `<meta property="article:section" content="${escapeHtml(article.category)}">` : ''}
     ${article.tags ? article.tags.map(tag => `<meta property="article:tag" content="${escapeHtml(tag)}">`).join('\n    ') : ''}
@@ -212,8 +291,8 @@ function generateArticleHTML(article) {
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(article.meta_title || article.title)}">
     <meta name="twitter:description" content="${escapeHtml(article.meta_description || article.excerpt || '')}">
-    ${article.featured_image ? `<meta name="twitter:image" content="${article.featured_image}">
-    <meta name="twitter:image:alt" content="${escapeHtml(article.title)}">` : ''}
+    <meta name="twitter:image" content="${ogImage}">
+    <meta name="twitter:image:alt" content="${escapeHtml(article.title)}">
 
     <!-- Schema.org Markup (GEO Enhanced) -->
     ${schemas.map(schema => `<script type="application/ld+json">
@@ -437,6 +516,109 @@ function generateArticleHTML(article) {
             box-shadow: 0 4px 12px rgba(27, 160, 152, 0.3);
         }
 
+        /* Table of Contents */
+        .table-of-contents {
+            background: var(--soft-beige);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .toc-header {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .toc-list {
+            list-style: decimal;
+            padding-left: 1.5rem;
+            margin: 0;
+        }
+
+        .toc-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc-list a {
+            color: var(--primary-teal);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc-list a:hover {
+            color: var(--deep-teal);
+            text-decoration: underline;
+        }
+
+        /* Updated date */
+        .updated-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        /* Related Articles */
+        .related-articles {
+            margin: 4rem 0;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .related-articles h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .related-card {
+            display: block;
+            background: var(--soft-beige);
+            border-radius: 8px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .related-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .related-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .related-content {
+            padding: 1rem;
+        }
+
+        .related-content h3 {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .related-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
         @media (max-width: 768px) {
             .article-title {
                 font-size: 1.8rem;
@@ -465,18 +647,21 @@ function generateArticleHTML(article) {
             ${article.category ? `<div class="article-category">${escapeHtml(article.category)}</div>` : ''}
             <h1 class="article-title">${escapeHtml(article.title)}</h1>
             <div class="article-meta">
-                <span>✍️ ${escapeHtml(article.author_name || 'Clover ERA Team')}</span>
+                <span>✍️ ${escapeHtml(authorName)}</span>
                 <span>📅 ${formatDate(article.published_at)}</span>
                 <span>⏱️ ${readTime} min read</span>
                 ${article.view_count ? `<span>👁️ ${article.view_count} views</span>` : ''}
             </div>
+            ${showUpdatedDate ? `<div class="updated-date">Updated: ${formatDate(article.updated_at)}</div>` : ''}
             ${article.excerpt ? `<p class="article-excerpt">${escapeHtml(article.excerpt)}</p>` : ''}
         </div>
 
         ${article.featured_image ? `<img src="${article.featured_image}" alt="${escapeHtml(article.title)}" class="featured-image">` : ''}
 
+        ${generateTableOfContents(headings)}
+
         <div class="article-content">
-            ${article.content}
+            ${contentWithIds}
         </div>
 
         ${article.tags && article.tags.length > 0 ? `
@@ -486,6 +671,8 @@ function generateArticleHTML(article) {
         </div>` : ''}
 
         ${generateFAQSection(article.faq_items)}
+
+        ${generateRelatedArticles(article.related_articles)}
 
         <div class="cta-section">
             <h2>What's Turnover Really Costing You?</h2>
