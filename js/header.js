@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <a href="/pricing/">PRICING</a>
                 <a href="https://app.cloverera.com/login" class="nav-signin">SIGN IN</a>
-                <a href="/pricing/" class="nav-cta">SCHEDULE ANALYSIS</a>
+                <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="nav-cta">SCHEDULE ANALYSIS</a>
             </div>
         </div>
     `;
