@@ -8,9 +8,15 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/images/favicon-32x32.png">
 
-    <meta name="description" content="Start with a $24K pilot in your highest-risk department. Prevent 2-3 departures, save $240K-$540K, then decide whether to expand. No commitment beyond 90 days.">
+    <meta name="description" content="Start with a $24K pilot in your highest-risk department. Prove it works before you expand. No commitment beyond 90 days.">
     <meta name="robots" content="index, follow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
     <style>
         * {
@@ -20,57 +26,84 @@
         }
 
         :root {
+            --teal: #46AEB8;
             --primary-teal: #46AEB8;
             --deep-teal: #0D7C88;
             --charcoal: #1F2937;
+            --dark-charcoal: #111827;
             --white: #FFFFFF;
+            --warm-white: #FDFBF7;
             --off-white: #FAFBFC;
             --light-gray: #F8F9FA;
             --medium-gray: #E5E7EB;
             --text-primary: #111827;
             --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.75;
             color: var(--text-primary);
-            background: var(--white);
+            background: var(--warm-white);
         }
 
         /* Hero Section */
         .hero {
-            padding: 6rem 2rem 6rem !important;
-            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem 5rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
             margin-bottom: 1.5rem;
-            color: var(--text-primary);
+            color: var(--white);
             line-height: 1.2;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.9);
             max-width: 800px;
-            margin: 0 auto 2rem;
+            margin: 0 auto 1.5rem;
             line-height: 1.7;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-badge {
             display: inline-block;
-            background: rgba(70, 174, 184, 0.1);
-            border: 2px solid var(--primary-teal);
-            color: var(--primary-teal);
+            background: rgba(224, 122, 95, 0.15);
+            border: 2px solid var(--coral);
+            color: var(--coral);
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
             font-weight: 600;
             font-size: 0.95rem;
             margin-top: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         /* Pricing Cards */
@@ -130,8 +163,9 @@
         }
 
         .card-title {
+            font-family: 'DM Serif Display', Georgia, serif;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 400;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
@@ -143,9 +177,10 @@
         }
 
         .card-price {
+            font-family: 'DM Serif Display', Georgia, serif;
             font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary-teal);
+            font-weight: 400;
+            color: var(--deep-teal);
             margin-bottom: 0.5rem;
         }
 
@@ -263,8 +298,9 @@
         }
 
         .expansion-content h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 400;
             color: var(--text-primary);
             margin-bottom: 1rem;
         }
@@ -318,8 +354,9 @@
         }
 
         .faq-section h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 400;
             text-align: center;
             margin-bottom: 3rem;
             color: var(--text-primary);
@@ -355,55 +392,84 @@
 
         /* CTA Section */
         .final-cta {
-            background: var(--primary-teal);
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
             padding: 5rem 2rem;
             text-align: center;
             color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
         }
 
         .final-cta h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 400;
             margin-bottom: 1.5rem;
             color: var(--white);
+            position: relative;
+            z-index: 1;
         }
 
         .final-cta-body {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             line-height: 1.8;
             margin-bottom: 2rem;
-            color: rgba(255, 255, 255, 0.95);
+            color: rgba(255, 255, 255, 0.9);
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+            position: relative;
+            z-index: 1;
         }
 
         .final-cta-body p {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .final-cta .btn-primary {
-            background: var(--charcoal);
+            background: var(--coral);
             color: var(--white);
-            padding: 1.2rem 3rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
             text-decoration: none;
             display: inline-block;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+            position: relative;
+            z-index: 1;
         }
 
         .final-cta .btn-primary:hover {
+            background: var(--dark-coral);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 1.5rem 4rem;
+            }
+
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
             }
 
             .pricing-grid {
@@ -424,6 +490,15 @@
 
             .expansion-step {
                 max-width: 100%;
+            }
+
+            .expansion-content h2,
+            .faq-section h2 {
+                font-size: 1.9rem;
+            }
+
+            .final-cta {
+                padding: 4rem 1.5rem;
             }
         }
     </style>
