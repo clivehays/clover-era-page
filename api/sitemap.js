@@ -43,41 +43,23 @@ function generateUrlEntry(page, lastmod = null) {
 
 export default async function handler(req, res) {
   try {
-    // Create Supabase client inside handler to ensure env vars are available
     const supabaseUrl = process.env.SUPABASE_URL;
-    // Use SERVICE_KEY (same as other API endpoints) or fall back to ANON_KEY
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
 
-    // Debug: Log env var status (not the actual values)
-    console.log('SUPABASE_URL set:', !!supabaseUrl);
-    console.log('SUPABASE_SERVICE_KEY set:', !!process.env.SUPABASE_SERVICE_KEY);
-    console.log('SUPABASE_ANON_KEY set:', !!process.env.SUPABASE_ANON_KEY);
-
     let posts = null;
-    let error = null;
 
-    // Only attempt Supabase connection if env vars are set
+    // Fetch blog posts from Supabase if configured
     if (supabaseUrl && supabaseKey) {
-      console.log('Attempting Supabase connection...');
       const supabase = createClient(supabaseUrl, supabaseKey);
-      const result = await supabase
+      const { data, error } = await supabase
         .from('blog_articles')
         .select('slug, updated_at')
         .eq('status', 'published')
         .order('updated_at', { ascending: false });
 
-      posts = result.data;
-      error = result.error;
-
-      console.log('Supabase result - posts count:', posts?.length || 0);
-      console.log('Supabase result - error:', error);
-
-      if (error) {
-        console.error('Supabase error:', error);
-        // Continue with static pages only if Supabase fails
+      if (!error) {
+        posts = data;
       }
-    } else {
-      console.log('Supabase env vars not configured, returning static pages only');
     }
 
     // Generate XML for static pages
@@ -105,8 +87,7 @@ export default async function handler(req, res) {
 
     // Set headers
     res.setHeader('Content-Type', 'application/xml');
-    // Temporarily disable caching for testing - will re-enable once working
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
 
     res.status(200).send(sitemap);
   } catch (err) {
