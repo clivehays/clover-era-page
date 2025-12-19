@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 // Static pages that don't change
 const staticPages = [
   { loc: 'https://cloverera.com/', changefreq: 'weekly', priority: '1.0' },
+  { loc: 'https://cloverera.com/platform/', changefreq: 'monthly', priority: '0.9' },
   { loc: 'https://cloverera.com/pricing/', changefreq: 'monthly', priority: '0.9' },
   { loc: 'https://cloverera.com/how-it-works.html', changefreq: 'monthly', priority: '0.9' },
   { loc: 'https://cloverera.com/why-employees-leave/', changefreq: 'monthly', priority: '0.9' },

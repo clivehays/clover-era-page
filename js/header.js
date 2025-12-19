@@ -328,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span></span>
             </button>
             <div class="nav-links" id="navLinks">
+                <a href="/platform/">PLATFORM</a>
                 <div class="nav-dropdown">
                     <a href="/why-employees-leave/" class="nav-dropdown-toggle">
                         WHY PEOPLE LEAVE <span style="font-size: 0.7rem;">▼</span>
@@ -349,9 +350,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="nav-dropdown">
                     <a href="/how-it-works.html" class="nav-dropdown-toggle">
-                        HOW WE FIX IT <span style="font-size: 0.7rem;">▼</span>
+                        HOW IT WORKS <span style="font-size: 0.7rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
+                        <a href="/platform/">
+                            <strong>The Platform</strong>
+                            <div class="dropdown-description">Manager enablement dashboard</div>
+                        </a>
                         <a href="/how-it-works.html">
                             <strong>How It Works</strong>
                             <div class="dropdown-description">From signals to action in 30 seconds</div>

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Clover ERA Platform | Manager Enablement Dashboard for Turnover Prevention</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/images/favicon-32x32.png">
+
+    <meta name="description" content="Daily signals, not annual surveys. The Clover ERA platform gives managers the visibility they need to prevent turnover before resignation letters arrive.">
+    <meta name="keywords" content="employee turnover prevention platform, manager enablement dashboard, employee retention software">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cloverera.com/platform/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="The Clover ERA Platform | Manager Enablement Dashboard">
+    <meta property="og:description" content="Daily signals, not annual surveys. See what's coming before they leave.">
+    <meta property="og:url" content="https://cloverera.com/platform/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://cloverera.com/images/platform-og.jpg">
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://cloverera.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Platform",
+                "item": "https://cloverera.com/platform/"
+            }
+        ]
+    }
+    </script>
+
+    <!-- SoftwareApplication Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Clover ERA Platform",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "Manager enablement platform for employee turnover prevention. Daily signals, real-time dashboards, and micro-actions that help managers retain their best people.",
+        "offers": {
+            "@type": "Offer",
+            "price": "24000",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Clover ERA",
+            "url": "https://cloverera.com"
+        },
+        "featureList": [
+            "Daily employee signals",
+            "Manager enablement dashboard",
+            "Flight risk indicators",
+            "Micro-action recommendations",
+            "CLOVER Framework assessment",
+            "Team health analytics"
+        ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --teal: #46AEB8;
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --off-white: #FAFBFC;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+            --green: #10B981;
+            --yellow: #F59E0B;
+            --red: #EF4444;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem 5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-coral);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--white);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 5rem 2rem;
+        }
+
+        .section-alt {
+            background: var(--light-gray);
+        }
+
+        .section h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Layer Cards */
+        .layer-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-teal);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .layer-card h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .layer-card p {
+            margin-bottom: 1rem;
+        }
+
+        .layer-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .clover-list {
+            list-style: none;
+            margin: 1.5rem 0;
+            padding: 0;
+        }
+
+        .clover-list li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .clover-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.9rem;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-teal);
+            border-radius: 50%;
+        }
+
+        .clover-list strong {
+            color: var(--text-primary);
+        }
+
+        /* Dashboard Features */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Manager View Section */
+        .manager-features {
+            margin-top: 2rem;
+        }
+
+        .manager-feature {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .manager-feature h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .manager-feature p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* Health Indicator Demo */
+        .health-demo {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .health-indicator {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .health-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+        }
+
+        .health-yellow {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--yellow);
+        }
+
+        .health-red {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .comparison-table th {
+            background: var(--charcoal);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table td:first-child {
+            color: var(--text-secondary);
+        }
+
+        .comparison-table td:last-child {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-marker {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-teal);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .timeline-content h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* Integration List */
+        .integration-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .integration-item {
+            background: var(--white);
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .integration-item strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .integration-item span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Security Section */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .security-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-teal);
+        }
+
+        .security-item h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .security-item p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Differentiators */
+        .diff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .diff-item {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .diff-item h4 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .diff-item p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .final-cta h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-cta p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-cta .cta-list {
+            text-align: left;
+            max-width: 500px;
+            margin: 2rem auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-cta .cta-list li {
+            padding: 0.5rem 0;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.05rem;
+        }
+
+        .final-cta .btn-primary {
+            margin-top: 1rem;
+        }
+
+        .final-cta .cta-note {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 1.5rem;
+        }
+
+        /* Link Styles */
+        .content-link {
+            color: var(--deep-teal);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .content-link:hover {
+            border-bottom-color: var(--deep-teal);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 1.5rem 4rem;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .section {
+                padding: 3rem 1.5rem;
+            }
+
+            .layer-card {
+                padding: 1.5rem;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .timeline-marker {
+                width: 40px;
+                height: 40px;
+                font-size: 0.8rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .final-cta {
+                padding: 4rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>See What's Coming Before They Leave</h1>
+        <p class="hero-subtitle">
+            The Clover ERA platform captures daily signals from your team and translates them into actions managers can take today. Not next quarter. Today.
+        </p>
+        <div class="hero-cta-group">
+            <a href="/pricing/" class="btn-primary">Schedule Your Free Turnover Analysis</a>
+            <a href="#features" class="btn-secondary">See How It Works</a>
+        </div>
+    </section>
+
+    <!-- PROBLEM SECTION -->
+    <section class="section">
+        <div class="container">
+            <h2>The Problem With How You're Measuring Now</h2>
+            <p>Annual engagement surveys tell you what happened twelve months ago. Pulse surveys tell you what happened last month. Exit interviews tell you what happened after it was too late to do anything about it.</p>
+            <p>Your best employee <a href="/why-employees-leave/" class="content-link">decided to leave 67 days ago</a>. The survey you ran last quarter didn't catch it. The one you're planning for next quarter won't either.</p>
+            <p>By the time traditional measurement spots a problem, the resignation letter is already drafted.</p>
+        </div>
+    </section>
+
+    <!-- WHAT IT DOES SECTION -->
+    <section class="section section-alt" id="features">
+        <div class="container">
+            <h2>What Clover ERA Actually Does</h2>
+            <p>The platform works in three layers:</p>
+
+            <!-- Layer 1 -->
+            <div class="layer-card">
+                <h3>Layer 1: Daily Signals</h3>
+                <p>Employees answer one question per day. Takes under 30 seconds. No surveys, no forms, no fatigue. Just a single reflection tied to one of six factors that predict whether someone stays or leaves.</p>
+                <p>These six factors are the <a href="/clover-framework.html" class="content-link">CLOVER Framework</a>:</p>
+                <ul class="clover-list">
+                    <li><strong>C</strong>ommunication: Do I know what's happening and why?</li>
+                    <li><strong>L</strong>earning: Am I growing here?</li>
+                    <li><strong>O</strong>pportunity: Can I see a future in this role?</li>
+                    <li><strong>V</strong>ulnerability: Is it safe to speak up?</li>
+                    <li><strong>E</strong>nablement: Do I have what I need to do my job?</li>
+                    <li><strong>R</strong>eflection: Does anyone notice my contribution?</li>
+                </ul>
+                <p>One question. One factor. Every day. The pattern over time tells the story that surveys miss.</p>
+            </div>
+
+            <!-- Layer 2 -->
+            <div class="layer-card">
+                <h3>Layer 2: Manager Dashboard</h3>
+                <p>Managers see their team's signals in real time. Not individual responses (those stay anonymous), but patterns. Which factors are strong. Which are slipping. Where attention is needed.</p>
+                <p>The dashboard shows:</p>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>Team Health</h4>
+                        <p>All six CLOVER factors at a glance</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Trend Lines</h4>
+                        <p>Improving, stable, or declining</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Threshold Alerts</h4>
+                        <p>When a factor drops below safe levels</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Suggested Actions</h4>
+                        <p>Based on what's actually happening</p>
+                    </div>
+                </div>
+                <p style="margin-top: 1.5rem;">No guesswork. No waiting for HR to compile a report. Managers see what's happening with their team right now.</p>
+            </div>
+
+            <!-- Layer 3 -->
+            <div class="layer-card">
+                <h3>Layer 3: Micro-Actions</h3>
+                <p>Most manager training fails because it's theoretical. "Be a better communicator." "Create psychological safety." These mean nothing when you're running a team and putting out fires.</p>
+                <p>Clover ERA gives managers specific actions tied to specific problems. When the Communication factor drops, the platform suggests a concrete response. When Opportunity signals decline, it prompts a growth conversation.</p>
+                <p>These aren't generic tips. They're actions calibrated to what your team is actually experiencing today.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT MANAGERS SEE -->
+    <section class="section">
+        <div class="container">
+            <h2>What Managers See Every Day</h2>
+
+            <div class="manager-features">
+                <div class="manager-feature">
+                    <h4>Team Overview</h4>
+                    <p>A visual snapshot of their team's health across all six factors.</p>
+                    <div class="health-demo">
+                        <span class="health-indicator health-green">Strong</span>
+                        <span class="health-indicator health-yellow">Watch</span>
+                        <span class="health-indicator health-red">Act Now</span>
+                    </div>
+                    <p>No complex charts. No data science degree required.</p>
+                </div>
+
+                <div class="manager-feature">
+                    <h4>Today's Priority</h4>
+                    <p>The single most important thing to address based on current signals. The platform does the analysis. The manager takes the action.</p>
+                </div>
+
+                <div class="manager-feature">
+                    <h4>Suggested Action</h4>
+                    <p>A specific, doable response. Not "improve communication" but "In your next 1:1 with your team, share context on [specific topic]." Clear enough to act on between meetings.</p>
+                </div>
+
+                <div class="manager-feature">
+                    <h4>30-Day Trend</h4>
+                    <p>Where things are heading. A team can have good numbers today but a declining trend. The platform catches drift before it becomes departure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT LEADERS SEE -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2>What Leaders See</h2>
+            <p>Executives and HR leaders get a different view:</p>
+
+            <div class="feature-grid" style="margin-top: 1.5rem;">
+                <div class="feature-item">
+                    <h4>Department Comparisons</h4>
+                    <p>Which teams are healthy. Which are struggling. Where manager enablement is working and where it needs support.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Flight Risk Indicators</h4>
+                    <p>Patterns that <a href="/why-employees-leave/" class="content-link">predict turnover before it happens</a>. Not surveillance. Not individual monitoring. Pattern recognition across factors that research shows precede resignation.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Cost Tracking</h4>
+                    <p>Connect signals to dollars. When a department's CLOVER scores drop, see the projected <a href="/calculator/" class="content-link">turnover cost</a>. When scores improve, see the savings.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Manager Effectiveness</h4>
+                    <p>Which managers are acting on signals. Which are ignoring them. Not to punish, but to support. Struggling managers often need enablement, not criticism.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMPLEMENTATION -->
+    <section class="section">
+        <div class="container">
+            <h2>How Implementation Works</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">W1</div>
+                    <div class="timeline-content">
+                        <h4>Setup</h4>
+                        <p>We configure the platform for your organization. Define teams. Set up manager access. Customize the question rotation if needed.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">W2</div>
+                    <div class="timeline-content">
+                        <h4>Launch</h4>
+                        <p>Employees receive their first question. Takes 30 seconds. No training required. Adoption is immediate because the ask is minimal.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">W3-4</div>
+                    <div class="timeline-content">
+                        <h4>Calibration</h4>
+                        <p>Baseline data accumulates. Patterns emerge. Managers start seeing their dashboard populate with real signals.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">W5+</div>
+                    <div class="timeline-content">
+                        <h4>Action</h4>
+                        <p>Managers receive their first suggested actions based on actual team data. The cycle of signal, insight, and action begins.</p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="background: var(--light-gray); padding: 1.5rem; border-radius: 10px; text-align: center; margin-top: 2rem;">
+                <strong>Full implementation takes less than 30 days.</strong> Most teams see actionable data within two weeks.
+            </p>
+        </div>
+    </section>
+
+    <!-- COMPARISON TABLE -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2>What This Replaces</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Traditional Approach</th>
+                        <th>Clover ERA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Annual surveys (12-month lag)</td>
+                        <td>Daily signals (real-time)</td>
+                    </tr>
+                    <tr>
+                        <td>Pulse surveys (monthly snapshots)</td>
+                        <td>Continuous pattern detection</td>
+                    </tr>
+                    <tr>
+                        <td>Exit interviews (too late)</td>
+                        <td>Flight risk indicators (67 days early)</td>
+                    </tr>
+                    <tr>
+                        <td>Generic manager training</td>
+                        <td>Specific micro-actions</td>
+                    </tr>
+                    <tr>
+                        <td>HR-compiled reports</td>
+                        <td>Manager self-service dashboard</td>
+                    </tr>
+                    <tr>
+                        <td>Gut feel</td>
+                        <td>Data-informed decisions</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- INTEGRATION -->
+    <section class="section">
+        <div class="container">
+            <h2>Integration</h2>
+            <p>Clover ERA works alongside your existing tools:</p>
+
+            <div class="integration-list">
+                <div class="integration-item">
+                    <strong>HRIS Integration</strong>
+                    <span>Sync team structures automatically</span>
+                </div>
+                <div class="integration-item">
+                    <strong>SSO</strong>
+                    <span>Single sign-on with your identity provider</span>
+                </div>
+                <div class="integration-item">
+                    <strong>Slack/Teams</strong>
+                    <span>Daily questions in tools employees use</span>
+                </div>
+                <div class="integration-item">
+                    <strong>Calendar Integration</strong>
+                    <span>Actions sync to manager calendars</span>
+                </div>
+            </div>
+
+            <p style="margin-top: 2rem;">No rip-and-replace. The platform layers onto what you already have.</p>
+        </div>
+    </section>
+
+    <!-- SECURITY -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2>Security and Privacy</h2>
+
+            <div class="security-grid">
+                <div class="security-item">
+                    <h4>Employee Privacy</h4>
+                    <p>Individual responses are never shown to managers. Only aggregate patterns at the team level. Employees can speak honestly because their specific answers stay protected.</p>
+                </div>
+                <div class="security-item">
+                    <h4>Data Security</h4>
+                    <p>SOC 2 Type II compliant. Data encrypted in transit and at rest. Your employee data never trains our models or gets shared externally.</p>
+                </div>
+                <div class="security-item">
+                    <h4>Anonymity Thresholds</h4>
+                    <p>Teams below a minimum size don't generate reports. This prevents identification of individuals through process of elimination.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIFFERENTIATORS -->
+    <section class="section">
+        <div class="container">
+            <h2>What Makes This Different</h2>
+
+            <div class="diff-grid">
+                <div class="diff-item">
+                    <h4>Not Another Survey Tool</h4>
+                    <p>Survey tools collect data. Clover ERA creates action. The gap between "knowing there's a problem" and "doing something about it" is where turnover happens. We close that gap.</p>
+                </div>
+                <div class="diff-item">
+                    <h4>Built for Managers, Not Just HR</h4>
+                    <p>Most retention tools are built for HR to analyze. Clover ERA is built for managers to use. Daily. Without waiting for someone else to interpret the data.</p>
+                </div>
+                <div class="diff-item">
+                    <h4>Prevention, Not Measurement</h4>
+                    <p>We don't help you measure engagement. We help you prevent turnover. Those sound similar. They're not. One gives you a number. The other saves you $150,000 per departure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+        <h2>See It In Action</h2>
+        <p>The best way to understand the platform is to see it with your own data.</p>
+        <p>In a 15-minute Turnover Analysis call, we'll:</p>
+        <ul class="cta-list">
+            <li>Calculate your current turnover cost using SHRM methodology</li>
+            <li>Show you where hidden costs are likely accumulating</li>
+            <li>Walk through how the platform would surface signals in your organization</li>
+        </ul>
+        <p>No pitch deck. No pressure. Just a clear look at the problem and how we solve it.</p>
+        <a href="/pricing/" class="btn-primary">Schedule Your Free Turnover Analysis</a>
+        <p class="cta-note">For executives at companies with 200-500 employees</p>
+    </section>
+
+    <script src="/js/footer.js"></script>
+    <script src="/js/cookie-consent.js"></script>
+</body>
+</html>
