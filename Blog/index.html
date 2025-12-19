@@ -692,28 +692,20 @@
         });
     </script>
 
-    <!-- Supabase JS Client for Dynamic Blog Loading -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Dynamic Blog Loading via Server API -->
     <script>
-        // Initialize Supabase
-        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Load articles dynamically from Supabase
+        // Load articles from server-side API (uses service key to bypass RLS)
         async function loadBlogArticles() {
             try {
-                const { data: articles, error } = await supabase
-                    .from('blog_articles')
-                    .select('*')
-                    .eq('status', 'published')
-                    .order('published_at', { ascending: false });
+                const response = await fetch('/api/blog-articles');
 
-                if (error) {
-                    console.error('Error loading articles:', error);
+                if (!response.ok) {
+                    console.error('API error:', response.status);
                     return;
                 }
+
+                const data = await response.json();
+                const articles = data.articles;
 
                 if (!articles || articles.length === 0) {
                     console.log('No published articles found');
@@ -741,9 +733,9 @@
                             <div class="article-details">
                                 <div class="article-meta">
                                     ${article.category ? `<span class="article-category">${escapeHtml(article.category)}</span>` : ''}
-                                    <span class="article-author">✍️ ${escapeHtml(article.author_name || 'Clover ERA Team')}</span>
-                                    <span>📅 ${formatDate(article.published_at)}</span>
-                                    ${article.read_time_minutes ? `<span>⏱️ ${article.read_time_minutes} min read</span>` : ''}
+                                    <span class="article-author">By ${escapeHtml(article.author_name || 'Clover ERA Team')}</span>
+                                    <span>${formatDate(article.published_at)}</span>
+                                    ${article.read_time_minutes ? `<span>${article.read_time_minutes} min read</span>` : ''}
                                 </div>
                                 <h3>
                                     <a href="/Blog/${article.slug}.html">${escapeHtml(article.title)}</a>
@@ -758,10 +750,10 @@
                     articleList.insertAdjacentHTML('beforeend', articleHTML);
                 });
 
-                console.log(`Loaded ${articles.length} articles from Supabase`);
+                console.log(`Loaded ${articles.length} articles`);
 
             } catch (error) {
-                console.error('Unexpected error loading articles:', error);
+                console.error('Error loading articles:', error);
             }
         }
 
