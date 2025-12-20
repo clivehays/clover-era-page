@@ -423,7 +423,7 @@
         const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
 
-        let supabase;
+        let supabaseClient;
         let articleId = null;
         let currentTags = [];
         let autoSaveTimer = null;
@@ -431,10 +431,10 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             // Check authentication
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) {
                 window.location.href = 'login.html';
                 return;
@@ -576,7 +576,7 @@
                 if (!silent) updateSaveStatus('saving');
 
                 // Get the current session token
-                const { data: { session } } = await supabase.auth.getSession();
+                const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) {
                     window.location.href = 'login.html';
                     return;
@@ -648,7 +648,7 @@
                 if (!confirmed) return;
 
                 // Get the current session token
-                const { data: { session } } = await supabase.auth.getSession();
+                const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) {
                     window.location.href = 'login.html';
                     return;
@@ -715,7 +715,7 @@
                 updateSaveStatus('saving');
 
                 // Get the current session token
-                const { data: { session } } = await supabase.auth.getSession();
+                const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) {
                     window.location.href = 'login.html';
                     return;
@@ -786,7 +786,7 @@
         async function loadArticle(id) {
             try {
                 // Get the current session token
-                const { data: { session } } = await supabase.auth.getSession();
+                const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) {
                     window.location.href = 'login.html';
                     return;
