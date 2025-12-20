@@ -700,7 +700,7 @@
     // Load applications
     async function loadApplications() {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('roundtable_applications')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -886,7 +886,7 @@
         try {
             const notes = document.getElementById('applicationNotes').value;
 
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('roundtable_applications')
                 .update({
                     status: newStatus,
@@ -919,7 +919,7 @@
         if (!confirmDelete) return;
 
         try {
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('roundtable_applications')
                 .delete()
                 .eq('id', currentApplication.id);
@@ -938,7 +938,7 @@
     // Load cohorts
     async function loadCohorts() {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('roundtable_cohorts')
                 .select('*')
                 .order('date', { ascending: false });
@@ -1041,7 +1041,7 @@
 
             if (cohortId) {
                 // Update existing cohort
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('roundtable_cohorts')
                     .update(cohortData)
                     .eq('id', cohortId);
@@ -1050,7 +1050,7 @@
                 alert('Cohort updated successfully!');
             } else {
                 // Create new cohort
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('roundtable_cohorts')
                     .insert([cohortData]);
 
@@ -1073,7 +1073,7 @@
         if (!confirmDelete) return;
 
         try {
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('roundtable_cohorts')
                 .delete()
                 .eq('id', currentCohort.id);

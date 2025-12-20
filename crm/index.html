@@ -1090,7 +1090,7 @@
                 const ninetyDaysAgo = new Date();
                 ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-                let closedQuery = supabase
+                let closedQuery = supabaseClient
                     .from('opportunities')
                     .select('stage')
                     .gte('updated_at', ninetyDaysAgo.toISOString())
