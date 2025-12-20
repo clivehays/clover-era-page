@@ -1012,7 +1012,7 @@
 
         // Check authentication on page load
         async function checkAuth() {
-            const { data: { session } } = await supabaseClientClient.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
 
             if (!session) {
                 window.location.href = '/crm/login.html';
@@ -1026,7 +1026,7 @@
             document.getElementById('currentUserDisplay').textContent = `Logged in as: ${session.user.email}`;
 
             // Check if user is admin and show admin link
-            const { data: profile } = await supabaseClientClient
+            const { data: profile } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', session.user.id)
