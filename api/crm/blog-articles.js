@@ -20,17 +20,15 @@ export default async function handler(req, res) {
   try {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
-    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
-      console.error('Supabase env vars not configured:', {
-        hasUrl: !!supabaseUrl,
-        hasServiceKey: !!supabaseServiceKey,
-        hasAnonKey: !!supabaseAnonKey
-      });
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase env vars not configured');
       res.status(500).json({ error: 'Database not configured' });
       return;
     }
+
+    // Use service key for all operations (bypasses RLS and can verify tokens)
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Verify authentication via Authorization header (Bearer token)
     const authHeader = req.headers.authorization;
@@ -41,18 +39,14 @@ export default async function handler(req, res) {
 
     const token = authHeader.substring(7);
 
-    // Verify the token with Supabase using anon key to validate session
-    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey);
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
+    // Verify the token with Supabase (service key can verify user tokens)
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
       console.error('Auth error:', authError);
       res.status(401).json({ error: 'Invalid or expired session' });
       return;
     }
-
-    // Use service key for database operations (bypasses RLS)
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Route based on method
     switch (req.method) {
