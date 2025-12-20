@@ -575,6 +575,13 @@
             try {
                 if (!silent) updateSaveStatus('saving');
 
+                // Get the current session token
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
                 const data = {
                     title: document.getElementById('title').value,
                     slug: document.getElementById('slug').value,
@@ -586,24 +593,39 @@
                     tags: currentTags,
                     meta_title: document.getElementById('metaTitle').value || null,
                     meta_description: document.getElementById('metaDescription').value || null,
-                    author_id: currentUser.id,
                     status: 'draft'
                 };
 
                 if (articleId) {
-                    const { error } = await supabase
-                        .from('blog_articles')
-                        .update(data)
-                        .eq('id', articleId);
-                    if (error) throw error;
+                    // Update existing article
+                    const response = await fetch(`/api/crm/blog-articles?id=${articleId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${session.access_token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to update article');
+                    }
                 } else {
-                    const { data: newArticle, error } = await supabase
-                        .from('blog_articles')
-                        .insert([data])
-                        .select()
-                        .single();
-                    if (error) throw error;
-                    articleId = newArticle.id;
+                    // Create new article
+                    const response = await fetch('/api/crm/blog-articles', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${session.access_token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to create article');
+                    }
+                    const result = await response.json();
+                    articleId = result.article.id;
                     window.history.replaceState({}, '', `?id=${articleId}`);
                 }
 
@@ -625,15 +647,30 @@
                 const confirmed = confirm('Publish this article? It will be visible on the blog.');
                 if (!confirmed) return;
 
-                const { error } = await supabase
-                    .from('blog_articles')
-                    .update({
+                // Get the current session token
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Use server-side API to publish
+                const response = await fetch(`/api/crm/blog-articles?id=${articleId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
                         status: 'published',
                         published_at: new Date().toISOString()
                     })
-                    .eq('id', articleId);
+                });
 
-                if (error) throw error;
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to publish article');
+                }
 
                 showAlert('Article published successfully! 🎉 Generating static file...');
                 document.getElementById('statusBadge').className = 'status-badge status-published';
@@ -677,6 +714,13 @@
 
                 updateSaveStatus('saving');
 
+                // Get the current session token
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
                 // Save the changes with published status
                 const data = {
                     title: document.getElementById('title').value,
@@ -689,17 +733,24 @@
                     tags: currentTags,
                     meta_title: document.getElementById('metaTitle').value || null,
                     meta_description: document.getElementById('metaDescription').value || null,
-                    author_id: currentUser.id,
                     status: 'published',
                     published_at: new Date().toISOString()
                 };
 
-                const { error } = await supabase
-                    .from('blog_articles')
-                    .update(data)
-                    .eq('id', articleId);
+                // Use server-side API to update
+                const response = await fetch(`/api/crm/blog-articles?id=${articleId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
 
-                if (error) throw error;
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to update article');
+                }
 
                 updateSaveStatus('saved');
 
@@ -734,13 +785,29 @@
 
         async function loadArticle(id) {
             try {
-                const { data: article, error } = await supabase
-                    .from('blog_articles')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
+                // Get the current session token
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return;
+                }
 
-                if (error) throw error;
+                // Use server-side API to load article
+                const response = await fetch(`/api/crm/blog-articles?id=${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to load article');
+                }
+
+                const data = await response.json();
+                const article = data.article;
 
                 document.getElementById('title').value = article.title;
                 document.getElementById('slug').value = article.slug;

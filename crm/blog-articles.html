@@ -367,14 +367,29 @@
 
         async function loadArticles() {
             try {
-                const { data, error } = await supabase
-                    .from('blog_articles')
-                    .select('*')
-                    .order('updated_at', { ascending: false });
+                // Get the current session token
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return;
+                }
 
-                if (error) throw error;
+                // Use server-side API with auth token (bypasses RLS)
+                const response = await fetch('/api/crm/blog-articles', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-                allArticles = data || [];
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to fetch articles');
+                }
+
+                const data = await response.json();
+                allArticles = data.articles || [];
                 renderTable();
                 updateStats();
 
@@ -476,12 +491,26 @@
             }
 
             try {
-                const { error } = await supabase
-                    .from('blog_articles')
-                    .delete()
-                    .eq('id', id);
+                // Get the current session token
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return;
+                }
 
-                if (error) throw error;
+                // Use server-side API with auth token
+                const response = await fetch(`/api/crm/blog-articles?id=${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${session.access_token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to delete article');
+                }
 
                 showAlert('Article deleted successfully', 'success');
                 await loadArticles();
