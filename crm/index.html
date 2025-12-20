@@ -1012,7 +1012,7 @@
 
         // Check authentication on page load
         async function checkAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
+            const { data: { session } } = await supabaseClientClient.auth.getSession();
 
             if (!session) {
                 window.location.href = '/crm/login.html';
@@ -1026,7 +1026,7 @@
             document.getElementById('currentUserDisplay').textContent = `Logged in as: ${session.user.email}`;
 
             // Check if user is admin and show admin link
-            const { data: profile } = await supabaseClient
+            const { data: profile } = await supabaseClientClient
                 .from('profiles')
                 .select('role')
                 .eq('id', session.user.id)
@@ -1628,7 +1628,7 @@
 
                 // Get ALL activities (not just tasks) that have a due date and are not completed
                 // This includes meetings, calls, emails with due dates
-                const { data: activities, error: activitiesError } = await supabase
+                const { data: activities, error: activitiesError } = await supabaseClient
                     .from('activities')
                     .select('*')
                     .not('due_date', 'is', null)
@@ -1650,7 +1650,7 @@
                 if (incompleteActivities.length > 0) {
                     for (let activity of incompleteActivities) {
                         if (activity.company_id) {
-                            const { data: company } = await supabase
+                            const { data: company } = await supabaseClient
                                 .from('companies')
                                 .select('name')
                                 .eq('id', activity.company_id)
@@ -1678,7 +1678,7 @@
                 const sevenDaysFromNow = new Date(today);
                 sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
-                const { data: opps, error: oppsError } = await supabase
+                const { data: opps, error: oppsError } = await supabaseClient
                     .from('opportunities')
                     .select('*')
                     .in('stage', ['demo-scheduled', 'proposal', 'negotiation'])
@@ -1692,7 +1692,7 @@
                 if (opps && opps.length > 0) {
                     for (let opp of opps) {
                         if (opp.company_id) {
-                            const { data: company } = await supabase
+                            const { data: company } = await supabaseClient
                                 .from('companies')
                                 .select('name')
                                 .eq('id', opp.company_id)
@@ -1815,7 +1815,7 @@
         // Load companies into dropdown
         async function loadCompanies() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('companies')
                     .select('id, name')
                     .order('name');
@@ -1846,7 +1846,7 @@
             if (!companyId) return;
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('contacts')
                     .select('id, first_name, last_name, title')
                     .eq('company_id', companyId)
@@ -1889,7 +1889,7 @@
             }
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('companies')
                     .insert([{
                         name: name,
@@ -1946,7 +1946,7 @@
             }
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('contacts')
                     .insert([{
                         company_id: companyId,
@@ -2004,7 +2004,7 @@
 
             try {
                 // Create the opportunity
-                const { data: opportunityData, error: opportunityError } = await supabase
+                const { data: opportunityData, error: opportunityError } = await supabaseClient
                     .from('opportunities')
                     .insert([{
                         company_id: companyId,
@@ -2029,7 +2029,7 @@
                 if (opportunityError) throw opportunityError;
 
                 // Create the first activity for this opportunity
-                const { error: activityError } = await supabase
+                const { error: activityError } = await supabaseClient
                     .from('activities')
                     .insert([{
                         company_id: companyId,
