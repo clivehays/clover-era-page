@@ -457,7 +457,7 @@
 
         // Check authentication and admin role
         async function checkAuth() {
-            const { data: { session }, error } = await supabaseClientClient.auth.getSession();
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
 
             if (error || !session) {
                 window.location.href = 'login.html';
@@ -676,7 +676,7 @@
 
             try {
                 // Update user password using Supabase Admin API
-                const { data, error } = await supabaseClientClient.auth.admin.updateUserById(
+                const { data, error } = await supabaseClient.auth.admin.updateUserById(
                     userId,
                     { password: newPassword }
                 );
@@ -705,7 +705,7 @@
 
                 if (sendEmail) {
                     try {
-                        const { error: resetError } = await supabaseClientClient.auth.resetPasswordForEmail(
+                        const { error: resetError } = await supabaseClient.auth.resetPasswordForEmail(
                             decodedEmail,
                             {
                                 redirectTo: 'https://cloverera.com/crm/reset-password.html'
@@ -739,7 +739,7 @@
             if (!confirmed) return;
 
             try {
-                const { error } = await supabaseClientClient.auth.resend({
+                const { error } = await supabaseClient.auth.resend({
                     type: 'signup',
                     email: decodedEmail,
                     options: {
@@ -843,7 +843,7 @@
                 }
 
                 // Create the user account using signUp with auto-confirmation
-                const { data, error } = await supabaseClientClient.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: tempPassword,
                     options: {
