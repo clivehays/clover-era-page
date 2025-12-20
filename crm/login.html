@@ -215,7 +215,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
 
         // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const loginForm = document.getElementById('loginForm');
         const loginButton = document.getElementById('loginButton');
@@ -224,7 +224,7 @@
 
         // Check if already logged in
         async function checkExistingSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 window.location.href = '/crm/index.html';
             }
@@ -246,7 +246,7 @@
             loginButton.textContent = 'Signing in...';
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
@@ -272,7 +272,7 @@
 
                     if (resend) {
                         try {
-                            const { error: resendError } = await supabase.auth.resend({
+                            const { error: resendError } = await supabaseClient.auth.resend({
                                 type: 'signup',
                                 email: email,
                                 options: {
@@ -321,7 +321,7 @@
             const email = document.getElementById('resetEmail').value;
 
             try {
-                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
                     redirectTo: 'https://cloverera.com/crm/reset-password.html'
                 });
 
@@ -347,7 +347,7 @@
 
                 if (newPassword && newPassword.length >= 6) {
                     try {
-                        const { error } = await supabase.auth.updateUser({
+                        const { error } = await supabaseClient.auth.updateUser({
                             password: newPassword
                         });
 

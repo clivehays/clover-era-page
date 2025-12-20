@@ -451,13 +451,13 @@
         const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentUser = null;
 
         // Check authentication and admin role
         async function checkAuth() {
-            const { data: { session }, error } = await supabase.auth.getSession();
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
 
             if (error || !session) {
                 window.location.href = 'login.html';
@@ -676,7 +676,7 @@
 
             try {
                 // Update user password using Supabase Admin API
-                const { data, error } = await supabase.auth.admin.updateUserById(
+                const { data, error } = await supabaseClient.auth.admin.updateUserById(
                     userId,
                     { password: newPassword }
                 );
@@ -705,7 +705,7 @@
 
                 if (sendEmail) {
                     try {
-                        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+                        const { error: resetError } = await supabaseClient.auth.resetPasswordForEmail(
                             decodedEmail,
                             {
                                 redirectTo: 'https://cloverera.com/crm/reset-password.html'
@@ -739,7 +739,7 @@
             if (!confirmed) return;
 
             try {
-                const { error } = await supabase.auth.resend({
+                const { error } = await supabaseClient.auth.resend({
                     type: 'signup',
                     email: decodedEmail,
                     options: {
@@ -775,7 +775,7 @@
             try {
                 // Try to confirm email using admin API
                 try {
-                    await supabase.auth.admin.updateUserById(userId, {
+                    await supabaseClient.auth.admin.updateUserById(userId, {
                         email_confirm: true
                     });
                 } catch (adminError) {
@@ -843,7 +843,7 @@
                 }
 
                 // Create the user account using signUp with auto-confirmation
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: tempPassword,
                     options: {
@@ -865,7 +865,7 @@
                     // If skip verification is checked, try to confirm email
                     if (skipVerification) {
                         try {
-                            await supabase.auth.admin.updateUserById(data.user.id, {
+                            await supabaseClient.auth.admin.updateUserById(data.user.id, {
                                 email_confirm: true
                             });
                             emailVerified = true;
@@ -974,7 +974,7 @@
                 // The auth user will remain but won't be able to access CRM without a profile
 
                 try {
-                    await supabase.auth.admin.deleteUser(userId);
+                    await supabaseClient.auth.admin.deleteUser(userId);
                 } catch (authError) {
                     console.warn('Could not delete auth user (requires admin privileges):', authError);
                     alert('User profile deleted successfully. Note: The authentication record requires manual deletion through the Supabase dashboard (Authentication section).');
@@ -991,7 +991,7 @@
 
         // Logout
         async function logout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.href = 'login.html';
         }
 

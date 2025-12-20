@@ -972,7 +972,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
 
         // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Global state
         let currentUserId = null;
@@ -1012,7 +1012,7 @@
 
         // Check authentication on page load
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
 
             if (!session) {
                 window.location.href = '/crm/login.html';
@@ -1026,7 +1026,7 @@
             document.getElementById('currentUserDisplay').textContent = `Logged in as: ${session.user.email}`;
 
             // Check if user is admin and show admin link
-            const { data: profile } = await supabase
+            const { data: profile } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', session.user.id)
@@ -1051,7 +1051,7 @@
 
         // Logout
         async function logout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.href = '/crm/login.html';
         }
 
@@ -1059,7 +1059,7 @@
         async function loadMetrics() {
             try {
                 // Get all open opportunities (filtered by view)
-                let query = supabase
+                let query = supabaseClient
                     .from('opportunities')
                     .select('*')
                     .not('stage', 'in', '("closed-won","closed-lost")');
@@ -1115,7 +1115,7 @@
         // Load pipeline
         async function loadPipeline() {
             try {
-                let query = supabase
+                let query = supabaseClient
                     .from('opportunities')
                     .select(`
                         *,
@@ -1286,7 +1286,7 @@
         async function loadCompanyPipeline() {
             allOpportunities = []; // Reset
             try {
-                let query = supabase
+                let query = supabaseClient
                     .from('opportunities')
                     .select(`
                         *,
@@ -1482,7 +1482,7 @@
         // Load recent activities
         async function loadActivities() {
             try {
-                let query = supabase
+                let query = supabaseClient
                     .from('activities')
                     .select(`
                         *,
