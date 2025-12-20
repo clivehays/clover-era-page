@@ -923,7 +923,7 @@
 
         // ===== INITIALIZATION =====
         async function init() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
+            const { data: { user } } = await supabaseClientClient.auth.getUser();
             if (!user) {
                 window.location.href = 'login.html';
                 return;
@@ -935,7 +935,7 @@
             }
 
             // Check if user is admin and show admin link
-            const { data: profile } = await supabase
+            const { data: profile } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', user.id)
@@ -974,7 +974,7 @@
         async function loadActivities() {
             console.log('Loading activities...');
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('activities')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -992,7 +992,7 @@
                         // Fetch company details
                         if (activity.company_id) {
                             try {
-                                const { data: company, error: companyError } = await supabase
+                                const { data: company, error: companyError } = await supabaseClient
                                     .from('companies')
                                     .select('id, name')
                                     .eq('id', activity.company_id)
@@ -1009,7 +1009,7 @@
                         // Fetch contact details
                         if (activity.contact_id) {
                             try {
-                                const { data: contact, error: contactError } = await supabase
+                                const { data: contact, error: contactError } = await supabaseClient
                                     .from('contacts')
                                     .select('id, first_name, last_name')
                                     .eq('id', activity.contact_id)
@@ -1026,7 +1026,7 @@
                         // Fetch opportunity details
                         if (activity.opportunity_id) {
                             try {
-                                const { data: opportunity, error: oppError } = await supabase
+                                const { data: opportunity, error: oppError } = await supabaseClient
                                     .from('opportunities')
                                     .select('id, title')
                                     .eq('id', activity.opportunity_id)
@@ -1065,7 +1065,7 @@
 
         async function loadCompanies() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('companies')
                     .select('id, name')
                     .order('name');
@@ -1100,7 +1100,7 @@
 
                 if (uniqueContactIds.length > 0) {
                     try {
-                        const { data: contacts, error } = await supabase
+                        const { data: contacts, error } = await supabaseClient
                             .from('contacts')
                             .select('id, first_name, last_name')
                             .in('id', uniqueContactIds)
@@ -1120,7 +1120,7 @@
 
             // Load contacts for the selected company
             try {
-                const { data: contacts, error } = await supabase
+                const { data: contacts, error } = await supabaseClient
                     .from('contacts')
                     .select('id, first_name, last_name')
                     .eq('company_id', companyId)
@@ -1149,7 +1149,7 @@
 
             try {
                 // Load contacts for the selected company
-                const { data: contacts, error: contactError } = await supabase
+                const { data: contacts, error: contactError } = await supabaseClient
                     .from('contacts')
                     .select('id, first_name, last_name, title')
                     .eq('company_id', companyId)
@@ -1163,7 +1163,7 @@
                 });
 
                 // Load opportunities for the selected company
-                const { data: opps, error: oppError } = await supabase
+                const { data: opps, error: oppError } = await supabaseClient
                     .from('opportunities')
                     .select('id, title')
                     .eq('company_id', companyId)
@@ -1382,14 +1382,14 @@
                 };
 
                 if (activityId) {
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('activities')
                         .update(activityData)
                         .eq('id', activityId);
 
                     if (error) throw error;
                 } else {
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('activities')
                         .insert([activityData]);
 
@@ -1407,7 +1407,7 @@
 
         async function toggleTaskCompletion(activityId, completed) {
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('activities')
                     .update({ completed })
                     .eq('id', activityId);
@@ -1428,7 +1428,7 @@
             }
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('activities')
                     .delete()
                     .eq('id', activityId);
@@ -1453,7 +1453,7 @@
         async function updateActivityStatus(activityId, newStatus) {
             try {
                 // Try to update with status column first
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('activities')
                     .update({
                         status: newStatus,
@@ -1465,7 +1465,7 @@
                     // Check if error is due to missing status column
                     if (error.message.includes("'status' column") || error.message.includes("column \"status\"")) {
                         // Fallback: just update completed field
-                        const { error: fallbackError } = await supabase
+                        const { error: fallbackError } = await supabaseClient
                             .from('activities')
                             .update({
                                 completed: newStatus === 'completed'
@@ -1704,7 +1704,7 @@
                 // Update status in database
                 try {
                     // Try to update with status column first
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('activities')
                         .update({
                             status: newStatus,
@@ -1716,7 +1716,7 @@
                         // Check if error is due to missing status column
                         if (error.message.includes("'status' column") || error.message.includes("column \"status\"")) {
                             // Fallback: just update completed field
-                            const { error: fallbackError } = await supabase
+                            const { error: fallbackError } = await supabaseClient
                                 .from('activities')
                                 .update({
                                     completed: newStatus === 'completed'

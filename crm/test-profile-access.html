@@ -21,7 +21,7 @@
             let output = '<h2>Test Results:</h2>';
 
             // Get current session
-            const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+            const { data: { session }, error: sessionError } = await supabaseClientClient.auth.getSession();
 
             output += '<h3>1. Session Check:</h3>';
             if (sessionError) {
@@ -36,7 +36,7 @@
 
                 // Try to query profile
                 output += '<h3>2. Profile Query Test:</h3>';
-                const { data: profile, error: profileError } = await supabase
+                const { data: profile, error: profileError } = await supabaseClient
                     .from('profiles')
                     .select('*')
                     .eq('id', session.user.id)
@@ -61,7 +61,7 @@
 
                 // Try to query all profiles
                 output += '<h3>3. All Profiles Query Test:</h3>';
-                const { data: allProfiles, error: allProfilesError } = await supabase
+                const { data: allProfiles, error: allProfilesError } = await supabaseClient
                     .from('profiles')
                     .select('id, email, role');
 

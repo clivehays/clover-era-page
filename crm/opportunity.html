@@ -693,7 +693,7 @@
 
         // Check authentication
         async function checkAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
+            const { data: { session } } = await supabaseClientClient.auth.getSession();
             if (!session) {
                 window.location.href = '/crm/login.html';
                 return false;
@@ -703,7 +703,7 @@
             document.getElementById('userInfo').textContent = session.user.email;
 
             // Check if user is admin
-            const { data: profile } = await supabase
+            const { data: profile } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', session.user.id)
@@ -754,7 +754,7 @@
         // Load opportunity
         async function loadOpportunity() {
             try {
-                const { data: opp, error } = await supabase
+                const { data: opp, error } = await supabaseClient
                     .from('opportunities')
                     .select(`
                         *,
@@ -770,7 +770,7 @@
 
                 // Get owner details
                 if (opp.owner_id) {
-                    const { data: profile } = await supabase
+                    const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('full_name, email')
                         .eq('id', opp.owner_id)
@@ -871,7 +871,7 @@
         // Load activities
         async function loadActivities() {
             try {
-                const { data: activities, error } = await supabase
+                const { data: activities, error } = await supabaseClient
                     .from('activities')
                     .select('*')
                     .eq('opportunity_id', opportunityId)
@@ -946,7 +946,7 @@
             };
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('opportunities')
                     .update(updates)
                     .eq('id', opportunityId);
@@ -981,7 +981,7 @@
                     .eq('opportunity_id', opportunityId);
 
                 // Delete opportunity
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('opportunities')
                     .delete()
                     .eq('id', opportunityId);
@@ -1025,7 +1025,7 @@
             };
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('activities')
                     .insert([activity]);
 
@@ -1088,7 +1088,7 @@
             meetingEnd.setMinutes(meetingEnd.getMinutes() + 60); // 1 hour meeting
 
             // Get current user's email
-            const { data: { session } } = await supabaseClient.auth.getSession();
+            const { data: { session } } = await supabaseClientClient.auth.getSession();
             const organizerEmail = session.user.email;
 
             // Build description
@@ -1197,7 +1197,7 @@
             };
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('activities')
                     .insert([emailData]);
 
@@ -1229,8 +1229,8 @@
             const company = currentOpportunity.companies;
 
             // Get current user info
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            const { data: profile } = await supabase
+            const { data: { session } } = await supabaseClientClient.auth.getSession();
+            const { data: profile } = await supabaseClient
                 .from('profiles')
                 .select('full_name')
                 .eq('id', session.user.id)

@@ -928,14 +928,14 @@
 
         // Check authentication
         async function checkAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
+            const { data: { session } } = await supabaseClientClient.auth.getSession();
             if (!session) {
                 window.location.href = '/crm/login.html';
                 return false;
             }
 
             // Check if user is admin and show admin link
-            const { data: profile } = await supabase
+            const { data: profile } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', session.user.id)
@@ -958,7 +958,7 @@
         async function loadCompanies() {
             try {
                 // Load companies
-                const { data: companies, error } = await supabase
+                const { data: companies, error } = await supabaseClient
                     .from('companies')
                     .select('*')
                     .order('name');
@@ -966,7 +966,7 @@
                 if (error) throw error;
 
                 // Get the most recent opportunity for each company (to find assigned owner)
-                const { data: opportunities, error: oppError } = await supabase
+                const { data: opportunities, error: oppError } = await supabaseClient
                     .from('opportunities')
                     .select('company_id, owner_id')
                     .order('created_at', { ascending: false });
@@ -974,7 +974,7 @@
                 if (oppError) console.error('Error loading opportunities:', oppError);
 
                 // Get the most recent activity for each company
-                const { data: activities, error: actError } = await supabase
+                const { data: activities, error: actError } = await supabaseClient
                     .from('activities')
                     .select('company_id, subject, type, created_at, due_date')
                     .order('created_at', { ascending: false });
@@ -982,7 +982,7 @@
                 if (actError) console.error('Error loading activities:', actError);
 
                 // Get all profiles for owner names
-                const { data: profiles, error: profileError } = await supabase
+                const { data: profiles, error: profileError } = await supabaseClient
                     .from('profiles')
                     .select('id, full_name, email');
 
@@ -1064,7 +1064,7 @@
             const partners = allCompanies.filter(c => c.company_type === 'partner' || c.company_type === 'both').length;
 
             // Get total opportunities count
-            const { count: opportunitiesCount } = await supabase
+            const { count: opportunitiesCount } = await supabaseClient
                 .from('opportunities')
                 .select('*', { count: 'exact', head: true });
 
@@ -1195,7 +1195,7 @@
 
             // Load opportunities
             try {
-                const { data: opportunities, error } = await supabase
+                const { data: opportunities, error } = await supabaseClient
                     .from('opportunities')
                     .select('id, title, stage, value')
                     .eq('company_id', companyId)
@@ -1223,7 +1223,7 @@
 
             // Load contacts
             try {
-                const { data: contacts, error } = await supabase
+                const { data: contacts, error } = await supabaseClient
                     .from('contacts')
                     .select('id, first_name, last_name, title, email, phone')
                     .eq('company_id', companyId)
@@ -1255,7 +1255,7 @@
 
             // Load activities
             try {
-                const { data: activities, error } = await supabase
+                const { data: activities, error } = await supabaseClient
                     .from('activities')
                     .select('id, type, subject, description, due_date, completed, created_at, contact_id')
                     .eq('company_id', companyId)
@@ -1268,7 +1268,7 @@
                 let contactMap = {};
 
                 if (contactIds.length > 0) {
-                    const { data: activityContacts } = await supabase
+                    const { data: activityContacts } = await supabaseClient
                         .from('contacts')
                         .select('id, first_name, last_name')
                         .in('id', contactIds);
@@ -1402,7 +1402,7 @@
             try {
                 if (companyId) {
                     // Update existing company
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('companies')
                         .update(companyData)
                         .eq('id', companyId);
@@ -1410,7 +1410,7 @@
                     if (error) throw error;
                 } else {
                     // Insert new company
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('companies')
                         .insert([companyData]);
 
@@ -1531,7 +1531,7 @@
 
             try {
                 // Delete all contacts first
-                const { error: contactsError } = await supabase
+                const { error: contactsError } = await supabaseClient
                     .from('contacts')
                     .delete()
                     .eq('company_id', currentCompanyId);
@@ -1539,7 +1539,7 @@
                 if (contactsError) throw contactsError;
 
                 // Delete all activities
-                const { error: activitiesError } = await supabase
+                const { error: activitiesError } = await supabaseClient
                     .from('activities')
                     .delete()
                     .eq('company_id', currentCompanyId);
@@ -1547,7 +1547,7 @@
                 if (activitiesError) throw activitiesError;
 
                 // Delete all opportunities (this will cascade delete opportunity_products)
-                const { error: oppsError } = await supabase
+                const { error: oppsError } = await supabaseClient
                     .from('opportunities')
                     .delete()
                     .eq('company_id', currentCompanyId);
@@ -1555,7 +1555,7 @@
                 if (oppsError) throw oppsError;
 
                 // Finally, delete the company
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('companies')
                     .delete()
                     .eq('id', currentCompanyId);
@@ -1579,7 +1579,7 @@
             }
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('contacts')
                     .delete()
                     .eq('id', contactId);

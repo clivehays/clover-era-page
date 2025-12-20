@@ -456,7 +456,7 @@
         let currentFilters = {};
 
         async function checkAuth() {
-            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            const { data: { session }, error } = await supabaseClientClient.auth.getSession();
 
             if (error || !session) {
                 window.location.href = 'login.html';
@@ -466,7 +466,7 @@
             document.getElementById('userEmail').textContent = session.user.email;
 
             // Check if user is admin to show admin link
-            const { data: profile } = await supabase
+            const { data: profile } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', session.user.id)
@@ -481,7 +481,7 @@
 
         async function loadOpportunities() {
             console.log('Loading opportunities...');
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('opportunities')
                 .select(`
                     *,
@@ -503,7 +503,7 @@
             if (data && data.length > 0) {
                 for (let opp of data) {
                     if (opp.owner_id) {
-                        const { data: profile } = await supabase
+                        const { data: profile } = await supabaseClient
                             .from('profiles')
                             .select('full_name, email')
                             .eq('id', opp.owner_id)
@@ -697,7 +697,7 @@
                 const newStage = e.currentTarget.dataset.stage;
 
                 // Update in database
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('opportunities')
                     .update({
                         stage: newStage,

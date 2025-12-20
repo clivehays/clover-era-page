@@ -457,7 +457,7 @@
 
         // Check authentication and admin role
         async function checkAuth() {
-            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            const { data: { session }, error } = await supabaseClientClient.auth.getSession();
 
             if (error || !session) {
                 window.location.href = 'login.html';
@@ -468,7 +468,7 @@
             document.getElementById('userInfo').textContent = session.user.email;
 
             // Check if user is admin
-            const { data: profile, error: profileError } = await supabase
+            const { data: profile, error: profileError } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', session.user.id)
@@ -488,7 +488,7 @@
         async function loadUsers() {
             try {
                 // Get all profiles
-                const { data: profiles, error: profilesError } = await supabase
+                const { data: profiles, error: profilesError } = await supabaseClient
                     .from('profiles')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -496,7 +496,7 @@
                 if (profilesError) throw profilesError;
 
                 // Get opportunity counts for each user
-                const { data: opportunityCounts, error: oppError } = await supabase
+                const { data: opportunityCounts, error: oppError } = await supabaseClient
                     .from('opportunities')
                     .select('owner_id');
 
@@ -628,7 +628,7 @@
 
                 console.log('Update data:', updateData);
 
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('profiles')
                     .update(updateData)
                     .eq('id', userId)
@@ -640,7 +640,7 @@
                 if (error) throw error;
 
                 // Verify the update by fetching the profile
-                const { data: verifyData, error: verifyError } = await supabase
+                const { data: verifyData, error: verifyError } = await supabaseClient
                     .from('profiles')
                     .select('id, email, full_name, role')
                     .eq('id', userId)
@@ -676,7 +676,7 @@
 
             try {
                 // Update user password using Supabase Admin API
-                const { data, error } = await supabaseClient.auth.admin.updateUserById(
+                const { data, error } = await supabaseClientClient.auth.admin.updateUserById(
                     userId,
                     { password: newPassword }
                 );
@@ -705,7 +705,7 @@
 
                 if (sendEmail) {
                     try {
-                        const { error: resetError } = await supabaseClient.auth.resetPasswordForEmail(
+                        const { error: resetError } = await supabaseClientClient.auth.resetPasswordForEmail(
                             decodedEmail,
                             {
                                 redirectTo: 'https://cloverera.com/crm/reset-password.html'
@@ -739,7 +739,7 @@
             if (!confirmed) return;
 
             try {
-                const { error } = await supabaseClient.auth.resend({
+                const { error } = await supabaseClientClient.auth.resend({
                     type: 'signup',
                     email: decodedEmail,
                     options: {
@@ -783,7 +783,7 @@
                 }
 
                 // Update the profile to mark email as confirmed
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('profiles')
                     .update({
                         email_confirmed_at: new Date().toISOString()
@@ -831,7 +831,7 @@
 
             try {
                 // Check if user already exists
-                const { data: existingProfile } = await supabase
+                const { data: existingProfile } = await supabaseClient
                     .from('profiles')
                     .select('id')
                     .eq('email', email)
@@ -843,7 +843,7 @@
                 }
 
                 // Create the user account using signUp with auto-confirmation
-                const { data, error } = await supabaseClient.auth.signUp({
+                const { data, error } = await supabaseClientClient.auth.signUp({
                     email: email,
                     password: tempPassword,
                     options: {
@@ -885,7 +885,7 @@
                     }
 
                     // Update the role in profiles table (profile is auto-created by trigger)
-                    const { error: updateError } = await supabase
+                    const { error: updateError } = await supabaseClient
                         .from('profiles')
                         .update({
                             role: role,
@@ -962,7 +962,7 @@
                     .eq('owner_id', userId);
 
                 // Delete the profile
-                const { error: profileError } = await supabase
+                const { error: profileError } = await supabaseClient
                     .from('profiles')
                     .delete()
                     .eq('id', userId);
