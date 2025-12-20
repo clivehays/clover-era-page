@@ -22,8 +22,12 @@ export default async function handler(req, res) {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
     const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Supabase env vars not configured');
+    if (!supabaseUrl || !supabaseServiceKey || !supabaseAnonKey) {
+      console.error('Supabase env vars not configured:', {
+        hasUrl: !!supabaseUrl,
+        hasServiceKey: !!supabaseServiceKey,
+        hasAnonKey: !!supabaseAnonKey
+      });
       res.status(500).json({ error: 'Database not configured' });
       return;
     }
@@ -37,11 +41,12 @@ export default async function handler(req, res) {
 
     const token = authHeader.substring(7);
 
-    // Verify the token with Supabase using anon key first to validate session
+    // Verify the token with Supabase using anon key to validate session
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey);
     const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
 
     if (authError || !user) {
+      console.error('Auth error:', authError);
       res.status(401).json({ error: 'Invalid or expired session' });
       return;
     }
