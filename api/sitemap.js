@@ -22,6 +22,7 @@ const staticPages = [
   { loc: 'https://cloverera.com/contact.html', changefreq: 'monthly', priority: '0.6' },
   { loc: 'https://cloverera.com/Blog/', changefreq: 'weekly', priority: '0.6' },
   { loc: 'https://cloverera.com/roundtable/', changefreq: 'monthly', priority: '0.6' },
+  { loc: 'https://cloverera.com/signal/', changefreq: 'monthly', priority: '0.7' },
   { loc: 'https://cloverera.com/privacy-policy.html', changefreq: 'yearly', priority: '0.3' },
   { loc: 'https://cloverera.com/terms.html', changefreq: 'yearly', priority: '0.3' },
   { loc: 'https://cloverera.com/cookie-policy.html', changefreq: 'yearly', priority: '0.3' },
