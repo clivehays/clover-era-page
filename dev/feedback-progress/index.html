@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Progress - Dev Preview | Clover ERA</title>
+
+    <!-- CRITICAL: Prevent search engine indexing -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+
+    <!-- React dependencies from CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f3f4f6; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function FeedbackProgressAllScenarios() {
+          const [selectedScenario, setSelectedScenario] = useState('new_user');
+
+          // Clover ERA brand colors
+          const teal = '#4DB6AC';
+          const tealDark = '#3D9A91';
+          const textDark = '#2D4A47';
+          const textMuted = '#6B7280';
+          const divider = '#E5E7EB';
+          const bgLight = '#F9FAFB';
+
+          const scenarios = {
+            // New user scenarios
+            new_user: {
+              label: 'New User - Practice Mode',
+              category: 'New Users',
+              description: 'User joined mid-month, building first streak',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 1,
+              isOffDay: false,
+              joinedMidMonth: true,
+              nextWrappedDate: 'January 31st',
+              qualifyingWeeks: 0,
+              weeksNeeded: 4
+            },
+            new_user_week2: {
+              label: 'New User - Week 2',
+              category: 'New Users',
+              description: 'User in second week, streak building',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue'],
+              currentDay: 'Tue',
+              weekStreak: 2,
+              isOffDay: false,
+              joinedMidMonth: true,
+              nextWrappedDate: 'January 31st',
+              qualifyingWeeks: 1,
+              weeksNeeded: 4
+            },
+
+            // Nurse scenarios (4 days)
+            nurse_midweek: {
+              label: 'Nurse - Mid Week',
+              category: '4-Day Schedule (Nurse)',
+              description: '4-day worker, 3 of 4 days complete',
+              workDays: ['Sun', 'Mon', 'Tue', 'Wed'],
+              completedDays: ['Sun', 'Mon', 'Tue'],
+              currentDay: 'Tue',
+              weekStreak: 6,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 2,
+              weeksNeeded: 4
+            },
+            nurse_offday: {
+              label: 'Nurse - Off Day',
+              category: '4-Day Schedule (Nurse)',
+              description: '4-day worker viewing on their day off (Thursday)',
+              workDays: ['Sun', 'Mon', 'Tue', 'Wed'],
+              completedDays: ['Sun', 'Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 6,
+              isOffDay: true,
+              offDayResumes: 'Sunday',
+              joinedMidMonth: false,
+              qualifyingWeeks: 2,
+              weeksNeeded: 4
+            },
+            nurse_unlocked: {
+              label: 'Nurse - Wrapped Unlocked',
+              category: '4-Day Schedule (Nurse)',
+              description: '4-day worker who has unlocked wrapped',
+              workDays: ['Sun', 'Mon', 'Tue', 'Wed'],
+              completedDays: ['Sun', 'Mon'],
+              currentDay: 'Mon',
+              weekStreak: 8,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 4,
+              weeksNeeded: 4
+            },
+
+            // Office scenarios (5 days)
+            office_ontrack: {
+              label: 'Office - On Track',
+              category: '5-Day Schedule (Office)',
+              description: '5-day worker, on track for the week',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 4,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 2,
+              weeksNeeded: 4
+            },
+            office_missed_day: {
+              label: 'Office - Missed a Day',
+              category: '5-Day Schedule (Office)',
+              description: '5-day worker who missed Tuesday',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Wed'],
+              currentDay: 'Wed',
+              missedDays: ['Tue'],
+              weekStreak: 4,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 3,
+              weeksNeeded: 4
+            },
+            office_unlocked: {
+              label: 'Office - Wrapped Unlocked',
+              category: '5-Day Schedule (Office)',
+              description: '5-day worker who has unlocked wrapped',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed', 'Thu'],
+              currentDay: 'Thu',
+              weekStreak: 12,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 4,
+              weeksNeeded: 4
+            },
+            office_weekend: {
+              label: 'Office - Weekend View',
+              category: '5-Day Schedule (Office)',
+              description: '5-day worker viewing on Saturday',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              currentDay: 'Fri',
+              weekStreak: 5,
+              isOffDay: true,
+              offDayResumes: 'Monday',
+              joinedMidMonth: false,
+              qualifyingWeeks: 3,
+              weeksNeeded: 4
+            },
+
+            // Hotel scenarios (6 days)
+            hotel_midweek: {
+              label: 'Hotel - Mid Week',
+              category: '6-Day Schedule (Hotel)',
+              description: '6-day worker, 3 of 6 days complete',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              completedDays: ['Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 4,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 1,
+              weeksNeeded: 4
+            },
+            hotel_at_risk: {
+              label: 'Hotel - At Risk',
+              category: '6-Day Schedule (Hotel)',
+              description: '6-day worker who missed 2 days, needs all remaining',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              completedDays: ['Mon', 'Wed'],
+              currentDay: 'Wed',
+              missedDays: ['Tue'],
+              weekStreak: 3,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 2,
+              weeksNeeded: 4
+            },
+            hotel_unlocked: {
+              label: 'Hotel - Wrapped Unlocked',
+              category: '6-Day Schedule (Hotel)',
+              description: '6-day worker who has unlocked wrapped',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              completedDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              currentDay: 'Fri',
+              weekStreak: 10,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 4,
+              weeksNeeded: 4
+            }
+          };
+
+          const scenario = scenarios[selectedScenario];
+          const wrappedUnlocked = scenario.qualifyingWeeks >= scenario.weeksNeeded;
+
+          // Group scenarios by category
+          const categories = {};
+          Object.entries(scenarios).forEach(([key, s]) => {
+            if (!categories[s.category]) {
+              categories[s.category] = [];
+            }
+            categories[s.category].push({ key, ...s });
+          });
+
+          return (
+            <div style={{
+              minHeight: '100vh',
+              background: '#f3f4f6',
+              padding: '20px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}>
+              {/* Header */}
+              <div style={{
+                maxWidth: '800px',
+                margin: '0 auto 20px auto',
+                textAlign: 'center'
+              }}>
+                <h1 style={{ color: textDark, fontSize: '24px', margin: '0 0 8px 0' }}>
+                  Feedback Progress Feature
+                </h1>
+                <p style={{ color: textMuted, fontSize: '14px', margin: 0 }}>
+                  "Preserve your weekly streaks (75%+) and receive your monthly wrapped insights."
+                </p>
+                <p style={{ color: '#EF4444', fontSize: '12px', marginTop: '8px', fontWeight: '500' }}>
+                  🔒 DEV PREVIEW - Not indexed by search engines
+                </p>
+              </div>
+
+              {/* Scenario Selector */}
+              <div style={{
+                maxWidth: '800px',
+                margin: '0 auto 20px auto',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}>
+                <h2 style={{ margin: '0 0 16px 0', color: textDark, fontSize: '16px' }}>
+                  Select Scenario
+                </h2>
+
+                {Object.entries(categories).map(([category, items]) => (
+                  <div key={category} style={{ marginBottom: '16px' }}>
+                    <h3 style={{
+                      margin: '0 0 8px 0',
+                      color: textMuted,
+                      fontSize: '12px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      {category}
+                    </h3>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {items.map((item) => (
+                        <button
+                          key={item.key}
+                          onClick={() => setSelectedScenario(item.key)}
+                          style={{
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: selectedScenario === item.key ? teal : '#e5e7eb',
+                            color: selectedScenario === item.key ? 'white' : textDark,
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            fontWeight: selectedScenario === item.key ? '600' : '400'
+                          }}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Current scenario description */}
+                <div style={{
+                  marginTop: '16px',
+                  padding: '12px',
+                  background: bgLight,
+                  borderRadius: '8px',
+                  borderLeft: `3px solid ${teal}`
+                }}>
+                  <strong style={{ color: textDark }}>{scenario.label}</strong>
+                  <p style={{ margin: '4px 0 0 0', color: textMuted, fontSize: '13px' }}>
+                    {scenario.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Phone Frame */}
+              <div style={{
+                maxWidth: '375px',
+                minHeight: '700px',
+                margin: '0 auto',
+                background: 'white',
+                borderRadius: '40px',
+                padding: '12px 20px',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                {/* Status Bar */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 8px 4px 8px',
+                  color: '#1f2937',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>
+                  <span>10:37</span>
+                  <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                    <span style={{ fontSize: '12px' }}>📶</span>
+                    <span style={{ fontSize: '12px' }}>📡</span>
+                    <span style={{ fontSize: '14px' }}>🔋</span>
+                  </div>
+                </div>
+
+                {/* Navigation Header */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 0',
+                  marginBottom: '4px'
+                }}>
+                  <div style={{ width: '24px' }} />
+                  <span style={{ color: textDark, fontSize: '17px', fontWeight: '400' }}>
+                    Wrapping Up
+                  </span>
+                  <span style={{ fontSize: '20px', color: textMuted }}>⚙️</span>
+                </div>
+
+                {/* Divider */}
+                <div style={{ height: '1px', background: divider, margin: '0 -20px' }} />
+
+                {/* Clover ERA Header */}
+                <div style={{ textAlign: 'center', padding: '8px 0 6px 0' }}>
+                  <h1 style={{
+                    color: tealDark,
+                    fontSize: '18px',
+                    margin: 0,
+                    fontWeight: '600'
+                  }}>
+                    Clover ERA
+                  </h1>
+                  <p style={{
+                    color: textMuted,
+                    fontSize: '12px',
+                    margin: '2px 0 0 0'
+                  }}>
+                    Leadership
+                  </p>
+                </div>
+
+                {/* Divider */}
+                <div style={{ height: '1px', background: divider, margin: '0 -20px' }} />
+
+                {/* Thank You Section */}
+                <div style={{ textAlign: 'center', padding: '16px 0 8px 0' }}>
+                  <h2 style={{
+                    color: tealDark,
+                    fontSize: '22px',
+                    margin: 0,
+                    fontWeight: '600'
+                  }}>
+                    Thank You!
+                  </h2>
+                  <p style={{
+                    color: textMuted,
+                    fontSize: '14px',
+                    margin: '8px 0 0 0',
+                    lineHeight: '1.4'
+                  }}>
+                    Based on the reason you shared, here is a micro-action to consider.
+                  </p>
+                </div>
+
+                {/* Micro Action Text */}
+                <div style={{ padding: '8px 0 16px 0' }}>
+                  <p style={{
+                    color: textDark,
+                    fontSize: '17px',
+                    fontWeight: '600',
+                    lineHeight: '1.5',
+                    margin: 0,
+                    textAlign: 'center'
+                  }}>
+                    Everyone works differently! Maybe ask your manager if you can briefly test a method that suits you better—even small experiments help demonstrate effectiveness.
+                  </p>
+                </div>
+
+                {/* Divider */}
+                <div style={{ height: '1px', background: divider, margin: '0 -20px 16px -20px' }} />
+
+                {/* Weekly Streak */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  padding: '12px 16px',
+                  background: bgLight,
+                  borderRadius: '12px',
+                  marginBottom: '12px'
+                }}>
+                  <span style={{ fontSize: '26px' }}>🔥</span>
+                  <div>
+                    <div style={{
+                      color: textDark,
+                      fontSize: '22px',
+                      fontWeight: '700',
+                      lineHeight: '1.1'
+                    }}>
+                      {scenario.weekStreak} week streak
+                    </div>
+                    <div style={{
+                      color: textMuted,
+                      fontSize: '12px',
+                      marginTop: '2px'
+                    }}>
+                      {scenario.weekStreak === 1 ? "You're off to a great start!" : "Keep it going!"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Off Day Notice */}
+                {scenario.isOffDay && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '10px 16px',
+                    background: '#FEF3C7',
+                    borderRadius: '12px',
+                    marginBottom: '12px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>📅</span>
+                    <span style={{ color: '#92400E', fontSize: '13px', fontWeight: '500' }}>
+                      Work week resumes {scenario.offDayResumes}
+                    </span>
+                  </div>
+                )}
+
+                {/* This Week's Progress */}
+                <div style={{
+                  background: bgLight,
+                  borderRadius: '12px',
+                  padding: '14px',
+                  marginBottom: '12px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '10px'
+                  }}>
+                    <span style={{ color: textDark, fontSize: '14px', fontWeight: '600' }}>
+                      This week
+                    </span>
+                    <span style={{
+                      color: tealDark,
+                      fontSize: '13px',
+                      fontWeight: '500'
+                    }}>
+                      {scenario.completedDays.length} of {scenario.workDays.length} days
+                    </span>
+                  </div>
+
+                  {/* Work Day Dots */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: '6px'
+                  }}>
+                    {scenario.workDays.map((day) => {
+                      const isCompleted = scenario.completedDays.includes(day);
+                      const isCurrent = day === scenario.currentDay;
+                      const isFuture = scenario.workDays.indexOf(day) > scenario.workDays.indexOf(scenario.currentDay);
+
+                      return (
+                        <div key={day} style={{
+                          flex: 1,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: isCompleted
+                              ? teal
+                              : isFuture
+                                ? '#E5E7EB'
+                                : '#FEE2E2',
+                            border: isCurrent ? `2px solid ${textDark}` : 'none'
+                          }}>
+                            {isCompleted ? (
+                              <span style={{ color: 'white', fontSize: '14px', fontWeight: '600' }}>✓</span>
+                            ) : isFuture ? (
+                              <span style={{ color: '#9CA3AF', fontSize: '10px' }}>○</span>
+                            ) : (
+                              <span style={{ color: '#EF4444', fontSize: '12px' }}>✗</span>
+                            )}
+                          </div>
+                          <span style={{
+                            color: isCurrent ? textDark : textMuted,
+                            fontSize: '10px',
+                            fontWeight: isCurrent ? '600' : '400'
+                          }}>
+                            {day}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* 75% note */}
+                  <div style={{
+                    marginTop: '10px',
+                    fontSize: '11px',
+                    color: textMuted,
+                    textAlign: 'center'
+                  }}>
+                    Answer 75%+ of your work days to keep your streak
+                  </div>
+                </div>
+
+                {/* Monthly Wrapped Status */}
+                {scenario.joinedMidMonth ? (
+                  // Practice Mode
+                  <div style={{
+                    background: bgLight,
+                    borderRadius: '12px',
+                    padding: '16px',
+                    border: `1px solid ${divider}`
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: 'white',
+                        borderRadius: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '20px',
+                        border: `1px solid ${divider}`
+                      }}>
+                        🎯
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          color: textDark,
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          marginBottom: '4px'
+                        }}>
+                          Building Your First Wrapped
+                        </div>
+                        <div style={{
+                          color: textMuted,
+                          fontSize: '12px',
+                          lineHeight: '1.4'
+                        }}>
+                          Keep your streak going! Your first Monthly Wrapped arrives {scenario.nextWrappedDate}.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : wrappedUnlocked ? (
+                  // Unlocked state
+                  <div style={{
+                    background: teal,
+                    borderRadius: '12px',
+                    padding: '16px'
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: 'rgba(255,255,255,0.2)',
+                        borderRadius: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '20px'
+                      }}>
+                        🎁
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          color: 'white',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          marginBottom: '4px'
+                        }}>
+                          Monthly Wrapped Unlocked!
+                        </div>
+                        <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '12px' }}>
+                          Your insights are ready to view
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Progress state
+                  <div style={{
+                    background: bgLight,
+                    borderRadius: '12px',
+                    padding: '14px',
+                    border: `1px solid ${divider}`
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: 'white',
+                        borderRadius: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '20px',
+                        border: `1px solid ${divider}`
+                      }}>
+                        📊
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          color: textDark,
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          marginBottom: '4px'
+                        }}>
+                          December Wrapped
+                        </div>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}>
+                          <div style={{ display: 'flex', gap: '3px' }}>
+                            {[...Array(scenario.weeksNeeded)].map((_, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  width: '18px',
+                                  height: '5px',
+                                  borderRadius: '2px',
+                                  background: i < scenario.qualifyingWeeks
+                                    ? teal
+                                    : '#D1D5DB'
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <span style={{
+                            color: textMuted,
+                            fontSize: '11px'
+                          }}>
+                            {scenario.weeksNeeded - scenario.qualifyingWeeks} more to unlock
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Spacer */}
+                <div style={{ height: '20px' }} />
+
+                {/* Mental Health Link */}
+                <div style={{ textAlign: 'center', paddingBottom: '8px' }}>
+                  <p style={{ color: textMuted, fontSize: '12px', margin: '0 0 4px 0' }}>
+                    Needing some help is human:
+                  </p>
+                  <a href="#" style={{ color: teal, fontSize: '13px', textDecoration: 'none' }}>
+                    Non-Emergency Mental Health Help
+                  </a>
+                </div>
+
+                {/* Home Indicator */}
+                <div style={{
+                  width: '134px',
+                  height: '5px',
+                  background: '#1f2937',
+                  borderRadius: '3px',
+                  margin: '8px auto 4px auto'
+                }} />
+              </div>
+
+              {/* State Summary */}
+              <div style={{
+                maxWidth: '800px',
+                margin: '20px auto 0 auto',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}>
+                <h3 style={{ margin: '0 0 12px 0', color: textDark, fontSize: '16px' }}>
+                  Current State Variables
+                </h3>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                  gap: '12px',
+                  fontSize: '13px'
+                }}>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Work Days:</span>{' '}
+                    <strong style={{ color: textDark }}>{scenario.workDays.join(', ')}</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Week Streak:</span>{' '}
+                    <strong style={{ color: textDark }}>{scenario.weekStreak} weeks</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Qualifying Weeks:</span>{' '}
+                    <strong style={{ color: textDark }}>{scenario.qualifyingWeeks} of {scenario.weeksNeeded}</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>This Week:</span>{' '}
+                    <strong style={{ color: textDark }}>{scenario.completedDays.length} of {scenario.workDays.length} days</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Is Off Day:</span>{' '}
+                    <strong style={{ color: textDark }}>{scenario.isOffDay ? 'Yes' : 'No'}</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Wrapped Status:</span>{' '}
+                    <strong style={{ color: textDark }}>
+                      {scenario.joinedMidMonth ? 'Practice Mode' : wrappedUnlocked ? 'Unlocked' : 'In Progress'}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Rules Summary */}
+              <div style={{
+                maxWidth: '800px',
+                margin: '20px auto 0 auto',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}>
+                <h3 style={{ margin: '0 0 12px 0', color: textDark, fontSize: '16px' }}>
+                  Key Rules
+                </h3>
+                <div style={{ fontSize: '13px', color: textMuted, lineHeight: '1.8' }}>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>75% Threshold:</strong> 3/4 days, 4/5 days, or 5/6 days qualifies
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Week Boundary:</strong> Weeks run Sun-Sat, belong to month containing Saturday
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Monthly Wrapped:</strong> 4 qualifying weeks in a month unlocks insights
+                  </p>
+                  <p style={{ margin: '0' }}>
+                    <strong style={{ color: textDark }}>Practice Mode:</strong> Mid-month joiners build streaks, first wrapped next month
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FeedbackProgressAllScenarios />);
+    </script>
+</body>
+</html>
