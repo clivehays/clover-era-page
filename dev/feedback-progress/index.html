@@ -150,6 +150,36 @@
               qualifyingWeeks: 4,
               weeksNeeded: 4
             },
+            office_vacation_fallback: {
+              label: 'Office - Vacation Fallback',
+              category: '5-Day Schedule (Office)',
+              description: 'Took Thu-Fri off, only 3 qualifying weeks but 90% monthly',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 0,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 3,
+              weeksNeeded: 4,
+              monthlyResponses: 18,
+              monthlyWorkDays: 20,
+              unlockedViaFallback: true
+            },
+            office_on_break: {
+              label: 'Office - On Break',
+              category: '5-Day Schedule (Office)',
+              description: 'Set Thu-Fri as break, week shows 3 days only',
+              workDays: ['Mon', 'Tue', 'Wed'],
+              completedDays: ['Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 7,
+              isOffDay: false,
+              joinedMidMonth: false,
+              qualifyingWeeks: 3,
+              weeksNeeded: 4,
+              onBreakDays: ['Thu', 'Fri']
+            },
             office_weekend: {
               label: 'Office - Weekend View',
               category: '5-Day Schedule (Office)',
@@ -209,7 +239,7 @@
           };
 
           const scenario = scenarios[selectedScenario];
-          const wrappedUnlocked = scenario.qualifyingWeeks >= scenario.weeksNeeded;
+          const wrappedUnlocked = scenario.qualifyingWeeks >= scenario.weeksNeeded || scenario.unlockedViaFallback;
 
           // Group scenarios by category
           const categories = {};
@@ -806,9 +836,23 @@
                   <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
                     <span style={{ color: textMuted }}>Wrapped Status:</span>{' '}
                     <strong style={{ color: textDark }}>
-                      {scenario.joinedMidMonth ? 'Practice Mode' : wrappedUnlocked ? 'Unlocked' : 'In Progress'}
+                      {scenario.joinedMidMonth ? 'Practice Mode' : wrappedUnlocked ? (scenario.unlockedViaFallback ? 'Unlocked (Fallback)' : 'Unlocked') : 'In Progress'}
                     </strong>
                   </div>
+                  {scenario.monthlyResponses && (
+                    <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                      <span style={{ color: textMuted }}>Monthly Total:</span>{' '}
+                      <strong style={{ color: textDark }}>
+                        {scenario.monthlyResponses}/{scenario.monthlyWorkDays} ({Math.round(scenario.monthlyResponses/scenario.monthlyWorkDays*100)}%)
+                      </strong>
+                    </div>
+                  )}
+                  {scenario.onBreakDays && (
+                    <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                      <span style={{ color: textMuted }}>On Break:</span>{' '}
+                      <strong style={{ color: textDark }}>{scenario.onBreakDays.join(', ')}</strong>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -832,7 +876,13 @@
                     <strong style={{ color: textDark }}>Week Boundary:</strong> Weeks run Sun-Sat, belong to month containing Saturday
                   </p>
                   <p style={{ margin: '0 0 8px 0' }}>
-                    <strong style={{ color: textDark }}>Monthly Wrapped:</strong> 4 qualifying weeks in a month unlocks insights
+                    <strong style={{ color: textDark }}>Monthly Wrapped:</strong> 4 qualifying weeks OR 75%+ monthly responses
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Take a Break:</strong> Break days excluded from calculations, streak pauses
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Vacation Fallback:</strong> Miss a week but still hit 75% for the month? Wrapped unlocks
                   </p>
                   <p style={{ margin: '0' }}>
                     <strong style={{ color: textDark }}>Practice Mode:</strong> Mid-month joiners build streaks, first wrapped next month
