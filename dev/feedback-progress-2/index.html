@@ -46,7 +46,8 @@
               weekStreak: 4,
               monthlyTarget: 18,
               monthlyProgress: 14,
-              monthName: 'December'
+              monthName: 'December',
+              isMonthEnd: false
             },
             office_almost: {
               label: 'Office - Almost There',
@@ -56,17 +57,41 @@
               weekStreak: 6,
               monthlyTarget: 18,
               monthlyProgress: 17,
-              monthName: 'December'
+              monthName: 'December',
+              isMonthEnd: false
             },
-            office_unlocked: {
-              label: 'Office - Unlocked',
+            office_target_reached: {
+              label: 'Office - Target Reached',
               workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-              completedDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-              currentDay: 'Fri',
+              completedDays: ['Mon', 'Tue', 'Wed', 'Thu'],
+              currentDay: 'Thu',
               weekStreak: 8,
               monthlyTarget: 18,
               monthlyProgress: 18,
-              monthName: 'December'
+              monthName: 'December',
+              isMonthEnd: false
+            },
+            office_exceeded: {
+              label: 'Office - Exceeded Target',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              currentDay: 'Fri',
+              weekStreak: 10,
+              monthlyTarget: 18,
+              monthlyProgress: 21,
+              monthName: 'December',
+              isMonthEnd: false
+            },
+            office_month_end: {
+              label: 'Office - Month End (Ready)',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue'],
+              currentDay: 'Tue',
+              weekStreak: 12,
+              monthlyTarget: 18,
+              monthlyProgress: 20,
+              monthName: 'December',
+              isMonthEnd: true
             },
             nurse_midmonth: {
               label: 'Nurse - Mid Month',
@@ -76,7 +101,8 @@
               weekStreak: 3,
               monthlyTarget: 14,
               monthlyProgress: 10,
-              monthName: 'December'
+              monthName: 'December',
+              isMonthEnd: false
             },
             hotel_midmonth: {
               label: 'Hotel - Mid Month',
@@ -86,7 +112,8 @@
               weekStreak: 5,
               monthlyTarget: 20,
               monthlyProgress: 15,
-              monthName: 'December'
+              monthName: 'December',
+              isMonthEnd: false
             },
             office_early: {
               label: 'Office - Early Month',
@@ -96,13 +123,15 @@
               weekStreak: 2,
               monthlyTarget: 18,
               monthlyProgress: 4,
-              monthName: 'December'
+              monthName: 'December',
+              isMonthEnd: false
             }
           };
 
           const persona = personas[selectedPersona];
           const remaining = Math.max(0, persona.monthlyTarget - persona.monthlyProgress);
-          const isUnlocked = persona.monthlyProgress >= persona.monthlyTarget;
+          const targetReached = persona.monthlyProgress >= persona.monthlyTarget;
+          const wrappedReady = targetReached && persona.isMonthEnd;
           const progressPercent = Math.min(100, (persona.monthlyProgress / persona.monthlyTarget) * 100);
 
           const ProgressRing = () => {
@@ -112,12 +141,24 @@
             const circumference = radius * 2 * Math.PI;
             const offset = circumference - (progressPercent / 100) * circumference;
 
+            const getTitle = () => {
+              if (wrappedReady) return `${persona.monthName} Wrapped Ready!`;
+              if (targetReached) return `${persona.monthName} Wrapped`;
+              return `${persona.monthName} Wrapped`;
+            };
+
+            const getMessage = () => {
+              if (wrappedReady) return 'Your insights are ready to view';
+              if (targetReached) return 'Target reached! Keep responding to enrich your insights';
+              return `${remaining} more response${remaining !== 1 ? 's' : ''} to unlock your personal insights for this month`;
+            };
+
             return (
               <div style={{
-                background: isUnlocked ? teal : bgLight,
+                background: wrappedReady ? teal : targetReached ? '#E8F5F3' : bgLight,
                 borderRadius: '12px',
                 padding: '16px',
-                border: isUnlocked ? 'none' : `1px solid ${divider}`
+                border: wrappedReady ? 'none' : targetReached ? `2px solid ${teal}` : `1px solid ${divider}`
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <div style={{ position: 'relative', width: size, height: size }}>
@@ -127,7 +168,7 @@
                         cy={size / 2}
                         r={radius}
                         fill="none"
-                        stroke={isUnlocked ? 'rgba(255,255,255,0.3)' : '#E5E7EB'}
+                        stroke={wrappedReady ? 'rgba(255,255,255,0.3)' : '#E5E7EB'}
                         strokeWidth={strokeWidth}
                       />
                       <circle
@@ -135,7 +176,7 @@
                         cy={size / 2}
                         r={radius}
                         fill="none"
-                        stroke={isUnlocked ? 'white' : teal}
+                        stroke={wrappedReady ? 'white' : teal}
                         strokeWidth={strokeWidth}
                         strokeDasharray={circumference}
                         strokeDashoffset={offset}
@@ -152,117 +193,145 @@
                       <div style={{
                         fontSize: '28px',
                         fontWeight: '700',
-                        color: isUnlocked ? 'white' : textDark,
+                        color: wrappedReady ? 'white' : textDark,
                         lineHeight: '1'
                       }}>
-                        {persona.monthlyProgress}
+                        {targetReached ? '🎉' : persona.monthlyProgress}
                       </div>
-                      <div style={{
-                        fontSize: '12px',
-                        color: isUnlocked ? 'rgba(255,255,255,0.8)' : textMuted,
-                        marginTop: '2px'
-                      }}>
-                        of {persona.monthlyTarget}
-                      </div>
+                      {!targetReached && (
+                        <div style={{
+                          fontSize: '12px',
+                          color: textMuted,
+                          marginTop: '2px'
+                        }}>
+                          of {persona.monthlyTarget}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{
                       fontSize: '14px',
                       fontWeight: '600',
-                      color: isUnlocked ? 'white' : textDark,
+                      color: wrappedReady ? 'white' : textDark,
                       marginBottom: '4px'
                     }}>
-                      {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
+                      {getTitle()}
                     </div>
                     <div style={{
                       fontSize: '12px',
-                      color: isUnlocked ? 'rgba(255,255,255,0.9)' : textMuted
+                      color: wrappedReady ? 'rgba(255,255,255,0.9)' : targetReached ? tealDark : textMuted
                     }}>
-                      {isUnlocked ? 'Your insights are ready to view' : `${remaining} more response${remaining !== 1 ? 's' : ''} to unlock your personal insights for this month`}
+                      {getMessage()}
                     </div>
+                    {targetReached && !wrappedReady && (
+                      <div style={{
+                        fontSize: '11px',
+                        color: textMuted,
+                        marginTop: '4px'
+                      }}>
+                        {persona.monthlyProgress}/{persona.monthlyTarget} responses
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             );
           };
 
-          const ProgressBar = () => (
-            <div style={{
-              background: isUnlocked ? teal : bgLight,
-              borderRadius: '12px',
-              padding: '16px',
-              border: isUnlocked ? 'none' : `1px solid ${divider}`
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  background: isUnlocked ? 'rgba(255,255,255,0.2)' : 'white',
-                  borderRadius: '10px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '20px',
-                  border: isUnlocked ? 'none' : `1px solid ${divider}`
-                }}>
-                  {isUnlocked ? '🎁' : '📊'}
-                </div>
-                <div style={{ flex: 1 }}>
+          const ProgressBar = () => {
+            const getTitle = () => {
+              if (wrappedReady) return `${persona.monthName} Wrapped Ready!`;
+              if (targetReached) return 'Target Reached! 🎉';
+              return `${persona.monthName} Wrapped`;
+            };
+
+            const getMessage = () => {
+              if (wrappedReady) return 'Your insights are ready to view';
+              if (targetReached) return 'Keep responding to enrich your insights';
+              return `${remaining} more response${remaining !== 1 ? 's' : ''} to unlock your personal insights for this month`;
+            };
+
+            return (
+              <div style={{
+                background: wrappedReady ? teal : targetReached ? '#E8F5F3' : bgLight,
+                borderRadius: '12px',
+                padding: '16px',
+                border: wrappedReady ? 'none' : targetReached ? `2px solid ${teal}` : `1px solid ${divider}`
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{
+                    width: '40px',
+                    height: '40px',
+                    background: wrappedReady ? 'rgba(255,255,255,0.2)' : targetReached ? teal : 'white',
+                    borderRadius: '10px',
                     display: 'flex',
-                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginBottom: '6px'
+                    justifyContent: 'center',
+                    fontSize: '20px',
+                    border: wrappedReady || targetReached ? 'none' : `1px solid ${divider}`
                   }}>
-                    <span style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: isUnlocked ? 'white' : textDark
-                    }}>
-                      {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
-                    </span>
-                    <span style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: isUnlocked ? 'white' : tealDark
-                    }}>
-                      {persona.monthlyProgress}/{persona.monthlyTarget}
-                    </span>
+                    {wrappedReady ? '🎁' : targetReached ? '✓' : '📊'}
+                    {targetReached && !wrappedReady && (
+                      <span style={{ color: 'white', fontWeight: '600' }}></span>
+                    )}
                   </div>
-                  {!isUnlocked && (
-                    <>
-                      <div style={{
-                        height: '8px',
-                        background: '#E5E7EB',
-                        borderRadius: '4px',
-                        overflow: 'hidden'
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '6px'
+                    }}>
+                      <span style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: wrappedReady ? 'white' : textDark
                       }}>
-                        <div style={{
-                          height: '100%',
-                          width: `${progressPercent}%`,
-                          background: teal,
-                          borderRadius: '4px'
-                        }} />
-                      </div>
-                      <div style={{
-                        fontSize: '11px',
-                        color: textMuted,
-                        marginTop: '6px'
+                        {getTitle()}
+                      </span>
+                      <span style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: wrappedReady ? 'white' : tealDark
                       }}>
-                        {remaining} more response{remaining !== 1 ? 's' : ''} to unlock your personal insights for this month
-                      </div>
-                    </>
-                  )}
-                  {isUnlocked && (
-                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.9)' }}>
-                      Your insights are ready to view
+                        {persona.monthlyProgress}/{persona.monthlyTarget}
+                      </span>
                     </div>
-                  )}
+                    {!wrappedReady && (
+                      <>
+                        <div style={{
+                          height: '8px',
+                          background: targetReached ? teal : '#E5E7EB',
+                          borderRadius: '4px',
+                          overflow: 'hidden'
+                        }}>
+                          <div style={{
+                            height: '100%',
+                            width: `${progressPercent}%`,
+                            background: teal,
+                            borderRadius: '4px'
+                          }} />
+                        </div>
+                        <div style={{
+                          fontSize: '11px',
+                          color: targetReached ? tealDark : textMuted,
+                          marginTop: '6px'
+                        }}>
+                          {getMessage()}
+                        </div>
+                      </>
+                    )}
+                    {wrappedReady && (
+                      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.9)' }}>
+                        {getMessage()}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
+            );
+          };
 
           const DotGrid = () => {
             const dots = [];
@@ -270,12 +339,24 @@
               dots.push(i < persona.monthlyProgress);
             }
 
+            const getTitle = () => {
+              if (wrappedReady) return `${persona.monthName} Wrapped Ready!`;
+              if (targetReached) return 'Target Reached! 🎉';
+              return `${persona.monthName} Wrapped`;
+            };
+
+            const getMessage = () => {
+              if (wrappedReady) return 'Your insights are ready to view';
+              if (targetReached) return 'Keep responding to enrich your insights';
+              return `${remaining} more response${remaining !== 1 ? 's' : ''} to unlock your personal insights for this month`;
+            };
+
             return (
               <div style={{
-                background: isUnlocked ? teal : bgLight,
+                background: wrappedReady ? teal : targetReached ? '#E8F5F3' : bgLight,
                 borderRadius: '12px',
                 padding: '16px',
-                border: isUnlocked ? 'none' : `1px solid ${divider}`
+                border: wrappedReady ? 'none' : targetReached ? `2px solid ${teal}` : `1px solid ${divider}`
               }}>
                 <div style={{
                   display: 'flex',
@@ -286,20 +367,20 @@
                   <span style={{
                     fontSize: '14px',
                     fontWeight: '600',
-                    color: isUnlocked ? 'white' : textDark
+                    color: wrappedReady ? 'white' : textDark
                   }}>
-                    {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
+                    {getTitle()}
                   </span>
                   <span style={{
                     fontSize: '14px',
                     fontWeight: '600',
-                    color: isUnlocked ? 'white' : tealDark
+                    color: wrappedReady ? 'white' : tealDark
                   }}>
                     {persona.monthlyProgress}/{persona.monthlyTarget}
                   </span>
                 </div>
 
-                {!isUnlocked && (
+                {!wrappedReady && (
                   <>
                     <div style={{
                       display: 'flex',
@@ -319,72 +400,86 @@
                         />
                       ))}
                     </div>
-                    <div style={{ fontSize: '11px', color: textMuted }}>
-                      {remaining} more response{remaining !== 1 ? 's' : ''} to unlock your personal insights for this month
+                    <div style={{ fontSize: '11px', color: targetReached ? tealDark : textMuted }}>
+                      {getMessage()}
                     </div>
                   </>
                 )}
-                {isUnlocked && (
+                {wrappedReady && (
                   <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.9)' }}>
-                    Your insights are ready to view
+                    {getMessage()}
                   </div>
                 )}
               </div>
             );
           };
 
-          const SimpleCount = () => (
-            <div style={{
-              background: isUnlocked ? teal : bgLight,
-              borderRadius: '12px',
-              padding: '20px',
-              border: isUnlocked ? 'none' : `1px solid ${divider}`,
-              textAlign: 'center'
-            }}>
-              <div style={{
-                fontSize: '14px',
-                fontWeight: '600',
-                color: isUnlocked ? 'white' : textDark,
-                marginBottom: '8px'
-              }}>
-                {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
-              </div>
+          const SimpleCount = () => {
+            const getTitle = () => {
+              if (wrappedReady) return `${persona.monthName} Wrapped Ready!`;
+              if (targetReached) return 'Target Reached! 🎉';
+              return `${persona.monthName} Wrapped`;
+            };
 
-              {!isUnlocked ? (
-                <>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    justifyContent: 'center',
-                    gap: '4px',
-                    marginBottom: '8px'
-                  }}>
-                    <span style={{
-                      fontSize: '48px',
-                      fontWeight: '700',
-                      color: teal,
-                      lineHeight: '1'
+            const getMessage = () => {
+              if (wrappedReady) return 'Your insights are ready to view';
+              if (targetReached) return 'Keep responding to enrich your insights';
+              return `${remaining} more response${remaining !== 1 ? 's' : ''} to unlock your personal insights for this month`;
+            };
+
+            return (
+              <div style={{
+                background: wrappedReady ? teal : targetReached ? '#E8F5F3' : bgLight,
+                borderRadius: '12px',
+                padding: '20px',
+                border: wrappedReady ? 'none' : targetReached ? `2px solid ${teal}` : `1px solid ${divider}`,
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: wrappedReady ? 'white' : textDark,
+                  marginBottom: '8px'
+                }}>
+                  {getTitle()}
+                </div>
+
+                {!wrappedReady ? (
+                  <>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      justifyContent: 'center',
+                      gap: '4px',
+                      marginBottom: '8px'
                     }}>
-                      {persona.monthlyProgress}
-                    </span>
-                    <span style={{ fontSize: '20px', color: textMuted }}>
-                      / {persona.monthlyTarget}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '13px', color: textMuted }}>
-                    {remaining} more response{remaining !== 1 ? 's' : ''} to unlock your personal insights for this month
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎁</div>
-                  <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)' }}>
-                    Your insights are ready to view
-                  </div>
-                </>
-              )}
-            </div>
-          );
+                      <span style={{
+                        fontSize: '48px',
+                        fontWeight: '700',
+                        color: teal,
+                        lineHeight: '1'
+                      }}>
+                        {persona.monthlyProgress}
+                      </span>
+                      <span style={{ fontSize: '20px', color: textMuted }}>
+                        / {persona.monthlyTarget}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '13px', color: targetReached ? tealDark : textMuted }}>
+                      {getMessage()}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎁</div>
+                    <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)' }}>
+                      {getMessage()}
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          };
 
           const renderViz = () => {
             switch (selectedViz) {
@@ -701,6 +796,12 @@
                   <p style={{ margin: '0 0 8px 0' }}>
                     <strong style={{ color: textDark }}>Monthly Target (6-day):</strong> 20 responses
                   </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Target Reached:</strong> Hit target mid-month? Celebrate but keep responding to enrich insights.
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Wrapped Available:</strong> Only at month end (Dec 31st etc.) can you view your insights.
+                  </p>
                   <p style={{ margin: '0' }}>
                     <strong style={{ color: textDark }}>Take a Break:</strong> Break days reduce weekly requirement, monthly target stays fixed
                   </p>
@@ -738,7 +839,11 @@
                   </div>
                   <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
                     <span style={{ color: textMuted }}>Wrapped Status:</span>{' '}
-                    <strong style={{ color: textDark }}>{isUnlocked ? 'Unlocked' : 'In Progress'}</strong>
+                    <strong style={{ color: textDark }}>{wrappedReady ? 'Ready to View' : targetReached ? 'Target Reached' : 'In Progress'}</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Month End:</span>{' '}
+                    <strong style={{ color: textDark }}>{persona.isMonthEnd ? 'Yes' : 'No'}</strong>
                   </div>
                 </div>
               </div>
