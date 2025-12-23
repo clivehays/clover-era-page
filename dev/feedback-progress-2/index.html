@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplified Feedback Progress - Visualization Options</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f3f4f6; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function FeedbackProgressSimplified() {
+          const [selectedViz, setSelectedViz] = useState('progress_bar');
+          const [selectedPersona, setSelectedPersona] = useState('office_midmonth');
+
+          const teal = '#4DB6AC';
+          const tealDark = '#3D9A91';
+          const textDark = '#2D4A47';
+          const textMuted = '#6B7280';
+          const divider = '#E5E7EB';
+          const bgLight = '#F9FAFB';
+
+          const vizOptions = {
+            progress_bar: { label: 'Progress Bar', description: 'Horizontal bar with count' },
+            simple_count: { label: 'Simple Count', description: 'Large numbers, minimal design' },
+            dot_grid: { label: 'Dot Grid', description: 'Visual dots showing progress' },
+            progress_ring: { label: 'Progress Ring', description: 'Circular progress indicator' }
+          };
+
+          const personas = {
+            office_midmonth: {
+              label: 'Office - Mid Month',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 4,
+              monthlyTarget: 18,
+              monthlyProgress: 14,
+              monthName: 'December'
+            },
+            office_almost: {
+              label: 'Office - Almost There',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed', 'Thu'],
+              currentDay: 'Thu',
+              weekStreak: 6,
+              monthlyTarget: 18,
+              monthlyProgress: 17,
+              monthName: 'December'
+            },
+            office_unlocked: {
+              label: 'Office - Unlocked',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              currentDay: 'Fri',
+              weekStreak: 8,
+              monthlyTarget: 18,
+              monthlyProgress: 18,
+              monthName: 'December'
+            },
+            nurse_midmonth: {
+              label: 'Nurse - Mid Month',
+              workDays: ['Sun', 'Mon', 'Tue', 'Wed'],
+              completedDays: ['Sun', 'Mon', 'Tue'],
+              currentDay: 'Tue',
+              weekStreak: 3,
+              monthlyTarget: 14,
+              monthlyProgress: 10,
+              monthName: 'December'
+            },
+            hotel_midmonth: {
+              label: 'Hotel - Mid Month',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              completedDays: ['Mon', 'Tue', 'Wed'],
+              currentDay: 'Wed',
+              weekStreak: 5,
+              monthlyTarget: 20,
+              monthlyProgress: 15,
+              monthName: 'December'
+            },
+            office_early: {
+              label: 'Office - Early Month',
+              workDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+              completedDays: ['Mon', 'Tue'],
+              currentDay: 'Tue',
+              weekStreak: 2,
+              monthlyTarget: 18,
+              monthlyProgress: 4,
+              monthName: 'December'
+            }
+          };
+
+          const persona = personas[selectedPersona];
+          const remaining = Math.max(0, persona.monthlyTarget - persona.monthlyProgress);
+          const isUnlocked = persona.monthlyProgress >= persona.monthlyTarget;
+          const progressPercent = Math.min(100, (persona.monthlyProgress / persona.monthlyTarget) * 100);
+
+          const ProgressRing = () => {
+            const size = 120;
+            const strokeWidth = 10;
+            const radius = (size - strokeWidth) / 2;
+            const circumference = radius * 2 * Math.PI;
+            const offset = circumference - (progressPercent / 100) * circumference;
+
+            return (
+              <div style={{
+                background: isUnlocked ? teal : bgLight,
+                borderRadius: '12px',
+                padding: '16px',
+                border: isUnlocked ? 'none' : `1px solid ${divider}`
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ position: 'relative', width: size, height: size }}>
+                    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+                      <circle
+                        cx={size / 2}
+                        cy={size / 2}
+                        r={radius}
+                        fill="none"
+                        stroke={isUnlocked ? 'rgba(255,255,255,0.3)' : '#E5E7EB'}
+                        strokeWidth={strokeWidth}
+                      />
+                      <circle
+                        cx={size / 2}
+                        cy={size / 2}
+                        r={radius}
+                        fill="none"
+                        stroke={isUnlocked ? 'white' : teal}
+                        strokeWidth={strokeWidth}
+                        strokeDasharray={circumference}
+                        strokeDashoffset={offset}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      textAlign: 'center'
+                    }}>
+                      <div style={{
+                        fontSize: '28px',
+                        fontWeight: '700',
+                        color: isUnlocked ? 'white' : textDark,
+                        lineHeight: '1'
+                      }}>
+                        {persona.monthlyProgress}
+                      </div>
+                      <div style={{
+                        fontSize: '12px',
+                        color: isUnlocked ? 'rgba(255,255,255,0.8)' : textMuted,
+                        marginTop: '2px'
+                      }}>
+                        of {persona.monthlyTarget}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: isUnlocked ? 'white' : textDark,
+                      marginBottom: '4px'
+                    }}>
+                      {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
+                    </div>
+                    <div style={{
+                      fontSize: '12px',
+                      color: isUnlocked ? 'rgba(255,255,255,0.9)' : textMuted
+                    }}>
+                      {isUnlocked ? 'Your insights are ready to view' : `${remaining} more response${remaining !== 1 ? 's' : ''} to unlock your personal insights for this month`}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          };
+
+          const ProgressBar = () => (
+            <div style={{
+              background: isUnlocked ? teal : bgLight,
+              borderRadius: '12px',
+              padding: '16px',
+              border: isUnlocked ? 'none' : `1px solid ${divider}`
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  background: isUnlocked ? 'rgba(255,255,255,0.2)' : 'white',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '20px',
+                  border: isUnlocked ? 'none' : `1px solid ${divider}`
+                }}>
+                  {isUnlocked ? '🎁' : '📊'}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '6px'
+                  }}>
+                    <span style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: isUnlocked ? 'white' : textDark
+                    }}>
+                      {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
+                    </span>
+                    <span style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: isUnlocked ? 'white' : tealDark
+                    }}>
+                      {persona.monthlyProgress}/{persona.monthlyTarget}
+                    </span>
+                  </div>
+                  {!isUnlocked && (
+                    <>
+                      <div style={{
+                        height: '8px',
+                        background: '#E5E7EB',
+                        borderRadius: '4px',
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{
+                          height: '100%',
+                          width: `${progressPercent}%`,
+                          background: teal,
+                          borderRadius: '4px'
+                        }} />
+                      </div>
+                      <div style={{
+                        fontSize: '11px',
+                        color: textMuted,
+                        marginTop: '6px'
+                      }}>
+                        {remaining} more response{remaining !== 1 ? 's' : ''} to unlock your personal insights for this month
+                      </div>
+                    </>
+                  )}
+                  {isUnlocked && (
+                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.9)' }}>
+                      Your insights are ready to view
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+
+          const DotGrid = () => {
+            const dots = [];
+            for (let i = 0; i < persona.monthlyTarget; i++) {
+              dots.push(i < persona.monthlyProgress);
+            }
+
+            return (
+              <div style={{
+                background: isUnlocked ? teal : bgLight,
+                borderRadius: '12px',
+                padding: '16px',
+                border: isUnlocked ? 'none' : `1px solid ${divider}`
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '12px'
+                }}>
+                  <span style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: isUnlocked ? 'white' : textDark
+                  }}>
+                    {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
+                  </span>
+                  <span style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: isUnlocked ? 'white' : tealDark
+                  }}>
+                    {persona.monthlyProgress}/{persona.monthlyTarget}
+                  </span>
+                </div>
+
+                {!isUnlocked && (
+                  <>
+                    <div style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '6px',
+                      marginBottom: '10px'
+                    }}>
+                      {dots.map((filled, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            width: '14px',
+                            height: '14px',
+                            borderRadius: '50%',
+                            background: filled ? teal : '#D1D5DB'
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div style={{ fontSize: '11px', color: textMuted }}>
+                      {remaining} more response{remaining !== 1 ? 's' : ''} to unlock your personal insights for this month
+                    </div>
+                  </>
+                )}
+                {isUnlocked && (
+                  <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.9)' }}>
+                    Your insights are ready to view
+                  </div>
+                )}
+              </div>
+            );
+          };
+
+          const SimpleCount = () => (
+            <div style={{
+              background: isUnlocked ? teal : bgLight,
+              borderRadius: '12px',
+              padding: '20px',
+              border: isUnlocked ? 'none' : `1px solid ${divider}`,
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: isUnlocked ? 'white' : textDark,
+                marginBottom: '8px'
+              }}>
+                {isUnlocked ? 'Monthly Wrapped Unlocked!' : `${persona.monthName} Wrapped`}
+              </div>
+
+              {!isUnlocked ? (
+                <>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    justifyContent: 'center',
+                    gap: '4px',
+                    marginBottom: '8px'
+                  }}>
+                    <span style={{
+                      fontSize: '48px',
+                      fontWeight: '700',
+                      color: teal,
+                      lineHeight: '1'
+                    }}>
+                      {persona.monthlyProgress}
+                    </span>
+                    <span style={{ fontSize: '20px', color: textMuted }}>
+                      / {persona.monthlyTarget}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '13px', color: textMuted }}>
+                    {remaining} more response{remaining !== 1 ? 's' : ''} to unlock your personal insights for this month
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎁</div>
+                  <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)' }}>
+                    Your insights are ready to view
+                  </div>
+                </>
+              )}
+            </div>
+          );
+
+          const renderViz = () => {
+            switch (selectedViz) {
+              case 'progress_ring': return <ProgressRing />;
+              case 'progress_bar': return <ProgressBar />;
+              case 'dot_grid': return <DotGrid />;
+              case 'simple_count': return <SimpleCount />;
+              default: return <ProgressBar />;
+            }
+          };
+
+          return (
+            <div style={{
+              minHeight: '100vh',
+              background: '#f3f4f6',
+              padding: '20px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}>
+              <div style={{ maxWidth: '800px', margin: '0 auto 20px auto', textAlign: 'center' }}>
+                <h1 style={{ color: textDark, fontSize: '24px', margin: '0 0 8px 0' }}>
+                  Simplified Feedback Progress
+                </h1>
+                <p style={{ color: textMuted, fontSize: '14px', margin: 0 }}>
+                  Weekly: Complete all work days to keep streak · Monthly: Hit target count for Wrapped
+                </p>
+                <p style={{ color: '#EF4444', fontSize: '12px', marginTop: '8px', fontWeight: '500' }}>
+                  🔒 DEV PREVIEW - Compare visualization options
+                </p>
+              </div>
+
+              <div style={{
+                maxWidth: '800px',
+                margin: '0 auto 16px auto',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}>
+                <h2 style={{ margin: '0 0 12px 0', color: textDark, fontSize: '14px' }}>
+                  Monthly Wrapped Visualization
+                </h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {Object.entries(vizOptions).map(([key, opt]) => (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedViz(key)}
+                      style={{
+                        padding: '8px 14px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: selectedViz === key ? teal : '#e5e7eb',
+                        color: selectedViz === key ? 'white' : textDark,
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        fontWeight: selectedViz === key ? '600' : '400'
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{
+                maxWidth: '800px',
+                margin: '0 auto 20px auto',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}>
+                <h2 style={{ margin: '0 0 12px 0', color: textDark, fontSize: '14px' }}>
+                  Scenario
+                </h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {Object.entries(personas).map(([key, p]) => (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedPersona(key)}
+                      style={{
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: selectedPersona === key ? teal : '#e5e7eb',
+                        color: selectedPersona === key ? 'white' : textDark,
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        fontWeight: selectedPersona === key ? '600' : '400'
+                      }}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{
+                maxWidth: '375px',
+                margin: '0 auto',
+                background: 'white',
+                borderRadius: '40px',
+                padding: '12px 20px',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 8px 4px 8px',
+                  color: '#1f2937',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>
+                  <span>10:37</span>
+                  <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                    <span style={{ fontSize: '12px' }}>📶</span>
+                    <span style={{ fontSize: '12px' }}>📡</span>
+                    <span style={{ fontSize: '14px' }}>🔋</span>
+                  </div>
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '8px 0',
+                  marginBottom: '4px'
+                }}>
+                  <span style={{ color: textDark, fontSize: '17px', fontWeight: '500' }}>
+                    Wrapping Up
+                  </span>
+                  <span style={{ fontSize: '20px', color: textMuted }}>⚙️</span>
+                </div>
+
+                <div style={{ height: '1px', background: divider, margin: '0 -20px' }} />
+
+                <div style={{ textAlign: 'center', padding: '16px 0 12px 0' }}>
+                  <h2 style={{ color: tealDark, fontSize: '22px', margin: 0, fontWeight: '600' }}>
+                    Thank You!
+                  </h2>
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{
+                    fontSize: '10px',
+                    fontWeight: '600',
+                    color: textMuted,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    marginBottom: '6px',
+                    textAlign: 'center'
+                  }}>
+                    Today's Micro Action
+                  </div>
+                  <div style={{
+                    background: bgLight,
+                    borderLeft: `3px solid ${teal}`,
+                    borderRadius: '4px',
+                    padding: '12px 14px'
+                  }}>
+                    <p style={{
+                      color: textDark,
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      lineHeight: '1.5',
+                      margin: 0
+                    }}>
+                      Everyone works differently! Maybe ask your manager if you can briefly test a method that suits you better.
+                    </p>
+                  </div>
+                </div>
+
+                {renderViz()}
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  padding: '12px 16px',
+                  background: bgLight,
+                  borderRadius: '12px',
+                  marginTop: '12px',
+                  marginBottom: '12px'
+                }}>
+                  <span style={{ fontSize: '26px' }}>🔥</span>
+                  <div>
+                    <div style={{ color: textDark, fontSize: '22px', fontWeight: '700', lineHeight: '1.1' }}>
+                      {persona.weekStreak} week streak
+                    </div>
+                    <div style={{ color: textMuted, fontSize: '12px', marginTop: '2px' }}>
+                      {persona.weekStreak === 1 ? "You're off to a great start!" : "Keep it going!"}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  background: bgLight,
+                  borderRadius: '12px',
+                  padding: '14px',
+                  marginBottom: '12px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '10px'
+                  }}>
+                    <span style={{ color: textDark, fontSize: '14px', fontWeight: '600' }}>
+                      This week
+                    </span>
+                    <span style={{ color: tealDark, fontSize: '13px', fontWeight: '500' }}>
+                      {persona.completedDays.length} of {persona.workDays.length} days
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '6px' }}>
+                    {persona.workDays.map((day) => {
+                      const isCompleted = persona.completedDays.includes(day);
+                      const isCurrent = day === persona.currentDay;
+                      const isFuture = persona.workDays.indexOf(day) > persona.workDays.indexOf(persona.currentDay);
+
+                      return (
+                        <div key={day} style={{
+                          flex: 1,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: isCompleted ? teal : isFuture ? '#E5E7EB' : '#FEE2E2',
+                            border: isCurrent ? `2px solid ${textDark}` : 'none'
+                          }}>
+                            {isCompleted ? (
+                              <span style={{ color: 'white', fontSize: '14px', fontWeight: '600' }}>✓</span>
+                            ) : isFuture ? (
+                              <span style={{ color: '#9CA3AF', fontSize: '10px' }}>○</span>
+                            ) : (
+                              <span style={{ color: '#EF4444', fontSize: '12px' }}>✗</span>
+                            )}
+                          </div>
+                          <span style={{
+                            color: isCurrent ? textDark : textMuted,
+                            fontSize: '10px',
+                            fontWeight: isCurrent ? '600' : '400'
+                          }}>
+                            {day}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div style={{
+                    marginTop: '10px',
+                    fontSize: '11px',
+                    color: textMuted,
+                    textAlign: 'center'
+                  }}>
+                    Complete all {persona.workDays.length} days to continue your streak
+                  </div>
+                </div>
+
+                <div style={{ height: '20px' }} />
+
+                <div style={{ textAlign: 'center', paddingBottom: '8px' }}>
+                  <p style={{ color: textMuted, fontSize: '12px', margin: '0 0 4px 0' }}>
+                    Needing some help is human:
+                  </p>
+                  <a href="#" style={{ color: teal, fontSize: '13px', textDecoration: 'none' }}>
+                    Non-Emergency Mental Health Help
+                  </a>
+                </div>
+
+                <div style={{
+                  width: '134px',
+                  height: '5px',
+                  background: '#1f2937',
+                  borderRadius: '3px',
+                  margin: '8px auto 4px auto'
+                }} />
+              </div>
+
+              <div style={{
+                maxWidth: '800px',
+                margin: '20px auto 0 auto',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}>
+                <h3 style={{ margin: '0 0 12px 0', color: textDark, fontSize: '16px' }}>
+                  Simplified Rules
+                </h3>
+                <div style={{ fontSize: '13px', color: textMuted, lineHeight: '1.8' }}>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Weekly Streak:</strong> Complete ALL your work days to continue streak. Miss one = streak breaks.
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Monthly Target (4-day):</strong> 14 responses
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Monthly Target (5-day):</strong> 18 responses
+                  </p>
+                  <p style={{ margin: '0 0 8px 0' }}>
+                    <strong style={{ color: textDark }}>Monthly Target (6-day):</strong> 20 responses
+                  </p>
+                  <p style={{ margin: '0' }}>
+                    <strong style={{ color: textDark }}>Take a Break:</strong> Break days reduce weekly requirement, monthly target stays fixed
+                  </p>
+                </div>
+              </div>
+
+              <div style={{
+                maxWidth: '800px',
+                margin: '20px auto 0 auto',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}>
+                <h3 style={{ margin: '0 0 12px 0', color: textDark, fontSize: '16px' }}>
+                  Current State
+                </h3>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                  gap: '12px',
+                  fontSize: '13px'
+                }}>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Schedule:</span>{' '}
+                    <strong style={{ color: textDark }}>{persona.workDays.length}-day</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Week Streak:</span>{' '}
+                    <strong style={{ color: textDark }}>{persona.weekStreak}</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Monthly Progress:</span>{' '}
+                    <strong style={{ color: textDark }}>{persona.monthlyProgress}/{persona.monthlyTarget}</strong>
+                  </div>
+                  <div style={{ padding: '8px', background: bgLight, borderRadius: '8px' }}>
+                    <span style={{ color: textMuted }}>Wrapped Status:</span>{' '}
+                    <strong style={{ color: textDark }}>{isUnlocked ? 'Unlocked' : 'In Progress'}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FeedbackProgressSimplified />);
+    </script>
+</body>
+</html>
