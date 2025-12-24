@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnover Intelligence Report | Clover ERA</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Generate your personalized Turnover Intelligence Report with industry benchmarks and cost analysis.">
+    <link rel="canonical" href="https://cloverera.com/turnover-analysis/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+
+    <!-- html2pdf.js for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #2C3E50;
+            --coral: #E8846B;
+            --warm-cream: #FFFBF5;
+            --soft-beige: #F9F6F1;
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --border-color: #E5E7EB;
+            --error-red: #EF4444;
+            --success-green: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--warm-cream);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--charcoal) 0%, #1a2836 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .form-section h2 {
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary-teal);
+        }
+
+        /* Form Fields */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.375rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
+        }
+
+        .form-group input.error,
+        .form-group select.error {
+            border-color: var(--error-red);
+        }
+
+        .form-group .error-message {
+            color: var(--error-red);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-group .helper-text {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Percentage Row */
+        .percentage-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .percentage-total {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--soft-beige);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .percentage-total.valid {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+
+        .percentage-total.invalid {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-red);
+        }
+
+        /* Toggle */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #D1D5DB;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--primary-teal);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active::after {
+            transform: translateX(24px);
+        }
+
+        .toggle-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--coral);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #D6745C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(232, 132, 107, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .result-card.hero {
+            background: linear-gradient(135deg, var(--charcoal) 0%, #1a2836 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .result-card.hero h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .result-card.hero .big-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--coral);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card.hero .sub-number {
+            font-size: 1.25rem;
+            opacity: 0.8;
+        }
+
+        .result-card h3 {
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-teal);
+        }
+
+        /* Benchmark Comparison */
+        .benchmark-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .benchmark-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--soft-beige);
+            border-radius: 8px;
+        }
+
+        .benchmark-item .label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .benchmark-item .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .benchmark-verdict {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .benchmark-verdict.above {
+            background: rgba(239, 68, 68, 0.1);
+            color: #DC2626;
+        }
+
+        .benchmark-verdict.below {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+
+        /* 67-Day Box */
+        .day67-box {
+            background: linear-gradient(135deg, var(--deep-teal) 0%, var(--primary-teal) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .day67-box .big-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .day67-box p {
+            font-size: 1rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .day67-box .source {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 1rem;
+        }
+
+        /* Cost Breakdown */
+        .cost-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--soft-beige);
+            border-radius: 8px;
+        }
+
+        .cost-item .label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cost-item .percent {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .cost-item .value {
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        /* Savings Table */
+        .savings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .savings-table th,
+        .savings-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .savings-table th {
+            background: var(--soft-beige);
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        .savings-table td:last-child {
+            font-weight: 600;
+            color: var(--success-green);
+        }
+
+        /* Alert Box */
+        .alert-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--error-red);
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-box h4 {
+            color: #DC2626;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .action-btn.primary {
+            background: var(--coral);
+            color: white;
+            border: none;
+        }
+
+        .action-btn.primary:hover {
+            background: #D6745C;
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--charcoal);
+            border: 2px solid var(--charcoal);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--charcoal);
+            color: white;
+        }
+
+        /* PDF Content (hidden, used for generation) */
+        #pdf-content {
+            display: none;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+        }
+
+        .loading-box {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .percentage-row {
+                grid-template-columns: 1fr;
+            }
+
+            .benchmark-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .result-card.hero .big-number {
+                font-size: 2.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1>Turnover Intelligence Report</h1>
+        <p>Generate your personalized cost analysis with industry benchmarks</p>
+    </header>
+
+    <div class="container">
+        <!-- Form Section -->
+        <form id="turnover-form" class="form-container">
+            <!-- Section 1: Company Details -->
+            <div class="form-section">
+                <h2>Company Details</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" required minlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactName">Your Name *</label>
+                        <input type="text" id="contactName" required minlength="2">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="industry">Industry *</label>
+                        <select id="industry" required>
+                            <option value="">Select your industry</option>
+                            <option value="technology">Technology / Software</option>
+                            <option value="professional_services">Professional Services</option>
+                            <option value="finance">Finance & Insurance</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="retail">Retail</option>
+                            <option value="hospitality">Hospitality</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Organization Size -->
+            <div class="form-section">
+                <h2>Organization Size</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="totalEmployees">Total Employees *</label>
+                        <input type="number" id="totalEmployees" value="250" min="10" max="100000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numberOfManagers">Number of Managers *</label>
+                        <input type="number" id="numberOfManagers" value="25" min="1" required>
+                        <span class="helper-text">For manager ratio insights</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Compensation -->
+            <div class="form-section">
+                <h2>Compensation (Blended Averages)</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="entrySalary">Entry-Level Avg Salary *</label>
+                        <input type="number" id="entrySalary" value="55000" min="20000" max="500000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="midSalary">Mid-Level Avg Salary *</label>
+                        <input type="number" id="midSalary" value="85000" min="20000" max="500000" required>
+                    </div>
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="seniorSalary">Senior-Level Avg Salary *</label>
+                        <input type="number" id="seniorSalary" value="130000" min="20000" max="500000" required>
+                    </div>
+                </div>
+
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 1rem 0 0.5rem;">Approximate workforce distribution (must total 100%)</p>
+                <div class="percentage-row">
+                    <div class="form-group">
+                        <label for="entryPercent">% Entry-Level *</label>
+                        <input type="number" id="entryPercent" value="40" min="0" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="midPercent">% Mid-Level *</label>
+                        <input type="number" id="midPercent" value="40" min="0" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="seniorPercent">% Senior-Level *</label>
+                        <input type="number" id="seniorPercent" value="20" min="0" max="100" required>
+                    </div>
+                </div>
+                <div class="percentage-total valid" id="percentageTotal">Total: 100%</div>
+            </div>
+
+            <!-- Section 4: Current Turnover -->
+            <div class="form-section">
+                <h2>Current Turnover</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="knownTurnoverRate">Known Turnover Rate (%)</label>
+                        <input type="number" id="knownTurnoverRate" min="1" max="100" placeholder="Leave blank to use industry average">
+                        <span class="helper-text">If unknown, we'll use industry benchmark</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Recent Restructure (past 12 months)?</label>
+                        <div class="toggle-group">
+                            <div class="toggle" id="restructureToggle" data-value="false"></div>
+                            <span class="toggle-label" id="restructureLabel">No</span>
+                        </div>
+                        <span class="helper-text">Flags elevated risk period</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Generate Your Report</button>
+        </form>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results">
+            <!-- Hero Result -->
+            <div class="result-card hero">
+                <h2 id="resultCompanyName">Your Company</h2>
+                <p style="opacity: 0.8; margin-bottom: 1rem;">Turnover Intelligence Report</p>
+                <div class="big-number" id="resultTotalCost">$0</div>
+                <div class="sub-number">Estimated Annual Turnover Cost</div>
+                <p style="margin-top: 1rem; opacity: 0.8;" id="resultDailyCost">That's $0 per day</p>
+            </div>
+
+            <!-- Restructure Alert (conditional) -->
+            <div class="alert-box" id="restructureAlert" style="display: none;">
+                <h4>Restructure Risk Flag</h4>
+                <p>You indicated a restructure in the past 12 months. Research shows voluntary turnover typically spikes 15-25% in the 6 months following a restructure. Your actual turnover may be higher than historical rates suggest.</p>
+            </div>
+
+            <!-- Benchmark Comparison -->
+            <div class="result-card">
+                <h3>Industry Benchmark Comparison</h3>
+                <div class="benchmark-comparison">
+                    <div class="benchmark-item">
+                        <div class="label">Your Turnover Rate</div>
+                        <div class="value" id="resultTurnoverRate">0%</div>
+                    </div>
+                    <div class="benchmark-item">
+                        <div class="label">Industry Average (<span id="resultIndustryName">Technology</span>)</div>
+                        <div class="value" id="resultIndustryAvg">0%</div>
+                    </div>
+                </div>
+                <div class="benchmark-verdict" id="benchmarkVerdict">
+                    You are 0% above industry average
+                </div>
+            </div>
+
+            <!-- 67-Day Reality -->
+            <div class="result-card">
+                <h3>The 67-Day Reality</h3>
+                <div class="day67-box">
+                    <div class="big-number" id="result67Window">0</div>
+                    <p>of your employees have already decided to leave but haven't told you yet.</p>
+                    <p style="margin-top: 1rem;">This is based on Work Institute research showing the average gap between deciding to leave and resigning is 67 days.</p>
+                    <p class="source">Source: Work Institute Retention Report</p>
+                </div>
+            </div>
+
+            <!-- Cost Breakdown -->
+            <div class="result-card">
+                <h3>Hidden Cost Breakdown</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Most companies only track direct recruiting costs. The other 80% stays hidden.</p>
+                <div class="cost-breakdown">
+                    <div class="cost-item">
+                        <span class="label">Direct Recruiting <span class="percent">(20%)</span></span>
+                        <span class="value" id="costRecruiting">$0</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="label">Onboarding & Training <span class="percent">(25%)</span></span>
+                        <span class="value" id="costOnboarding">$0</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="label">Lost Productivity <span class="percent">(35%)</span></span>
+                        <span class="value" id="costProductivity">$0</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="label">Knowledge Loss <span class="percent">(10%)</span></span>
+                        <span class="value" id="costKnowledge">$0</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="label">Manager Time <span class="percent">(10%)</span></span>
+                        <span class="value" id="costManager">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Savings Scenarios -->
+            <div class="result-card">
+                <h3>Savings Scenarios</h3>
+                <table class="savings-table">
+                    <thead>
+                        <tr>
+                            <th>If You Prevent</th>
+                            <th>Departures Saved</th>
+                            <th>Annual Savings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10% of turnover</td>
+                            <td id="savings10Deps">0</td>
+                            <td id="savings10Amt">$0</td>
+                        </tr>
+                        <tr>
+                            <td>20% of turnover</td>
+                            <td id="savings20Deps">0</td>
+                            <td id="savings20Amt">$0</td>
+                        </tr>
+                        <tr>
+                            <td>30% of turnover</td>
+                            <td id="savings30Deps">0</td>
+                            <td id="savings30Amt">$0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Investment Context -->
+            <div class="result-card">
+                <h3>Investment Context</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Based on your cost per departure of <span id="costPerDeparture">$0</span>:</p>
+                <table class="savings-table">
+                    <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Investment</th>
+                            <th>Pays for itself if you prevent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>90-Day Pilot</td>
+                            <td>$24,000</td>
+                            <td id="pilotBreakeven">0 departures</td>
+                        </tr>
+                        <tr>
+                            <td>Department</td>
+                            <td>$48,000/yr</td>
+                            <td id="deptBreakeven">0 departures</td>
+                        </tr>
+                        <tr>
+                            <td>Enterprise</td>
+                            <td>$96,000/yr</td>
+                            <td id="enterpriseBreakeven">0 departures</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn primary" id="downloadPdfBtn">Download PDF Report</button>
+                <button class="action-btn secondary" id="startOverBtn">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <div class="loading-spinner"></div>
+            <p>Generating your report...</p>
+        </div>
+    </div>
+
+    <!-- PDF Content Template (hidden) -->
+    <div id="pdf-content">
+        <div id="pdf-page-1" style="font-family: Arial, sans-serif; padding: 40px; max-width: 700px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <img src="/images/clover-era-logo-dark.svg" alt="Clover ERA" style="height: 40px; margin-bottom: 20px;" onerror="this.style.display='none'">
+                <h1 style="font-size: 28px; color: #2C3E50; margin-bottom: 10px;">Turnover Intelligence Report</h1>
+                <p style="color: #6B7280; font-size: 14px;">Prepared for <strong id="pdf-company"></strong></p>
+                <p style="color: #6B7280; font-size: 14px;">Prepared by Clover ERA</p>
+                <p style="color: #6B7280; font-size: 12px;" id="pdf-date"></p>
+            </div>
+            <div style="background: linear-gradient(135deg, #2C3E50 0%, #1a2836 100%); color: white; padding: 40px; border-radius: 12px; text-align: center; margin-top: 60px;">
+                <p style="font-size: 16px; opacity: 0.9; margin-bottom: 10px;">Your Annual Turnover Cost</p>
+                <p style="font-size: 48px; font-weight: 700; color: #E8846B; margin: 0;" id="pdf-total-cost"></p>
+                <p style="font-size: 16px; opacity: 0.8; margin-top: 10px;" id="pdf-daily-cost"></p>
+            </div>
+            <div style="margin-top: 40px; padding: 20px; background: #F9F6F1; border-radius: 8px;">
+                <p style="text-align: center; color: #4B5563; font-size: 14px;">
+                    Based on <strong id="pdf-departures"></strong> annual departures<br>
+                    <span id="pdf-turnover-rate"></span> turnover rate vs <span id="pdf-industry-avg"></span> industry average
+                </p>
+            </div>
+            <div style="margin-top: 40px; text-align: center;">
+                <p style="font-size: 12px; color: #9CA3AF;">Industry benchmarks from Bureau of Labor Statistics JOLTS data (bls.gov/jlt/)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Industry Benchmarks (BLS JOLTS 2024)
+        const industryBenchmarks = {
+            'technology': { rate: 29, name: 'Technology / Software', source: 'BLS JOLTS 2024' },
+            'professional_services': { rate: 46, name: 'Professional Services', source: 'BLS JOLTS 2024' },
+            'finance': { rate: 25, name: 'Finance & Insurance', source: 'BLS JOLTS 2024' },
+            'healthcare': { rate: 36, name: 'Healthcare', source: 'BLS JOLTS 2024' },
+            'manufacturing': { rate: 28, name: 'Manufacturing', source: 'BLS JOLTS 2024' },
+            'retail': { rate: 53, name: 'Retail', source: 'BLS JOLTS 2024' },
+            'hospitality': { rate: 67, name: 'Hospitality', source: 'BLS JOLTS 2024' },
+            'other': { rate: 41, name: 'All Industries Average', source: 'BLS JOLTS 2024' }
+        };
+
+        // Replacement Cost Multipliers (SHRM methodology)
+        const replacementMultipliers = {
+            entry: 0.5,
+            mid: 1.25,
+            senior: 1.75
+        };
+
+        // Supabase setup
+        const SUPABASE_URL = 'https://dvvsphsvcpxkplumutyc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // State
+        let reportData = null;
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Toggle functionality
+        const restructureToggle = document.getElementById('restructureToggle');
+        const restructureLabel = document.getElementById('restructureLabel');
+
+        restructureToggle.addEventListener('click', function() {
+            const isActive = this.classList.toggle('active');
+            this.dataset.value = isActive;
+            restructureLabel.textContent = isActive ? 'Yes' : 'No';
+        });
+
+        // Percentage validation
+        const entryPercent = document.getElementById('entryPercent');
+        const midPercent = document.getElementById('midPercent');
+        const seniorPercent = document.getElementById('seniorPercent');
+        const percentageTotal = document.getElementById('percentageTotal');
+
+        function validatePercentages() {
+            const total = (parseInt(entryPercent.value) || 0) +
+                         (parseInt(midPercent.value) || 0) +
+                         (parseInt(seniorPercent.value) || 0);
+
+            percentageTotal.textContent = `Total: ${total}%`;
+
+            if (total === 100) {
+                percentageTotal.className = 'percentage-total valid';
+                return true;
+            } else {
+                percentageTotal.className = 'percentage-total invalid';
+                return false;
+            }
+        }
+
+        [entryPercent, midPercent, seniorPercent].forEach(el => {
+            el.addEventListener('input', validatePercentages);
+        });
+
+        // Calculate Report
+        function calculateReport(inputs) {
+            const turnoverRate = inputs.knownTurnoverRate || industryBenchmarks[inputs.industry].rate;
+
+            const weightedAvgSalary =
+                (inputs.entrySalary * inputs.entryPercent / 100) +
+                (inputs.midSalary * inputs.midPercent / 100) +
+                (inputs.seniorSalary * inputs.seniorPercent / 100);
+
+            const annualDepartures = Math.round(inputs.totalEmployees * turnoverRate / 100);
+
+            const entryDepartures = Math.round(annualDepartures * inputs.entryPercent / 100);
+            const midDepartures = Math.round(annualDepartures * inputs.midPercent / 100);
+            const seniorDepartures = Math.round(annualDepartures * inputs.seniorPercent / 100);
+
+            const entryCost = entryDepartures * inputs.entrySalary * replacementMultipliers.entry;
+            const midCost = midDepartures * inputs.midSalary * replacementMultipliers.mid;
+            const seniorCost = seniorDepartures * inputs.seniorSalary * replacementMultipliers.senior;
+
+            const totalAnnualCost = entryCost + midCost + seniorCost;
+            const dailyCost = Math.round(totalAnnualCost / 365);
+
+            const costBreakdown = {
+                directRecruiting: Math.round(totalAnnualCost * 0.20),
+                onboardingTraining: Math.round(totalAnnualCost * 0.25),
+                lostProductivity: Math.round(totalAnnualCost * 0.35),
+                knowledgeLoss: Math.round(totalAnnualCost * 0.10),
+                managerTime: Math.round(totalAnnualCost * 0.10)
+            };
+
+            const inThe67DayWindow = Math.round((67 / 365) * annualDepartures);
+
+            const industryAverage = industryBenchmarks[inputs.industry].rate;
+            const vsIndustry = turnoverRate - industryAverage;
+            const vsIndustryPercent = Math.round((vsIndustry / industryAverage) * 100);
+
+            const costPerDeparture = annualDepartures > 0 ? totalAnnualCost / annualDepartures : 0;
+            const pilotBreakeven = costPerDeparture > 0 ? Math.ceil(24000 / costPerDeparture) : 0;
+            const deptBreakeven = costPerDeparture > 0 ? Math.ceil(48000 / costPerDeparture) : 0;
+            const enterpriseBreakeven = costPerDeparture > 0 ? Math.ceil(96000 / costPerDeparture) : 0;
+
+            const managerRatio = Math.round(inputs.totalEmployees / inputs.numberOfManagers);
+
+            return {
+                companyName: inputs.companyName,
+                contactName: inputs.contactName,
+                email: inputs.email,
+                industry: inputs.industry,
+                industryName: industryBenchmarks[inputs.industry].name,
+                totalEmployees: inputs.totalEmployees,
+                numberOfManagers: inputs.numberOfManagers,
+                managerRatio,
+                turnoverRate,
+                industryAverage,
+                vsIndustry,
+                vsIndustryPercent,
+                annualDepartures,
+                totalAnnualCost,
+                dailyCost,
+                costBreakdown,
+                inThe67DayWindow,
+                recentRestructure: inputs.recentRestructure,
+                savings: {
+                    prevent10: { departures: Math.round(annualDepartures * 0.10), amount: Math.round(totalAnnualCost * 0.10) },
+                    prevent20: { departures: Math.round(annualDepartures * 0.20), amount: Math.round(totalAnnualCost * 0.20) },
+                    prevent30: { departures: Math.round(annualDepartures * 0.30), amount: Math.round(totalAnnualCost * 0.30) }
+                },
+                costPerDeparture,
+                pilotBreakeven,
+                deptBreakeven,
+                enterpriseBreakeven,
+                generatedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            };
+        }
+
+        // Display Results
+        function displayResults(data) {
+            document.getElementById('resultCompanyName').textContent = data.companyName;
+            document.getElementById('resultTotalCost').textContent = formatCurrency(data.totalAnnualCost);
+            document.getElementById('resultDailyCost').textContent = `That's ${formatCurrency(data.dailyCost)} per day`;
+
+            document.getElementById('resultTurnoverRate').textContent = `${data.turnoverRate}%`;
+            document.getElementById('resultIndustryName').textContent = data.industryName;
+            document.getElementById('resultIndustryAvg').textContent = `${data.industryAverage}%`;
+
+            const verdict = document.getElementById('benchmarkVerdict');
+            if (data.vsIndustry > 0) {
+                verdict.className = 'benchmark-verdict above';
+                verdict.textContent = `You are ${Math.abs(data.vsIndustryPercent)}% above industry average`;
+            } else if (data.vsIndustry < 0) {
+                verdict.className = 'benchmark-verdict below';
+                verdict.textContent = `You are ${Math.abs(data.vsIndustryPercent)}% below industry average`;
+            } else {
+                verdict.className = 'benchmark-verdict';
+                verdict.textContent = `You are at industry average`;
+            }
+
+            document.getElementById('result67Window').textContent = data.inThe67DayWindow;
+
+            document.getElementById('costRecruiting').textContent = formatCurrency(data.costBreakdown.directRecruiting);
+            document.getElementById('costOnboarding').textContent = formatCurrency(data.costBreakdown.onboardingTraining);
+            document.getElementById('costProductivity').textContent = formatCurrency(data.costBreakdown.lostProductivity);
+            document.getElementById('costKnowledge').textContent = formatCurrency(data.costBreakdown.knowledgeLoss);
+            document.getElementById('costManager').textContent = formatCurrency(data.costBreakdown.managerTime);
+
+            document.getElementById('savings10Deps').textContent = data.savings.prevent10.departures;
+            document.getElementById('savings10Amt').textContent = formatCurrency(data.savings.prevent10.amount);
+            document.getElementById('savings20Deps').textContent = data.savings.prevent20.departures;
+            document.getElementById('savings20Amt').textContent = formatCurrency(data.savings.prevent20.amount);
+            document.getElementById('savings30Deps').textContent = data.savings.prevent30.departures;
+            document.getElementById('savings30Amt').textContent = formatCurrency(data.savings.prevent30.amount);
+
+            document.getElementById('costPerDeparture').textContent = formatCurrency(data.costPerDeparture);
+            document.getElementById('pilotBreakeven').textContent = `${data.pilotBreakeven} departure${data.pilotBreakeven !== 1 ? 's' : ''}`;
+            document.getElementById('deptBreakeven').textContent = `${data.deptBreakeven} departure${data.deptBreakeven !== 1 ? 's' : ''}`;
+            document.getElementById('enterpriseBreakeven').textContent = `${data.enterpriseBreakeven} departure${data.enterpriseBreakeven !== 1 ? 's' : ''}`;
+
+            if (data.recentRestructure) {
+                document.getElementById('restructureAlert').style.display = 'block';
+            } else {
+                document.getElementById('restructureAlert').style.display = 'none';
+            }
+
+            // Update PDF content
+            document.getElementById('pdf-company').textContent = data.companyName;
+            document.getElementById('pdf-date').textContent = data.generatedDate;
+            document.getElementById('pdf-total-cost').textContent = formatCurrency(data.totalAnnualCost);
+            document.getElementById('pdf-daily-cost').textContent = `That's ${formatCurrency(data.dailyCost)} per day`;
+            document.getElementById('pdf-departures').textContent = data.annualDepartures;
+            document.getElementById('pdf-turnover-rate').textContent = `${data.turnoverRate}%`;
+            document.getElementById('pdf-industry-avg').textContent = `${data.industryAverage}%`;
+
+            // Show results
+            document.getElementById('turnover-form').style.display = 'none';
+            document.getElementById('results').classList.add('visible');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Save to Supabase
+        async function saveToSupabase(data) {
+            try {
+                const { error } = await supabase
+                    .from('turnover_reports')
+                    .insert({
+                        company_name: data.companyName,
+                        contact_name: data.contactName,
+                        email: data.email,
+                        industry: data.industry,
+                        total_employees: data.totalEmployees,
+                        turnover_rate: data.turnoverRate,
+                        annual_cost: data.totalAnnualCost,
+                        pdf_generated: false,
+                        email_sent: false
+                    });
+
+                if (error) {
+                    console.error('Supabase error:', error);
+                }
+            } catch (err) {
+                console.error('Failed to save to Supabase:', err);
+            }
+        }
+
+        // Generate PDF
+        async function generatePDF() {
+            const loading = document.getElementById('loadingOverlay');
+            loading.classList.add('visible');
+
+            try {
+                const resultsSection = document.getElementById('results');
+                const actionButtons = document.querySelector('.action-buttons');
+
+                // Temporarily hide action buttons for PDF
+                actionButtons.style.display = 'none';
+
+                const opt = {
+                    margin: 10,
+                    filename: `${reportData.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                await html2pdf().set(opt).from(resultsSection).save();
+
+                // Update Supabase that PDF was generated
+                try {
+                    await supabase
+                        .from('turnover_reports')
+                        .update({ pdf_generated: true })
+                        .eq('email', reportData.email)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                } catch (err) {
+                    console.error('Failed to update PDF status:', err);
+                }
+
+                // Restore action buttons
+                actionButtons.style.display = 'flex';
+            } catch (err) {
+                console.error('PDF generation failed:', err);
+                alert('PDF generation failed. Please try again.');
+            } finally {
+                loading.classList.remove('visible');
+            }
+        }
+
+        // Form Submit
+        document.getElementById('turnover-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validatePercentages()) {
+                alert('Workforce distribution percentages must total 100%');
+                return;
+            }
+
+            const loading = document.getElementById('loadingOverlay');
+            loading.classList.add('visible');
+
+            const inputs = {
+                companyName: document.getElementById('companyName').value,
+                contactName: document.getElementById('contactName').value,
+                email: document.getElementById('email').value,
+                industry: document.getElementById('industry').value,
+                totalEmployees: parseInt(document.getElementById('totalEmployees').value),
+                numberOfManagers: parseInt(document.getElementById('numberOfManagers').value),
+                entrySalary: parseInt(document.getElementById('entrySalary').value),
+                midSalary: parseInt(document.getElementById('midSalary').value),
+                seniorSalary: parseInt(document.getElementById('seniorSalary').value),
+                entryPercent: parseInt(document.getElementById('entryPercent').value),
+                midPercent: parseInt(document.getElementById('midPercent').value),
+                seniorPercent: parseInt(document.getElementById('seniorPercent').value),
+                knownTurnoverRate: parseInt(document.getElementById('knownTurnoverRate').value) || null,
+                recentRestructure: document.getElementById('restructureToggle').dataset.value === 'true'
+            };
+
+            reportData = calculateReport(inputs);
+
+            // Save to Supabase
+            await saveToSupabase(reportData);
+
+            loading.classList.remove('visible');
+
+            displayResults(reportData);
+        });
+
+        // Download PDF button
+        document.getElementById('downloadPdfBtn').addEventListener('click', generatePDF);
+
+        // Start Over button
+        document.getElementById('startOverBtn').addEventListener('click', function() {
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('turnover-form').style.display = 'block';
+            document.getElementById('turnover-form').reset();
+
+            // Reset toggle
+            restructureToggle.classList.remove('active');
+            restructureToggle.dataset.value = 'false';
+            restructureLabel.textContent = 'No';
+
+            // Reset percentage display
+            validatePercentages();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
