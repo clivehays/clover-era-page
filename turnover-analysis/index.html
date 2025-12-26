@@ -559,7 +559,7 @@
 
     <div class="container">
         <!-- Form Section -->
-        <form id="turnover-form" class="form-container" action="javascript:void(0)" method="post">
+        <form id="turnover-form" class="form-container" onsubmit="return false;">
             <!-- Section 1: Company Details -->
             <div class="form-section">
                 <h2>Company Details</h2>
@@ -891,21 +891,27 @@
         }
 
         // Toggle functionality
-        const restructureToggle = document.getElementById('restructureToggle');
-        const restructureLabel = document.getElementById('restructureLabel');
         let restructureValue = false;
 
-        restructureToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            restructureValue = !restructureValue;
-            if (restructureValue) {
-                this.classList.add('active');
-                restructureLabel.textContent = 'Yes';
-            } else {
-                this.classList.remove('active');
-                restructureLabel.textContent = 'No';
+        function setupToggle() {
+            const toggle = document.getElementById('restructureToggle');
+            const label = document.getElementById('restructureLabel');
+
+            if (toggle && label) {
+                toggle.onclick = function() {
+                    restructureValue = !restructureValue;
+                    if (restructureValue) {
+                        toggle.classList.add('active');
+                        label.textContent = 'Yes';
+                    } else {
+                        toggle.classList.remove('active');
+                        label.textContent = 'No';
+                    }
+                };
             }
-        });
+        }
+
+        setupToggle();
 
         // Percentage validation
         const entryPercent = document.getElementById('entryPercent');
@@ -1160,9 +1166,16 @@
             }
         }
 
-        // Form Submit
-        document.getElementById('turnover-form').addEventListener('submit', async function(e) {
+        // Form Submit - using button click
+        document.getElementById('submitBtn').onclick = async function(e) {
             e.preventDefault();
+
+            // Validate required fields
+            const form = document.getElementById('turnover-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
 
             if (!validatePercentages()) {
                 alert('Workforce distribution percentages must total 100%');
@@ -1172,52 +1185,59 @@
             const loading = document.getElementById('loadingOverlay');
             loading.classList.add('visible');
 
-            const inputs = {
-                companyName: document.getElementById('companyName').value,
-                contactName: document.getElementById('contactName').value,
-                email: document.getElementById('email').value,
-                industry: document.getElementById('industry').value,
-                totalEmployees: parseInt(document.getElementById('totalEmployees').value),
-                numberOfManagers: parseInt(document.getElementById('numberOfManagers').value),
-                entrySalary: parseInt(document.getElementById('entrySalary').value),
-                midSalary: parseInt(document.getElementById('midSalary').value),
-                seniorSalary: parseInt(document.getElementById('seniorSalary').value),
-                entryPercent: parseInt(document.getElementById('entryPercent').value),
-                midPercent: parseInt(document.getElementById('midPercent').value),
-                seniorPercent: parseInt(document.getElementById('seniorPercent').value),
-                knownTurnoverRate: parseInt(document.getElementById('knownTurnoverRate').value) || null,
-                recentRestructure: restructureValue
-            };
+            try {
+                const inputs = {
+                    companyName: document.getElementById('companyName').value,
+                    contactName: document.getElementById('contactName').value,
+                    email: document.getElementById('email').value,
+                    industry: document.getElementById('industry').value,
+                    totalEmployees: parseInt(document.getElementById('totalEmployees').value),
+                    numberOfManagers: parseInt(document.getElementById('numberOfManagers').value),
+                    entrySalary: parseInt(document.getElementById('entrySalary').value),
+                    midSalary: parseInt(document.getElementById('midSalary').value),
+                    seniorSalary: parseInt(document.getElementById('seniorSalary').value),
+                    entryPercent: parseInt(document.getElementById('entryPercent').value),
+                    midPercent: parseInt(document.getElementById('midPercent').value),
+                    seniorPercent: parseInt(document.getElementById('seniorPercent').value),
+                    knownTurnoverRate: parseInt(document.getElementById('knownTurnoverRate').value) || null,
+                    recentRestructure: restructureValue
+                };
 
-            reportData = calculateReport(inputs);
+                reportData = calculateReport(inputs);
 
-            // Save to Supabase
-            await saveToSupabase(reportData);
+                // Save to Supabase
+                await saveToSupabase(reportData);
 
-            loading.classList.remove('visible');
-
-            displayResults(reportData);
-        });
+                displayResults(reportData);
+            } catch (err) {
+                console.error('Error generating report:', err);
+                alert('Error generating report. Please try again.');
+            } finally {
+                loading.classList.remove('visible');
+            }
+        };
 
         // Download PDF button
         document.getElementById('downloadPdfBtn').addEventListener('click', generatePDF);
 
         // Start Over button
-        document.getElementById('startOverBtn').addEventListener('click', function() {
+        document.getElementById('startOverBtn').onclick = function() {
             document.getElementById('results').classList.remove('visible');
             document.getElementById('turnover-form').style.display = 'block';
             document.getElementById('turnover-form').reset();
 
             // Reset toggle
-            restructureToggle.classList.remove('active');
+            const toggle = document.getElementById('restructureToggle');
+            const label = document.getElementById('restructureLabel');
+            if (toggle) toggle.classList.remove('active');
+            if (label) label.textContent = 'No';
             restructureValue = false;
-            restructureLabel.textContent = 'No';
 
             // Reset percentage display
             validatePercentages();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        };
     </script>
 </body>
 </html>
