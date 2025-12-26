@@ -893,11 +893,18 @@
         // Toggle functionality
         const restructureToggle = document.getElementById('restructureToggle');
         const restructureLabel = document.getElementById('restructureLabel');
+        let restructureValue = false;
 
-        restructureToggle.addEventListener('click', function() {
-            const isActive = this.classList.toggle('active');
-            this.dataset.value = isActive;
-            restructureLabel.textContent = isActive ? 'Yes' : 'No';
+        restructureToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            restructureValue = !restructureValue;
+            if (restructureValue) {
+                this.classList.add('active');
+                restructureLabel.textContent = 'Yes';
+            } else {
+                this.classList.remove('active');
+                restructureLabel.textContent = 'No';
+            }
         });
 
         // Percentage validation
@@ -1097,21 +1104,42 @@
             loading.classList.add('visible');
 
             try {
+                // Create a clone of results for PDF (without action buttons)
                 const resultsSection = document.getElementById('results');
-                const actionButtons = document.querySelector('.action-buttons');
+                const pdfClone = resultsSection.cloneNode(true);
 
-                // Temporarily hide action buttons for PDF
-                actionButtons.style.display = 'none';
+                // Remove action buttons from clone
+                const actionsToRemove = pdfClone.querySelector('.action-buttons');
+                if (actionsToRemove) {
+                    actionsToRemove.remove();
+                }
+
+                // Add to document temporarily (hidden)
+                pdfClone.style.position = 'absolute';
+                pdfClone.style.left = '-9999px';
+                pdfClone.style.top = '0';
+                pdfClone.style.width = '800px';
+                pdfClone.style.background = 'white';
+                document.body.appendChild(pdfClone);
 
                 const opt = {
-                    margin: 10,
+                    margin: [10, 10, 10, 10],
                     filename: `${reportData.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        windowWidth: 800
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
                 };
 
-                await html2pdf().set(opt).from(resultsSection).save();
+                await html2pdf().set(opt).from(pdfClone).save();
+
+                // Clean up
+                document.body.removeChild(pdfClone);
 
                 // Update Supabase that PDF was generated
                 try {
@@ -1124,9 +1152,6 @@
                 } catch (err) {
                     console.error('Failed to update PDF status:', err);
                 }
-
-                // Restore action buttons
-                actionButtons.style.display = 'flex';
             } catch (err) {
                 console.error('PDF generation failed:', err);
                 alert('PDF generation failed. Please try again.');
@@ -1161,7 +1186,7 @@
                 midPercent: parseInt(document.getElementById('midPercent').value),
                 seniorPercent: parseInt(document.getElementById('seniorPercent').value),
                 knownTurnoverRate: parseInt(document.getElementById('knownTurnoverRate').value) || null,
-                recentRestructure: document.getElementById('restructureToggle').dataset.value === 'true'
+                recentRestructure: restructureValue
             };
 
             reportData = calculateReport(inputs);
@@ -1185,7 +1210,7 @@
 
             // Reset toggle
             restructureToggle.classList.remove('active');
-            restructureToggle.dataset.value = 'false';
+            restructureValue = false;
             restructureLabel.textContent = 'No';
 
             // Reset percentage display
