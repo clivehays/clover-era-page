@@ -875,7 +875,7 @@
         // Supabase setup
         const SUPABASE_URL = 'https://dvvsphsvcpxkplumutyc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // State
         let reportData = null;
@@ -1082,7 +1082,7 @@
         // Save to Supabase
         async function saveToSupabase(data) {
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('turnover_reports')
                     .insert({
                         company_name: data.companyName,
@@ -1149,7 +1149,7 @@
 
                 // Update Supabase that PDF was generated
                 try {
-                    await supabase
+                    await supabaseClient
                         .from('turnover_reports')
                         .update({ pdf_generated: true })
                         .eq('email', reportData.email)
