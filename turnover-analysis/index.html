@@ -1119,20 +1119,38 @@
                     actionButtons.style.display = 'none';
                 }
 
+                // Add PDF-specific styling temporarily
+                resultsSection.style.background = 'white';
+                resultsSection.style.padding = '20px';
+
+                // Reduce margins on result cards for PDF
+                const resultCards = resultsSection.querySelectorAll('.result-card');
+                resultCards.forEach(card => {
+                    card.style.marginBottom = '15px';
+                });
+
                 const opt = {
-                    margin: [10, 10, 10, 10],
+                    margin: [5, 5, 5, 5],
                     filename: `${reportData.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
+                    image: { type: 'jpeg', quality: 0.95 },
                     html2canvas: {
                         scale: 2,
                         useCORS: true,
-                        logging: false
+                        logging: false,
+                        backgroundColor: '#ffffff'
                     },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                    pagebreak: { mode: 'avoid-all' }
                 };
 
                 await html2pdf().set(opt).from(resultsSection).save();
+
+                // Restore original styling
+                resultsSection.style.background = '';
+                resultsSection.style.padding = '';
+                resultCards.forEach(card => {
+                    card.style.marginBottom = '';
+                });
 
                 // Restore action buttons
                 if (actionButtons) {
