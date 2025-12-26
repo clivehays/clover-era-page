@@ -1110,23 +1110,14 @@
             loading.classList.add('visible');
 
             try {
-                // Create a clone of results for PDF (without action buttons)
+                // Get the results section and hide action buttons temporarily
                 const resultsSection = document.getElementById('results');
-                const pdfClone = resultsSection.cloneNode(true);
+                const actionButtons = resultsSection.querySelector('.action-buttons');
 
-                // Remove action buttons from clone
-                const actionsToRemove = pdfClone.querySelector('.action-buttons');
-                if (actionsToRemove) {
-                    actionsToRemove.remove();
+                // Hide action buttons
+                if (actionButtons) {
+                    actionButtons.style.display = 'none';
                 }
-
-                // Add to document temporarily (hidden)
-                pdfClone.style.position = 'absolute';
-                pdfClone.style.left = '-9999px';
-                pdfClone.style.top = '0';
-                pdfClone.style.width = '800px';
-                pdfClone.style.background = 'white';
-                document.body.appendChild(pdfClone);
 
                 const opt = {
                     margin: [10, 10, 10, 10],
@@ -1135,17 +1126,18 @@
                     html2canvas: {
                         scale: 2,
                         useCORS: true,
-                        logging: false,
-                        windowWidth: 800
+                        logging: false
                     },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
                 };
 
-                await html2pdf().set(opt).from(pdfClone).save();
+                await html2pdf().set(opt).from(resultsSection).save();
 
-                // Clean up
-                document.body.removeChild(pdfClone);
+                // Restore action buttons
+                if (actionButtons) {
+                    actionButtons.style.display = 'flex';
+                }
 
                 // Update Supabase that PDF was generated
                 try {
@@ -1161,6 +1153,11 @@
             } catch (err) {
                 console.error('PDF generation failed:', err);
                 alert('PDF generation failed. Please try again.');
+                // Restore action buttons on error too
+                const actionButtons = document.querySelector('.action-buttons');
+                if (actionButtons) {
+                    actionButtons.style.display = 'flex';
+                }
             } finally {
                 loading.classList.remove('visible');
             }
