@@ -13,8 +13,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
 
-    <!-- html2pdf.js for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -1104,58 +1104,410 @@
             }
         }
 
-        // Generate PDF
+        // Generate PDF using jsPDF directly
         async function generatePDF() {
             const loading = document.getElementById('loadingOverlay');
             loading.classList.add('visible');
 
             try {
-                // Get the results section and hide action buttons temporarily
-                const resultsSection = document.getElementById('results');
-                const actionButtons = resultsSection.querySelector('.action-buttons');
-
-                // Hide action buttons
-                if (actionButtons) {
-                    actionButtons.style.display = 'none';
-                }
-
-                // Add PDF-specific styling temporarily
-                resultsSection.style.background = 'white';
-                resultsSection.style.padding = '20px';
-
-                // Reduce margins on result cards for PDF
-                const resultCards = resultsSection.querySelectorAll('.result-card');
-                resultCards.forEach(card => {
-                    card.style.marginBottom = '15px';
+                // Access jsPDF from html2pdf bundle
+                const { jsPDF } = window.jspdf || window;
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
                 });
 
-                const opt = {
-                    margin: [5, 5, 5, 5],
-                    filename: `${reportData.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`,
-                    image: { type: 'jpeg', quality: 0.95 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        logging: false,
-                        backgroundColor: '#ffffff'
-                    },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: 'avoid-all' }
+                const pageWidth = 210;
+                const pageHeight = 297;
+                const margin = 20;
+                const contentWidth = pageWidth - (margin * 2);
+                let y = margin;
+
+                // Helper functions
+                const addText = (text, x, fontSize, color, style = 'normal', align = 'left') => {
+                    doc.setFontSize(fontSize);
+                    doc.setTextColor(color);
+                    doc.setFont('helvetica', style);
+                    if (align === 'center') {
+                        doc.text(text, pageWidth / 2, y, { align: 'center' });
+                    } else {
+                        doc.text(text, x, y);
+                    }
                 };
 
-                await html2pdf().set(opt).from(resultsSection).save();
+                const addLine = (height = 5) => { y += height; };
 
-                // Restore original styling
-                resultsSection.style.background = '';
-                resultsSection.style.padding = '';
-                resultCards.forEach(card => {
-                    card.style.marginBottom = '';
+                const checkPageBreak = (neededSpace) => {
+                    if (y + neededSpace > pageHeight - margin) {
+                        // Add footer before new page
+                        doc.setFontSize(8);
+                        doc.setTextColor('#9CA3AF');
+                        doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 10, { align: 'center' });
+                        doc.addPage();
+                        y = margin;
+                        return true;
+                    }
+                    return false;
+                };
+
+                // ============ PAGE 1: Cover / Summary ============
+                y = 40;
+                addText('TURNOVER INTELLIGENCE REPORT', 0, 24, '#2C3E50', 'bold', 'center');
+                addLine(15);
+                addText(`Prepared for ${reportData.companyName}`, 0, 14, '#4B5563', 'normal', 'center');
+                addLine(8);
+                addText('Prepared by Clover ERA', 0, 12, '#6B7280', 'normal', 'center');
+                addLine(6);
+                addText(reportData.generatedDate, 0, 10, '#9CA3AF', 'normal', 'center');
+
+                // Main cost box
+                y = 100;
+                doc.setFillColor('#2C3E50');
+                doc.roundedRect(margin, y, contentWidth, 60, 5, 5, 'F');
+                y += 20;
+                addText('Your Annual Turnover Cost', 0, 14, '#FFFFFF', 'normal', 'center');
+                addLine(15);
+                addText(formatCurrency(reportData.totalAnnualCost), 0, 36, '#E8846B', 'bold', 'center');
+                addLine(12);
+                addText(`That's ${formatCurrency(reportData.dailyCost)} per day`, 0, 12, '#FFFFFF', 'normal', 'center');
+
+                // Key stats
+                y = 180;
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(margin, y, contentWidth, 30, 3, 3, 'F');
+                y += 12;
+                addText(`Based on ${reportData.annualDepartures} annual departures`, 0, 11, '#4B5563', 'normal', 'center');
+                addLine(8);
+                addText(`${reportData.turnoverRate}% turnover rate vs ${reportData.industryAverage}% industry average`, 0, 10, '#6B7280', 'normal', 'center');
+
+                // Footer
+                y = pageHeight - 15;
+                addText('Industry benchmarks from Bureau of Labor Statistics JOLTS data (bls.gov/jlt/)', 0, 8, '#9CA3AF', 'normal', 'center');
+
+                // ============ PAGE 2: The Numbers ============
+                doc.addPage();
+                y = margin;
+                addText('THE NUMBERS', 0, 20, '#2C3E50', 'bold', 'center');
+                addLine(20);
+
+                // Stats grid
+                const statBoxWidth = (contentWidth - 10) / 2;
+                const statBoxHeight = 35;
+
+                // Your Turnover Rate
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(margin, y, statBoxWidth, statBoxHeight, 3, 3, 'F');
+                doc.setFontSize(10);
+                doc.setTextColor('#6B7280');
+                doc.text('Your Turnover Rate', margin + statBoxWidth/2, y + 12, { align: 'center' });
+                doc.setFontSize(24);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${reportData.turnoverRate}%`, margin + statBoxWidth/2, y + 28, { align: 'center' });
+
+                // Industry Average
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(margin + statBoxWidth + 10, y, statBoxWidth, statBoxHeight, 3, 3, 'F');
+                doc.setFontSize(10);
+                doc.setTextColor('#6B7280');
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Industry Average (${reportData.industryName})`, margin + statBoxWidth + 10 + statBoxWidth/2, y + 12, { align: 'center', maxWidth: statBoxWidth - 10 });
+                doc.setFontSize(24);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${reportData.industryAverage}%`, margin + statBoxWidth + 10 + statBoxWidth/2, y + 28, { align: 'center' });
+
+                y += statBoxHeight + 10;
+
+                // Comparison verdict
+                const verdictColor = reportData.vsIndustry > 0 ? '#DC2626' : '#059669';
+                const verdictBg = reportData.vsIndustry > 0 ? '#FEE2E2' : '#D1FAE5';
+                const verdictText = reportData.vsIndustry > 0
+                    ? `You are ${Math.abs(reportData.vsIndustryPercent)}% above industry average`
+                    : reportData.vsIndustry < 0
+                        ? `You are ${Math.abs(reportData.vsIndustryPercent)}% below industry average`
+                        : 'You are at industry average';
+
+                doc.setFillColor(verdictBg);
+                doc.roundedRect(margin, y, contentWidth, 15, 3, 3, 'F');
+                y += 10;
+                addText(verdictText, 0, 12, verdictColor, 'bold', 'center');
+
+                y += 20;
+
+                // Annual Departures
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(margin, y, statBoxWidth, statBoxHeight, 3, 3, 'F');
+                doc.setFontSize(10);
+                doc.setTextColor('#6B7280');
+                doc.setFont('helvetica', 'normal');
+                doc.text('Annual Departures', margin + statBoxWidth/2, y + 12, { align: 'center' });
+                doc.setFontSize(24);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${reportData.annualDepartures}`, margin + statBoxWidth/2, y + 28, { align: 'center' });
+
+                // Manager Ratio
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(margin + statBoxWidth + 10, y, statBoxWidth, statBoxHeight, 3, 3, 'F');
+                doc.setFontSize(10);
+                doc.setTextColor('#6B7280');
+                doc.setFont('helvetica', 'normal');
+                doc.text('Manager to Employee Ratio', margin + statBoxWidth + 10 + statBoxWidth/2, y + 12, { align: 'center' });
+                doc.setFontSize(24);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text(`1:${reportData.managerRatio}`, margin + statBoxWidth + 10 + statBoxWidth/2, y + 28, { align: 'center' });
+
+                // Restructure warning if applicable
+                if (reportData.recentRestructure) {
+                    y += statBoxHeight + 15;
+                    doc.setFillColor('#FEE2E2');
+                    doc.roundedRect(margin, y, contentWidth, 25, 3, 3, 'F');
+                    y += 10;
+                    doc.setFontSize(11);
+                    doc.setTextColor('#DC2626');
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('⚠ Restructure Risk Flag', margin + 5, y);
+                    y += 8;
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Recent restructure detected. Expect 15-25% voluntary turnover spike within 6 months.', margin + 5, y);
+                }
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor('#9CA3AF');
+                doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                // ============ PAGE 3: Hidden Cost Breakdown ============
+                doc.addPage();
+                y = margin;
+                addText('HIDDEN COST BREAKDOWN', 0, 20, '#2C3E50', 'bold', 'center');
+                addLine(10);
+                addText('Most companies only track direct recruiting costs. The other 80% stays hidden.', 0, 10, '#6B7280', 'normal', 'center');
+                addLine(20);
+
+                const costItems = [
+                    { label: 'Direct Recruiting', percent: '20%', value: reportData.costBreakdown.directRecruiting },
+                    { label: 'Onboarding & Training', percent: '25%', value: reportData.costBreakdown.onboardingTraining },
+                    { label: 'Lost Productivity', percent: '35%', value: reportData.costBreakdown.lostProductivity },
+                    { label: 'Knowledge Loss', percent: '10%', value: reportData.costBreakdown.knowledgeLoss },
+                    { label: 'Manager Time', percent: '10%', value: reportData.costBreakdown.managerTime }
+                ];
+
+                costItems.forEach((item, index) => {
+                    doc.setFillColor('#F9F6F1');
+                    doc.roundedRect(margin, y, contentWidth, 18, 3, 3, 'F');
+                    doc.setFontSize(11);
+                    doc.setTextColor('#2C3E50');
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`${item.label} (${item.percent})`, margin + 5, y + 12);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(formatCurrency(item.value), margin + contentWidth - 5, y + 12, { align: 'right' });
+                    y += 22;
                 });
 
-                // Restore action buttons
-                if (actionButtons) {
-                    actionButtons.style.display = 'flex';
-                }
+                y += 10;
+                doc.setDrawColor('#2C3E50');
+                doc.line(margin, y, margin + contentWidth, y);
+                y += 10;
+                doc.setFontSize(14);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text('Total Annual Cost:', margin + 5, y);
+                doc.text(formatCurrency(reportData.totalAnnualCost), margin + contentWidth - 5, y, { align: 'right' });
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor('#9CA3AF');
+                doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                // ============ PAGE 4: The 67-Day Reality ============
+                doc.addPage();
+                y = margin;
+                addText('THE 67-DAY REALITY', 0, 20, '#2C3E50', 'bold', 'center');
+                addLine(25);
+
+                // Big teal box
+                doc.setFillColor('#0D7C88');
+                doc.roundedRect(margin, y, contentWidth, 100, 5, 5, 'F');
+
+                y += 30;
+                doc.setFontSize(48);
+                doc.setTextColor('#FFFFFF');
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${reportData.inThe67DayWindow}`, pageWidth / 2, y, { align: 'center' });
+
+                y += 15;
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+                const line1 = 'of your employees have already decided to leave';
+                const line2 = 'but haven\'t told you yet.';
+                doc.text(line1, pageWidth / 2, y, { align: 'center' });
+                y += 7;
+                doc.text(line2, pageWidth / 2, y, { align: 'center' });
+
+                y += 20;
+                doc.setFontSize(10);
+                const explanationLines = doc.splitTextToSize(
+                    'This is based on Work Institute research showing the average gap between deciding to leave and resigning is 67 days.',
+                    contentWidth - 20
+                );
+                explanationLines.forEach(line => {
+                    doc.text(line, pageWidth / 2, y, { align: 'center' });
+                    y += 5;
+                });
+
+                y = margin + 100 + 25;
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(margin, y, contentWidth, 40, 3, 3, 'F');
+                y += 15;
+                doc.setFontSize(11);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'normal');
+                const insightText = doc.splitTextToSize(
+                    'These decisions are happening now. The question is whether you have visibility before the resignation letter arrives.',
+                    contentWidth - 20
+                );
+                insightText.forEach(line => {
+                    doc.text(line, pageWidth / 2, y, { align: 'center' });
+                    y += 6;
+                });
+
+                // Source
+                y += 15;
+                addText('Source: Work Institute Retention Report', 0, 9, '#9CA3AF', 'italic', 'center');
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor('#9CA3AF');
+                doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                // ============ PAGE 5: Savings Scenarios ============
+                doc.addPage();
+                y = margin;
+                addText('SAVINGS SCENARIOS', 0, 20, '#2C3E50', 'bold', 'center');
+                addLine(20);
+
+                // Table header
+                doc.setFillColor('#F9F6F1');
+                doc.rect(margin, y, contentWidth, 12, 'F');
+                doc.setFontSize(10);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text('If You Prevent', margin + 5, y + 8);
+                doc.text('Departures Saved', margin + 70, y + 8);
+                doc.text('Annual Savings', margin + 130, y + 8);
+                y += 12;
+
+                const savingsData = [
+                    { label: '10% of turnover', deps: reportData.savings.prevent10.departures, amount: reportData.savings.prevent10.amount },
+                    { label: '20% of turnover', deps: reportData.savings.prevent20.departures, amount: reportData.savings.prevent20.amount },
+                    { label: '30% of turnover', deps: reportData.savings.prevent30.departures, amount: reportData.savings.prevent30.amount }
+                ];
+
+                doc.setFont('helvetica', 'normal');
+                savingsData.forEach(row => {
+                    doc.setDrawColor('#E5E7EB');
+                    doc.line(margin, y + 12, margin + contentWidth, y + 12);
+                    doc.setTextColor('#4B5563');
+                    doc.text(row.label, margin + 5, y + 8);
+                    doc.text(`${row.deps}`, margin + 70, y + 8);
+                    doc.setTextColor('#059669');
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(formatCurrency(row.amount), margin + 130, y + 8);
+                    doc.setFont('helvetica', 'normal');
+                    y += 12;
+                });
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor('#9CA3AF');
+                doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                // ============ PAGE 6: Investment Context ============
+                doc.addPage();
+                y = margin;
+                addText('INVESTMENT CONTEXT', 0, 20, '#2C3E50', 'bold', 'center');
+                addLine(10);
+                addText(`Based on your cost per departure of ${formatCurrency(reportData.costPerDeparture)}:`, 0, 11, '#6B7280', 'normal', 'center');
+                addLine(20);
+
+                // Table header
+                doc.setFillColor('#F9F6F1');
+                doc.rect(margin, y, contentWidth, 12, 'F');
+                doc.setFontSize(10);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text('Option', margin + 5, y + 8);
+                doc.text('Investment', margin + 60, y + 8);
+                doc.text('Pays for itself if you prevent', margin + 110, y + 8);
+                y += 12;
+
+                const investmentData = [
+                    { option: '90-Day Pilot', investment: '$24,000', breakeven: `${reportData.pilotBreakeven} departure${reportData.pilotBreakeven !== 1 ? 's' : ''}` },
+                    { option: 'Department', investment: '$48,000/yr', breakeven: `${reportData.deptBreakeven} departure${reportData.deptBreakeven !== 1 ? 's' : ''}` },
+                    { option: 'Enterprise', investment: '$96,000/yr', breakeven: `${reportData.enterpriseBreakeven} departure${reportData.enterpriseBreakeven !== 1 ? 's' : ''}` }
+                ];
+
+                doc.setFont('helvetica', 'normal');
+                investmentData.forEach(row => {
+                    doc.setDrawColor('#E5E7EB');
+                    doc.line(margin, y + 12, margin + contentWidth, y + 12);
+                    doc.setTextColor('#4B5563');
+                    doc.text(row.option, margin + 5, y + 8);
+                    doc.text(row.investment, margin + 60, y + 8);
+                    doc.setTextColor('#2C3E50');
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(row.breakeven, margin + 110, y + 8);
+                    doc.setFont('helvetica', 'normal');
+                    y += 12;
+                });
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor('#9CA3AF');
+                doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                // ============ PAGE 7: Next Steps ============
+                doc.addPage();
+                y = 80;
+                addText('NEXT STEPS', 0, 20, '#2C3E50', 'bold', 'center');
+                addLine(25);
+
+                doc.setFillColor('#46AEB8');
+                doc.roundedRect(margin + 20, y, contentWidth - 40, 80, 5, 5, 'F');
+
+                y += 25;
+                doc.setFontSize(16);
+                doc.setTextColor('#FFFFFF');
+                doc.setFont('helvetica', 'bold');
+                doc.text('Schedule Your Free Turnover Analysis', pageWidth / 2, y, { align: 'center' });
+
+                y += 20;
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+                doc.text('15 minutes. Your specific patterns. No pitch.', pageWidth / 2, y, { align: 'center' });
+
+                y += 25;
+                doc.setFontSize(11);
+                doc.text('contact@cloverera.com', pageWidth / 2, y, { align: 'center' });
+
+                y += 30;
+                doc.setFontSize(14);
+                doc.setTextColor('#2C3E50');
+                doc.text('cloverera.com', pageWidth / 2, y, { align: 'center' });
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor('#9CA3AF');
+                doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                // Save the PDF
+                const filename = `${reportData.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
+                doc.save(filename);
 
                 // Update Supabase that PDF was generated
                 try {
@@ -1171,11 +1523,6 @@
             } catch (err) {
                 console.error('PDF generation failed:', err);
                 alert('PDF generation failed. Please try again.');
-                // Restore action buttons on error too
-                const actionButtons = document.querySelector('.action-buttons');
-                if (actionButtons) {
-                    actionButtons.style.display = 'flex';
-                }
             } finally {
                 loading.classList.remove('visible');
             }
