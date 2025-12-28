@@ -318,6 +318,85 @@
             border-radius: 8px;
         }
 
+        /* ========== STAGE GATE WARNING STYLES ========== */
+        .stage-gate-warning {
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: #FEF3C7;
+            border-left: 3px solid var(--warning-orange);
+            border-radius: 0 4px 4px 0;
+            font-size: 0.75rem;
+            color: #92400E;
+        }
+
+        .stage-gate-warning.critical {
+            background: #FEE2E2;
+            border-color: var(--danger-red);
+            color: #991B1B;
+        }
+
+        .stage-gate-warning-icon {
+            font-weight: bold;
+        }
+
+        .opportunity-card.at-risk {
+            border-left: 4px solid var(--warning-orange);
+        }
+
+        .opportunity-card.stalled {
+            border-left: 4px solid var(--danger-red);
+        }
+
+        .card-health-badge {
+            display: inline-block;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .card-health-badge.healthy {
+            background: var(--light-green);
+            color: #065F46;
+        }
+
+        .card-health-badge.at-risk {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .card-health-badge.stalled {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .qual-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .qual-score.good {
+            background: var(--light-green);
+            color: #065F46;
+        }
+
+        .qual-score.needs-work {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .qual-score.poor {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        /* ========== END STAGE GATE WARNING STYLES ==========*/
+
         .summary-bar {
             background: white;
             padding: 1rem 2rem;
@@ -641,21 +720,145 @@
             const ownerName = opp.owner?.full_name || opp.owner?.email || 'Unassigned';
             const companyName = opp.companies?.name || 'No Company';
 
+            // Calculate deal health
+            const healthInfo = getDealHealth(opp);
+            if (healthInfo.health === 'at-risk') {
+                card.classList.add('at-risk');
+            } else if (healthInfo.health === 'stalled') {
+                card.classList.add('stalled');
+            }
+
+            // Get qualification score
+            const qualScore = opp.qualification_score || 0;
+            let qualClass = 'poor';
+            if (qualScore >= 5) qualClass = 'good';
+            else if (qualScore >= 3) qualClass = 'needs-work';
+
+            // Generate stage gate warnings
+            const warnings = getStageGateWarnings(opp);
+
             card.innerHTML = `
-                <div class="card-title">${opp.title}</div>
+                <div class="card-title">
+                    ${opp.title}
+                    ${healthInfo.health !== 'healthy' ?
+                        `<span class="card-health-badge ${healthInfo.health}">${healthInfo.health === 'stalled' ? '🛑' : '⚠️'}</span>` : ''}
+                </div>
                 <div class="card-company">${companyName}</div>
                 <div class="card-metrics">
                     <div class="card-metric">📅 ${formatDate(opp.expected_close_date)}</div>
                     <div class="card-metric">📊 ${opp.probability || 0}%</div>
+                    <span class="qual-score ${qualClass}">Q: ${qualScore}/7</span>
                 </div>
                 <div class="card-details">
                     <div class="card-value">${formatCurrency(opp.value)}</div>
                     <div class="card-owner">${ownerName}</div>
                 </div>
+                ${warnings.length > 0 ? `
+                    <div class="stage-gate-warning ${warnings[0].critical ? 'critical' : ''}">
+                        <span class="stage-gate-warning-icon">${warnings[0].critical ? '🚨' : '⚠️'}</span>
+                        ${warnings[0].message}
+                    </div>
+                ` : ''}
             `;
+
+            // Click to open opportunity
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.opportunity-card').classList.contains('dragging')) {
+                    window.location.href = `/crm/opportunity.html?id=${opp.id}`;
+                }
+            });
 
             return card;
         }
+
+        // ======== STAGE GATE WARNING FUNCTIONS ========
+
+        function getDealHealth(opp) {
+            const now = new Date();
+
+            // Calculate days in current stage
+            const stageEnteredAt = opp.stage_entered_at ? new Date(opp.stage_entered_at) : new Date(opp.created_at);
+            const daysInStage = Math.floor((now - stageEnteredAt) / (1000 * 60 * 60 * 24));
+
+            // Use last_contact_date if available, otherwise estimate from updated_at
+            const lastContactDate = opp.last_contact_date ? new Date(opp.last_contact_date) : new Date(opp.updated_at);
+            const daysSinceContact = Math.floor((now - lastContactDate) / (1000 * 60 * 60 * 24));
+
+            // Health logic
+            if (daysInStage >= 21 || daysSinceContact >= 14) {
+                return { health: 'stalled', daysInStage, daysSinceContact };
+            } else if (daysInStage >= 14 || daysSinceContact >= 7) {
+                return { health: 'at-risk', daysInStage, daysSinceContact };
+            } else {
+                return { health: 'healthy', daysInStage, daysSinceContact };
+            }
+        }
+
+        function getStageGateWarnings(opp) {
+            const warnings = [];
+            const qualScore = opp.qualification_score || 0;
+            const stage = opp.stage;
+
+            // Stage-specific gates
+            const stageGates = {
+                'demo-scheduled': {
+                    minQual: 2,
+                    message: 'Schedule demos only when problem is acknowledged'
+                },
+                'demo-completed': {
+                    minQual: 3,
+                    message: 'Post-demo: Confirm problem & quantify impact'
+                },
+                'proposal': {
+                    minQual: 5,
+                    message: 'Proposal sent without full qualification (need 5/7)',
+                    critical: true
+                },
+                'negotiation': {
+                    minQual: 5,
+                    requiresMobilizer: true,
+                    message: 'Negotiating without mobilizer identified'
+                },
+                'pilot': {
+                    minQual: 6,
+                    message: 'Pilot without decision maker access confirmed'
+                }
+            };
+
+            const gate = stageGates[stage];
+            if (gate) {
+                if (qualScore < gate.minQual) {
+                    warnings.push({
+                        message: gate.message,
+                        critical: gate.critical || false
+                    });
+                }
+                if (gate.requiresMobilizer && !opp.qual_mobilizer_identified) {
+                    warnings.push({
+                        message: gate.message,
+                        critical: false
+                    });
+                }
+            }
+
+            // Deal health warnings
+            const healthInfo = getDealHealth(opp);
+            if (healthInfo.health === 'stalled') {
+                warnings.unshift({
+                    message: `Stalled: ${healthInfo.daysInStage}+ days in stage`,
+                    critical: true
+                });
+            } else if (healthInfo.health === 'at-risk') {
+                warnings.unshift({
+                    message: `At risk: ${healthInfo.daysSinceContact}+ days since contact`,
+                    critical: false
+                });
+            }
+
+            return warnings;
+        }
+
+        // ======== END STAGE GATE WARNING FUNCTIONS ========
 
         // Drag and Drop handlers
         let draggedCard = null;

@@ -195,6 +195,580 @@
         .stage-closed-won { background: #D1FAE5; color: #065F46; }
         .stage-closed-lost { background: #FEE2E2; color: #991B1B; }
 
+        /* ========== SALES PLAYBOOK STYLES ========== */
+
+        /* Section Header with Badge */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Qualification Checklist Styles */
+        .qual-score-badge {
+            background: var(--warning-orange);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .qual-score-badge.qualified {
+            background: var(--primary-green);
+        }
+
+        .qual-score-badge.not-qualified {
+            background: var(--danger-red);
+        }
+
+        .qual-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .qual-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .qual-item:hover {
+            background: var(--light-gray);
+        }
+
+        .qual-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .qual-label {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .qual-help {
+            width: 18px;
+            height: 18px;
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: help;
+        }
+
+        .qual-warning {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #FEF3C7;
+            border-left: 4px solid var(--warning-orange);
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+            color: #92400E;
+        }
+
+        .qual-ready {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--light-green);
+            border-left: 4px solid var(--primary-green);
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+            color: #065F46;
+        }
+
+        /* Discovery Progress Styles */
+        .discovery-badge {
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .discovery-badge.complete {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .discovery-phases {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .discovery-phase {
+            padding: 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .discovery-phase.in-progress {
+            border-color: var(--warning-orange);
+            background: #FFFBEB;
+        }
+
+        .discovery-phase.complete {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .phase-status {
+            font-size: 1.25rem;
+        }
+
+        .phase-title {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .phase-questions {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .phase-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .discovery-complete {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--light-green);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .discovery-complete p {
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #065F46;
+        }
+
+        /* Wizard Progress Styles */
+        .wizard-progress {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--medium-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-green);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .wizard-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-label {
+            display: block;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .exact-words-section {
+            margin-top: 1rem;
+        }
+
+        .exact-words-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .exact-words-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--primary-green);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-style: italic;
+            background: #F0FDF4;
+            margin-top: 0.5rem;
+            resize: vertical;
+        }
+
+        .wizard-tip {
+            padding: 1rem;
+            background: #EFF6FF;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #1E40AF;
+        }
+
+        /* Business Case Builder Styles */
+        .bc-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+        }
+
+        .bc-status.in-progress {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .bc-status.complete {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .bc-buyer-type {
+            margin-bottom: 1.5rem;
+        }
+
+        .bc-buyer-type > label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .bc-type-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .bc-type-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bc-type-option:hover {
+            border-color: var(--primary-green);
+        }
+
+        .bc-type-option input[type="radio"] {
+            margin-top: 0.25rem;
+        }
+
+        .bc-type-label {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bc-type-label strong {
+            margin-bottom: 0.25rem;
+        }
+
+        .bc-type-label small {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .bc-calculator {
+            padding: 1.5rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .bc-calculator h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .bc-inputs {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .bc-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .bc-input-group label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .bc-input-group small {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .input-with-prefix,
+        .input-with-suffix {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-prefix span {
+            padding: 0.75rem;
+            background: var(--medium-gray);
+            border: 2px solid var(--medium-gray);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            font-weight: 600;
+        }
+
+        .input-with-prefix input {
+            border-radius: 0 8px 8px 0;
+            flex: 1;
+        }
+
+        .input-with-suffix span {
+            padding: 0.75rem;
+            background: var(--medium-gray);
+            border: 2px solid var(--medium-gray);
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            font-weight: 600;
+        }
+
+        .input-with-suffix input {
+            border-radius: 8px 0 0 8px;
+            flex: 1;
+        }
+
+        .bc-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 2px solid var(--primary-green);
+        }
+
+        .bc-result-label {
+            font-weight: 600;
+        }
+
+        .bc-result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .bc-roi-summary {
+            padding: 1.5rem;
+            background: white;
+            border: 2px solid var(--primary-green);
+            border-radius: 8px;
+        }
+
+        .bc-roi-summary h3 {
+            margin-bottom: 1rem;
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .roi-item {
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .roi-item.highlight {
+            background: var(--light-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .roi-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .roi-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .roi-value.positive {
+            color: var(--primary-green);
+        }
+
+        .roi-narrative {
+            padding: 1rem;
+            background: #EFF6FF;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .roi-narrative p {
+            margin-bottom: 0.75rem;
+        }
+
+        .roi-narrative p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Stakeholder Map Styles */
+        .stakeholder-badge {
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .stakeholder-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .stakeholder-card {
+            padding: 0.75rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stakeholder-card:hover {
+            border-color: var(--primary-green);
+            background: var(--light-gray);
+        }
+
+        .stakeholder-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stakeholder-icon {
+            font-size: 1.25rem;
+        }
+
+        .stakeholder-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stakeholder-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .stakeholder-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .stakeholder-sentiment {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: white;
+            text-transform: capitalize;
+        }
+
+        .stakeholder-role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stakeholder-concerns {
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            background: #FEF3C7;
+            border-radius: 4px;
+            color: #92400E;
+        }
+
+        .stakeholder-warnings {
+            margin-top: 1rem;
+        }
+
+        .stakeholder-warning {
+            padding: 0.75rem;
+            background: #FEF3C7;
+            border-left: 4px solid var(--warning-orange);
+            border-radius: 0 6px 6px 0;
+            font-size: 0.85rem;
+            color: #92400E;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state {
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* ========== END SALES PLAYBOOK STYLES ==========*/
+
         .timeline {
             margin-top: 1.5rem;
         }
@@ -453,6 +1027,201 @@
                             <p style="color: var(--text-secondary);">No activities yet.</p>
                         </div>
                     </div>
+
+                    <!-- DISCOVERY PROGRESS SECTION -->
+                    <div class="section" id="discoverySection">
+                        <h2 class="section-header">
+                            Discovery Progress
+                            <span id="discoveryProgressBadge" class="discovery-badge">0/5 Phases</span>
+                        </h2>
+
+                        <div class="discovery-phases">
+                            <div class="discovery-phase" id="phase1" data-phase="current_state">
+                                <div class="phase-header">
+                                    <span class="phase-status" id="phase1Status">○</span>
+                                    <span class="phase-title">Phase 1: Current State</span>
+                                    <span class="phase-questions" id="phase1Questions">0/4 questions</span>
+                                </div>
+                                <p class="phase-description">Understand what's happening now and what they've tried</p>
+                                <button class="btn btn-secondary btn-small" onclick="openDiscoveryWizard('current_state')">
+                                    Start Phase 1
+                                </button>
+                            </div>
+
+                            <div class="discovery-phase" id="phase2" data-phase="impact_cost">
+                                <div class="phase-header">
+                                    <span class="phase-status" id="phase2Status">○</span>
+                                    <span class="phase-title">Phase 2: Impact & Cost</span>
+                                    <span class="phase-questions" id="phase2Questions">0/5 questions</span>
+                                </div>
+                                <p class="phase-description">Quantify the problem in dollars and business impact</p>
+                                <button class="btn btn-secondary btn-small" onclick="openDiscoveryWizard('impact_cost')">
+                                    Start Phase 2
+                                </button>
+                            </div>
+
+                            <div class="discovery-phase" id="phase3" data-phase="future_state">
+                                <div class="phase-header">
+                                    <span class="phase-status" id="phase3Status">○</span>
+                                    <span class="phase-title">Phase 3: Future State</span>
+                                    <span class="phase-questions" id="phase3Questions">0/4 questions</span>
+                                </div>
+                                <p class="phase-description">Define what success looks like for them</p>
+                                <button class="btn btn-secondary btn-small" onclick="openDiscoveryWizard('future_state')">
+                                    Start Phase 3
+                                </button>
+                            </div>
+
+                            <div class="discovery-phase" id="phase4" data-phase="decision_process">
+                                <div class="phase-header">
+                                    <span class="phase-status" id="phase4Status">○</span>
+                                    <span class="phase-title">Phase 4: Decision Process</span>
+                                    <span class="phase-questions" id="phase4Questions">0/5 questions</span>
+                                </div>
+                                <p class="phase-description">Map how they buy and who's involved</p>
+                                <button class="btn btn-secondary btn-small" onclick="openDiscoveryWizard('decision_process')">
+                                    Start Phase 4
+                                </button>
+                            </div>
+
+                            <div class="discovery-phase" id="phase5" data-phase="stakeholder_map">
+                                <div class="phase-header">
+                                    <span class="phase-status" id="phase5Status">○</span>
+                                    <span class="phase-title">Phase 5: Stakeholder Map</span>
+                                    <span class="phase-questions" id="phase5Questions">0/4 questions</span>
+                                </div>
+                                <p class="phase-description">Identify champions, blockers, and influencers</p>
+                                <button class="btn btn-secondary btn-small" onclick="openDiscoveryWizard('stakeholder_map')">
+                                    Start Phase 5
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="discoveryComplete" class="discovery-complete" style="display: none;">
+                            <p>✓ Discovery complete! Ready to build business case.</p>
+                            <button class="btn btn-primary" onclick="scrollToBusinessCase()">
+                                Build Business Case →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BUSINESS CASE BUILDER SECTION -->
+                    <div class="section" id="businessCaseSection">
+                        <h2 class="section-header">
+                            Business Case
+                            <span id="businessCaseStatus" class="bc-status">Not Started</span>
+                        </h2>
+
+                        <div class="bc-buyer-type">
+                            <label>What's their primary pain?</label>
+                            <div class="bc-type-options">
+                                <label class="bc-type-option">
+                                    <input type="radio" name="buyerType" value="turnover" onchange="updateBuyerType(this.value)">
+                                    <span class="bc-type-label">
+                                        <strong>Turnover</strong>
+                                        <small>Losing good people, high replacement costs</small>
+                                    </span>
+                                </label>
+                                <label class="bc-type-option">
+                                    <input type="radio" name="buyerType" value="disengaged" onchange="updateBuyerType(this.value)">
+                                    <span class="bc-type-label">
+                                        <strong>Disengaged Workforce</strong>
+                                        <small>Low productivity, quiet quitting</small>
+                                    </span>
+                                </label>
+                                <label class="bc-type-option">
+                                    <input type="radio" name="buyerType" value="both" onchange="updateBuyerType(this.value)">
+                                    <span class="bc-type-label">
+                                        <strong>Both</strong>
+                                        <small>Turnover AND engagement issues</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Turnover Calculator -->
+                        <div id="turnoverCalculator" class="bc-calculator" style="display: none;">
+                            <h3>Turnover Cost Calculator</h3>
+                            <div class="bc-inputs">
+                                <div class="bc-input-group">
+                                    <label>Annual regrettable exits</label>
+                                    <input type="number" id="bcTurnoverCount" placeholder="e.g., 12" onchange="calculateROI()">
+                                </div>
+                                <div class="bc-input-group">
+                                    <label>Average replacement cost</label>
+                                    <div class="input-with-prefix">
+                                        <span>$</span>
+                                        <input type="number" id="bcReplacementCost" placeholder="e.g., 127500" onchange="calculateROI()">
+                                    </div>
+                                    <small>Typically 1-2x annual salary (recruiting + training + ramp)</small>
+                                </div>
+                            </div>
+                            <div class="bc-result">
+                                <span class="bc-result-label">Total Annual Turnover Cost:</span>
+                                <span class="bc-result-value" id="bcTurnoverCostResult">$0</span>
+                            </div>
+                        </div>
+
+                        <!-- Engagement Calculator -->
+                        <div id="engagementCalculator" class="bc-calculator" style="display: none;">
+                            <h3>Productivity Loss Calculator</h3>
+                            <div class="bc-inputs">
+                                <div class="bc-input-group">
+                                    <label>Number of disengaged employees</label>
+                                    <input type="number" id="bcDisengagedCount" placeholder="e.g., 50" onchange="calculateROI()">
+                                </div>
+                                <div class="bc-input-group">
+                                    <label>Average salary</label>
+                                    <div class="input-with-prefix">
+                                        <span>$</span>
+                                        <input type="number" id="bcAvgSalary" placeholder="e.g., 85000" onchange="calculateROI()">
+                                    </div>
+                                </div>
+                                <div class="bc-input-group">
+                                    <label>Productivity gap %</label>
+                                    <div class="input-with-suffix">
+                                        <input type="number" id="bcProductivityGap" placeholder="e.g., 18" value="18" onchange="calculateROI()">
+                                        <span>%</span>
+                                    </div>
+                                    <small>Gallup research shows 18% productivity difference</small>
+                                </div>
+                            </div>
+                            <div class="bc-result">
+                                <span class="bc-result-label">Annual Productivity Loss:</span>
+                                <span class="bc-result-value" id="bcProductivityLossResult">$0</span>
+                            </div>
+                        </div>
+
+                        <!-- ROI Summary -->
+                        <div id="roiSummary" class="bc-roi-summary" style="display: none;">
+                            <h3>ROI Summary</h3>
+                            <div class="roi-grid">
+                                <div class="roi-item">
+                                    <span class="roi-label">Total Problem Cost</span>
+                                    <span class="roi-value" id="roiTotalProblem">$0</span>
+                                </div>
+                                <div class="roi-item">
+                                    <span class="roi-label">Clover ERA Investment</span>
+                                    <span class="roi-value" id="roiInvestment">$96,000</span>
+                                </div>
+                                <div class="roi-item">
+                                    <span class="roi-label">Conservative Savings (33%)</span>
+                                    <span class="roi-value positive" id="roiSavings">$0</span>
+                                </div>
+                                <div class="roi-item highlight">
+                                    <span class="roi-label">ROI Multiple</span>
+                                    <span class="roi-value" id="roiMultiple">0x</span>
+                                </div>
+                            </div>
+
+                            <div class="roi-narrative" id="roiNarrative">
+                            </div>
+
+                            <button class="btn btn-primary" onclick="saveBusinessCase()" style="margin-top: 1rem;">
+                                Save Business Case
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -471,6 +1240,85 @@
                                 📝 Copy Demo Email
                             </button>
                         </div>
+                    </div>
+
+                    <!-- QUALIFICATION CHECKLIST SECTION -->
+                    <div class="section" id="qualificationSection">
+                        <h2 class="section-header">
+                            Qualification Status
+                            <span id="qualScoreBadge" class="qual-score-badge">0/7</span>
+                        </h2>
+
+                        <div class="qual-checklist">
+                            <label class="qual-item">
+                                <input type="checkbox" id="qualProblemAcknowledged" onchange="updateQualification()">
+                                <span class="qual-label">Problem acknowledged</span>
+                                <span class="qual-help" title="Have they explicitly stated they have a turnover/engagement problem?">?</span>
+                            </label>
+
+                            <label class="qual-item">
+                                <input type="checkbox" id="qualProblemQuantifiable" onchange="updateQualification()">
+                                <span class="qual-label">Problem quantifiable</span>
+                                <span class="qual-help" title="Can they put numbers to it? (turnover rate, costs, engagement scores)">?</span>
+                            </label>
+
+                            <label class="qual-item">
+                                <input type="checkbox" id="qualDecisionMakerIdentified" onchange="updateQualification()">
+                                <span class="qual-label">Decision maker identified</span>
+                                <span class="qual-help" title="Do you know who can sign the contract?">?</span>
+                            </label>
+
+                            <label class="qual-item">
+                                <input type="checkbox" id="qualDecisionMakerAccess" onchange="updateQualification()">
+                                <span class="qual-label">Access to decision maker</span>
+                                <span class="qual-help" title="Can you get a meeting with them (directly or through your champion)?">?</span>
+                            </label>
+
+                            <label class="qual-item">
+                                <input type="checkbox" id="qualBudgetConfirmed" onchange="updateQualification()">
+                                <span class="qual-label">Budget confirmed</span>
+                                <span class="qual-help" title="Is there budget allocated or a clear path to getting budget?">?</span>
+                            </label>
+
+                            <label class="qual-item">
+                                <input type="checkbox" id="qualTimelineOrTrigger" onchange="updateQualification()">
+                                <span class="qual-label">Timeline or trigger event</span>
+                                <span class="qual-help" title="Is there a compelling event driving urgency? (board meeting, fiscal year, executive mandate)">?</span>
+                            </label>
+
+                            <label class="qual-item">
+                                <input type="checkbox" id="qualMobilizerIdentified" onchange="updateQualification()">
+                                <span class="qual-label">Internal mobilizer identified</span>
+                                <span class="qual-help" title="Do you have someone inside who will champion this and do work when you're not there?">?</span>
+                            </label>
+                        </div>
+
+                        <div id="qualWarning" class="qual-warning" style="display: none;">
+                            ⚠️ Minimum 5/7 required before sending proposal
+                        </div>
+
+                        <div id="qualReady" class="qual-ready" style="display: none;">
+                            ✓ Deal is qualified. Ready to proceed.
+                        </div>
+                    </div>
+
+                    <!-- STAKEHOLDER MAP SECTION -->
+                    <div class="section" id="stakeholderSection">
+                        <h2 class="section-header">
+                            Stakeholder Map
+                            <span id="stakeholderCount" class="stakeholder-badge">0</span>
+                        </h2>
+
+                        <div id="stakeholderList" class="stakeholder-list">
+                            <p class="empty-state">No stakeholders mapped yet</p>
+                        </div>
+
+                        <div id="stakeholderWarnings" class="stakeholder-warnings" style="display: none;">
+                        </div>
+
+                        <button class="btn btn-secondary" onclick="showAddStakeholderModal()" style="width: 100%; margin-top: 1rem;">
+                            + Add Stakeholder
+                        </button>
                     </div>
 
                     <!-- Company Info -->
@@ -682,6 +1530,115 @@
         </div>
     </div>
 
+    <!-- DISCOVERY WIZARD MODAL -->
+    <div id="discoveryWizardModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 id="discoveryWizardTitle">Discovery: Current State</h2>
+                <button class="modal-close" onclick="closeDiscoveryWizard()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="wizard-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="wizardProgressFill" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text" id="wizardProgressText">Question 1 of 4</span>
+                </div>
+
+                <div id="wizardQuestionContainer">
+                </div>
+
+                <div class="wizard-tip" id="wizardTip">
+                    💡 <strong>Tip:</strong> Use their exact words when possible. These become powerful quotes in your business case.
+                </div>
+            </div>
+
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button class="btn btn-secondary" id="wizardPrevBtn" onclick="wizardPrevQuestion()" style="display: none;">
+                    ← Previous
+                </button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="wizardSkipQuestion()">Skip</button>
+                    <button class="btn btn-primary" id="wizardNextBtn" onclick="wizardNextQuestion()">
+                        Save & Continue →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD STAKEHOLDER MODAL -->
+    <div id="stakeholderModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 id="stakeholderModalTitle">Add Stakeholder</h2>
+                <button class="modal-close" onclick="closeStakeholderModal()">&times;</button>
+            </div>
+
+            <form id="stakeholderForm" onsubmit="saveStakeholder(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="stakeholderId">
+
+                    <div class="form-group">
+                        <label>Contact</label>
+                        <select id="stakeholderContact">
+                            <option value="">Select existing contact...</option>
+                        </select>
+                        <small style="color: var(--text-secondary);">Or leave blank to add details manually</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Role in This Deal *</label>
+                        <select id="stakeholderRole" required>
+                            <option value="">Select role...</option>
+                            <option value="mobilizer">Mobilizer (Your Champion)</option>
+                            <option value="decision_maker">Decision Maker (Signs Contract)</option>
+                            <option value="budget_holder">Budget Holder (Controls Spend)</option>
+                            <option value="influencer">Influencer (Has Sway)</option>
+                            <option value="end_user">End User (Will Use Product)</option>
+                            <option value="blocker">Potential Blocker</option>
+                            <option value="legal">Legal/Compliance</option>
+                            <option value="procurement">Procurement</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Their Stance</label>
+                        <select id="stakeholderSentiment">
+                            <option value="unknown">Unknown</option>
+                            <option value="champion">Champion (Actively Helping)</option>
+                            <option value="supportive">Supportive (Positive)</option>
+                            <option value="neutral">Neutral (On the Fence)</option>
+                            <option value="skeptical">Skeptical (Has Concerns)</option>
+                            <option value="blocker">Blocker (Actively Opposing)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>What Do They Care About?</label>
+                        <textarea id="stakeholderCares" rows="2" placeholder="What motivates them? What are their priorities?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Key Concerns</label>
+                        <textarea id="stakeholderConcerns" rows="2" placeholder="What objections or concerns have they raised?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="stakeholderNotes" rows="2" placeholder="Other relevant information..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeStakeholderModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Stakeholder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
@@ -780,6 +1737,12 @@
 
                 renderOpportunity(opp);
                 await loadActivities();
+
+                // Load playbook data
+                loadQualificationData(opp);
+                loadBusinessCaseData(opp);
+                await loadDiscoveryProgress();
+                await loadStakeholders();
 
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
@@ -1274,6 +2237,803 @@ Value: ${formatCurrency(currentOpportunity.value || currentOpportunity.annual_co
         }
 
         // ======== END OUTLOOK/TEAMS INTEGRATION ========
+
+        // ======== SALES PLAYBOOK FUNCTIONS ========
+
+        // -------- QUALIFICATION MANAGEMENT --------
+
+        // Load qualification data when opportunity loads
+        function loadQualificationData(opportunity) {
+            document.getElementById('qualProblemAcknowledged').checked = opportunity.qual_problem_acknowledged || false;
+            document.getElementById('qualProblemQuantifiable').checked = opportunity.qual_problem_quantifiable || false;
+            document.getElementById('qualDecisionMakerIdentified').checked = opportunity.qual_decision_maker_identified || false;
+            document.getElementById('qualDecisionMakerAccess').checked = opportunity.qual_decision_maker_access || false;
+            document.getElementById('qualBudgetConfirmed').checked = opportunity.qual_budget_confirmed || false;
+            document.getElementById('qualTimelineOrTrigger').checked = opportunity.qual_timeline_or_trigger || false;
+            document.getElementById('qualMobilizerIdentified').checked = opportunity.qual_mobilizer_identified || false;
+
+            updateQualificationDisplay();
+        }
+
+        // Update qualification in database
+        async function updateQualification() {
+            const qualData = {
+                qual_problem_acknowledged: document.getElementById('qualProblemAcknowledged').checked,
+                qual_problem_quantifiable: document.getElementById('qualProblemQuantifiable').checked,
+                qual_decision_maker_identified: document.getElementById('qualDecisionMakerIdentified').checked,
+                qual_decision_maker_access: document.getElementById('qualDecisionMakerAccess').checked,
+                qual_budget_confirmed: document.getElementById('qualBudgetConfirmed').checked,
+                qual_timeline_or_trigger: document.getElementById('qualTimelineOrTrigger').checked,
+                qual_mobilizer_identified: document.getElementById('qualMobilizerIdentified').checked
+            };
+
+            try {
+                const { error } = await supabaseClient
+                    .from('opportunities')
+                    .update(qualData)
+                    .eq('id', opportunityId);
+
+                if (error) throw error;
+
+                updateQualificationDisplay();
+            } catch (error) {
+                console.error('Error updating qualification:', error);
+                alert('Failed to save qualification status');
+            }
+        }
+
+        // Update the visual display
+        function updateQualificationDisplay() {
+            const checkboxes = document.querySelectorAll('.qual-checklist input[type="checkbox"]');
+            let score = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) score++;
+            });
+
+            const badge = document.getElementById('qualScoreBadge');
+            badge.textContent = `${score}/7`;
+
+            badge.classList.remove('qualified', 'not-qualified');
+            if (score >= 5) {
+                badge.classList.add('qualified');
+                document.getElementById('qualWarning').style.display = 'none';
+                document.getElementById('qualReady').style.display = 'block';
+            } else {
+                badge.classList.add('not-qualified');
+                document.getElementById('qualWarning').style.display = 'block';
+                document.getElementById('qualReady').style.display = 'none';
+            }
+        }
+
+        // -------- DISCOVERY WIZARD --------
+
+        // Discovery Wizard State
+        let currentWizardPhase = null;
+        let currentQuestionIndex = 0;
+        let phaseQuestions = [];
+        let phaseAnswers = {};
+
+        // Discovery questions defined inline (since we might not have the database table seeded yet)
+        const DISCOVERY_QUESTIONS = {
+            'current_state': [
+                { question_key: 'cs_what_happening', question_text: "What's happening with turnover/engagement that prompted this conversation?" },
+                { question_key: 'cs_how_long', question_text: "How long has this been going on?" },
+                { question_key: 'cs_tried_before', question_text: "What have you tried so far to address it?" },
+                { question_key: 'cs_why_not_worked', question_text: "Why do you think those approaches haven't fully solved it?" }
+            ],
+            'impact_cost': [
+                { question_key: 'ic_annual_exits', question_text: "How many regrettable exits did you have last year?" },
+                { question_key: 'ic_replacement_cost', question_text: "What does it typically cost to replace someone? (recruiting, training, ramp time)" },
+                { question_key: 'ic_manager_turnover', question_text: "Are certain managers or teams seeing higher turnover than others?" },
+                { question_key: 'ic_business_impact', question_text: "Beyond the direct costs, how is this affecting the business?" },
+                { question_key: 'ic_engagement_scores', question_text: "What are your current engagement scores? How do they compare to your goals?" }
+            ],
+            'future_state': [
+                { question_key: 'fs_ideal_outcome', question_text: "If this were solved, what would that look like 12 months from now?" },
+                { question_key: 'fs_retention_target', question_text: "What retention rate are you targeting?" },
+                { question_key: 'fs_manager_capability', question_text: "What capabilities do you want your managers to have that they don't have today?" },
+                { question_key: 'fs_success_metrics', question_text: "How would you measure success?" }
+            ],
+            'decision_process': [
+                { question_key: 'dp_who_decides', question_text: "Who else needs to be involved in this decision?" },
+                { question_key: 'dp_approval_process', question_text: "Walk me through how decisions like this typically get made here." },
+                { question_key: 'dp_budget_source', question_text: "Where would budget for something like this come from?" },
+                { question_key: 'dp_timeline', question_text: "What's driving your timeline? Is there a trigger event?" },
+                { question_key: 'dp_competing_priorities', question_text: "What else is competing for attention and budget right now?" }
+            ],
+            'stakeholder_map': [
+                { question_key: 'sm_who_cares', question_text: "Besides yourself, who cares most about solving this problem?" },
+                { question_key: 'sm_who_blocks', question_text: "Who might push back or need convincing?" },
+                { question_key: 'sm_who_uses', question_text: "Who would actually be using the system day-to-day?" },
+                { question_key: 'sm_executive_sponsor', question_text: "Is there an executive sponsor for this initiative?" }
+            ]
+        };
+
+        // Phase titles
+        const PHASE_TITLES = {
+            'current_state': 'Discovery: Current State',
+            'impact_cost': 'Discovery: Impact & Cost',
+            'future_state': 'Discovery: Future State',
+            'decision_process': 'Discovery: Decision Process',
+            'stakeholder_map': 'Discovery: Stakeholder Map'
+        };
+
+        // Tips per phase
+        const PHASE_TIPS = {
+            'current_state': "Listen for pain points and frustration. These become your 'why change' arguments.",
+            'impact_cost': "Get specific numbers. Vague costs = vague urgency. Push for real data.",
+            'future_state': "Their words here become your proposal success criteria. Quote them back.",
+            'decision_process': "Map the buying process. Deals die when you don't know who decides what.",
+            'stakeholder_map': "Find your champion AND your potential blockers early. Multi-thread the deal."
+        };
+
+        // Open the discovery wizard for a specific phase
+        async function openDiscoveryWizard(phase) {
+            currentWizardPhase = phase;
+            currentQuestionIndex = 0;
+
+            // Use inline questions
+            phaseQuestions = DISCOVERY_QUESTIONS[phase].map((q, idx) => ({
+                id: `${phase}_${idx}`,
+                ...q,
+                phase: phase
+            }));
+
+            phaseAnswers = {};
+
+            // Try to load existing answers from database
+            try {
+                const { data, error } = await supabaseClient
+                    .from('discovery_answers')
+                    .select('*')
+                    .eq('opportunity_id', opportunityId)
+                    .eq('phase', phase);
+
+                if (!error && data) {
+                    data.forEach(a => {
+                        phaseAnswers[a.question_key] = {
+                            answer: a.answer || '',
+                            their_exact_words: a.their_exact_words || ''
+                        };
+                    });
+                }
+            } catch (error) {
+                console.log('Discovery answers table may not exist yet:', error);
+            }
+
+            // Update modal title and tip
+            document.getElementById('discoveryWizardTitle').textContent = PHASE_TITLES[phase];
+            document.getElementById('wizardTip').innerHTML = `💡 <strong>Tip:</strong> ${PHASE_TIPS[phase]}`;
+
+            // Show first question
+            renderWizardQuestion();
+
+            // Show modal
+            document.getElementById('discoveryWizardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Render current question
+        function renderWizardQuestion() {
+            if (currentQuestionIndex >= phaseQuestions.length) {
+                completePhase();
+                return;
+            }
+
+            const question = phaseQuestions[currentQuestionIndex];
+            const answer = phaseAnswers[question.question_key] || { answer: '', their_exact_words: '' };
+
+            const container = document.getElementById('wizardQuestionContainer');
+            container.innerHTML = `
+                <div class="wizard-question">
+                    <label class="question-label">${question.question_text}</label>
+                    <textarea
+                        id="wizardAnswer"
+                        class="question-input"
+                        rows="4"
+                        placeholder="Enter their response..."
+                    >${answer.answer}</textarea>
+
+                    <div class="exact-words-section">
+                        <label class="exact-words-label">
+                            <input type="checkbox" id="hasExactWords" ${answer.their_exact_words ? 'checked' : ''}>
+                            I have their exact words (quote)
+                        </label>
+                        <textarea
+                            id="wizardExactWords"
+                            class="exact-words-input"
+                            rows="2"
+                            placeholder="Their exact words..."
+                            style="display: ${answer.their_exact_words ? 'block' : 'none'}"
+                        >${answer.their_exact_words}</textarea>
+                    </div>
+                </div>
+            `;
+
+            // Add event listener for exact words checkbox
+            document.getElementById('hasExactWords').addEventListener('change', function() {
+                document.getElementById('wizardExactWords').style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Update progress
+            const progress = ((currentQuestionIndex + 1) / phaseQuestions.length) * 100;
+            document.getElementById('wizardProgressFill').style.width = `${progress}%`;
+            document.getElementById('wizardProgressText').textContent =
+                `Question ${currentQuestionIndex + 1} of ${phaseQuestions.length}`;
+
+            // Update navigation buttons
+            document.getElementById('wizardPrevBtn').style.display = currentQuestionIndex > 0 ? 'block' : 'none';
+            document.getElementById('wizardNextBtn').textContent =
+                currentQuestionIndex === phaseQuestions.length - 1 ? 'Complete Phase →' : 'Save & Continue →';
+        }
+
+        // Save current answer and move to next question
+        async function wizardNextQuestion() {
+            await saveCurrentAnswer();
+            currentQuestionIndex++;
+            renderWizardQuestion();
+        }
+
+        // Go to previous question
+        function wizardPrevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderWizardQuestion();
+            }
+        }
+
+        // Skip current question
+        function wizardSkipQuestion() {
+            currentQuestionIndex++;
+            renderWizardQuestion();
+        }
+
+        // Save the current answer to database
+        async function saveCurrentAnswer() {
+            const question = phaseQuestions[currentQuestionIndex];
+            const answer = document.getElementById('wizardAnswer').value;
+            const exactWords = document.getElementById('wizardExactWords').value;
+
+            // Update local state
+            phaseAnswers[question.question_key] = { answer, their_exact_words: exactWords };
+
+            // Save to database (upsert)
+            try {
+                const { error } = await supabaseClient
+                    .from('discovery_answers')
+                    .upsert({
+                        opportunity_id: opportunityId,
+                        phase: currentWizardPhase,
+                        question_key: question.question_key,
+                        question_text: question.question_text,
+                        answer: answer,
+                        their_exact_words: exactWords || null,
+                        answered_at: answer ? new Date().toISOString() : null
+                    }, {
+                        onConflict: 'opportunity_id,question_key'
+                    });
+
+                if (error) {
+                    console.log('Error saving answer (table may not exist):', error);
+                }
+            } catch (error) {
+                console.log('Error saving answer:', error);
+            }
+        }
+
+        // Complete the current phase
+        async function completePhase() {
+            // Update opportunity with phase completion
+            const phaseNumber = getPhaseNumber(currentWizardPhase);
+            const phaseField = `discovery_phase_${phaseNumber}_complete`;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('opportunities')
+                    .update({ [phaseField]: true })
+                    .eq('id', opportunityId);
+
+                if (error) {
+                    console.log('Error completing phase (field may not exist):', error);
+                }
+
+                // Close wizard and refresh discovery display
+                closeDiscoveryWizard();
+                await loadDiscoveryProgress();
+
+                alert(`Phase ${phaseNumber} complete!`);
+
+            } catch (error) {
+                console.error('Error completing phase:', error);
+                closeDiscoveryWizard();
+            }
+        }
+
+        // Get phase number from phase key
+        function getPhaseNumber(phase) {
+            const phases = ['current_state', 'impact_cost', 'future_state', 'decision_process', 'stakeholder_map'];
+            return phases.indexOf(phase) + 1;
+        }
+
+        // Close discovery wizard
+        function closeDiscoveryWizard() {
+            document.getElementById('discoveryWizardModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Load discovery progress for display
+        async function loadDiscoveryProgress() {
+            try {
+                // Get completion status from opportunity
+                const opp = currentOpportunity;
+
+                // Get answer counts per phase from database
+                let answerCounts = {};
+                try {
+                    const { data: answers, error: ansError } = await supabaseClient
+                        .from('discovery_answers')
+                        .select('phase, answer')
+                        .eq('opportunity_id', opportunityId);
+
+                    if (!ansError && answers) {
+                        answers.forEach(a => {
+                            if (!answerCounts[a.phase]) answerCounts[a.phase] = 0;
+                            if (a.answer) answerCounts[a.phase]++;
+                        });
+                    }
+                } catch (e) {
+                    console.log('Discovery answers table may not exist yet');
+                }
+
+                const totalQuestions = { current_state: 4, impact_cost: 5, future_state: 4, decision_process: 5, stakeholder_map: 4 };
+
+                // Update UI for each phase
+                const phases = ['current_state', 'impact_cost', 'future_state', 'decision_process', 'stakeholder_map'];
+                let completedPhases = 0;
+
+                phases.forEach((phase, index) => {
+                    const phaseNum = index + 1;
+                    const isComplete = opp[`discovery_phase_${phaseNum}_complete`];
+                    const answered = answerCounts[phase] || 0;
+                    const total = totalQuestions[phase];
+
+                    const phaseEl = document.getElementById(`phase${phaseNum}`);
+                    const statusEl = document.getElementById(`phase${phaseNum}Status`);
+                    const questionsEl = document.getElementById(`phase${phaseNum}Questions`);
+                    const btnEl = phaseEl.querySelector('button');
+
+                    questionsEl.textContent = `${answered}/${total} questions`;
+
+                    if (isComplete) {
+                        completedPhases++;
+                        phaseEl.classList.add('complete');
+                        phaseEl.classList.remove('in-progress');
+                        statusEl.textContent = '✓';
+                        btnEl.textContent = 'Review';
+                    } else if (answered > 0) {
+                        phaseEl.classList.add('in-progress');
+                        phaseEl.classList.remove('complete');
+                        statusEl.textContent = '◐';
+                        btnEl.textContent = 'Continue';
+                    } else {
+                        phaseEl.classList.remove('complete', 'in-progress');
+                        statusEl.textContent = '○';
+                        btnEl.textContent = `Start Phase ${phaseNum}`;
+                    }
+                });
+
+                // Update overall progress badge
+                const badge = document.getElementById('discoveryProgressBadge');
+                badge.textContent = `${completedPhases}/5 Phases`;
+                if (completedPhases === 5) {
+                    badge.classList.add('complete');
+                    document.getElementById('discoveryComplete').style.display = 'block';
+                } else {
+                    badge.classList.remove('complete');
+                    document.getElementById('discoveryComplete').style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('Error loading discovery progress:', error);
+            }
+        }
+
+        // -------- BUSINESS CASE BUILDER --------
+
+        function scrollToBusinessCase() {
+            document.getElementById('businessCaseSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateBuyerType(type) {
+            // Show/hide appropriate calculators
+            const turnoverCalc = document.getElementById('turnoverCalculator');
+            const engagementCalc = document.getElementById('engagementCalculator');
+            const roiSummary = document.getElementById('roiSummary');
+
+            if (type === 'turnover') {
+                turnoverCalc.style.display = 'block';
+                engagementCalc.style.display = 'none';
+            } else if (type === 'disengaged') {
+                turnoverCalc.style.display = 'none';
+                engagementCalc.style.display = 'block';
+            } else if (type === 'both') {
+                turnoverCalc.style.display = 'block';
+                engagementCalc.style.display = 'block';
+            }
+
+            roiSummary.style.display = 'block';
+            calculateROI();
+        }
+
+        function calculateROI() {
+            // Get values
+            const turnoverCount = parseInt(document.getElementById('bcTurnoverCount')?.value) || 0;
+            const replacementCost = parseInt(document.getElementById('bcReplacementCost')?.value) || 0;
+            const disengagedCount = parseInt(document.getElementById('bcDisengagedCount')?.value) || 0;
+            const avgSalary = parseInt(document.getElementById('bcAvgSalary')?.value) || 0;
+            const productivityGap = parseInt(document.getElementById('bcProductivityGap')?.value) || 18;
+
+            // Calculate costs
+            const turnoverCost = turnoverCount * replacementCost;
+            const productivityLoss = disengagedCount * avgSalary * (productivityGap / 100);
+            const totalProblemCost = turnoverCost + productivityLoss;
+
+            // Get investment from opportunity value
+            const investment = currentOpportunity?.value || currentOpportunity?.annual_contract_value || 96000;
+
+            // Conservative 33% improvement assumption
+            const projectedSavings = totalProblemCost * 0.33;
+            const roiMultiple = investment > 0 ? (projectedSavings / investment).toFixed(1) : 0;
+
+            // Update display
+            if (document.getElementById('bcTurnoverCostResult')) {
+                document.getElementById('bcTurnoverCostResult').textContent = formatCurrency(turnoverCost);
+            }
+            if (document.getElementById('bcProductivityLossResult')) {
+                document.getElementById('bcProductivityLossResult').textContent = formatCurrency(productivityLoss);
+            }
+
+            document.getElementById('roiTotalProblem').textContent = formatCurrency(totalProblemCost);
+            document.getElementById('roiInvestment').textContent = formatCurrency(investment);
+            document.getElementById('roiSavings').textContent = formatCurrency(projectedSavings);
+            document.getElementById('roiMultiple').textContent = `${roiMultiple}x`;
+
+            // Generate narrative
+            generateROINarrative(turnoverCount, replacementCost, turnoverCost, disengagedCount, productivityLoss, totalProblemCost, projectedSavings, roiMultiple);
+
+            // Update status
+            if (totalProblemCost > 0) {
+                document.getElementById('businessCaseStatus').textContent = 'In Progress';
+                document.getElementById('businessCaseStatus').className = 'bc-status in-progress';
+            }
+        }
+
+        function generateROINarrative(turnoverCount, replacementCost, turnoverCost, disengagedCount, productivityLoss, totalProblemCost, savings, roi) {
+            let narrative = '';
+
+            if (turnoverCost > 0) {
+                narrative += `<p><strong>Turnover Impact:</strong> With ${turnoverCount} regrettable exits annually at ${formatCurrency(replacementCost)} per replacement, turnover is costing ${formatCurrency(turnoverCost)} per year.</p>`;
+            }
+
+            if (productivityLoss > 0) {
+                narrative += `<p><strong>Engagement Impact:</strong> ${disengagedCount} disengaged employees represent ${formatCurrency(productivityLoss)} in lost productivity annually.</p>`;
+            }
+
+            if (totalProblemCost > 0) {
+                narrative += `<p><strong>The Bottom Line:</strong> Even a conservative 33% improvement delivers ${formatCurrency(savings)} in savings, a <strong>${roi}x return</strong> on the Clover ERA investment.</p>`;
+            }
+
+            document.getElementById('roiNarrative').innerHTML = narrative;
+        }
+
+        async function saveBusinessCase() {
+            const buyerType = document.querySelector('input[name="buyerType"]:checked')?.value;
+
+            const businessCaseData = {
+                buyer_type: buyerType,
+                annual_turnover_count: parseInt(document.getElementById('bcTurnoverCount')?.value) || null,
+                avg_replacement_cost: parseInt(document.getElementById('bcReplacementCost')?.value) || null,
+                total_turnover_cost: parseCurrency(document.getElementById('bcTurnoverCostResult')?.textContent),
+                disengaged_employee_count: parseInt(document.getElementById('bcDisengagedCount')?.value) || null,
+                avg_salary: parseInt(document.getElementById('bcAvgSalary')?.value) || null,
+                productivity_gap_percent: parseInt(document.getElementById('bcProductivityGap')?.value) || null,
+                total_productivity_loss: parseCurrency(document.getElementById('bcProductivityLossResult')?.textContent),
+                total_problem_cost: parseCurrency(document.getElementById('roiTotalProblem')?.textContent),
+                projected_savings: parseCurrency(document.getElementById('roiSavings')?.textContent),
+                projected_roi_multiple: parseFloat(document.getElementById('roiMultiple')?.textContent) || null
+            };
+
+            try {
+                const { error } = await supabaseClient
+                    .from('opportunities')
+                    .update(businessCaseData)
+                    .eq('id', opportunityId);
+
+                if (error) throw error;
+
+                document.getElementById('businessCaseStatus').textContent = 'Complete';
+                document.getElementById('businessCaseStatus').className = 'bc-status complete';
+
+                alert('Business case saved!');
+
+            } catch (error) {
+                console.error('Error saving business case:', error);
+                alert('Failed to save business case. Some fields may not exist in the database yet.');
+            }
+        }
+
+        function parseCurrency(str) {
+            if (!str) return null;
+            return parseInt(str.replace(/[$,]/g, '')) || null;
+        }
+
+        // Load business case data
+        function loadBusinessCaseData(opp) {
+            if (opp.buyer_type) {
+                const radio = document.querySelector(`input[name="buyerType"][value="${opp.buyer_type}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    updateBuyerType(opp.buyer_type);
+                }
+            }
+            if (opp.annual_turnover_count) {
+                document.getElementById('bcTurnoverCount').value = opp.annual_turnover_count;
+            }
+            if (opp.avg_replacement_cost) {
+                document.getElementById('bcReplacementCost').value = opp.avg_replacement_cost;
+            }
+            if (opp.disengaged_employee_count) {
+                document.getElementById('bcDisengagedCount').value = opp.disengaged_employee_count;
+            }
+            if (opp.avg_salary) {
+                document.getElementById('bcAvgSalary').value = opp.avg_salary;
+            }
+            if (opp.productivity_gap_percent) {
+                document.getElementById('bcProductivityGap').value = opp.productivity_gap_percent;
+            }
+            if (opp.total_problem_cost) {
+                document.getElementById('businessCaseStatus').textContent = 'Complete';
+                document.getElementById('businessCaseStatus').className = 'bc-status complete';
+            }
+        }
+
+        // -------- STAKEHOLDER MANAGEMENT --------
+
+        async function loadStakeholders() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('stakeholders')
+                    .select(`
+                        *,
+                        contacts (first_name, last_name, title, email)
+                    `)
+                    .eq('opportunity_id', opportunityId)
+                    .order('created_at');
+
+                if (error) {
+                    console.log('Stakeholders table may not exist yet:', error);
+                    return;
+                }
+
+                renderStakeholders(data || []);
+                checkStakeholderWarnings(data || []);
+
+            } catch (error) {
+                console.log('Error loading stakeholders:', error);
+            }
+        }
+
+        function renderStakeholders(stakeholders) {
+            const container = document.getElementById('stakeholderList');
+            document.getElementById('stakeholderCount').textContent = stakeholders.length;
+
+            if (stakeholders.length === 0) {
+                container.innerHTML = '<p class="empty-state">No stakeholders mapped yet</p>';
+                return;
+            }
+
+            const roleIcons = {
+                mobilizer: '🏃',
+                decision_maker: '👔',
+                budget_holder: '💰',
+                influencer: '🎯',
+                end_user: '👤',
+                blocker: '🚫',
+                legal: '⚖️',
+                procurement: '📋'
+            };
+
+            const sentimentColors = {
+                champion: '#10B981',
+                supportive: '#34D399',
+                neutral: '#9CA3AF',
+                skeptical: '#F59E0B',
+                blocker: '#EF4444',
+                unknown: '#D1D5DB'
+            };
+
+            container.innerHTML = stakeholders.map(s => {
+                const name = s.contacts
+                    ? `${s.contacts.first_name} ${s.contacts.last_name}`
+                    : 'Unknown Contact';
+                const title = s.contacts?.title || '';
+
+                return `
+                    <div class="stakeholder-card" onclick="editStakeholder('${s.id}')">
+                        <div class="stakeholder-header">
+                            <span class="stakeholder-icon">${roleIcons[s.role] || '👤'}</span>
+                            <div class="stakeholder-info">
+                                <span class="stakeholder-name">${name}</span>
+                                <span class="stakeholder-title">${title}</span>
+                            </div>
+                            <span class="stakeholder-sentiment" style="background: ${sentimentColors[s.sentiment]}">
+                                ${s.sentiment}
+                            </span>
+                        </div>
+                        <div class="stakeholder-role">${formatRole(s.role)}</div>
+                        ${s.key_concerns ? `<div class="stakeholder-concerns">⚠️ ${s.key_concerns}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatRole(role) {
+            const roles = {
+                mobilizer: 'Mobilizer',
+                decision_maker: 'Decision Maker',
+                budget_holder: 'Budget Holder',
+                influencer: 'Influencer',
+                end_user: 'End User',
+                blocker: 'Potential Blocker',
+                legal: 'Legal/Compliance',
+                procurement: 'Procurement'
+            };
+            return roles[role] || role;
+        }
+
+        function checkStakeholderWarnings(stakeholders) {
+            const warnings = [];
+
+            const roles = stakeholders.map(s => s.role);
+
+            if (!roles.includes('mobilizer')) {
+                warnings.push('⚠️ No mobilizer identified. Find someone who will champion this internally.');
+            }
+
+            if (!roles.includes('decision_maker')) {
+                warnings.push('⚠️ Decision maker not mapped. Who signs the contract?');
+            }
+
+            if (!roles.includes('budget_holder') && !roles.includes('decision_maker')) {
+                warnings.push('⚠️ Budget authority unclear. Who controls the spend?');
+            }
+
+            const blockers = stakeholders.filter(s => s.sentiment === 'blocker' || s.role === 'blocker');
+            if (blockers.length > 0) {
+                warnings.push(`🚨 ${blockers.length} potential blocker(s) identified. Have a plan to address.`);
+            }
+
+            const warningsContainer = document.getElementById('stakeholderWarnings');
+            if (warnings.length > 0) {
+                warningsContainer.innerHTML = warnings.map(w => `<div class="stakeholder-warning">${w}</div>`).join('');
+                warningsContainer.style.display = 'block';
+            } else {
+                warningsContainer.style.display = 'none';
+            }
+        }
+
+        async function showAddStakeholderModal() {
+            document.getElementById('stakeholderModalTitle').textContent = 'Add Stakeholder';
+            document.getElementById('stakeholderForm').reset();
+            document.getElementById('stakeholderId').value = '';
+
+            // Load contacts for dropdown
+            await loadContactsForStakeholder();
+
+            document.getElementById('stakeholderModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function loadContactsForStakeholder() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('contacts')
+                    .select('id, first_name, last_name, title')
+                    .eq('company_id', currentOpportunity.company_id)
+                    .order('first_name');
+
+                if (error) throw error;
+
+                const select = document.getElementById('stakeholderContact');
+                select.innerHTML = '<option value="">Select existing contact...</option>';
+
+                data.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = `${c.first_name} ${c.last_name}${c.title ? ' - ' + c.title : ''}`;
+                    select.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            }
+        }
+
+        function closeStakeholderModal() {
+            document.getElementById('stakeholderModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveStakeholder(event) {
+            event.preventDefault();
+
+            const stakeholderId = document.getElementById('stakeholderId').value;
+
+            const stakeholderData = {
+                opportunity_id: opportunityId,
+                contact_id: document.getElementById('stakeholderContact').value || null,
+                role: document.getElementById('stakeholderRole').value,
+                sentiment: document.getElementById('stakeholderSentiment').value,
+                what_they_care_about: document.getElementById('stakeholderCares').value,
+                key_concerns: document.getElementById('stakeholderConcerns').value,
+                notes: document.getElementById('stakeholderNotes').value
+            };
+
+            try {
+                if (stakeholderId) {
+                    const { error } = await supabaseClient
+                        .from('stakeholders')
+                        .update(stakeholderData)
+                        .eq('id', stakeholderId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await supabaseClient
+                        .from('stakeholders')
+                        .insert([stakeholderData]);
+                    if (error) throw error;
+                }
+
+                closeStakeholderModal();
+                await loadStakeholders();
+                alert('Stakeholder saved!');
+
+            } catch (error) {
+                console.error('Error saving stakeholder:', error);
+                alert('Failed to save stakeholder. The stakeholders table may not exist yet.');
+            }
+        }
+
+        async function editStakeholder(id) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('stakeholders')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                document.getElementById('stakeholderModalTitle').textContent = 'Edit Stakeholder';
+                document.getElementById('stakeholderId').value = data.id;
+
+                await loadContactsForStakeholder();
+
+                document.getElementById('stakeholderContact').value = data.contact_id || '';
+                document.getElementById('stakeholderRole').value = data.role;
+                document.getElementById('stakeholderSentiment').value = data.sentiment;
+                document.getElementById('stakeholderCares').value = data.what_they_care_about || '';
+                document.getElementById('stakeholderConcerns').value = data.key_concerns || '';
+                document.getElementById('stakeholderNotes').value = data.notes || '';
+
+                document.getElementById('stakeholderModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+            } catch (error) {
+                console.error('Error loading stakeholder:', error);
+            }
+        }
+
+        // ======== END SALES PLAYBOOK FUNCTIONS ========
 
         // Initialize
         async function init() {
