@@ -3,11 +3,9 @@
 // Protected endpoint for uploading and processing book content
 
 import { createClient } from '@supabase/supabase-js';
-import Anthropic from '@anthropic-ai/sdk';
 
-// Initialize clients lazily to avoid issues with env vars at module load time
+// Initialize Supabase client lazily
 let supabase = null;
-let anthropic = null;
 
 function getSupabase() {
     if (!supabase) {
@@ -19,13 +17,12 @@ function getSupabase() {
     return supabase;
 }
 
-function getAnthropic() {
-    if (!anthropic) {
-        anthropic = new Anthropic({
-            apiKey: process.env.ANTHROPIC_API_KEY
-        });
-    }
-    return anthropic;
+// Dynamic import for Anthropic to avoid module load issues
+async function getAnthropic() {
+    const { default: Anthropic } = await import('@anthropic-ai/sdk');
+    return new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY
+    });
 }
 
 // Chunk size configuration
@@ -120,7 +117,8 @@ Respond in JSON format:
 }`;
 
     try {
-        const message = await getAnthropic().messages.create({
+        const anthropic = await getAnthropic();
+        const message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 500,
             messages: [{ role: 'user', content: prompt }]
