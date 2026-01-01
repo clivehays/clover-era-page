@@ -2,17 +2,31 @@
 // POST /api/team-health-report
 // Uses EXACT implementation from CLAUDE_CODE_EXACT_IMPLEMENTATION.md
 
-import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY
-});
+// Lazy initialization to avoid module load issues on Vercel
+let anthropic = null;
+let supabase = null;
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-);
+async function getAnthropic() {
+    if (!anthropic) {
+        const { default: Anthropic } = await import('@anthropic-ai/sdk');
+        anthropic = new Anthropic({
+            apiKey: process.env.ANTHROPIC_API_KEY
+        });
+    }
+    return anthropic;
+}
+
+function getSupabase() {
+    if (!supabase) {
+        supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_KEY
+        );
+    }
+    return supabase;
+}
 
 // EXACT SYSTEM PROMPT FROM INSTRUCTIONS - DO NOT MODIFY
 const SYSTEM_PROMPT = `You are an expert organizational psychologist analyzing a Team Health Assessment for Clover ERA. Your job is to read manager self-assessment responses and surface patterns they cannot see in their own words.
@@ -387,8 +401,11 @@ export default async function handler(req, res) {
         console.log('Calling Claude API with system prompt length:', SYSTEM_PROMPT.length);
         console.log('User message length:', userMessage.length);
 
+        // Get Anthropic client
+        const anthropicClient = await getAnthropic();
+
         // Call Claude API with EXACT parameters from instructions
-        const message = await anthropic.messages.create({
+        const message = await anthropicClient.messages.create({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 8000,
             system: SYSTEM_PROMPT,
@@ -408,7 +425,7 @@ export default async function handler(req, res) {
 
         // Store assessment data in Supabase
         try {
-            await supabase.from('team_health_assessments').insert({
+            await getSupabase().from('team_health_assessments').insert({
                 email: userInfo.email.toLowerCase(),
                 first_name: userInfo.firstName,
                 company_name: userInfo.companyName || null,
