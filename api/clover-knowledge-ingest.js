@@ -143,10 +143,20 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    // Check if ADMIN_API_KEY is configured
+    if (!process.env.ADMIN_API_KEY) {
+        return res.status(500).json({ error: 'Server configuration error: ADMIN_API_KEY not set in environment variables' });
+    }
+
     // Basic auth check - in production, use proper authentication
     const authHeader = req.headers.authorization;
     if (!authHeader || authHeader !== `Bearer ${process.env.ADMIN_API_KEY}`) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized - invalid API key' });
+    }
+
+    // Check if Supabase is configured
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+        return res.status(500).json({ error: 'Server configuration error: Supabase not configured' });
     }
 
     try {
@@ -277,9 +287,18 @@ export default async function handler(req, res) {
                 `)
                 .order('created_at', { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                // Check if the table doesn't exist
+                if (error.message.includes('does not exist') || error.code === '42P01') {
+                    return res.status(500).json({
+                        error: 'Database tables not found. Please run the migration (019_create_clover_knowledge_base.sql) in Supabase SQL Editor first.',
+                        details: error.message
+                    });
+                }
+                throw error;
+            }
 
-            return res.status(200).json({ books: data });
+            return res.status(200).json({ books: data || [] });
         }
 
         // Action: Get book details with chunk count
