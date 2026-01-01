@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Health Assessment | Clover ERA</title>
+    <meta name="description" content="6 questions. 5 minutes. Uncomfortably accurate. Discover what's really happening on your team with our free diagnostic tool.">
+    <meta name="keywords" content="team health, employee engagement, team assessment, manager tools, retention">
+    <link rel="canonical" href="https://cloverera.com/team-health/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Team Health Assessment | Clover ERA">
+    <meta property="og:description" content="6 questions. 5 minutes. Uncomfortably accurate. Discover what's really happening on your team.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/team-health/">
+
+    <!-- Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Team Health Assessment",
+        "description": "A diagnostic tool to assess team health and identify retention risks",
+        "provider": {
+            "@type": "Organization",
+            "name": "Clover ERA"
+        }
+    }
+    </script>
+
+    <link rel="stylesheet" href="/css/corporate-design.css">
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        /* ===== LANDING PAGE ===== */
+        .landing-page {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-section {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        .hero-description {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .start-button {
+            display: inline-block;
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.25rem 3rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(224, 122, 95, 0.4);
+        }
+
+        .trust-elements {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+
+        .trust-item::before {
+            content: '✓';
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        /* ===== ASSESSMENT FLOW ===== */
+        .assessment-container {
+            display: none;
+            min-height: calc(100vh - 70px);
+            background: var(--warm-white);
+        }
+
+        .assessment-container.active {
+            display: block;
+        }
+
+        .progress-bar-container {
+            background: var(--charcoal);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+
+        .progress-info {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--white);
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-text {
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            max-width: 800px;
+            margin: 0 auto;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .question-screen {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .question-screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            margin-bottom: 2rem;
+        }
+
+        .question-dimension {
+            display: inline-block;
+            background: rgba(70, 174, 184, 0.1);
+            color: var(--deep-teal);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-card {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .option-card:hover {
+            border-color: var(--teal);
+            background: rgba(70, 174, 184, 0.02);
+        }
+
+        .option-card.selected {
+            border-color: var(--teal);
+            background: rgba(70, 174, 184, 0.08);
+        }
+
+        .option-score {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .option-card.selected .option-score {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .reasoning-container {
+            display: none;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .reasoning-container.active {
+            display: block;
+        }
+
+        .reasoning-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .reasoning-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+
+        .reasoning-textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .char-count.warning {
+            color: var(--coral);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .nav-button {
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .nav-button.next {
+            background: var(--charcoal);
+            color: var(--white);
+        }
+
+        .nav-button.next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== EMAIL CAPTURE ===== */
+        .email-capture-screen {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .email-capture-screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .email-capture-screen h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .email-capture-screen .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        .email-form {
+            text-align: left;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group label .required {
+            color: var(--coral);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--coral);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .privacy-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        /* ===== LOADING STATE ===== */
+        .loading-screen {
+            display: none;
+            min-height: calc(100vh - 70px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .loading-screen.active {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--medium-gray);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            color: var(--text-secondary);
+        }
+
+        /* ===== RESULTS PAGE ===== */
+        .results-container {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+
+        .results-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .results-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-date {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .archetype-section {
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 3rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .archetype-label {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .archetype-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--teal);
+        }
+
+        .archetype-definition {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .results-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .results-section h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .results-section h2 .icon {
+            font-size: 1.5rem;
+        }
+
+        .contrast-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .contrast-column h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .contrast-column.believe h3 {
+            border-bottom-color: var(--medium-gray);
+        }
+
+        .contrast-column.reality h3 {
+            border-bottom-color: var(--coral);
+            color: var(--coral);
+        }
+
+        .contrast-column p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .risk-content {
+            background: rgba(224, 122, 95, 0.08);
+            border-left: 4px solid var(--coral);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .risk-content p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .behavior-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .behavior-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .behavior-list li:last-child {
+            border-bottom: none;
+        }
+
+        .behavior-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        .response-summary {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .response-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .response-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .response-item strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .response-item .score {
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        .response-item .reasoning {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .gap-section {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+        }
+
+        .gap-section h2 {
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+
+        .gap-section p {
+            opacity: 0.9;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .gap-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .cta-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .cta-card {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .cta-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .cta-card .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .cta-card.primary .cta-button {
+            background: var(--charcoal);
+            color: var(--white);
+        }
+
+        .cta-card.secondary .cta-button {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        .cta-card .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.25rem;
+            }
+
+            .option-card {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .contrast-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .cta-section {
+                grid-template-columns: 1fr;
+            }
+
+            .archetype-name {
+                font-size: 1.75rem;
+            }
+
+            .archetype-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .results-section {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .progress-bar-container {
+                padding: 0.75rem 1rem;
+            }
+
+            .question-screen {
+                padding: 2rem 1rem;
+            }
+
+            .nav-button {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            .progress-bar-container,
+            .cta-section,
+            nav.main-nav,
+            footer {
+                display: none !important;
+            }
+
+            .results-container {
+                padding: 0;
+            }
+
+            .results-section,
+            .archetype-section,
+            .gap-section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing" class="landing-page">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>What's Really Happening on Your Team?</h1>
+                <p class="hero-subtitle">6 questions. 5 minutes. Uncomfortably accurate.</p>
+                <p class="hero-description">
+                    Most managers think they know how their team is doing. Most are wrong.
+                    This assessment uses the same methodology trusted by leaders to surface
+                    what surveys miss and silence hides.
+                </p>
+                <button class="start-button" onclick="startAssessment()">Start the Assessment</button>
+                <div class="trust-elements">
+                    <span class="trust-item">No fluff. No generic advice. Just what you need to see.</span>
+                    <span class="trust-item">Built on the methodology behind The Trillion Dollar Problem</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Assessment Container -->
+    <div id="assessment" class="assessment-container">
+        <div class="progress-bar-container">
+            <div class="progress-info">
+                <span class="progress-text">Question <span id="currentQuestion">1</span> of 6</span>
+                <span class="progress-percentage"><span id="progressPercent">0</span>%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Question 1: The Last Surprise -->
+        <div class="question-screen" id="question-1">
+            <div class="question-header">
+                <span class="question-dimension">Communication + Vulnerability</span>
+                <h2 class="question-text">Think about the last time a team member's frustration, struggle, or concern caught you off guard. How recently did this happen?</h2>
+            </div>
+            <div class="options-container">
+                <div class="option-card" data-score="1" onclick="selectOption(1, 1)">
+                    <span class="option-score">1</span>
+                    <span class="option-text">Within the last week or two. I'm frequently caught off guard.</span>
+                </div>
+                <div class="option-card" data-score="2" onclick="selectOption(1, 2)">
+                    <span class="option-score">2</span>
+                    <span class="option-text">Within the last month. It happens occasionally.</span>
+                </div>
+                <div class="option-card" data-score="3" onclick="selectOption(1, 3)">
+                    <span class="option-score">3</span>
+                    <span class="option-text">Several months ago. Surprises are rare.</span>
+                </div>
+                <div class="option-card" data-score="4" onclick="selectOption(1, 4)">
+                    <span class="option-score">4</span>
+                    <span class="option-text">I genuinely can't remember the last time. Issues surface early.</span>
+                </div>
+            </div>
+            <div class="reasoning-container" id="reasoning-1">
+                <label class="reasoning-label">What was the situation, and what made it a surprise?</label>
+                <textarea class="reasoning-textarea" id="reasoning-text-1" placeholder="Share your thoughts... (minimum 20 characters)" oninput="updateCharCount(1)"></textarea>
+                <div class="char-count" id="char-count-1">0 / 20 minimum</div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="nav-button next" id="next-1" onclick="nextQuestion(1)" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- Question 2: The Quiet One -->
+        <div class="question-screen" id="question-2">
+            <div class="question-header">
+                <span class="question-dimension">Vulnerability + Enablement</span>
+                <h2 class="question-text">Picture your most capable team member. When did they last push back on something, challenge a decision, or tell you an idea wouldn't work?</h2>
+            </div>
+            <div class="options-container">
+                <div class="option-card" data-score="1" onclick="selectOption(2, 1)">
+                    <span class="option-score">1</span>
+                    <span class="option-text">I can't recall them ever pushing back. They're reliable and agreeable.</span>
+                </div>
+                <div class="option-card" data-score="2" onclick="selectOption(2, 2)">
+                    <span class="option-score">2</span>
+                    <span class="option-text">Maybe once, months ago, in a small way.</span>
+                </div>
+                <div class="option-card" data-score="3" onclick="selectOption(2, 3)">
+                    <span class="option-score">3</span>
+                    <span class="option-text">Within the last month. They speak up when it matters.</span>
+                </div>
+                <div class="option-card" data-score="4" onclick="selectOption(2, 4)">
+                    <span class="option-score">4</span>
+                    <span class="option-text">This week. Challenging ideas is normal for them.</span>
+                </div>
+            </div>
+            <div class="reasoning-container" id="reasoning-2">
+                <label class="reasoning-label">What did they push back on, and how did you respond?</label>
+                <textarea class="reasoning-textarea" id="reasoning-text-2" placeholder="Share your thoughts... (minimum 20 characters)" oninput="updateCharCount(2)"></textarea>
+                <div class="char-count" id="char-count-2">0 / 20 minimum</div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="nav-button next" id="next-2" onclick="nextQuestion(2)" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- Question 3: The Broken Process -->
+        <div class="question-screen" id="question-3">
+            <div class="question-header">
+                <span class="question-dimension">Enablement + Reflection</span>
+                <h2 class="question-text">What's one thing your team has to work around, tolerate, or just deal with because fixing it isn't up to them?</h2>
+            </div>
+            <div class="options-container">
+                <div class="option-card" data-score="1" onclick="selectOption(3, 1)">
+                    <span class="option-score">1</span>
+                    <span class="option-text">Several major things. The workarounds are part of daily life.</span>
+                </div>
+                <div class="option-card" data-score="2" onclick="selectOption(3, 2)">
+                    <span class="option-score">2</span>
+                    <span class="option-text">A couple of frustrating obstacles, but we've adapted.</span>
+                </div>
+                <div class="option-card" data-score="3" onclick="selectOption(3, 3)">
+                    <span class="option-score">3</span>
+                    <span class="option-text">Minor things only. Most blockers get addressed when raised.</span>
+                </div>
+                <div class="option-card" data-score="4" onclick="selectOption(3, 4)">
+                    <span class="option-score">4</span>
+                    <span class="option-text">Honestly can't think of anything significant. When issues arise, we fix them.</span>
+                </div>
+            </div>
+            <div class="reasoning-container" id="reasoning-3">
+                <label class="reasoning-label">What is it, and how long has it been this way?</label>
+                <textarea class="reasoning-textarea" id="reasoning-text-3" placeholder="Share your thoughts... (minimum 20 characters)" oninput="updateCharCount(3)"></textarea>
+                <div class="char-count" id="char-count-3">0 / 20 minimum</div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="nav-button next" id="next-3" onclick="nextQuestion(3)" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- Question 4: The Real Conversation -->
+        <div class="question-screen" id="question-4">
+            <div class="question-header">
+                <span class="question-dimension">Communication + Learning</span>
+                <h2 class="question-text">When someone on your team makes a mistake or misses a target, what typically happens in the 48 hours that follow?</h2>
+            </div>
+            <div class="options-container">
+                <div class="option-card" data-score="1" onclick="selectOption(4, 1)">
+                    <span class="option-score">1</span>
+                    <span class="option-text">Depends on who's watching. There's often fallout, even if subtle.</span>
+                </div>
+                <div class="option-card" data-score="2" onclick="selectOption(4, 2)">
+                    <span class="option-score">2</span>
+                    <span class="option-text">We address it, but the person is clearly stressed. Recovery takes a while.</span>
+                </div>
+                <div class="option-card" data-score="3" onclick="selectOption(4, 3)">
+                    <span class="option-score">3</span>
+                    <span class="option-text">Quick conversation focused on fixing it. Not comfortable, but constructive.</span>
+                </div>
+                <div class="option-card" data-score="4" onclick="selectOption(4, 4)">
+                    <span class="option-score">4</span>
+                    <span class="option-text">They bring it up themselves. We focus on the learning, not the blame.</span>
+                </div>
+            </div>
+            <div class="reasoning-container" id="reasoning-4">
+                <label class="reasoning-label">Think of a recent example. What actually happened?</label>
+                <textarea class="reasoning-textarea" id="reasoning-text-4" placeholder="Share your thoughts... (minimum 20 characters)" oninput="updateCharCount(4)"></textarea>
+                <div class="char-count" id="char-count-4">0 / 20 minimum</div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="nav-button next" id="next-4" onclick="nextQuestion(4)" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- Question 5: The Energy Read -->
+        <div class="question-screen" id="question-5">
+            <div class="question-header">
+                <span class="question-dimension">Opportunity + Reflection</span>
+                <h2 class="question-text">When you assign new work or propose a new initiative, how does your team typically respond?</h2>
+            </div>
+            <div class="options-container">
+                <div class="option-card" data-score="1" onclick="selectOption(5, 1)">
+                    <span class="option-score">1</span>
+                    <span class="option-text">Silence or resignation. They'll do it, but there's no spark.</span>
+                </div>
+                <div class="option-card" data-score="2" onclick="selectOption(5, 2)">
+                    <span class="option-score">2</span>
+                    <span class="option-text">A few people engage. Most just wait to be told what to do.</span>
+                </div>
+                <div class="option-card" data-score="3" onclick="selectOption(5, 3)">
+                    <span class="option-score">3</span>
+                    <span class="option-text">Generally positive. Questions are practical, not challenging.</span>
+                </div>
+                <div class="option-card" data-score="4" onclick="selectOption(5, 4)">
+                    <span class="option-score">4</span>
+                    <span class="option-text">Real energy. They build on ideas, raise concerns, take ownership.</span>
+                </div>
+            </div>
+            <div class="reasoning-container" id="reasoning-5">
+                <label class="reasoning-label">Think about the last time you proposed something new. What happened?</label>
+                <textarea class="reasoning-textarea" id="reasoning-text-5" placeholder="Share your thoughts... (minimum 20 characters)" oninput="updateCharCount(5)"></textarea>
+                <div class="char-count" id="char-count-5">0 / 20 minimum</div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="nav-button next" id="next-5" onclick="nextQuestion(5)" disabled>Next</button>
+            </div>
+        </div>
+
+        <!-- Question 6: The Departure Scenario -->
+        <div class="question-screen" id="question-6">
+            <div class="question-header">
+                <span class="question-dimension">Opportunity + Learning</span>
+                <h2 class="question-text">If your strongest performer told you tomorrow they'd been offered another role, how confident are you that you could change their mind?</h2>
+            </div>
+            <div class="options-container">
+                <div class="option-card" data-score="1" onclick="selectOption(6, 1)">
+                    <span class="option-score">1</span>
+                    <span class="option-text">Not confident at all. I'd have nothing compelling to offer.</span>
+                </div>
+                <div class="option-card" data-score="2" onclick="selectOption(6, 2)">
+                    <span class="option-score">2</span>
+                    <span class="option-text">Slightly confident. I could try, but I'm not sure what would work.</span>
+                </div>
+                <div class="option-card" data-score="3" onclick="selectOption(6, 3)">
+                    <span class="option-score">3</span>
+                    <span class="option-text">Fairly confident. I know what matters to them and could make a case.</span>
+                </div>
+                <div class="option-card" data-score="4" onclick="selectOption(6, 4)">
+                    <span class="option-score">4</span>
+                    <span class="option-text">Very confident. I know exactly what keeps them here and could address gaps immediately.</span>
+                </div>
+            </div>
+            <div class="reasoning-container" id="reasoning-6">
+                <label class="reasoning-label">What would you say to them, and why do you think it would or wouldn't work?</label>
+                <textarea class="reasoning-textarea" id="reasoning-text-6" placeholder="Share your thoughts... (minimum 20 characters)" oninput="updateCharCount(6)"></textarea>
+                <div class="char-count" id="char-count-6">0 / 20 minimum</div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="nav-button next" id="next-6" onclick="showEmailCapture()" disabled>Get My Results</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Capture Screen -->
+    <div id="emailCapture" class="email-capture-screen">
+        <h2>Your Team Health Report is Ready</h2>
+        <p class="subtitle">Where should we send it?</p>
+        <form class="email-form" onsubmit="submitForm(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name <span class="required">*</span></label>
+                    <input type="text" id="firstName" required placeholder="Your first name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" required placeholder="you@company.com">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" id="companyName" placeholder="Your company (optional)">
+            </div>
+            <div class="form-group">
+                <label>Team Size</label>
+                <select id="teamSize">
+                    <option value="">Select team size (optional)</option>
+                    <option value="2-5">2-5 people</option>
+                    <option value="6-10">6-10 people</option>
+                    <option value="11-20">11-20 people</option>
+                    <option value="21-50">21-50 people</option>
+                    <option value="50+">50+ people</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-button" id="submitBtn">Get My Report</button>
+        </form>
+        <p class="privacy-note">We'll send your report and occasional insights on team health. Unsubscribe anytime.</p>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Analyzing your responses...</p>
+        <p class="loading-subtext">Generating your personalized Team Health Report</p>
+    </div>
+
+    <!-- Results Container -->
+    <div id="results" class="results-container">
+        <!-- Content will be dynamically generated -->
+    </div>
+
+    <script src="/js/header.js" defer></script>
+    <script src="/js/footer.js" defer></script>
+
+    <script>
+        // Assessment Data Storage
+        const assessmentData = {
+            scores: {},
+            reasoning: {},
+            userInfo: {}
+        };
+
+        // Question metadata
+        const questions = {
+            1: { name: 'The Last Surprise', dimension: 'Communication + Vulnerability' },
+            2: { name: 'The Quiet One', dimension: 'Vulnerability + Enablement' },
+            3: { name: 'The Broken Process', dimension: 'Enablement + Reflection' },
+            4: { name: 'The Real Conversation', dimension: 'Communication + Learning' },
+            5: { name: 'The Energy Read', dimension: 'Opportunity + Reflection' },
+            6: { name: 'The Departure Scenario', dimension: 'Opportunity + Learning' }
+        };
+
+        // Start Assessment
+        function startAssessment() {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('assessment').classList.add('active');
+            document.getElementById('question-1').classList.add('active');
+            updateProgress(1);
+        }
+
+        // Select Option
+        function selectOption(questionNum, score) {
+            // Remove selected from all options in this question
+            const questionDiv = document.getElementById(`question-${questionNum}`);
+            questionDiv.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selected to clicked option
+            event.currentTarget.classList.add('selected');
+
+            // Store score
+            assessmentData.scores[questionNum] = score;
+
+            // Show reasoning field
+            document.getElementById(`reasoning-${questionNum}`).classList.add('active');
+
+            // Check if we can enable next button
+            checkNextButton(questionNum);
+        }
+
+        // Update Character Count
+        function updateCharCount(questionNum) {
+            const textarea = document.getElementById(`reasoning-text-${questionNum}`);
+            const charCount = document.getElementById(`char-count-${questionNum}`);
+            const length = textarea.value.length;
+
+            charCount.textContent = `${length} / 20 minimum`;
+
+            if (length < 20) {
+                charCount.classList.add('warning');
+            } else {
+                charCount.classList.remove('warning');
+            }
+
+            checkNextButton(questionNum);
+        }
+
+        // Check if Next Button should be enabled
+        function checkNextButton(questionNum) {
+            const score = assessmentData.scores[questionNum];
+            const reasoning = document.getElementById(`reasoning-text-${questionNum}`).value;
+            const nextBtn = document.getElementById(`next-${questionNum}`);
+
+            if (score && reasoning.length >= 20) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        // Next Question
+        function nextQuestion(currentNum) {
+            // Store reasoning
+            assessmentData.reasoning[currentNum] = document.getElementById(`reasoning-text-${currentNum}`).value;
+
+            // Hide current question
+            document.getElementById(`question-${currentNum}`).classList.remove('active');
+
+            // Show next question
+            const nextNum = currentNum + 1;
+            document.getElementById(`question-${nextNum}`).classList.add('active');
+
+            // Update progress
+            updateProgress(nextNum);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Update Progress Bar
+        function updateProgress(questionNum) {
+            document.getElementById('currentQuestion').textContent = questionNum;
+            const percent = Math.round(((questionNum - 1) / 6) * 100);
+            document.getElementById('progressPercent').textContent = percent;
+            document.getElementById('progressFill').style.width = `${percent}%`;
+        }
+
+        // Show Email Capture
+        function showEmailCapture() {
+            // Store last reasoning
+            assessmentData.reasoning[6] = document.getElementById('reasoning-text-6').value;
+
+            // Hide assessment, show email capture
+            document.getElementById('assessment').classList.remove('active');
+            document.getElementById('emailCapture').classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Submit Form
+        async function submitForm(e) {
+            e.preventDefault();
+
+            // Store user info
+            assessmentData.userInfo = {
+                firstName: document.getElementById('firstName').value,
+                email: document.getElementById('email').value,
+                companyName: document.getElementById('companyName').value || '',
+                teamSize: document.getElementById('teamSize').value || ''
+            };
+
+            // Hide email capture, show loading
+            document.getElementById('emailCapture').classList.remove('active');
+            document.getElementById('loading').classList.add('active');
+
+            try {
+                // Generate report
+                const report = await generateReport();
+
+                // Minimum 3 second delay for perceived value
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                // Show results
+                displayResults(report);
+            } catch (error) {
+                console.error('Error generating report:', error);
+                // Fallback to client-side classification
+                const report = classifyLocally();
+                displayResults(report);
+            }
+        }
+
+        // Generate Report (API call)
+        async function generateReport() {
+            try {
+                const response = await fetch('/api/team-health-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        scores: assessmentData.scores,
+                        reasoning: assessmentData.reasoning,
+                        userInfo: assessmentData.userInfo
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                // Fallback to local classification
+                return classifyLocally();
+            }
+        }
+
+        // Local Classification Fallback
+        function classifyLocally() {
+            const scores = assessmentData.scores;
+
+            // Classification logic based on scoring matrix
+            let archetype = 'quiet-crack'; // default
+
+            // Performance Theater takes precedence when Q4 = 1
+            if (scores[4] === 1) {
+                archetype = 'performance-theater';
+            }
+            // Quiet Crack when both Q2 and Q5 score low
+            else if (scores[2] <= 2 && scores[5] <= 2) {
+                archetype = 'quiet-crack';
+            }
+            // Firefight Loop when Q3 and Q4 both score low
+            else if (scores[3] <= 2 && scores[4] <= 2) {
+                archetype = 'firefight-loop';
+            }
+            // Siloed Stars when Q2 is high but Q5 shows split engagement
+            else if (scores[2] >= 3 && scores[5] === 2) {
+                archetype = 'siloed-stars';
+            }
+            // Comfortable Stall when scores are generally positive
+            else if (scores[1] >= 3 && scores[3] >= 3 && scores[5] >= 2 && scores[5] <= 3) {
+                archetype = 'comfortable-stall';
+            }
+
+            return {
+                archetype: archetype,
+                scores: assessmentData.scores,
+                reasoning: assessmentData.reasoning,
+                userInfo: assessmentData.userInfo
+            };
+        }
+
+        // Archetype Content
+        const archetypes = {
+            'quiet-crack': {
+                name: 'Quiet Crack',
+                definition: 'A team that looks stable on the surface while key people are actively disengaging.',
+                whatYouBelieve: "Things are pretty good here. Sure, some people are quieter than others, but that's just personality. My strong performers are heads-down and productive. No one's complaining, so there's no reason to think anything's wrong. If someone had a problem, they'd tell me.",
+                whatsActuallyHappening: "Your best people aren't quiet because they're focused. They're quiet because they've stopped investing. Somewhere along the way, they learned that speaking up doesn't change anything, that raising concerns creates friction without resolution, that it's easier to just do the work and keep their head down. They're not engaged; they're enduring. And they're doing it while quietly exploring other options.",
+                risk: "You'll lose someone who seemed \"fine.\" There won't be warning signs you recognize because silence was the warning sign. The exit interview will be polite and vague. Only later will you hear from their former teammates what was really going on. And by then, the others who felt the same way will be updating their resumes too. One departure becomes three. The team that looked stable hollows out.",
+                behaviors: [
+                    "Your strongest people have stopped suggesting improvements",
+                    "Meetings have gotten shorter because fewer people contribute",
+                    "\"Sounds good\" has become the default response to new initiatives",
+                    "One-on-ones feel productive but surface-level",
+                    "You're the last to know when someone's struggling"
+                ]
+            },
+            'firefight-loop': {
+                name: 'Firefight Loop',
+                definition: 'A team trapped in constant reaction mode, where urgency has replaced strategy.',
+                whatYouBelieve: "We're incredibly busy, but that's just the nature of our work. The team is resilient; they always pull through when it matters. Yes, we're putting out fires, but that's what high-performing teams do. Once we get through this crunch, things will calm down and we can focus on the bigger picture.",
+                whatsActuallyHappening: "The crunch never ends because firefighting has become your operating model. Every urgent problem creates two more. Your team isn't resilient; they're exhausted. They've stopped raising systemic issues because there's never time to address them. The \"temporary\" workarounds from six months ago are now permanent fixtures. People aren't problem-solving anymore; they're just surviving until Friday.",
+                risk: "Your best problem-solvers will leave first because they're the ones most aware that this isn't sustainable. What remains will be people who've either adapted to chaos or don't have other options. Quality will slip in ways that aren't immediately visible until they become customer-facing crises. The team will shrink through attrition, the fires will keep burning, and each remaining person will absorb more load until the whole thing breaks.",
+                behaviors: [
+                    "\"We'll fix it properly next time\" has been said for months",
+                    "The same problems keep recurring in slightly different forms",
+                    "Strategic projects never get traction because something urgent always takes priority",
+                    "The team is tired in a way that weekends don't fix",
+                    "New hires either adapt to chaos quickly or leave within six months"
+                ]
+            },
+            'performance-theater': {
+                name: 'Performance Theater',
+                definition: 'A team where looking good has become more important than being good.',
+                whatYouBelieve: "We have high standards here. People know what's expected, and they deliver. Sure, there's pressure, but that's what drives excellence. The team knows I have their back as long as they perform. We've built a culture of accountability, and the results speak for themselves.",
+                whatsActuallyHappening: "Your team has learned that perception matters more than reality. They're not performing; they're performing performance. Mistakes get hidden rather than surfaced. Wins get amplified while problems get buried. People are managing up, not solving problems. The \"results\" you're seeing are carefully curated versions of reality. The real information\u2014the struggles, the near-misses, the concerns\u2014never reaches you because sharing it feels unsafe.",
+                risk: "You're making decisions based on incomplete information, which means you're making bad decisions that feel like good ones. When something finally breaks through the performance layer (and it will), the gap between what you believed and what was actually happening will be enormous. You'll feel blindsided. Your team will feel like they tried to tell you. Trust will collapse in both directions. The recovery will take years, not months.",
+                behaviors: [
+                    "Bad news reaches you late, reframed, or not at all",
+                    "The team presents polished updates but gets defensive when you probe",
+                    "Mistakes trigger blame-shifting rather than problem-solving",
+                    "People optimize for visibility, not impact",
+                    "There's a notable difference between how people talk in meetings vs. private conversations"
+                ]
+            },
+            'siloed-stars': {
+                name: 'Siloed Stars',
+                definition: 'A team over-reliant on a few key individuals while others fade into the background.',
+                whatYouBelieve: "I've got some real stars on this team. They're the ones I can count on when it matters. Not everyone can be an A-player, and that's okay. The strong performers carry the critical work, and the others handle the routine stuff. It's not perfect, but it works. My job is to keep the stars happy and let them do their thing.",
+                whatsActuallyHappening: "You've built a team with a single point of failure\u2014maybe two or three. Your \"stars\" are burning out under the weight of being essential to everything. The others aren't B-players by nature; they've become B-players because there's no room to grow when a few people dominate every important project. They've stopped trying because trying doesn't get them anywhere. You don't have a team; you have a few heroes surrounded by an audience.",
+                risk: "When your rock star leaves (and they will, because carrying everything is exhausting), you won't just lose a person. You'll lose entire functions, relationships, and institutional knowledge that never got distributed. The remaining team won't be able to absorb the work because they were never brought along. You'll be starting from scratch with a demoralized team.",
+                behaviors: [
+                    "The same 2-3 people answer every question in meetings",
+                    "Knowledge exists only in individuals, not systems",
+                    "\"Ask [person]\" is the answer to most questions",
+                    "Vacation coverage is panic mode",
+                    "Some people could disappear for a week without anyone noticing"
+                ]
+            },
+            'comfortable-stall': {
+                name: 'Comfortable Stall',
+                definition: 'A team that has settled into mediocrity, mistaking comfort for health.',
+                whatYouBelieve: "We've built something stable here. No drama, no fires, good relationships. Not every team needs to be pushing boundaries. We deliver consistently, people get along, turnover is low. What more could you want?",
+                whatsActuallyHappening: "Your team has optimized for comfort, not growth. The absence of problems isn't health; it's stagnation. People stay because it's easy, not because they're engaged. The lack of challenge has atrophied their ambition. Your best people left years ago. What remains are people who've settled for \"good enough\" because that's all that's expected.",
+                risk: "The market doesn't stay still just because your team does. Skills are depreciating. Innovation is happening elsewhere. When change finally comes (reorg, new leadership, market shift), your team won't be able to adapt because they've forgotten how. The comfort you protected will become a liability. The very stability you built on becomes quicksand.",
+                behaviors: [
+                    "Responses to new ideas: \"we tried that once\" or \"that's not how we do things\"",
+                    "Professional development is box-checking, not genuine interest",
+                    "Team rituals (meetings, processes) continue without examination",
+                    "\"We've always done it this way\" is an acceptable answer",
+                    "Average tenure is high, but average ambition is low"
+                ]
+            }
+        };
+
+        // Display Results
+        function displayResults(report) {
+            const archetype = archetypes[report.archetype];
+            const resultsDiv = document.getElementById('results');
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Build response summary
+            let responseSummary = '';
+            for (let i = 1; i <= 6; i++) {
+                const q = questions[i];
+                responseSummary += `
+                    <div class="response-item">
+                        <strong>${q.name}</strong>
+                        <span class="score">Score: ${report.scores[i]}/4</span>
+                        <p class="reasoning">"${report.reasoning[i]}"</p>
+                    </div>
+                `;
+            }
+
+            resultsDiv.innerHTML = `
+                <div class="results-header">
+                    <h1>Your Team Health Report</h1>
+                    <p class="results-date">Generated ${today} for ${report.userInfo.firstName}</p>
+                </div>
+
+                <div class="archetype-section">
+                    <p class="archetype-label">Your team is showing signs of</p>
+                    <h2 class="archetype-name">${archetype.name}</h2>
+                    <p class="archetype-definition">${archetype.definition}</p>
+                </div>
+
+                <div class="results-section">
+                    <h2><span class="icon">&#128065;</span> The Gap Between Perception and Reality</h2>
+                    <div class="contrast-grid">
+                        <div class="contrast-column believe">
+                            <h3>What You Probably Believe</h3>
+                            <p>${archetype.whatYouBelieve}</p>
+                        </div>
+                        <div class="contrast-column reality">
+                            <h3>What's Actually Happening</h3>
+                            <p>${archetype.whatsActuallyHappening}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-section">
+                    <h2><span class="icon">&#9888;</span> If This Goes Unaddressed</h2>
+                    <div class="risk-content">
+                        <p>${archetype.risk}</p>
+                    </div>
+                </div>
+
+                <div class="results-section">
+                    <h2><span class="icon">&#128269;</span> You Might Be Seeing This</h2>
+                    <ul class="behavior-list">
+                        ${archetype.behaviors.map(b => `<li>${b}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="results-section">
+                    <h2><span class="icon">&#128221;</span> What You Told Us</h2>
+                    <div class="response-summary">
+                        ${responseSummary}
+                    </div>
+                </div>
+
+                <div class="gap-section">
+                    <h2>What This Snapshot Can't Show You</h2>
+                    <p>This assessment is based on six questions asked once, from your perspective alone.</p>
+                    <p>Clover ERA tracks daily signals from your entire team. It sees the patterns before they become problems. The shift from "fine" to "fragile" that no single snapshot can catch.</p>
+                    <p><strong>This report tells you where to look. Clover ERA tells you what to do about it.</strong></p>
+                </div>
+
+                <div class="cta-section">
+                    <div class="cta-card primary">
+                        <h3>See What This Is Costing You</h3>
+                        <p>Turn this insight into numbers your CFO will understand.</p>
+                        <a href="/calculator/" class="cta-button">Build Your Business Case</a>
+                    </div>
+                    <div class="cta-card secondary">
+                        <h3>Schedule Your Free Turnover Analysis</h3>
+                        <p>15 minutes. See which teams are at risk. No pitch.</p>
+                        <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="cta-button">Book a Turnover Analysis</a>
+                    </div>
+                </div>
+            `;
+
+            // Hide loading, show results
+            document.getElementById('loading').classList.remove('active');
+            resultsDiv.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

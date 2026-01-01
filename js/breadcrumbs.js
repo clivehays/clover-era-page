@@ -25,6 +25,9 @@ const BREADCRUMB_CONFIG = {
     '/neuroscience-of-employee-engagement/': { name: 'Neuroscience of Employee Engagement', parent: '/research/' },
     '/quiet-cracking/': { name: 'Quiet Cracking', parent: '/why-employees-leave/' },
 
+    // Tools & Assessments
+    '/team-health/': { name: 'Team Health Assessment', parent: '/' },
+
     // Additional pages
     '/roundtable/': { name: 'Manager Roundtable', parent: '/' },
     '/roundtable/apply/': { name: 'Apply', parent: '/roundtable/' },
