@@ -456,6 +456,10 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Team Health Report error:', error);
-        return res.status(500).json({ error: 'Failed to generate report' });
+        return res.status(500).json({
+            error: 'Failed to generate report',
+            details: error.message,
+            stack: error.stack
+        });
     }
 }
