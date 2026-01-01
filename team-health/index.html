@@ -1111,6 +1111,133 @@
             }
         }
 
+        /* ===== MARKDOWN REPORT STYLES ===== */
+        .markdown-report {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            line-height: 1.7;
+        }
+
+        .markdown-report h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .markdown-report h1:first-child {
+            margin-top: 0;
+        }
+
+        .markdown-report h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .markdown-report h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--deep-teal);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .markdown-report p {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .markdown-report strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .markdown-report em {
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .markdown-report hr {
+            border: none;
+            border-top: 2px solid var(--medium-gray);
+            margin: 2rem 0;
+        }
+
+        .markdown-report ul {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .markdown-report ul li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--text-primary);
+        }
+
+        .markdown-report ul li:last-child {
+            border-bottom: none;
+        }
+
+        .markdown-report ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        .markdown-report table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .markdown-report table tr:first-child td {
+            background: var(--charcoal);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .markdown-report table td {
+            padding: 1rem;
+            border: 1px solid var(--medium-gray);
+            vertical-align: top;
+        }
+
+        .markdown-report table tr:not(:first-child) td {
+            background: var(--white);
+        }
+
+        .markdown-report table tr:not(:first-child) td:first-child {
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        /* Special styling for archetype name */
+        .markdown-report h2 + p > strong:only-child,
+        .markdown-report h3 + p > strong:only-child {
+            display: block;
+            font-size: 1.5rem;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Button placeholders in markdown */
+        .markdown-report p:contains('[Button') {
+            margin-top: 1.5rem;
+        }
+
         /* ===== PRINT STYLES ===== */
         @media print {
             .progress-bar-container,
@@ -1751,14 +1878,98 @@
             }
         };
 
-        // Display Results - Enhanced version with evidence tables
+        // Simple markdown to HTML converter
+        function renderMarkdown(markdown) {
+            if (!markdown) return '';
+
+            let html = markdown
+                // Escape HTML first
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // Headers
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                // Bold
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Italic
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Horizontal rules
+                .replace(/^---$/gm, '<hr>')
+                // Tables
+                .replace(/^\|(.+)\|$/gm, (match, content) => {
+                    const cells = content.split('|').map(cell => cell.trim());
+                    if (cells.every(cell => /^-+$/.test(cell))) {
+                        return ''; // Skip separator rows
+                    }
+                    const isHeader = false; // Simplified - treat all as td
+                    const cellTag = isHeader ? 'th' : 'td';
+                    return '<tr>' + cells.map(cell => `<${cellTag}>${cell}</${cellTag}>`).join('') + '</tr>';
+                })
+                // Unordered lists
+                .replace(/^- (.*$)/gm, '<li>$1</li>')
+                // Paragraphs - add line breaks
+                .replace(/\n\n/g, '</p><p>')
+                // Single line breaks
+                .replace(/\n/g, '<br>');
+
+            // Wrap in paragraph tags
+            html = '<p>' + html + '</p>';
+
+            // Wrap consecutive li elements in ul
+            html = html.replace(/(<li>.*?<\/li>(?:<br>)?)+/g, (match) => {
+                return '<ul>' + match.replace(/<br>/g, '') + '</ul>';
+            });
+
+            // Wrap consecutive tr elements in table
+            html = html.replace(/(<tr>.*?<\/tr>)+/g, (match) => {
+                return '<table class="evidence-table">' + match + '</table>';
+            });
+
+            // Clean up empty paragraphs
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p><hr><\/p>/g, '<hr>');
+            html = html.replace(/<p>(<h[123]>)/g, '$1');
+            html = html.replace(/(<\/h[123]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<table)/g, '$1');
+            html = html.replace(/(<\/table>)<\/p>/g, '$1');
+
+            return html;
+        }
+
+        // Display Results - Enhanced version with markdown support
         function displayResults(report) {
-            const archetypeFallback = archetypes[report.archetype];
             const resultsDiv = document.getElementById('results');
             const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
+            // Check if we have markdown response from API
+            if (report.markdown) {
+                // Render the markdown report directly
+                const renderedMarkdown = renderMarkdown(report.markdown);
+
+                resultsDiv.innerHTML = `
+                    <div class="markdown-report">
+                        ${renderedMarkdown}
+                    </div>
+                `;
+
+                // Hide loading, show results
+                document.getElementById('loading').classList.remove('active');
+                resultsDiv.classList.add('active');
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            // Fallback to structured JSON rendering if no markdown
+            const archetypeFallback = archetypes[report.archetype] || archetypes['quiet-crack'];
+
             // Use API data if available, fall back to static archetypes
-            const displayName = report.archetype_display_name || archetypeFallback.name;
+            const displayName = report.archetype_display_name || report.archetype_display || archetypeFallback.name;
             const subtitle = report.archetype_subtitle || archetypeFallback.definition;
             const hook = report.hook || `Based on your responses, your team is showing signs of ${displayName}.`;
             const behaviors = report.behaviors || archetypeFallback.behaviors;
