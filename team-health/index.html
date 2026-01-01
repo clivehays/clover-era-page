@@ -1544,8 +1544,8 @@
     <!-- Loading Screen -->
     <div id="loading" class="loading-screen">
         <div class="loading-spinner"></div>
-        <p class="loading-text">Analyzing your responses...</p>
-        <p class="loading-subtext">Generating your personalized Team Health Report</p>
+        <p class="loading-text" id="loading-message">Analysing your responses...</p>
+        <p class="loading-subtext" id="loading-subtext">Please wait while we process your assessment</p>
     </div>
 
     <!-- Results Container -->
@@ -1708,6 +1708,42 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Loading message progression
+        const loadingMessages = [
+            { text: 'Analysing your responses...', subtext: 'Reading between the lines' },
+            { text: 'Processing the scores...', subtext: 'Identifying patterns in your answers' },
+            { text: 'Preparing your report...', subtext: 'Matching insights to your team' },
+            { text: 'Nearly there...', subtext: 'Finalising your personalised analysis' }
+        ];
+
+        let messageInterval = null;
+
+        function startLoadingMessages() {
+            let messageIndex = 0;
+            const messageEl = document.getElementById('loading-message');
+            const subtextEl = document.getElementById('loading-subtext');
+
+            // Set initial message
+            messageEl.textContent = loadingMessages[0].text;
+            subtextEl.textContent = loadingMessages[0].subtext;
+
+            // Cycle through messages every 2.5 seconds
+            messageInterval = setInterval(() => {
+                messageIndex++;
+                if (messageIndex < loadingMessages.length) {
+                    messageEl.textContent = loadingMessages[messageIndex].text;
+                    subtextEl.textContent = loadingMessages[messageIndex].subtext;
+                }
+            }, 2500);
+        }
+
+        function stopLoadingMessages() {
+            if (messageInterval) {
+                clearInterval(messageInterval);
+                messageInterval = null;
+            }
+        }
+
         // Submit Form
         async function submitForm(e) {
             e.preventDefault();
@@ -1724,17 +1760,22 @@
             document.getElementById('emailCapture').classList.remove('active');
             document.getElementById('loading').classList.add('active');
 
+            // Start cycling through loading messages
+            startLoadingMessages();
+
             try {
                 // Generate report
                 const report = await generateReport();
 
-                // Minimum 3 second delay for perceived value
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                // Stop loading messages
+                stopLoadingMessages();
 
                 // Show results
                 displayResults(report);
             } catch (error) {
                 console.error('Error generating report:', error);
+                // Stop loading messages
+                stopLoadingMessages();
                 // Fallback to client-side classification
                 const report = classifyLocally();
                 displayResults(report);
