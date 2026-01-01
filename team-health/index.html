@@ -356,13 +356,6 @@
             color: var(--coral);
         }
 
-        .navigation-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
         .nav-button {
             padding: 1rem 2.5rem;
             border-radius: 10px;
@@ -371,6 +364,17 @@
             cursor: pointer;
             transition: all 0.2s ease;
             border: none;
+        }
+
+        .nav-button.back {
+            background: var(--white);
+            color: var(--charcoal);
+            border: 2px solid var(--medium-gray);
+        }
+
+        .nav-button.back:hover {
+            background: var(--light-gray);
+            border-color: var(--charcoal);
         }
 
         .nav-button.next {
@@ -386,6 +390,17 @@
         .nav-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .navigation-buttons.first-question {
+            justify-content: flex-end;
         }
 
         /* ===== EMAIL CAPTURE ===== */
@@ -955,7 +970,7 @@
                 <textarea class="reasoning-textarea" id="reasoning-text-1" placeholder="Share your thoughts... (minimum 20 characters)" oninput="updateCharCount(1)"></textarea>
                 <div class="char-count" id="char-count-1">0 / 20 minimum</div>
             </div>
-            <div class="navigation-buttons">
+            <div class="navigation-buttons first-question">
                 <button class="nav-button next" id="next-1" onclick="nextQuestion(1)" disabled>Next</button>
             </div>
         </div>
@@ -990,6 +1005,7 @@
                 <div class="char-count" id="char-count-2">0 / 20 minimum</div>
             </div>
             <div class="navigation-buttons">
+                <button class="nav-button back" onclick="prevQuestion(2)">Back</button>
                 <button class="nav-button next" id="next-2" onclick="nextQuestion(2)" disabled>Next</button>
             </div>
         </div>
@@ -1024,6 +1040,7 @@
                 <div class="char-count" id="char-count-3">0 / 20 minimum</div>
             </div>
             <div class="navigation-buttons">
+                <button class="nav-button back" onclick="prevQuestion(3)">Back</button>
                 <button class="nav-button next" id="next-3" onclick="nextQuestion(3)" disabled>Next</button>
             </div>
         </div>
@@ -1058,6 +1075,7 @@
                 <div class="char-count" id="char-count-4">0 / 20 minimum</div>
             </div>
             <div class="navigation-buttons">
+                <button class="nav-button back" onclick="prevQuestion(4)">Back</button>
                 <button class="nav-button next" id="next-4" onclick="nextQuestion(4)" disabled>Next</button>
             </div>
         </div>
@@ -1092,6 +1110,7 @@
                 <div class="char-count" id="char-count-5">0 / 20 minimum</div>
             </div>
             <div class="navigation-buttons">
+                <button class="nav-button back" onclick="prevQuestion(5)">Back</button>
                 <button class="nav-button next" id="next-5" onclick="nextQuestion(5)" disabled>Next</button>
             </div>
         </div>
@@ -1126,6 +1145,7 @@
                 <div class="char-count" id="char-count-6">0 / 20 minimum</div>
             </div>
             <div class="navigation-buttons">
+                <button class="nav-button back" onclick="prevQuestion(6)">Back</button>
                 <button class="nav-button next" id="next-6" onclick="showEmailCapture()" disabled>Get My Results</button>
             </div>
         </div>
@@ -1161,7 +1181,10 @@
                     <option value="50+">50+ people</option>
                 </select>
             </div>
-            <button type="submit" class="submit-button" id="submitBtn">Get My Report</button>
+            <div class="navigation-buttons" style="margin-top: 1.5rem;">
+                <button type="button" class="nav-button back" onclick="backToAssessment()">Back</button>
+                <button type="submit" class="submit-button" style="flex: 1; margin: 0;">Get My Report</button>
+            </div>
         </form>
         <p class="privacy-note">We'll send your report and occasional insights on team health. Unsubscribe anytime.</p>
     </div>
@@ -1272,6 +1295,41 @@
 
             // Update progress
             updateProgress(nextNum);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Previous Question
+        function prevQuestion(currentNum) {
+            // Hide current question
+            document.getElementById(`question-${currentNum}`).classList.remove('active');
+
+            // Show previous question
+            const prevNum = currentNum - 1;
+            document.getElementById(`question-${prevNum}`).classList.add('active');
+
+            // Update progress
+            updateProgress(prevNum);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Back to Assessment from Email Capture
+        function backToAssessment() {
+            // Hide email capture, show assessment
+            document.getElementById('emailCapture').classList.remove('active');
+            document.getElementById('assessment').classList.add('active');
+
+            // Make sure question 6 is visible
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`question-${i}`).classList.remove('active');
+            }
+            document.getElementById('question-6').classList.add('active');
+
+            // Update progress
+            updateProgress(6);
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
