@@ -5,14 +5,28 @@
 import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-);
+// Initialize clients lazily to avoid issues with env vars at module load time
+let supabase = null;
+let anthropic = null;
 
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY
-});
+function getSupabase() {
+    if (!supabase) {
+        supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_KEY
+        );
+    }
+    return supabase;
+}
+
+function getAnthropic() {
+    if (!anthropic) {
+        anthropic = new Anthropic({
+            apiKey: process.env.ANTHROPIC_API_KEY
+        });
+    }
+    return anthropic;
+}
 
 // Chunk size configuration
 const CHUNK_SIZE = 1500;  // Characters per chunk
@@ -106,7 +120,7 @@ Respond in JSON format:
 }`;
 
     try {
-        const message = await anthropic.messages.create({
+        const message = await getAnthropic().messages.create({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 500,
             messages: [{ role: 'user', content: prompt }]
@@ -166,7 +180,7 @@ export default async function handler(req, res) {
         if (action === 'create_book') {
             const { title, author, description, source_type } = bookData;
 
-            const { data, error } = await supabase
+            const { data, error } = await getSupabase()
                 .from('clover_books')
                 .insert({
                     title,
@@ -193,7 +207,7 @@ export default async function handler(req, res) {
             }
 
             // Verify book exists
-            const { data: book, error: bookError } = await supabase
+            const { data: book, error: bookError } = await getSupabase()
                 .from('clover_books')
                 .select('id, title')
                 .eq('id', bookId)
@@ -204,7 +218,7 @@ export default async function handler(req, res) {
             }
 
             // Get current max chunk index for this book
-            const { data: existingChunks } = await supabase
+            const { data: existingChunks } = await getSupabase()
                 .from('clover_knowledge_chunks')
                 .select('chunk_index')
                 .eq('book_id', bookId)
@@ -234,7 +248,7 @@ export default async function handler(req, res) {
                     : null;
 
                 // Insert chunk
-                const { data, error } = await supabase
+                const { data, error } = await getSupabase()
                     .from('clover_knowledge_chunks')
                     .insert({
                         book_id: bookId,
@@ -273,7 +287,7 @@ export default async function handler(req, res) {
 
         // Action: List all books
         if (action === 'list_books') {
-            const { data, error } = await supabase
+            const { data, error } = await getSupabase()
                 .from('clover_books')
                 .select(`
                     id,
@@ -307,7 +321,7 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'bookId is required' });
             }
 
-            const { data: book, error: bookError } = await supabase
+            const { data: book, error: bookError } = await getSupabase()
                 .from('clover_books')
                 .select('*')
                 .eq('id', bookId)
@@ -317,7 +331,7 @@ export default async function handler(req, res) {
                 return res.status(404).json({ error: 'Book not found' });
             }
 
-            const { count } = await supabase
+            const { count } = await getSupabase()
                 .from('clover_knowledge_chunks')
                 .select('*', { count: 'exact', head: true })
                 .eq('book_id', bookId);
@@ -336,7 +350,7 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'bookId is required' });
             }
 
-            const { error } = await supabase
+            const { error } = await getSupabase()
                 .from('clover_books')
                 .delete()
                 .eq('id', bookId);
