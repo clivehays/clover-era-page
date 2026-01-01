@@ -3,20 +3,10 @@
 // Uses EXACT implementation from CLAUDE_CODE_EXACT_IMPLEMENTATION.md
 
 import { createClient } from '@supabase/supabase-js';
+import Anthropic from '@anthropic-ai/sdk';
 
-// Lazy initialization to avoid module load issues on Vercel
-let anthropic = null;
+// Initialize clients lazily
 let supabase = null;
-
-async function getAnthropic() {
-    if (!anthropic) {
-        const { default: Anthropic } = await import('@anthropic-ai/sdk');
-        anthropic = new Anthropic({
-            apiKey: process.env.ANTHROPIC_API_KEY
-        });
-    }
-    return anthropic;
-}
 
 function getSupabase() {
     if (!supabase) {
@@ -401,11 +391,13 @@ export default async function handler(req, res) {
         console.log('Calling Claude API with system prompt length:', SYSTEM_PROMPT.length);
         console.log('User message length:', userMessage.length);
 
-        // Get Anthropic client
-        const anthropicClient = await getAnthropic();
+        // Initialize Anthropic client
+        const anthropic = new Anthropic({
+            apiKey: process.env.ANTHROPIC_API_KEY
+        });
 
         // Call Claude API with EXACT parameters from instructions
-        const message = await anthropicClient.messages.create({
+        const message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 8000,
             system: SYSTEM_PROMPT,
