@@ -44,11 +44,14 @@ async function generateQueryEmbedding(query) {
 // RAG: Search knowledge base for relevant CLOVER methodology content
 async function searchCloverKnowledge(archetype, reasoningText) {
     try {
-        // Build search queries based on detected patterns
+        // Build search queries to get CLOVER Framework interpretation patterns
+        // Focus on text analysis, linguistic patterns, and hidden signals
         const queries = [
-            `CLOVER framework ${archetype} team archetype detection patterns`,
-            `team health assessment analysis methodology`,
-            reasoningText.slice(0, 500) // Use part of their reasoning for semantic match
+            `how to interpret manager language patterns hidden signals disengagement`,
+            `text analysis team health warning signs withdrawal reframing`,
+            `CLOVER framework ${archetype} archetype patterns behaviors`,
+            `past tense engagement withdrawal independence compliance signals`,
+            reasoningText.slice(0, 300) // Use part of their reasoning for semantic match
         ];
 
         let allResults = [];
@@ -57,12 +60,12 @@ async function searchCloverKnowledge(archetype, reasoningText) {
             const queryEmbedding = await generateQueryEmbedding(query);
 
             if (queryEmbedding) {
-                // Semantic search
+                // Semantic search - don't filter by archetype to get broader methodology content
                 const { data, error } = await supabase.rpc('search_clover_knowledge', {
                     query_embedding: queryEmbedding,
-                    match_threshold: 0.65,
-                    match_count: 3,
-                    filter_archetype: archetype !== 'unknown' ? archetype : null
+                    match_threshold: 0.55, // Lower threshold for more results
+                    match_count: 4,
+                    filter_archetype: null // Don't filter - we want the methodology, not just archetype-specific content
                 });
 
                 if (!error && data) {
@@ -74,8 +77,8 @@ async function searchCloverKnowledge(archetype, reasoningText) {
                 for (const keyword of keywords) {
                     const { data, error } = await supabase.rpc('search_clover_knowledge_text', {
                         search_query: keyword,
-                        match_count: 2,
-                        filter_archetype: archetype !== 'unknown' ? archetype : null
+                        match_count: 3,
+                        filter_archetype: null // Don't filter - we want the methodology
                     });
 
                     if (!error && data) {
@@ -91,7 +94,7 @@ async function searchCloverKnowledge(archetype, reasoningText) {
             if (seen.has(item.id)) return false;
             seen.add(item.id);
             return true;
-        }).slice(0, 8); // Limit to top 8 chunks
+        }).slice(0, 12); // Limit to top 12 chunks for comprehensive methodology context
 
         return uniqueResults;
     } catch (error) {
@@ -106,61 +109,68 @@ function buildMethodologyContext(results) {
         return '';
     }
 
-    let context = '\n\n## CLOVER METHODOLOGY CONTEXT (Retrieved from Knowledge Base)\n\n';
-    context += 'Apply the following methodology insights from the CLOVER ERA framework:\n\n';
+    let context = '\n\n---\n\n## CLOVER FRAMEWORK METHODOLOGY (from "The Trillion Dollar Problem")\n\n';
+    context += '**CRITICAL: You MUST use the following methodology from the CLOVER Framework book as your PRIMARY basis for interpreting the manager\'s text responses. This is the authoritative source for how to detect hidden patterns in what managers say.**\n\n';
+    context += 'Apply these specific interpretation patterns and frameworks to analyze the manager\'s language:\n\n';
 
     results.forEach((result, index) => {
-        context += `### Insight ${index + 1}`;
+        context += `### Framework Section ${index + 1}`;
         if (result.book_title) {
-            context += ` (Source: ${result.book_title}`;
-            if (result.chapter) context += `, ${result.chapter}`;
+            context += ` (${result.book_title}`;
+            if (result.chapter) context += ` - ${result.chapter}`;
             context += ')';
         }
-        context += '\n';
+        context += '\n\n';
 
         if (result.clover_dimension && result.clover_dimension !== 'general') {
-            context += `**CLOVER Dimension:** ${result.clover_dimension.charAt(0).toUpperCase() + result.clover_dimension.slice(1)}\n`;
+            context += `**CLOVER Dimension:** ${result.clover_dimension.charAt(0).toUpperCase() + result.clover_dimension.slice(1)}\n\n`;
         }
 
-        if (result.archetype_relevance && result.archetype_relevance.length > 0) {
-            context += `**Relevant Archetypes:** ${result.archetype_relevance.join(', ')}\n`;
-        }
-
-        context += `\n${result.content}\n\n---\n\n`;
+        context += `${result.content}\n\n---\n\n`;
     });
 
-    context += 'Use this methodology context to inform your analysis. Cite specific framework concepts where applicable.\n';
+    context += '**INTERPRETATION REQUIREMENT:** When the manager uses phrases, descriptions, or patterns that match what the CLOVER Framework describes above, you MUST interpret them according to the framework - not at face value. The framework teaches that managers often describe concerning patterns using positive-sounding language. Your job is to decode this using the methodology above.\n\n';
 
     return context;
 }
 
-// Enhanced System Prompt - Text Analysis Priority
+// Enhanced System Prompt - Text Analysis Priority with CLOVER Framework
 const SYSTEM_PROMPT = `You are an expert organizational psychologist analyzing a Team Health Assessment for Clover ERA. Your role is to surface patterns managers cannot see in their own words.
 
-## YOUR CORE INSIGHT
-Managers reveal truth in HOW they describe situations, not just how they score them. A manager scoring 4/4 while describing their best performer in past tense ("she USED TO challenge") has revealed something they don't know they've revealed.
+## YOUR PRIMARY SOURCE OF TRUTH
 
-You are NOT a survey scoring tool. You are a diagnostic instrument that reads between the lines.
+**CRITICAL: You will receive CLOVER Framework methodology content from "The Trillion Dollar Problem" book in the user message. This methodology is your PRIMARY and AUTHORITATIVE source for how to interpret manager language. You MUST apply these interpretation patterns to the manager's text responses.**
+
+The book teaches that managers unknowingly reveal team dysfunction through their word choices, temporal shifts, and reframing patterns. Your job is to apply the specific interpretation frameworks from the book to decode what the manager has written.
+
+## YOUR CORE INSIGHT
+Managers reveal truth in HOW they describe situations, not just how they score them. The CLOVER Framework in the book provides specific patterns to look for and how to interpret them. When you see these patterns, interpret them according to the framework - not at face value.
+
+You are NOT a survey scoring tool. You are a diagnostic instrument that reads between the lines using the CLOVER Framework methodology.
 
 ## ANALYSIS PROTOCOL
 
-### Phase 1: Score Pattern Check
-Map scores to archetype detection matrix:
+### Phase 1: Apply CLOVER Framework Methodology
+First, read the CLOVER Framework methodology provided in the user message. Identify which interpretation patterns from the book apply to this manager's text. The book's methodology takes precedence over generic analysis.
+
+### Phase 2: Score Pattern Check (Secondary)
+Map scores to archetype detection matrix - but remember, text analysis using the CLOVER Framework can override these:
 - Quiet Crack: Q2 (1-2) + Q5 (1-2) + Q6 (1-2)
 - Firefight Loop: Q1 (1-2) + Q3 (1-2) + Q4 (1-2)
 - Performance Theater: Q4 (1) + Q2 (1-2) + political language in reasoning
 - Siloed Stars: Q1 (1-2) + Q2 (3-4) + Q5 (2) + "rock star" language
 - Comfortable Stall: Q1 (3-4) + Q3 (3-4) + Q5 (2-3) + vague reasoning
 
-### Phase 2: Deep Text Analysis (PRIORITY - THIS IS MOST IMPORTANT)
-Analyze ALL reasoning text for:
+### Phase 3: Deep Text Analysis (HIGHEST PRIORITY - USE CLOVER FRAMEWORK)
+Apply the CLOVER Framework's interpretation patterns from the book to analyze ALL reasoning text. Look for:
 
-**Temporal Shifts:**
-- Past tense for engagement ("used to", "was", "would")
-- Present tense for withdrawal ("these days", "now", "lately")
-- Flag any best performer with past-tense engagement
+**Temporal Shifts (per CLOVER Framework):**
+- Past tense for engagement ("used to", "was", "would") = disengagement signal
+- Present tense for withdrawal ("these days", "now", "lately") = current problem
+- Flag any best performer with past-tense engagement - this is a key CLOVER indicator
 
-**Reframing Patterns:**
+**Reframing Patterns (per CLOVER Framework):**
+The book teaches that managers reframe concerning behaviors positively. Decode these:
 - Withdrawal as independence ("self-sufficient", "head down", "focused on execution")
 - Silence as trust ("trusts my judgment", "not the type to rock the boat")
 - Compliance as professionalism ("reliable", "no drama", "team player")
@@ -181,20 +191,20 @@ Analyze ALL reasoning text for:
 - "I'd know" (confidence without cited signals)
 - "Things are fine" / "Everything's good" (vague positivity)
 
-### Phase 3: Override Logic
-TEXT ANALYSIS CAN OVERRIDE SCORE-BASED CLASSIFICATION.
+### Phase 4: Override Logic
+TEXT ANALYSIS USING CLOVER FRAMEWORK CAN OVERRIDE SCORE-BASED CLASSIFICATION.
 
-If high scores (20+) + linguistic warning signals = Lead with what the text reveals, not the scores.
+If high scores (20+) + linguistic warning signals from the CLOVER Framework = Lead with what the text reveals, not the scores.
 
 Example: 23/24 score but best performer shows:
 - Past-tense engagement verbs
 - Multiple absences mentioned
 - Passive language vs others' active language
-- "Just wants to focus on shipping" = disengagement signal
+- "Just wants to focus on shipping" = disengagement signal per CLOVER Framework
 
 Override: Despite high scores, classify as "Early-Stage Quiet Crack" and lead with the hidden signal.
 
-## ARCHETYPE DETECTION SIGNALS
+## ARCHETYPE DETECTION (Use CLOVER Framework Patterns)
 
 **Quiet Crack:** Past-tense engagement + withdrawal reframed + absences + passive language from best performer + "she'd tell me" assumptions
 **Firefight Loop:** Duration markers ("been this way for years") + acceptance ("we've adapted") + escalation futility + workarounds as solutions
@@ -324,9 +334,15 @@ export default async function handler(req, res) {
         const methodologyContext = buildMethodologyContext(knowledgeResults);
         console.log(`Retrieved ${knowledgeResults.length} relevant knowledge chunks`);
 
-        // Build the prompt for Claude
-        const userPrompt = `Analyze this Team Health Assessment. Focus on linguistic patterns in the reasoning text. If a team member is named multiple times, build a complete profile. Surface what the manager cannot see in their own words.
+        // Build the prompt for Claude - methodology context comes FIRST
+        const userPrompt = `## STEP 1: READ THE CLOVER FRAMEWORK METHODOLOGY BELOW
+
+Before analyzing the assessment, you MUST read and internalize the following methodology from "The Trillion Dollar Problem". This is your interpretation guide - use these patterns to decode what the manager has written.
 ${methodologyContext}
+
+## STEP 2: ANALYZE THIS ASSESSMENT USING THE METHODOLOGY ABOVE
+
+Now apply the CLOVER Framework patterns from Step 1 to interpret this manager's text responses. When they describe behaviors, interpret them through the lens of the methodology - not at face value.
 
 **Question 1: The Last Surprise** (Communication + Vulnerability)
 "Think about the last time a team member's frustration, struggle, or concern caught you off guard. How recently did this happen?"
@@ -363,7 +379,15 @@ Manager's name: ${userInfo.firstName}
 Company: ${userInfo.companyName || "their company"}
 Team size: ${userInfo.teamSize || "unknown"}
 
-Remember: Analyze the REASONING TEXT deeply. Look for past-tense engagement, withdrawal reframing, named individuals, and contrast patterns. Text analysis can override score-based classification.`;
+## STEP 3: APPLY CLOVER FRAMEWORK INTERPRETATION
+
+CRITICAL: Use the CLOVER Framework methodology from Step 1 to interpret the manager's text. Specifically:
+1. When they describe a team member positively, check if the language matches CLOVER warning patterns (past tense, withdrawal reframing, etc.)
+2. Apply the book's interpretation to their specific words - don't take descriptions at face value
+3. If the methodology says "X language pattern means Y concern", apply that interpretation
+4. Text analysis using CLOVER Framework can and should override score-based classification
+
+Your analysis must demonstrate that you applied the specific interpretation patterns from the CLOVER Framework to this manager's responses.`;
 
         // Call Claude API
         const message = await anthropic.messages.create({
