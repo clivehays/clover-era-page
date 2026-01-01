@@ -1,5 +1,6 @@
 // API Route: Generate Team Health Assessment Report
 // POST /api/team-health-report
+// Enhanced with RAG - Retrieves CLOVER Framework context before analysis
 
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
@@ -12,6 +13,126 @@ const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
 );
+
+// RAG: Generate embedding for search query
+async function generateQueryEmbedding(query) {
+    if (process.env.OPENAI_API_KEY) {
+        try {
+            const response = await fetch('https://api.openai.com/v1/embeddings', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'text-embedding-ada-002',
+                    input: query.slice(0, 8000)
+                })
+            });
+
+            const data = await response.json();
+            if (data.data && data.data[0]) {
+                return data.data[0].embedding;
+            }
+        } catch (error) {
+            console.error('Error generating embedding:', error);
+        }
+    }
+    return null;
+}
+
+// RAG: Search knowledge base for relevant CLOVER methodology content
+async function searchCloverKnowledge(archetype, reasoningText) {
+    try {
+        // Build search queries based on detected patterns
+        const queries = [
+            `CLOVER framework ${archetype} team archetype detection patterns`,
+            `team health assessment analysis methodology`,
+            reasoningText.slice(0, 500) // Use part of their reasoning for semantic match
+        ];
+
+        let allResults = [];
+
+        for (const query of queries) {
+            const queryEmbedding = await generateQueryEmbedding(query);
+
+            if (queryEmbedding) {
+                // Semantic search
+                const { data, error } = await supabase.rpc('search_clover_knowledge', {
+                    query_embedding: queryEmbedding,
+                    match_threshold: 0.65,
+                    match_count: 3,
+                    filter_archetype: archetype !== 'unknown' ? archetype : null
+                });
+
+                if (!error && data) {
+                    allResults = [...allResults, ...data];
+                }
+            } else {
+                // Fallback to keyword search
+                const keywords = query.split(/\s+/).filter(w => w.length > 4).slice(0, 3);
+                for (const keyword of keywords) {
+                    const { data, error } = await supabase.rpc('search_clover_knowledge_text', {
+                        search_query: keyword,
+                        match_count: 2,
+                        filter_archetype: archetype !== 'unknown' ? archetype : null
+                    });
+
+                    if (!error && data) {
+                        allResults = [...allResults, ...data];
+                    }
+                }
+            }
+        }
+
+        // Deduplicate by id
+        const seen = new Set();
+        const uniqueResults = allResults.filter(item => {
+            if (seen.has(item.id)) return false;
+            seen.add(item.id);
+            return true;
+        }).slice(0, 8); // Limit to top 8 chunks
+
+        return uniqueResults;
+    } catch (error) {
+        console.error('Error searching CLOVER knowledge:', error);
+        return [];
+    }
+}
+
+// RAG: Build context string from knowledge base results
+function buildMethodologyContext(results) {
+    if (!results || results.length === 0) {
+        return '';
+    }
+
+    let context = '\n\n## CLOVER METHODOLOGY CONTEXT (Retrieved from Knowledge Base)\n\n';
+    context += 'Apply the following methodology insights from the CLOVER ERA framework:\n\n';
+
+    results.forEach((result, index) => {
+        context += `### Insight ${index + 1}`;
+        if (result.book_title) {
+            context += ` (Source: ${result.book_title}`;
+            if (result.chapter) context += `, ${result.chapter}`;
+            context += ')';
+        }
+        context += '\n';
+
+        if (result.clover_dimension && result.clover_dimension !== 'general') {
+            context += `**CLOVER Dimension:** ${result.clover_dimension.charAt(0).toUpperCase() + result.clover_dimension.slice(1)}\n`;
+        }
+
+        if (result.archetype_relevance && result.archetype_relevance.length > 0) {
+            context += `**Relevant Archetypes:** ${result.archetype_relevance.join(', ')}\n`;
+        }
+
+        context += `\n${result.content}\n\n---\n\n`;
+    });
+
+    context += 'Use this methodology context to inform your analysis. Cite specific framework concepts where applicable.\n';
+
+    return context;
+}
 
 // Enhanced System Prompt - Text Analysis Priority
 const SYSTEM_PROMPT = `You are an expert organizational psychologist analyzing a Team Health Assessment for Clover ERA. Your role is to surface patterns managers cannot see in their own words.
@@ -180,8 +301,32 @@ export default async function handler(req, res) {
         // Calculate total score
         const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
 
+        // Combine all reasoning text for RAG search
+        const allReasoningText = Object.values(reasoning).join(' ');
+
+        // Preliminary archetype guess based on scores (for RAG filtering)
+        let preliminaryArchetype = 'unknown';
+        if (scores[2] <= 2 && scores[5] <= 2) {
+            preliminaryArchetype = 'quiet-crack';
+        } else if (scores[3] <= 2 && scores[4] <= 2) {
+            preliminaryArchetype = 'firefight-loop';
+        } else if (scores[4] === 1) {
+            preliminaryArchetype = 'performance-theater';
+        } else if (scores[2] >= 3 && scores[5] === 2) {
+            preliminaryArchetype = 'siloed-stars';
+        } else if (scores[1] >= 3 && scores[3] >= 3) {
+            preliminaryArchetype = 'comfortable-stall';
+        }
+
+        // RAG: Retrieve relevant CLOVER methodology context
+        console.log('Searching CLOVER knowledge base for relevant context...');
+        const knowledgeResults = await searchCloverKnowledge(preliminaryArchetype, allReasoningText);
+        const methodologyContext = buildMethodologyContext(knowledgeResults);
+        console.log(`Retrieved ${knowledgeResults.length} relevant knowledge chunks`);
+
         // Build the prompt for Claude
         const userPrompt = `Analyze this Team Health Assessment. Focus on linguistic patterns in the reasoning text. If a team member is named multiple times, build a complete profile. Surface what the manager cannot see in their own words.
+${methodologyContext}
 
 **Question 1: The Last Surprise** (Communication + Vulnerability)
 "Think about the last time a team member's frustration, struggle, or concern caught you off guard. How recently did this happen?"

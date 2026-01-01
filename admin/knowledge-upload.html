@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLOVER Knowledge Base - Admin</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: var(--gray-900);
+        }
+
+        header p {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .auth-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .auth-section.authenticated {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: var(--gray-700);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .book-list {
+            list-style: none;
+        }
+
+        .book-item {
+            padding: 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .book-item .book-info h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .book-item .book-info p {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .book-item .book-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .status.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .status.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .status.info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--gray-300);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .instructions {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .instructions h4 {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions ol {
+            margin-left: 1.25rem;
+        }
+
+        .instructions li {
+            margin-bottom: 0.25rem;
+        }
+
+        .chunk-preview {
+            background: var(--gray-50);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            background: var(--gray-100);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat .label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌿 CLOVER Knowledge Base Admin</h1>
+        <p>Upload and manage CLOVER Framework content for RAG-powered assessment analysis</p>
+    </header>
+
+    <div class="container">
+        <!-- Authentication -->
+        <div class="auth-section" id="auth-section">
+            <h2>🔐 Authentication</h2>
+            <div class="form-group">
+                <label for="api-key">Admin API Key</label>
+                <input type="password" id="api-key" placeholder="Enter your ADMIN_API_KEY">
+            </div>
+            <button class="btn-primary" onclick="authenticate()">Connect</button>
+            <span id="auth-status"></span>
+        </div>
+
+        <!-- Main Content (hidden until authenticated) -->
+        <div id="main-content" class="hidden">
+            <!-- Stats -->
+            <div class="stats" id="stats">
+                <div class="stat">
+                    <div class="value" id="book-count">-</div>
+                    <div class="label">Books</div>
+                </div>
+                <div class="stat">
+                    <div class="value" id="chunk-count">-</div>
+                    <div class="label">Content Chunks</div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <!-- Left Column: Book Management -->
+                <div class="card">
+                    <h2>📚 Book Management</h2>
+
+                    <div class="tabs">
+                        <button class="tab active" onclick="showTab('create-book')">Create Book</button>
+                        <button class="tab" onclick="showTab('existing-books')">Existing Books</button>
+                    </div>
+
+                    <!-- Create Book Tab -->
+                    <div id="tab-create-book">
+                        <div class="form-group">
+                            <label for="book-title">Book Title *</label>
+                            <input type="text" id="book-title" placeholder="e.g., The CLOVER Framework">
+                        </div>
+                        <div class="form-group">
+                            <label for="book-author">Author</label>
+                            <input type="text" id="book-author" placeholder="e.g., Clover ERA">
+                        </div>
+                        <div class="form-group">
+                            <label for="book-description">Description</label>
+                            <textarea id="book-description" style="min-height: 80px;" placeholder="Brief description of the book's content..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="source-type">Source Type</label>
+                            <select id="source-type">
+                                <option value="book">Book</option>
+                                <option value="article">Article</option>
+                                <option value="guide">Guide</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="createBook()">Create Book Entry</button>
+                        <div id="create-book-status"></div>
+                    </div>
+
+                    <!-- Existing Books Tab -->
+                    <div id="tab-existing-books" class="hidden">
+                        <button class="btn-secondary" onclick="loadBooks()" style="margin-bottom: 1rem;">
+                            🔄 Refresh List
+                        </button>
+                        <ul class="book-list" id="book-list">
+                            <li class="book-item">
+                                <span style="color: var(--gray-500);">Loading books...</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Column: Content Upload -->
+                <div class="card">
+                    <h2>📄 Upload Content</h2>
+
+                    <div class="instructions">
+                        <h4>How to upload content:</h4>
+                        <ol>
+                            <li>First, create a book entry in the left panel</li>
+                            <li>Copy the Book ID after creation</li>
+                            <li>Paste your book content below (plain text)</li>
+                            <li>The system will automatically chunk and analyze the content</li>
+                        </ol>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="target-book-id">Book ID *</label>
+                        <input type="text" id="target-book-id" placeholder="Paste the Book ID here">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chapter-name">Chapter/Section Name</label>
+                        <input type="text" id="chapter-name" placeholder="e.g., Chapter 3: The Quiet Crack">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="page-start">Starting Page Number</label>
+                        <input type="number" id="page-start" placeholder="e.g., 45">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="content-text">Content *</label>
+                        <textarea id="content-text" placeholder="Paste your book content here. The system will automatically split it into searchable chunks..."></textarea>
+                    </div>
+
+                    <button class="btn-primary" onclick="uploadContent()" id="upload-btn">
+                        Upload & Process Content
+                    </button>
+
+                    <div id="upload-status"></div>
+
+                    <div id="chunk-preview-section" class="hidden">
+                        <h4 style="margin-top: 1rem; font-size: 0.875rem;">Preview of Generated Chunks:</h4>
+                        <div class="chunk-preview" id="chunk-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = '';
+        let isAuthenticated = false;
+
+        // Authentication
+        function authenticate() {
+            apiKey = document.getElementById('api-key').value;
+            if (!apiKey) {
+                showStatus('auth-status', 'Please enter an API key', 'error');
+                return;
+            }
+
+            // Test authentication by listing books
+            fetch('/api/clover-knowledge-ingest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({ action: 'list_books' })
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    throw new Error('Invalid API key');
+                }
+                return res.json();
+            })
+            .then(data => {
+                isAuthenticated = true;
+                document.getElementById('auth-section').classList.add('authenticated');
+                document.getElementById('auth-section').innerHTML = `
+                    <p style="color: var(--success);">✓ Connected to CLOVER Knowledge Base</p>
+                `;
+                document.getElementById('main-content').classList.remove('hidden');
+                loadBooks();
+                updateStats();
+            })
+            .catch(err => {
+                showStatus('auth-status', err.message, 'error');
+            });
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tabs .tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => tab.classList.add('hidden'));
+
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        }
+
+        // Load books list
+        function loadBooks() {
+            fetch('/api/clover-knowledge-ingest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({ action: 'list_books' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const bookList = document.getElementById('book-list');
+                if (!data.books || data.books.length === 0) {
+                    bookList.innerHTML = '<li class="book-item"><span style="color: var(--gray-500);">No books yet. Create one to get started.</span></li>';
+                    return;
+                }
+
+                bookList.innerHTML = data.books.map(book => `
+                    <li class="book-item">
+                        <div class="book-info">
+                            <h3>${book.title}</h3>
+                            <p>${book.author || 'No author'} • ${book.source_type} • ${book.clover_knowledge_chunks?.[0]?.count || 0} chunks</p>
+                            <p style="font-family: monospace; font-size: 0.65rem; color: var(--gray-500);">ID: ${book.id}</p>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-secondary btn-small" onclick="copyBookId('${book.id}')">Copy ID</button>
+                            <button class="btn-danger btn-small" onclick="deleteBook('${book.id}', '${book.title}')">Delete</button>
+                        </div>
+                    </li>
+                `).join('');
+
+                document.getElementById('book-count').textContent = data.books.length;
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            // This would ideally come from a dedicated endpoint
+            // For now, we count from the books list
+        }
+
+        // Copy book ID
+        function copyBookId(id) {
+            navigator.clipboard.writeText(id);
+            document.getElementById('target-book-id').value = id;
+            alert('Book ID copied and pasted to the upload form!');
+        }
+
+        // Create book
+        function createBook() {
+            const title = document.getElementById('book-title').value;
+            if (!title) {
+                showStatus('create-book-status', 'Title is required', 'error');
+                return;
+            }
+
+            const bookData = {
+                title: title,
+                author: document.getElementById('book-author').value,
+                description: document.getElementById('book-description').value,
+                source_type: document.getElementById('source-type').value
+            };
+
+            fetch('/api/clover-knowledge-ingest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({ action: 'create_book', bookData })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                showStatus('create-book-status', `Book created! ID: ${data.book.id}`, 'success');
+                document.getElementById('target-book-id').value = data.book.id;
+                document.getElementById('book-title').value = '';
+                document.getElementById('book-author').value = '';
+                document.getElementById('book-description').value = '';
+                loadBooks();
+            })
+            .catch(err => {
+                showStatus('create-book-status', err.message, 'error');
+            });
+        }
+
+        // Delete book
+        function deleteBook(id, title) {
+            if (!confirm(`Are you sure you want to delete "${title}" and all its content?`)) {
+                return;
+            }
+
+            fetch('/api/clover-knowledge-ingest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({ action: 'delete_book', bookId: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                loadBooks();
+            })
+            .catch(err => {
+                alert('Error deleting book: ' + err.message);
+            });
+        }
+
+        // Upload content
+        function uploadContent() {
+            const bookId = document.getElementById('target-book-id').value;
+            const content = document.getElementById('content-text').value;
+
+            if (!bookId || !content) {
+                showStatus('upload-status', 'Book ID and content are required', 'error');
+                return;
+            }
+
+            const uploadBtn = document.getElementById('upload-btn');
+            uploadBtn.innerHTML = '<span class="loading"></span> Processing...';
+            uploadBtn.disabled = true;
+
+            fetch('/api/clover-knowledge-ingest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    action: 'add_content',
+                    bookId: bookId,
+                    content: content,
+                    chapter: document.getElementById('chapter-name').value || null,
+                    pageStart: parseInt(document.getElementById('page-start').value) || null
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                uploadBtn.innerHTML = 'Upload & Process Content';
+                uploadBtn.disabled = false;
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                showStatus('upload-status',
+                    `Success! Created ${data.chunksCreated} chunks from "${data.book}"`,
+                    'success'
+                );
+
+                // Clear form
+                document.getElementById('content-text').value = '';
+                document.getElementById('chapter-name').value = '';
+                document.getElementById('page-start').value = '';
+
+                loadBooks();
+            })
+            .catch(err => {
+                uploadBtn.innerHTML = 'Upload & Process Content';
+                uploadBtn.disabled = false;
+                showStatus('upload-status', err.message, 'error');
+            });
+        }
+
+        // Show status message
+        function showStatus(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.className = `status ${type}`;
+            el.textContent = message;
+            el.classList.remove('hidden');
+        }
+
+        // Check for stored API key
+        const storedKey = localStorage.getItem('clover_admin_key');
+        if (storedKey) {
+            document.getElementById('api-key').value = storedKey;
+        }
+
+        // Save API key on successful auth
+        document.getElementById('api-key').addEventListener('change', function() {
+            localStorage.setItem('clover_admin_key', this.value);
+        });
+    </script>
+</body>
+</html>
