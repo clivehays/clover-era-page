@@ -1744,6 +1744,12 @@
         // Generate Report (API call)
         async function generateReport() {
             try {
+                console.log('Calling API with data:', {
+                    scores: assessmentData.scores,
+                    reasoning: assessmentData.reasoning,
+                    userInfo: assessmentData.userInfo
+                });
+
                 const response = await fetch('/api/team-health-report', {
                     method: 'POST',
                     headers: {
@@ -1756,14 +1762,23 @@
                     })
                 });
 
+                console.log('API response status:', response.status);
+
                 if (!response.ok) {
-                    throw new Error('API request failed');
+                    const errorText = await response.text();
+                    console.error('API error response:', errorText);
+                    throw new Error('API request failed: ' + response.status);
                 }
 
-                return await response.json();
+                const result = await response.json();
+                console.log('API returned:', result);
+                console.log('Has markdown:', !!result.markdown);
+
+                return result;
             } catch (error) {
                 console.error('API Error:', error);
                 // Fallback to local classification
+                console.log('Falling back to local classification');
                 return classifyLocally();
             }
         }
@@ -1942,6 +1957,13 @@
 
         // Display Results - Enhanced version with markdown support
         function displayResults(report) {
+            console.log('displayResults called with:', report);
+            console.log('report.markdown exists:', !!report.markdown);
+            if (report.markdown) {
+                console.log('Markdown content length:', report.markdown.length);
+                console.log('First 200 chars:', report.markdown.substring(0, 200));
+            }
+
             const resultsDiv = document.getElementById('results');
             const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
