@@ -1196,32 +1196,44 @@
             font-weight: bold;
         }
 
-        .markdown-report table {
+        .markdown-report table,
+        .markdown-report .clover-table {
             width: 100%;
             border-collapse: collapse;
             margin: 1.5rem 0;
             font-size: 0.95rem;
+            border: 1px solid var(--medium-gray);
         }
 
-        .markdown-report table tr:first-child td {
+        .markdown-report table thead th,
+        .markdown-report .clover-table thead th {
             background: var(--charcoal);
             color: var(--white);
             font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid var(--charcoal);
         }
 
-        .markdown-report table td {
+        .markdown-report table tbody td,
+        .markdown-report .clover-table tbody td {
             padding: 1rem;
             border: 1px solid var(--medium-gray);
             vertical-align: top;
-        }
-
-        .markdown-report table tr:not(:first-child) td {
             background: var(--white);
+            color: var(--text-primary);
         }
 
-        .markdown-report table tr:not(:first-child) td:first-child {
-            font-style: italic;
-            color: var(--text-secondary);
+        .markdown-report table tbody tr:nth-child(even) td,
+        .markdown-report .clover-table tbody tr:nth-child(even) td {
+            background: var(--light-gray);
+        }
+
+        /* First column in body - dimension names */
+        .markdown-report table tbody td:first-child,
+        .markdown-report .clover-table tbody td:first-child {
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
         /* Special styling for archetype name */
@@ -1934,35 +1946,66 @@
             }
         };
 
-        // Simple markdown to HTML converter
+        // Markdown to HTML converter with proper table support
         function renderMarkdown(markdown) {
             if (!markdown) return '';
 
+            // Process tables first (before other transformations break them)
+            // Find markdown tables and convert them properly
+            markdown = markdown.replace(/(\|[^\n]+\|\n)+/g, (tableBlock) => {
+                const rows = tableBlock.trim().split('\n');
+                let tableHtml = '<table class="clover-table">';
+                let isFirstDataRow = true;
+
+                rows.forEach((row, index) => {
+                    // Skip separator rows (|---|---|---|)
+                    if (/^\|[\s-:]+\|$/.test(row.replace(/\|/g, '|').replace(/[^|:-]/g, '-'))) {
+                        return;
+                    }
+                    if (/^[\|\s-:]+$/.test(row)) {
+                        return;
+                    }
+
+                    const cells = row.split('|').filter((cell, i, arr) => i > 0 && i < arr.length - 1).map(cell => cell.trim());
+
+                    if (cells.length === 0) return;
+
+                    // First row is header
+                    if (isFirstDataRow) {
+                        tableHtml += '<thead><tr>';
+                        cells.forEach(cell => {
+                            tableHtml += `<th>${cell}</th>`;
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+                        isFirstDataRow = false;
+                    } else {
+                        tableHtml += '<tr>';
+                        cells.forEach(cell => {
+                            tableHtml += `<td>${cell}</td>`;
+                        });
+                        tableHtml += '</tr>';
+                    }
+                });
+
+                tableHtml += '</tbody></table>';
+                return tableHtml;
+            });
+
             let html = markdown
-                // Escape HTML first
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
+                // Escape HTML (but not our already-converted tables)
+                .replace(/&(?!amp;|lt;|gt;)/g, '&amp;')
+                .replace(/<(?!\/?(?:table|thead|tbody|tr|th|td)[>\s])/g, '&lt;')
+                .replace(/(?<!["=])>/g, '&gt;')
                 // Headers
                 .replace(/^### (.*$)/gm, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gm, '<h2>$1</h2>')
                 .replace(/^# (.*$)/gm, '<h1>$1</h1>')
                 // Bold
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                // Italic
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Italic (but not inside words)
+                .replace(/(?<!\w)\*([^*]+)\*(?!\w)/g, '<em>$1</em>')
                 // Horizontal rules
                 .replace(/^---$/gm, '<hr>')
-                // Tables
-                .replace(/^\|(.+)\|$/gm, (match, content) => {
-                    const cells = content.split('|').map(cell => cell.trim());
-                    if (cells.every(cell => /^-+$/.test(cell))) {
-                        return ''; // Skip separator rows
-                    }
-                    const isHeader = false; // Simplified - treat all as td
-                    const cellTag = isHeader ? 'th' : 'td';
-                    return '<tr>' + cells.map(cell => `<${cellTag}>${cell}</${cellTag}>`).join('') + '</tr>';
-                })
                 // Unordered lists
                 .replace(/^- (.*$)/gm, '<li>$1</li>')
                 // Paragraphs - add line breaks
@@ -1978,12 +2021,7 @@
                 return '<ul>' + match.replace(/<br>/g, '') + '</ul>';
             });
 
-            // Wrap consecutive tr elements in table
-            html = html.replace(/(<tr>.*?<\/tr>)+/g, (match) => {
-                return '<table class="evidence-table">' + match + '</table>';
-            });
-
-            // Clean up empty paragraphs
+            // Clean up empty paragraphs and fix structure
             html = html.replace(/<p><\/p>/g, '');
             html = html.replace(/<p><hr><\/p>/g, '<hr>');
             html = html.replace(/<p>(<h[123]>)/g, '$1');
@@ -1992,6 +2030,8 @@
             html = html.replace(/(<\/ul>)<\/p>/g, '$1');
             html = html.replace(/<p>(<table)/g, '$1');
             html = html.replace(/(<\/table>)<\/p>/g, '$1');
+            html = html.replace(/<br>(<table)/g, '$1');
+            html = html.replace(/(<\/table>)<br>/g, '$1');
 
             return html;
         }
