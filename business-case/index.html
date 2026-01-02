@@ -761,6 +761,9 @@
             text-align: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .cta-card:hover {
@@ -804,39 +807,6 @@
         .cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .email-cta {
-            grid-column: 1 / -1;
-            background: var(--light-gray);
-            padding: 1.5rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .email-cta p {
-            margin: 0;
-            color: var(--text-secondary);
-        }
-
-        .email-cta button {
-            background: none;
-            border: 1px solid var(--deep-teal);
-            color: var(--deep-teal);
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .email-cta button:hover {
-            background: var(--deep-teal);
-            color: var(--white);
         }
 
         /* Methodology Footer */
@@ -1096,10 +1066,6 @@
                 font-size: 0.9rem;
             }
 
-            .email-cta {
-                flex-direction: column;
-                text-align: center;
-            }
         }
     </style>
 </head>
@@ -1998,10 +1964,6 @@
                         <p>15 minutes. Find out where the risk is hiding.</p>
                         <a href="https://calendly.com/clover-era/turnover-analysis" target="_blank" class="cta-button secondary">Schedule Free Analysis</a>
                     </div>
-                    <div class="email-cta">
-                        <p>Want a copy sent to your inbox?</p>
-                        <button onclick="emailReport()">Email Me This Report</button>
-                    </div>
                 </div>
 
                 <!-- Methodology -->
@@ -2231,11 +2193,6 @@
 
             // Save
             doc.save(`${formData.companyName.replace(/\s+/g, '-')}-Turnover-Cost-Analysis.pdf`);
-        }
-
-        // Email report (placeholder - would need backend)
-        function emailReport() {
-            alert(`A copy of this report will be sent to ${formData.userEmail}.\n\n(Email delivery requires backend integration - for now, please use the PDF download.)`);
         }
     </script>
 </body>
