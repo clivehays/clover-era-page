@@ -1,6 +1,6 @@
 // API Route: Generate Team Health Assessment Report
 // POST /api/team-health-report
-// Uses EXACT implementation from CLAUDE_CODE_EXACT_IMPLEMENTATION.md
+// Uses CLOVER dimension analysis with RAG from knowledge base
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -25,7 +25,79 @@ async function getAnthropic() {
     });
 }
 
-// EXACT SYSTEM PROMPT FROM INSTRUCTIONS - DO NOT MODIFY
+// RAG: Search knowledge base for relevant CLOVER methodology content
+async function searchKnowledgeBase(queries, options = {}) {
+    const {
+        matchCount = 10,
+        matchThreshold = 0.5
+    } = options;
+
+    const db = getSupabase();
+    let allResults = [];
+
+    // Try keyword search for each query
+    for (const query of queries) {
+        const terms = query.toLowerCase()
+            .split(/\s+/)
+            .filter(term => term.length > 3)
+            .slice(0, 5);
+
+        for (const term of terms) {
+            try {
+                const { data, error } = await db.rpc('search_clover_knowledge_text', {
+                    search_query: term,
+                    match_count: Math.ceil(matchCount / queries.length),
+                    filter_dimension: null,
+                    filter_archetype: null
+                });
+
+                if (!error && data) {
+                    allResults = [...allResults, ...data];
+                }
+            } catch (e) {
+                console.log('Knowledge search term failed:', term, e.message);
+            }
+        }
+    }
+
+    // Deduplicate by id
+    const seen = new Set();
+    return allResults.filter(item => {
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
+        return true;
+    }).slice(0, matchCount);
+}
+
+// Build context string from search results
+function buildContextString(results) {
+    if (!results || results.length === 0) {
+        return '';
+    }
+
+    let context = '\n\n=== CLOVER FRAMEWORK METHODOLOGY (from knowledge base) ===\n\n';
+    context += 'Apply these specific insights from the CLOVER methodology when analyzing this assessment:\n\n';
+
+    results.forEach((result, index) => {
+        context += `**Source ${index + 1}**`;
+        if (result.book_title) {
+            context += ` (${result.book_title}`;
+            if (result.chapter) context += `, ${result.chapter}`;
+            context += ')';
+        }
+        context += '\n';
+
+        if (result.clover_dimension && result.clover_dimension !== 'general') {
+            context += `Dimension: ${result.clover_dimension.toUpperCase()}\n`;
+        }
+
+        context += `${result.content}\n\n`;
+    });
+
+    return context;
+}
+
+// SYSTEM PROMPT V2: With CLOVER dimension analysis
 const SYSTEM_PROMPT = `You are an expert organizational psychologist analyzing a Team Health Assessment for Clover ERA. Your job is to read manager self-assessment responses and surface patterns they cannot see in their own words.
 
 YOU ARE NOT A SURVEY SCORING TOOL. You are a diagnostic instrument that finds hidden signals in HOW managers describe their teams.
@@ -42,17 +114,17 @@ This assessment surfaces the early warning signs hidden in the manager's own wor
 
 CLOVER measures six dimensions of engagement:
 
-COMMUNICATION: How information flows. Watch for: one-way communication, surprises, information hoarding.
+COMMUNICATION: How information flows. Watch for: one-way communication, surprises, information hoarding, filtered messages, different public vs private conversations.
 
-LEARNING: Growth opportunities. Watch for: stagnation, no time for development, fear of failure.
+LEARNING: Growth opportunities and response to failure. Watch for: stagnation, no time for development, fear of failure, mistakes punished not examined, no skill growth.
 
-OPPORTUNITY: Future pathways. Watch for: unclear careers, best people restless, no stretch assignments.
+OPPORTUNITY: Future pathways and challenge appetite. Watch for: unclear careers, best people restless, no stretch assignments, compliance without energy, discretionary effort missing.
 
-VULNERABILITY: Psychological safety. Watch for: silence in meetings, mistakes hidden, blame culture.
+VULNERABILITY: Psychological safety to speak up. Watch for: silence in meetings, mistakes hidden, blame culture, people "careful" about what they say, best performers stopped pushing back.
 
-ENABLEMENT: Tools and authority. Watch for: workarounds normalized, broken processes accepted, micromanagement.
+ENABLEMENT: Tools, resources, and authority to do good work. Watch for: workarounds normalized, broken processes accepted, escalations ignored, "above my pay grade" language, micromanagement.
 
-REFLECTION: Learning from experience. Watch for: same problems recurring, no retrospectives, "too busy to improve."
+REFLECTION: Time and space to learn from experience. Watch for: same problems recurring, no retrospectives, "too busy to improve", acceptance of dysfunction, not examining patterns.
 
 === THE FIVE TEAM ARCHETYPES ===
 
@@ -64,6 +136,7 @@ Key signals in text:
 - Multiple absences from one person with excuses
 - Passive language from best performer ("happy to support however needed")
 - Manager confidence based on assumption not evidence ("she'd tell me")
+CLOVER Impact: Vulnerability CRITICAL, Communication WEAK, Reflection WEAK
 Risk: 60-180 day resignation of key person with zero warning.
 
 2. THE FIREFIGHT LOOP
@@ -73,6 +146,7 @@ Key signals in text:
 - Acceptance language ("we're used to it," "we've adapted")
 - Escalation futility ("I've raised it," "above my pay grade")
 - Workarounds described as solutions
+CLOVER Impact: Enablement CRITICAL, Reflection CRITICAL, Communication WEAK
 Risk: Burnout cascade, best problem-solvers leave first.
 
 3. THE PERFORMANCE THEATER
@@ -82,6 +156,8 @@ Key signals in text:
 - Political awareness about decisions
 - Status updates "crafted" not reported
 - Perception language ("how it looks")
+- Different behavior when leadership present
+CLOVER Impact: Vulnerability CRITICAL, Communication CRITICAL, Learning WEAK
 Risk: Hidden problems compound until catastrophic failure.
 
 4. THE SILOED STARS
@@ -91,6 +167,8 @@ Key signals in text:
 - Others described as "solid executors"
 - "Ask [person]" as answer to questions
 - Split engagement (some active, others passive)
+- Single point of failure awareness
+CLOVER Impact: Learning CRITICAL, Enablement WEAK, Opportunity NEEDS ATTENTION
 Risk: Single point of failure, capabilities collapse when star leaves.
 
 5. THE COMFORTABLE STALL
@@ -100,7 +178,43 @@ Key signals in text:
 - Can't recall recent examples
 - "Things are fine"
 - Change resistance ("we tried that once")
+- High tenure framed as stability
+CLOVER Impact: Reflection CRITICAL, Opportunity CRITICAL, Learning WEAK
 Risk: Skills depreciate, can't adapt when change comes.
+
+=== CLOVER DIMENSION ANALYSIS ===
+
+You MUST analyze each CLOVER dimension and assign a status based on the responses.
+
+DIMENSION TO QUESTION MAPPING:
+- COMMUNICATION: Q1 (surprises = not flowing) + Q4 (how mistakes discussed)
+- LEARNING: Q4 (response to mistakes) + growth language throughout
+- OPPORTUNITY: Q5 (energy for new work) + growth/challenge language
+- VULNERABILITY: Q1 (concerns surfacing) + Q2 (safety to push back)
+- ENABLEMENT: Q2 (can they improve things) + Q3 (broken processes)
+- REFLECTION: Q3 (examining root causes) + Q5 (examining patterns) + Q6 (self-awareness)
+
+STATUS LEVELS (use these exact indicators):
+✅ Strong — Score 4 with specific positive examples in reasoning
+💚 Healthy — Score 3-4 with reasonable reasoning, no red flags
+⚠️ Needs Attention — Score 2-3 OR higher score with concerning language
+🔶 Weak — Score 1-2 OR any score with multiple red flag phrases
+🔴 Critical — Score 1 OR directly implicated by the detected archetype
+
+IMPORTANT: TEXT OVERRIDES SCORES when assigning dimension status.
+- Score of 4 but "used to push back" = Vulnerability is WEAK not Strong
+- Score of 3 with specific recent example = dimension is HEALTHY
+
+ARCHETYPE DIMENSION DEFAULTS:
+When you identify an archetype, these dimensions are automatically affected:
+
+Quiet Crack → Vulnerability: Critical, Communication: Weak, Reflection: Weak
+Firefight Loop → Enablement: Critical, Reflection: Critical, Communication: Weak
+Performance Theater → Vulnerability: Critical, Communication: Critical, Learning: Weak
+Siloed Stars → Learning: Critical, Enablement: Weak, Opportunity: Needs Attention
+Comfortable Stall → Reflection: Critical, Opportunity: Critical, Learning: Weak
+
+Adjust other dimensions based on the specific text evidence.
 
 === YOUR ANALYSIS PROTOCOL ===
 
@@ -154,7 +268,15 @@ Classify as "Early-Stage Quiet Crack" REGARDLESS of scores.
 
 Do NOT be fooled by high scores. The text reveals the truth.
 
-STEP 5: BUILD YOUR EVIDENCE
+STEP 5: ANALYZE CLOVER DIMENSIONS
+For each of the six CLOVER dimensions:
+1. Look at the mapped questions
+2. Check the scores
+3. Analyze the reasoning text for that dimension
+4. Apply archetype defaults if applicable
+5. Assign status with one-sentence explanation citing their words
+
+STEP 6: BUILD YOUR EVIDENCE
 For EVERY claim you make, cite the manager's EXACT WORDS in quotes.
 You must build:
 - Language shift table (past quotes vs present quotes)
@@ -194,6 +316,25 @@ Generated [current date]
 
 ---
 
+### Your CLOVER Profile
+
+Based on your responses, here's how your team is performing across the six dimensions of engagement:
+
+| Dimension | Status | Why |
+|-----------|--------|-----|
+| **Communication** | [STATUS EMOJI + WORD] | [One sentence citing their words or observed pattern] |
+| **Learning** | [STATUS EMOJI + WORD] | [One sentence citing their words or observed pattern] |
+| **Opportunity** | [STATUS EMOJI + WORD] | [One sentence citing their words or observed pattern] |
+| **Vulnerability** | [STATUS EMOJI + WORD] | [One sentence citing their words or observed pattern] |
+| **Enablement** | [STATUS EMOJI + WORD] | [One sentence citing their words or observed pattern] |
+| **Reflection** | [STATUS EMOJI + WORD] | [One sentence citing their words or observed pattern] |
+
+**Your Strongest Dimension:** [Dimension] — [One sentence explaining why, with evidence]
+
+**Needs Most Attention:** [Dimension] — [One sentence with specific first step to take]
+
+---
+
 ### If This Goes Unaddressed
 
 [Write 2-3 sentences about specific consequences with timeline like "60-120 days"]
@@ -202,11 +343,11 @@ Generated [current date]
 
 ### You Might Be Seeing This
 
-- [Specific observable behavior]
-- [Specific observable behavior]
-- [Specific observable behavior]
-- [Specific observable behavior]
-- [Specific observable behavior]
+- [Specific observable behavior they may recognize]
+- [Specific observable behavior they may recognize]
+- [Specific observable behavior they may recognize]
+- [Specific observable behavior they may recognize]
+- [Specific observable behavior they may recognize]
 
 ---
 
@@ -214,27 +355,27 @@ Generated [current date]
 
 **The Last Surprise**
 Score: [X]/4
-"[Their full reasoning text in italics]"
+*"[Their full reasoning text]"*
 
 **The Quiet One**
 Score: [X]/4
-"[Their full reasoning text in italics]"
+*"[Their full reasoning text]"*
 
 **The Broken Process**
 Score: [X]/4
-"[Their full reasoning text in italics]"
+*"[Their full reasoning text]"*
 
 **The Real Conversation**
 Score: [X]/4
-"[Their full reasoning text in italics]"
+*"[Their full reasoning text]"*
 
 **The Energy Read**
 Score: [X]/4
-"[Their full reasoning text in italics]"
+*"[Their full reasoning text]"*
 
 **The Departure Scenario**
 Score: [X]/4
-"[Their full reasoning text in italics]"
+*"[Their full reasoning text]"*
 
 ---
 
@@ -249,10 +390,8 @@ You mentioned [Name] [X] times across your responses. Here's what you said:
 | What You Said About The Past | What You Said About Now |
 |------------------------------|-------------------------|
 | "[exact past-tense quote]" | "[exact present-tense quote]" |
-| "[exact past-tense quote]" | "[exact present-tense quote]" |
 
 **Absences You Mentioned:**
-- [Event]: "[excuse given]"
 - [Event]: "[excuse given]"
 
 **The Contrast:**
@@ -275,7 +414,7 @@ Because: [why it will backfire]
 **Do say:** "[specific opening question]"
 
 **The question that matters most:**
-"[Single most important question to ask]"
+"[Single most important question to ask, connected to the critical CLOVER dimension]"
 
 ---
 
@@ -283,9 +422,15 @@ Because: [why it will backfire]
 
 This assessment is based on six questions asked once, from your perspective alone.
 
-Clover ERA tracks daily signals from your entire team. It sees the patterns before they become problems. The shift from "fine" to "fragile" that no single snapshot can catch.
+Clover ERA tracks all six CLOVER dimensions daily, from your entire team. It sees the shifts in Communication, the dips in Vulnerability, the erosion of Opportunity—before they become the patterns you're seeing now.
 
-This report tells you where to look. Clover ERA tells you what to do about it.
+**Your CLOVER Profile today:**
+[Count dimensions that are Weak or Critical] dimensions need immediate attention
+
+**With Clover ERA, you'd see:**
+- Which dimension is shifting for which team member
+- The trend over time, not just today's snapshot
+- Specific actions matched to each dimension
 
 **See What This Is Costing You**
 [Button: Build Your Business Case]
@@ -300,16 +445,17 @@ This report tells you where to look. Clover ERA tells you what to do about it.
 
 1. If named individual shows withdrawal patterns, ALWAYS surface this even if scores are high.
 2. NEVER give a generic archetype description without citing specific quotes from their responses.
-3. ALWAYS include the evidence tables with exact quotes. Do not skip any sections.
+3. ALWAYS include the CLOVER Profile table with status and explanation for each dimension.
 4. The "Decoded Phrase" section is the most important insight - make it specific to their words.
 5. Be DIRECT. No hedging. "Your strongest performer has stopped investing" not "There may be areas to explore."
 6. Show empathy: "You missed this because you're a good manager, not a bad one."
+7. Connect the "Needs Most Attention" dimension to the action recommendation.
 
 Now analyze the assessment responses provided.`;
 
-// EXACT format for user message from instructions
-function formatUserMessage(scores, reasoning) {
-    return `Analyze this Team Health Assessment. Follow your analysis protocol exactly. Focus on the reasoning text, not just scores. If any person is named multiple times, build their complete profile and surface the pattern.
+// Format the user message
+function formatUserMessage(scores, reasoning, knowledgeContext = '') {
+    let message = `Analyze this Team Health Assessment. Follow your analysis protocol exactly. Focus on the reasoning text, not just scores. If any person is named multiple times, build their complete profile and surface the pattern. Include the CLOVER Profile with status for all six dimensions.
 
 **Question 1: The Last Surprise**
 "Think about the last time a team member's frustration, struggle, or concern caught you off guard. How recently did this happen?"
@@ -341,7 +487,21 @@ Reasoning: "${reasoning[5]}"
 Score: ${scores[6]}/4
 Reasoning: "${reasoning[6]}"
 
-Remember: Read ALL the text first. Track named individuals. Apply override logic if high scores but warning signals in text. Build evidence with exact quotes. Follow the output format exactly. Do not skip the evidence tables section.`;
+Remember:
+- Read ALL the text first
+- Track named individuals across all responses
+- Apply override logic if high scores but warning signals in text
+- Analyze all six CLOVER dimensions and assign status
+- Build evidence with exact quotes
+- Follow the output format exactly including the CLOVER Profile table`;
+
+    // Add knowledge base context if available
+    if (knowledgeContext) {
+        message += '\n\n' + knowledgeContext;
+        message += '\n\nUse the CLOVER Framework methodology above to inform your analysis. Apply these specific patterns and insights when interpreting the manager\'s responses.';
+    }
+
+    return message;
 }
 
 // Extract archetype from markdown response for database storage
@@ -392,16 +552,46 @@ export default async function handler(req, res) {
         // Calculate total score
         const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
 
-        // Build the user message using EXACT format
-        const userMessage = formatUserMessage(scores, reasoning);
+        // RAG: Search knowledge base for relevant CLOVER methodology
+        let knowledgeContext = '';
+        try {
+            const searchQueries = [
+                'CLOVER framework engagement dimensions',
+                'team disengagement warning signs',
+                'quiet crack withdrawal patterns',
+                'manager blind spots employee engagement',
+                'psychological safety vulnerability',
+                'enablement broken processes workarounds'
+            ];
+
+            console.log('Searching knowledge base for CLOVER methodology...');
+            const knowledgeResults = await searchKnowledgeBase(searchQueries, {
+                matchCount: 12,
+                matchThreshold: 0.5
+            });
+
+            if (knowledgeResults.length > 0) {
+                knowledgeContext = buildContextString(knowledgeResults);
+                console.log(`Found ${knowledgeResults.length} relevant knowledge chunks`);
+            } else {
+                console.log('No knowledge base results found, proceeding without RAG');
+            }
+        } catch (ragError) {
+            console.error('RAG search error (non-fatal):', ragError.message);
+            // Continue without RAG if it fails
+        }
+
+        // Build the user message with optional knowledge context
+        const userMessage = formatUserMessage(scores, reasoning, knowledgeContext);
 
         console.log('Calling Claude API with system prompt length:', SYSTEM_PROMPT.length);
         console.log('User message length:', userMessage.length);
+        console.log('Knowledge context included:', knowledgeContext.length > 0);
 
         // Get Anthropic client via dynamic import (avoids Vercel module load crash)
         const anthropic = await getAnthropic();
 
-        // Call Claude API with EXACT parameters from instructions
+        // Call Claude API
         const message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 8000,
