@@ -2072,31 +2072,31 @@
             doc.text('THE GAP', 20, yPos);
 
             yPos += 10;
-            // Tracked box
+            // Tracked box - wider to accommodate large numbers
             doc.setFillColor(...lightGray);
-            doc.roundedRect(20, yPos, 60, 25, 2, 2, 'F');
-            doc.setFontSize(14);
+            doc.roundedRect(20, yPos, 75, 25, 2, 2, 'F');
+            doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
             doc.setTextColor(...charcoal);
-            doc.text(formatCurrency(r.trackedCost), 50, yPos + 12, { align: 'center' });
+            doc.text(formatCurrency(r.trackedCost), 57, yPos + 12, { align: 'center' });
             doc.setFontSize(8);
             doc.setFont('helvetica', 'normal');
-            doc.text('What Finance Tracks', 50, yPos + 20, { align: 'center' });
+            doc.text('What Finance Tracks', 57, yPos + 20, { align: 'center' });
 
             // Arrow
             doc.setFontSize(16);
-            doc.text('→', 95, yPos + 14, { align: 'center' });
+            doc.text('→', 105, yPos + 14, { align: 'center' });
 
-            // Actual box
+            // Actual box - wider to accommodate large numbers
             doc.setFillColor(...coral);
-            doc.roundedRect(110, yPos, 60, 25, 2, 2, 'F');
+            doc.roundedRect(115, yPos, 75, 25, 2, 2, 'F');
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(14);
+            doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text(formatCurrency(r.annualCost), 140, yPos + 12, { align: 'center' });
+            doc.text(formatCurrency(r.annualCost), 152, yPos + 12, { align: 'center' });
             doc.setFontSize(8);
             doc.setFont('helvetica', 'normal');
-            doc.text('Actual Cost', 140, yPos + 20, { align: 'center' });
+            doc.text('Actual Cost', 152, yPos + 20, { align: 'center' });
 
             // Gap summary
             doc.setTextColor(...coral);
@@ -2117,10 +2117,16 @@
             doc.text(`If current patterns continue: ${formatCurrency(r.projectedCost)}`, 20, yPos);
             yPos += 6;
             doc.setTextColor(16, 185, 129);
-            doc.text(`Preventing 1 departure/year saves: ${formatCurrency(r.savingsPerPrevention)}`, 20, yPos);
+
+            // Use break-even departures to show realistic savings
+            const roi = r.roi;
+            const breakEvenDepartures = roi ? Math.ceil(roi.roi.breakEvenDepartures) : 1;
+            const departuresForSavings = Math.max(1, breakEvenDepartures);
+            const savingsAmount = r.costPerDeparture * departuresForSavings * formData.projectionYears;
+            const departureText = departuresForSavings === 1 ? '1 departure' : `${departuresForSavings} departures`;
+            doc.text(`Preventing ${departureText}/year saves: ${formatCurrency(savingsAmount)}`, 20, yPos);
 
             // ROI / Investment Case Section
-            const roi = r.roi;
             if (roi && !roi.edgeCases.hasNegativeROI) {
                 yPos += 18;
                 doc.setFillColor(...charcoal);
