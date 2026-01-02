@@ -1951,26 +1951,35 @@
             if (!markdown) return '';
 
             // Process tables first (before other transformations break them)
-            // Find markdown tables and convert them properly
-            markdown = markdown.replace(/(\|[^\n]+\|\n)+/g, (tableBlock) => {
-                const rows = tableBlock.trim().split('\n');
+            // Match tables: lines starting with | that contain at least one more |
+            // Handle both with and without trailing newlines
+            markdown = markdown.replace(/(?:^\|[^\n]+\|(?:\n|$))+/gm, (tableBlock) => {
+                const rows = tableBlock.trim().split('\n').filter(row => row.trim());
+                if (rows.length === 0) return tableBlock;
+
                 let tableHtml = '<table class="clover-table">';
                 let isFirstDataRow = true;
+                let inBody = false;
 
-                rows.forEach((row, index) => {
-                    // Skip separator rows (|---|---|---|)
-                    if (/^\|[\s-:]+\|$/.test(row.replace(/\|/g, '|').replace(/[^|:-]/g, '-'))) {
+                rows.forEach((row) => {
+                    // Skip separator rows (|---|---|---| or |:---|:---:|---:|)
+                    // Check if row contains only |, -, :, and spaces
+                    if (/^\|[\s\-:]+\|$/.test(row) && row.includes('-')) {
+                        // This is a separator row, skip it but mark that we should be in body now
+                        if (!inBody) {
+                            inBody = true;
+                        }
                         return;
                     }
-                    if (/^[\|\s-:]+$/.test(row)) {
-                        return;
-                    }
 
-                    const cells = row.split('|').filter((cell, i, arr) => i > 0 && i < arr.length - 1).map(cell => cell.trim());
+                    // Extract cells: split by | and remove first/last empty elements
+                    const cells = row.split('|')
+                        .slice(1, -1)  // Remove first and last (empty from leading/trailing |)
+                        .map(cell => cell.trim());
 
                     if (cells.length === 0) return;
 
-                    // First row is header
+                    // First data row is always header
                     if (isFirstDataRow) {
                         tableHtml += '<thead><tr>';
                         cells.forEach(cell => {
