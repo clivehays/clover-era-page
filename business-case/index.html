@@ -855,6 +855,210 @@
             color: var(--text-primary);
         }
 
+        /* ===== ROI SECTION ===== */
+        .roi-section {
+            background: linear-gradient(160deg, var(--charcoal) 0%, var(--deep-teal) 100%);
+            color: var(--white);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .roi-section h2 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .roi-section .section-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .team-estimate-block {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .investment-comparison {
+            background: var(--white);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .investment-comparison h3 {
+            color: var(--deep-teal);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .investment-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .investment-row:last-child {
+            border-bottom: none;
+        }
+
+        .investment-row .label {
+            color: var(--text-secondary);
+        }
+
+        .investment-row .value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .investment-row.highlight {
+            background: var(--light-gray);
+            margin: 0 -1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .investment-row.highlight .label {
+            color: var(--deep-teal);
+            font-weight: 600;
+        }
+
+        .investment-row.highlight .value {
+            color: var(--coral);
+            font-size: 1.1rem;
+        }
+
+        .math-block {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .math-block h3 {
+            color: var(--deep-teal);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .math-calculation {
+            font-family: 'SF Mono', Monaco, 'Consolas', monospace;
+            font-size: 0.95rem;
+            line-height: 2;
+        }
+
+        .math-calculation .line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+        }
+
+        .math-calculation .line.result {
+            border-top: 2px solid var(--charcoal);
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
+            font-weight: 700;
+        }
+
+        .math-calculation .line.roi {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .reality-block {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .break-even-callout {
+            background: var(--coral);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .break-even-callout .number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .break-even-callout .message {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .soft-cta {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .soft-cta h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .soft-cta p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .soft-cta .cta-button {
+            background: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+            padding: 0.875rem 1.75rem;
+        }
+
+        .soft-cta .cta-button:hover {
+            background: var(--white);
+            color: var(--deep-teal);
+        }
+
+        .roi-note {
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .negative-roi-message {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .negative-roi-message p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
         /* ===== MOBILE RESPONSIVE ===== */
         @media (max-width: 768px) {
             .form-grid {
@@ -1235,6 +1439,106 @@
             return multipliers[months] || 1.80;
         }
 
+        // Calculate ROI Section for Clover ERA investment
+        function calculateROISection(departures, costPerDeparture) {
+            // Step 1: Estimate team size from departures
+            const turnoverRateLow = 0.10;
+            const turnoverRateHigh = 0.15;
+
+            const teamSizeLow = Math.round(departures / turnoverRateHigh);
+            const teamSizeHigh = Math.round(departures / turnoverRateLow);
+            const avgTeamSize = (teamSizeLow + teamSizeHigh) / 2;
+
+            // Step 2: Determine Clover ERA pricing tier
+            let cloverCost;
+            let tierLabel;
+
+            if (avgTeamSize <= 20) {
+                cloverCost = 12000;
+                tierLabel = "5-20 people";
+            } else if (avgTeamSize <= 50) {
+                cloverCost = 24000;
+                tierLabel = "21-50 people";
+            } else if (avgTeamSize <= 100) {
+                cloverCost = 48000;
+                tierLabel = "51-100 people";
+            } else if (avgTeamSize <= 200) {
+                cloverCost = 72000;
+                tierLabel = "101-200 people";
+            } else if (avgTeamSize <= 500) {
+                cloverCost = 96000;
+                tierLabel = "201-500 people";
+            } else {
+                cloverCost = 180000;
+                tierLabel = "501-1000 people";
+            }
+
+            // Step 3: Calculate ROI metrics
+            const breakEvenDepartures = cloverCost / costPerDeparture;
+            const netBenefitOne = costPerDeparture - cloverCost;
+            const netBenefitTwo = (costPerDeparture * 2) - cloverCost;
+
+            // ROI calculations (only if positive)
+            let roiOneDeparture = null;
+            let roiTwoDepartures = null;
+
+            if (netBenefitOne > 0) {
+                roiOneDeparture = Math.round((netBenefitOne / cloverCost) * 100);
+                // Cap at 500%
+                if (roiOneDeparture > 500) roiOneDeparture = 500;
+            }
+
+            if (netBenefitTwo > 0) {
+                roiTwoDepartures = Math.round((netBenefitTwo / cloverCost) * 100);
+                // Cap at 500%
+                if (roiTwoDepartures > 500) roiTwoDepartures = 500;
+            }
+
+            // Step 4: Determine messaging approach
+            let messagingFocus;
+            if (breakEvenDepartures < 1) {
+                messagingFocus = "one"; // "Prevent just 1 departure"
+            } else if (breakEvenDepartures < 2) {
+                messagingFocus = "two"; // "Prevent 2 departures"
+            } else {
+                messagingFocus = "multiple"; // "Prevent X departures"
+            }
+
+            // Edge case flags
+            const isSmallTeam = teamSizeLow < 5;
+            const isLargeTeam = avgTeamSize > 1000;
+            const hasNegativeROI = netBenefitTwo <= 0;
+            const isSingleDeparture = departures === 1;
+
+            return {
+                teamSizeRange: {
+                    low: teamSizeLow,
+                    high: teamSizeHigh,
+                    average: avgTeamSize
+                },
+                pricing: {
+                    annual: cloverCost,
+                    tierLabel: tierLabel,
+                    monthly: Math.round(cloverCost / 12)
+                },
+                roi: {
+                    breakEvenDepartures: breakEvenDepartures,
+                    breakEvenFormatted: breakEvenDepartures.toFixed(1),
+                    netBenefitOne: netBenefitOne,
+                    netBenefitTwo: netBenefitTwo,
+                    roiOneDeparture: roiOneDeparture,
+                    roiTwoDepartures: roiTwoDepartures
+                },
+                messagingFocus: messagingFocus,
+                edgeCases: {
+                    isSmallTeam: isSmallTeam,
+                    isLargeTeam: isLargeTeam,
+                    hasNegativeROI: hasNegativeROI,
+                    isSingleDeparture: isSingleDeparture
+                }
+            };
+        }
+
         // Calculate results
         function calculateResults(event) {
             event.preventDefault();
@@ -1304,6 +1608,9 @@
             // Savings from preventing 1 departure per year
             const savingsPerPrevention = costPerDeparture * formData.projectionYears;
 
+            // Calculate ROI section
+            const roiData = calculateROISection(formData.departures, costPerDeparture);
+
             calculationResults = {
                 costPerDeparture,
                 annualCost,
@@ -1327,7 +1634,8 @@
                     vacancyCoverageActual: weeklySalary * formData.weeksToFill * m.vacancyCoverage,
                     teamDisruption: salary * m.teamDisruption,
                     managerTimeActual: salary * m.managerTime
-                }
+                },
+                roi: roiData
             };
 
             displayResults();
@@ -1341,6 +1649,160 @@
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
             }).format(amount);
+        }
+
+        // Generate ROI Section HTML
+        function generateROISection(r) {
+            const roi = r.roi;
+            const edge = roi.edgeCases;
+
+            // Edge case: Don't show ROI section if negative ROI even at 2 departures
+            if (edge.hasNegativeROI) {
+                return `
+                    <div class="roi-section">
+                        <h2>What Would It Take to Change This?</h2>
+                        <p class="section-subtitle">Let's look at the investment case.</p>
+                        <div class="negative-roi-message">
+                            <p>With your current cost per departure of ${formatCurrency(r.costPerDeparture)}, the standard ROI calculation doesn't apply in the typical way.</p>
+                            <p>Want to explore whether Clover ERA makes sense for your specific situation? Let's talk through the specifics.</p>
+                        </div>
+                        <div class="soft-cta">
+                            <h4>Let's Discuss Your Situation</h4>
+                            <p>Your numbers are unique. A quick conversation will help determine the right approach.</p>
+                            <a href="https://calendly.com/clover-era/turnover-analysis" target="_blank" class="cta-button">Schedule a Conversation</a>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Team size estimate text with edge cases
+            let teamEstimateText;
+            if (edge.isSingleDeparture) {
+                teamEstimateText = `With only 1 departure, team size is difficult to estimate. These numbers assume a small team of 10-20 people.`;
+            } else if (edge.isSmallTeam) {
+                teamEstimateText = `Based on ${formData.departures} departures and industry turnover averages (10-15%), your team is approximately ${roi.teamSizeRange.low}-${roi.teamSizeRange.high} people. <em>For very small teams, contact us for custom options.</em>`;
+            } else if (edge.isLargeTeam) {
+                teamEstimateText = `Based on ${formData.departures} departures, your organization appears to have over 1,000 people. <em>For enterprise organizations, contact us for custom pricing.</em>`;
+            } else {
+                teamEstimateText = `Based on ${formData.departures} departure${formData.departures > 1 ? 's' : ''} and industry turnover averages (10-15%), your team is approximately ${roi.teamSizeRange.low}-${roi.teamSizeRange.high} people.`;
+            }
+
+            // Determine headline based on break-even
+            let headline, bodyScenario;
+            if (roi.roi.breakEvenDepartures < 0.5) {
+                headline = "The Math Is Simple";
+                bodyScenario = "strong";
+            } else if (roi.roi.breakEvenDepartures < 1) {
+                headline = "What Would It Take to Change This?";
+                bodyScenario = "good";
+            } else {
+                headline = "The Investment Case";
+                bodyScenario = "moderate";
+            }
+
+            // Math block - depends on messaging focus
+            let mathBlock;
+            const roiDisplayOne = roi.roi.roiOneDeparture > 500 ? '500%+' : `${roi.roi.roiOneDeparture}%`;
+            const roiDisplayTwo = roi.roi.roiTwoDepartures > 500 ? '500%+' : `${roi.roi.roiTwoDepartures}%`;
+
+            if (roi.messagingFocus === 'one' && roi.roi.roiOneDeparture) {
+                mathBlock = `
+                    <div class="math-block">
+                        <h3>If Clover ERA prevents just 1 departure:</h3>
+                        <div class="math-calculation">
+                            <div class="line"><span>Investment:</span><span>${formatCurrency(roi.pricing.annual)}</span></div>
+                            <div class="line"><span>Value recovered:</span><span>${formatCurrency(r.costPerDeparture)}</span></div>
+                            <div class="line result"><span>Net benefit:</span><span>${formatCurrency(roi.roi.netBenefitOne)}</span></div>
+                            <div class="line roi"><span>First-year ROI:</span><span>${roiDisplayOne}</span></div>
+                        </div>
+                    </div>
+                `;
+            } else if (roi.messagingFocus === 'two' && roi.roi.roiTwoDepartures) {
+                mathBlock = `
+                    <div class="math-block">
+                        <h3>If Clover ERA prevents 2 departures:</h3>
+                        <div class="math-calculation">
+                            <div class="line"><span>Investment:</span><span>${formatCurrency(roi.pricing.annual)}</span></div>
+                            <div class="line"><span>Value recovered:</span><span>${formatCurrency(r.costPerDeparture * 2)}</span></div>
+                            <div class="line result"><span>Net benefit:</span><span>${formatCurrency(roi.roi.netBenefitTwo)}</span></div>
+                            <div class="line roi"><span>First-year ROI:</span><span>${roiDisplayTwo}</span></div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const neededDepartures = Math.ceil(roi.roi.breakEvenDepartures);
+                const valueAtBreakeven = r.costPerDeparture * neededDepartures;
+                const netBenefit = valueAtBreakeven - roi.pricing.annual;
+                mathBlock = `
+                    <div class="math-block">
+                        <h3>If Clover ERA prevents ${neededDepartures} departure${neededDepartures > 1 ? 's' : ''}:</h3>
+                        <div class="math-calculation">
+                            <div class="line"><span>Investment:</span><span>${formatCurrency(roi.pricing.annual)}</span></div>
+                            <div class="line"><span>Value recovered:</span><span>${formatCurrency(valueAtBreakeven)}</span></div>
+                            <div class="line result"><span>Net benefit:</span><span>${formatCurrency(netBenefit)}</span></div>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Given you've had ${formData.departures} departures in the past year, that's well within reach.</p>
+                    </div>
+                `;
+            }
+
+            // Break-even callout (only if notably low)
+            let breakEvenCallout = '';
+            if (roi.roi.breakEvenDepartures < 0.5) {
+                breakEvenCallout = `
+                    <div class="break-even-callout">
+                        <div class="number">Break-even: ${roi.roi.breakEvenFormatted} departures</div>
+                        <div class="message">You don't even need to prevent a full departure to come out ahead.</div>
+                    </div>
+                `;
+            }
+
+            // Reality block text
+            const departureWord = roi.messagingFocus === 'one' ? 'just one departure' :
+                                  roi.messagingFocus === 'two' ? 'two departures' :
+                                  `${Math.ceil(roi.roi.breakEvenDepartures)} departures`;
+
+            return `
+                <div class="roi-section">
+                    <h2>${headline}</h2>
+                    <p class="section-subtitle">Let's look at the investment case.</p>
+
+                    <div class="team-estimate-block">
+                        ${teamEstimateText}
+                    </div>
+
+                    <div class="investment-comparison">
+                        <h3>Clover ERA for a team of ${roi.teamSizeRange.low}-${roi.teamSizeRange.high} people</h3>
+                        <div class="investment-row">
+                            <span class="label">Annual investment:</span>
+                            <span class="value">${edge.isLargeTeam ? 'Enterprise pricing - let\'s talk' : formatCurrency(roi.pricing.annual)}</span>
+                        </div>
+                        <div class="investment-row">
+                            <span class="label">Your cost per departure:</span>
+                            <span class="value">${formatCurrency(r.costPerDeparture)}</span>
+                        </div>
+                        <div class="investment-row highlight">
+                            <span class="label">Break-even point:</span>
+                            <span class="value">${roi.roi.breakEvenFormatted} departures prevented</span>
+                        </div>
+                    </div>
+
+                    ${mathBlock}
+
+                    ${breakEvenCallout}
+
+                    <div class="reality-block">
+                        That's preventing ${departureWord}.<br><br>
+                        Teams using Clover ERA typically identify 2-3 at-risk situations in the first 90 days. Plus you get ongoing visibility into team health that no annual survey provides.
+                    </div>
+
+                    <div class="soft-cta">
+                        <h4>Want to pressure-test these numbers?</h4>
+                        <p>Schedule a 15-minute Turnover Analysis. We'll look at which teams are showing early warning signs and whether the math works for your specific situation.</p>
+                        <a href="https://calendly.com/clover-era/turnover-analysis" target="_blank" class="cta-button">Schedule Your Free Turnover Analysis</a>
+                    </div>
+                </div>
+            `;
         }
 
         // Display results
@@ -1519,6 +1981,9 @@
                     </div>
                 </div>
 
+                <!-- ROI Section -->
+                ${generateROISection(r)}
+
                 <!-- CTAs -->
                 <div class="cta-section">
                     <div class="cta-card">
@@ -1690,8 +2155,62 @@
             doc.setTextColor(16, 185, 129);
             doc.text(`Preventing 1 departure/year saves: ${formatCurrency(r.savingsPerPrevention)}`, 20, yPos);
 
+            // ROI / Investment Case Section
+            const roi = r.roi;
+            if (roi && !roi.edgeCases.hasNegativeROI) {
+                yPos += 18;
+                doc.setFillColor(...charcoal);
+                doc.roundedRect(20, yPos, 170, 52, 3, 3, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('THE INVESTMENT CASE', 28, yPos + 10);
+
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                yPos += 18;
+                doc.text(`Estimated team size:`, 28, yPos);
+                doc.text(`${roi.teamSizeRange.low}-${roi.teamSizeRange.high} people`, 120, yPos);
+
+                yPos += 7;
+                doc.text(`Clover ERA investment:`, 28, yPos);
+                doc.text(roi.edgeCases.isLargeTeam ? 'Enterprise - contact us' : `${formatCurrency(roi.pricing.annual)}/year`, 120, yPos);
+
+                yPos += 7;
+                doc.text(`Your cost per departure:`, 28, yPos);
+                doc.text(formatCurrency(r.costPerDeparture), 120, yPos);
+
+                // ROI figures
+                yPos += 10;
+                doc.setFillColor(255, 255, 255);
+                doc.roundedRect(28, yPos, 154, 12, 2, 2, 'F');
+                doc.setTextColor(...charcoal);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'bold');
+
+                if (roi.roi.roiOneDeparture && roi.roi.roiOneDeparture > 0) {
+                    const roiDisplay1 = roi.roi.roiOneDeparture > 500 ? '500%+' : `${roi.roi.roiOneDeparture}%`;
+                    const roiDisplay2 = roi.roi.roiTwoDepartures > 500 ? '500%+' : `${roi.roi.roiTwoDepartures}%`;
+                    doc.text(`Prevent 1 departure → ${roiDisplay1} ROI`, 35, yPos + 8);
+                    doc.text(`Prevent 2 → ${roiDisplay2} ROI`, 120, yPos + 8);
+                } else if (roi.roi.roiTwoDepartures && roi.roi.roiTwoDepartures > 0) {
+                    const roiDisplay2 = roi.roi.roiTwoDepartures > 500 ? '500%+' : `${roi.roi.roiTwoDepartures}%`;
+                    doc.text(`Prevent 2 departures → ${roiDisplay2} ROI`, 35, yPos + 8);
+                }
+
+                doc.setTextColor(...coral);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
+                yPos += 16;
+                doc.text(`Break-even: ${roi.roi.breakEvenFormatted} departures`, 105, yPos, { align: 'center' });
+
+                yPos += 12;
+            } else {
+                yPos += 10;
+            }
+
             // CTA Box
-            yPos += 15;
+            yPos += 5;
             doc.setFillColor(...teal);
             doc.roundedRect(20, yPos, 170, 25, 3, 3, 'F');
             doc.setTextColor(255, 255, 255);
