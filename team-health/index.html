@@ -2129,18 +2129,34 @@
                     teamsize: assessmentData.userInfo?.teamSize || ''
                 });
 
-                const businessCaseCTA = `
-                    <div class="business-case-cta" style="margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, #0D7C88, #46AEB8); border-radius: 12px; text-align: center; color: white;">
-                        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">See What This Is Costing You</h3>
-                        <p style="opacity: 0.9; margin-bottom: 1.5rem;">Most companies track 20-30% of the real turnover cost. Find the gap in 2 minutes.</p>
-                        <a href="/business-case/?${businessCaseParams.toString()}" style="display: inline-block; background: #E07A5F; color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">Calculate Your True Cost</a>
+                // Highlighted amber CTA box
+                const highlightedCTA = `
+                    <div class="highlighted-cta" style="margin-top: 2.5rem; padding: 2rem; background: linear-gradient(135deg, #F59E0B, #D97706); border-radius: 12px; text-align: center; color: white; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin: 0;">Ready to stop guessing and start knowing? Clover ERA gives you real-time visibility into your team's engagement, clear actions to address concerns, and a virtual coach helping you become a better manager every day.</p>
+                    </div>
+                `;
+
+                // Demo button CTA
+                const demoCTA = `
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" target="_blank" style="display: inline-block; background: #E07A5F; color: white; padding: 1.25rem 2.5rem; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);">Schedule Your Clover ERA Demo</a>
+                    </div>
+                `;
+
+                // Additional links
+                const additionalLinks = `
+                    <div style="margin-top: 2rem; text-align: center; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                        <a href="/how-it-works.html" style="color: #0D7C88; font-weight: 500; text-decoration: none; font-size: 1rem;">Learn More About Team Health</a>
+                        <a href="/business-case/?${businessCaseParams.toString()}" style="display: inline-block; background: #1F2937; color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.2s;">Build Your Business Case</a>
                     </div>
                 `;
 
                 resultsDiv.innerHTML = `
                     <div class="markdown-report">
                         ${renderedMarkdown}
-                        ${businessCaseCTA}
+                        ${highlightedCTA}
+                        ${demoCTA}
+                        ${additionalLinks}
                     </div>
                 `;
 

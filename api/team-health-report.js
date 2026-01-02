@@ -456,14 +456,14 @@ You're probably asking: "[The obvious question they're likely asking]"
 This assessment found [key insight] from six questions answered once, from your perspective only.
 
 **What Clover ERA would show you:**
-- The exact day [person]'s engagement started dropping
-- Which CLOVER dimension shifted first
-- The pattern across your whole team, not just your perception
-- What action to take, specific to each person
+- Real-time visibility into which CLOVER dimensions are shifting across your team
+- Early warning signals before disengagement becomes resignation
+- Clear, actionable micro-actions to address each area of concern
+- A virtual coach on your shoulder, helping you improve your management approach daily
 
 **Your team is costing you approximately $[X] per year in [hidden cost type].**
 
-That's the cost of not knowing. Clover ERA is the cost of knowing.
+That's the cost of not knowing. Clover ERA gives you the visibility and the actions to change it.
 
 [CTAs]
 
