@@ -27,6 +27,7 @@ const BREADCRUMB_CONFIG = {
 
     // Tools & Assessments
     '/team-health/': { name: 'Team Health Assessment', parent: '/' },
+    '/business-case/': { name: 'Business Case Builder', parent: '/' },
 
     // Additional pages
     '/roundtable/': { name: 'Manager Roundtable', parent: '/' },

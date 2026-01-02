@@ -2121,9 +2121,26 @@
                 // Render the markdown report directly
                 const renderedMarkdown = renderMarkdown(report.markdown);
 
+                // Build Business Case CTA with URL params
+                const businessCaseParams = new URLSearchParams({
+                    source: 'assessment',
+                    archetype: report.archetype || 'quiet-crack',
+                    company: assessmentData.userInfo?.companyName || '',
+                    teamsize: assessmentData.userInfo?.teamSize || ''
+                });
+
+                const businessCaseCTA = `
+                    <div class="business-case-cta" style="margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, #0D7C88, #46AEB8); border-radius: 12px; text-align: center; color: white;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">See What This Is Costing You</h3>
+                        <p style="opacity: 0.9; margin-bottom: 1.5rem;">Most companies track 20-30% of the real turnover cost. Find the gap in 2 minutes.</p>
+                        <a href="/business-case/?${businessCaseParams.toString()}" style="display: inline-block; background: #E07A5F; color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">Calculate Your True Cost</a>
+                    </div>
+                `;
+
                 resultsDiv.innerHTML = `
                     <div class="markdown-report">
                         ${renderedMarkdown}
+                        ${businessCaseCTA}
                     </div>
                 `;
 

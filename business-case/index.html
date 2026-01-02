@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Case Builder | Clover ERA</title>
+    <meta name="description" content="Calculate the true cost of turnover. Most companies track 20-30% of the real cost. Find the gap in 2 minutes and get a CFO-ready one-pager.">
+    <meta name="keywords" content="turnover cost calculator, employee turnover, retention ROI, business case, CFO">
+    <link rel="canonical" href="https://cloverera.com/business-case/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Business Case Builder | Clover ERA">
+    <meta property="og:description" content="Calculate the true cost of turnover. Find the gap between what finance tracks and what departures actually cost.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/business-case/">
+
+    <!-- Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Business Case Builder",
+        "description": "A calculator to quantify the true cost of employee turnover",
+        "provider": {
+            "@type": "Organization",
+            "name": "Clover ERA"
+        }
+    }
+    </script>
+
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <link rel="stylesheet" href="/css/corporate-design.css">
+    <link rel="stylesheet" href="/css/mobile-responsive.css">
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --success: #10B981;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        /* ===== LANDING PAGE ===== */
+        .landing-page {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-section {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        .hero-description {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .archetype-personalization {
+            background: rgba(70, 174, 184, 0.2);
+            border: 1px solid var(--teal);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .archetype-personalization.visible {
+            display: block;
+        }
+
+        .start-button {
+            display: inline-block;
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.25rem 3rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(224, 122, 95, 0.4);
+        }
+
+        .trust-elements {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+
+        .trust-item::before {
+            content: '✓';
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        /* ===== FORM SECTION ===== */
+        .form-container {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+        }
+
+        .form-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-section h3 {
+            font-size: 1.1rem;
+            color: var(--deep-teal);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-group .helper-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
+        }
+
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Salary Input Toggle */
+        .salary-toggle {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .salary-toggle button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--medium-gray);
+            background: var(--white);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .salary-toggle button.active {
+            background: var(--deep-teal);
+            color: var(--white);
+            border-color: var(--deep-teal);
+        }
+
+        .salary-input-wrapper {
+            display: none;
+        }
+
+        .salary-input-wrapper.active {
+            display: block;
+        }
+
+        /* Slider Styling */
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider-wrapper input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--medium-gray);
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider-wrapper input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--deep-teal);
+            cursor: pointer;
+        }
+
+        .slider-value {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--deep-teal);
+        }
+
+        /* Advanced Settings */
+        .advanced-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            user-select: none;
+        }
+
+        .advanced-toggle:hover {
+            color: var(--deep-teal);
+        }
+
+        .advanced-toggle .arrow {
+            transition: transform 0.2s;
+        }
+
+        .advanced-toggle.expanded .arrow {
+            transform: rotate(90deg);
+        }
+
+        .advanced-settings {
+            display: none;
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .advanced-settings.visible {
+            display: block;
+        }
+
+        .multiplier-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .multiplier-row:last-child {
+            border-bottom: none;
+        }
+
+        .multiplier-label {
+            flex: 1;
+        }
+
+        .multiplier-label strong {
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .multiplier-label span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .multiplier-input {
+            width: 80px;
+            text-align: center;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .submit-button {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.25rem 3rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(224, 122, 95, 0.4);
+        }
+
+        /* ===== RESULTS PAGE ===== */
+        .results-container {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .results-header h1 {
+            font-size: 2.5rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Big Number */
+        .big-number-section {
+            background: linear-gradient(135deg, var(--deep-teal), var(--teal));
+            color: var(--white);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .big-number {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .big-number-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .per-departure {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+
+        /* Results Cards */
+        .results-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .results-card h2 {
+            font-size: 1.3rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-card h2 .icon {
+            font-size: 1.5rem;
+        }
+
+        /* Breakdown Chart */
+        .breakdown-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .breakdown-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .breakdown-label {
+            width: 180px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .breakdown-bar-container {
+            flex: 1;
+            background: var(--light-gray);
+            border-radius: 4px;
+            height: 28px;
+            overflow: hidden;
+        }
+
+        .breakdown-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .breakdown-bar.direct { background: var(--deep-teal); }
+        .breakdown-bar.vacancy { background: var(--teal); }
+        .breakdown-bar.ramp { background: #6BB8C0; }
+        .breakdown-bar.knowledge { background: var(--coral); }
+        .breakdown-bar.ripple { background: #F4A261; }
+
+        .breakdown-value {
+            width: 100px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .breakdown-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Gap Visualization */
+        .gap-visualization {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .gap-box {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+
+        .gap-box.tracked {
+            background: var(--light-gray);
+            border: 2px solid var(--medium-gray);
+        }
+
+        .gap-box.actual {
+            background: linear-gradient(135deg, var(--coral), #E07A5F);
+            color: var(--white);
+        }
+
+        .gap-box .amount {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .gap-box .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .gap-arrow {
+            font-size: 2rem;
+            color: var(--medium-gray);
+        }
+
+        .gap-summary {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .gap-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--coral);
+        }
+
+        .gap-percentage {
+            color: var(--text-secondary);
+        }
+
+        /* Projection */
+        .projection-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .projection-table th,
+        .projection-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .projection-table th {
+            background: var(--light-gray);
+            font-weight: 600;
+        }
+
+        .projection-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .projection-table tr.total {
+            background: var(--deep-teal);
+            color: var(--white);
+        }
+
+        .projection-table tr.total td {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .savings-note {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .savings-note strong {
+            color: var(--success);
+        }
+
+        /* Deep Dive (Expandable) */
+        .deep-dive-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: var(--deep-teal);
+            font-weight: 500;
+            padding: 1rem;
+            border: 1px dashed var(--medium-gray);
+            border-radius: 8px;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .deep-dive-toggle:hover {
+            background: var(--light-gray);
+        }
+
+        .deep-dive-content {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .deep-dive-content.visible {
+            display: block;
+        }
+
+        .deep-dive-section {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .deep-dive-section h4 {
+            color: var(--deep-teal);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .deep-dive-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .deep-dive-section li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        .deep-dive-section li:last-child {
+            border-bottom: none;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .cta-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+        }
+
+        .cta-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .cta-card h3 {
+            font-size: 1.2rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .cta-button.primary {
+            background: var(--coral);
+            color: var(--white);
+        }
+
+        .cta-button.secondary {
+            background: var(--deep-teal);
+            color: var(--white);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .email-cta {
+            grid-column: 1 / -1;
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .email-cta p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .email-cta button {
+            background: none;
+            border: 1px solid var(--deep-teal);
+            color: var(--deep-teal);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .email-cta button:hover {
+            background: var(--deep-teal);
+            color: var(--white);
+        }
+
+        /* Methodology Footer */
+        .methodology-footer {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .methodology-footer strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .form-container,
+            .results-container {
+                padding: 2rem 1rem;
+            }
+
+            .gap-visualization {
+                flex-direction: column;
+            }
+
+            .gap-arrow {
+                transform: rotate(90deg);
+            }
+
+            .cta-section {
+                grid-template-columns: 1fr;
+            }
+
+            .breakdown-label {
+                width: 120px;
+                font-size: 0.8rem;
+            }
+
+            .breakdown-value {
+                width: 80px;
+                font-size: 0.9rem;
+            }
+
+            .email-cta {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be injected by header.js -->
+
+    <!-- Landing Page -->
+    <div id="landing" class="landing-page">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>See What Turnover Is Actually Costing You</h1>
+                <p class="hero-subtitle">Most companies track 20-30% of the real cost. Find the gap in 2 minutes.</p>
+
+                <div id="archetypePersonalization" class="archetype-personalization">
+                    <p>Your team is showing signs of <strong id="archetypeName"></strong>. Here's what that might be costing you.</p>
+                </div>
+
+                <p class="hero-description">
+                    Finance sees recruiting fees and maybe a signing bonus. They don't see the 6 months of ramping productivity, the institutional knowledge walking out the door, or the ripple effects on the team that stays. This calculator does.
+                </p>
+
+                <button class="start-button" onclick="showForm()">Calculate Your True Cost</button>
+
+                <div class="trust-elements">
+                    <div class="trust-item">Methodology based on SHRM research</div>
+                    <div class="trust-item">CFO-ready one-pager output</div>
+                    <div class="trust-item">Takes less than 2 minutes</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Input Form -->
+    <div id="formSection" class="form-container">
+        <div class="form-header">
+            <h2>Calculate Your Turnover Cost</h2>
+            <p>Fill in your details to see the true cost of departures</p>
+        </div>
+
+        <form id="calculatorForm" onsubmit="calculateResults(event)">
+            <!-- Section 1: Basic Information -->
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="userName">Your Name *</label>
+                        <input type="text" id="userName" required placeholder="Jane Smith">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" required placeholder="Acme Corp">
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Your Email *</label>
+                        <input type="email" id="userEmail" required placeholder="jane@acme.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department/Team</label>
+                        <input type="text" id="department" placeholder="Engineering">
+                        <span class="helper-text">Optional</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Role and Compensation -->
+            <div class="form-section">
+                <h3>Role and Compensation</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="roleLevel">Typical Role Level of Departures *</label>
+                        <select id="roleLevel" required onchange="updateKnowledgeLoss()">
+                            <option value="">Select role level</option>
+                            <option value="entry">Entry-level</option>
+                            <option value="mid" selected>Mid-level</option>
+                            <option value="senior">Senior</option>
+                            <option value="executive">Executive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Average Fully-Loaded Salary *</label>
+                        <div class="salary-toggle">
+                            <button type="button" class="active" onclick="toggleSalaryInput('range')">Use Range</button>
+                            <button type="button" onclick="toggleSalaryInput('exact')">Enter Exact</button>
+                        </div>
+                        <div id="salaryRange" class="salary-input-wrapper active">
+                            <select id="salaryRangeSelect" required>
+                                <option value="">Select range</option>
+                                <option value="62500">$50,000 - $75,000</option>
+                                <option value="87500">$75,000 - $100,000</option>
+                                <option value="125000" selected>$100,000 - $150,000</option>
+                                <option value="175000">$150,000 - $200,000</option>
+                                <option value="250000">$200,000 - $300,000</option>
+                                <option value="350000">$300,000+</option>
+                            </select>
+                        </div>
+                        <div id="salaryExact" class="salary-input-wrapper">
+                            <input type="number" id="salaryExactInput" placeholder="150000" min="30000" max="1000000">
+                        </div>
+                        <span class="helper-text">Fully-loaded = salary + benefits + taxes (typically 1.3-1.4x base)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Turnover Data -->
+            <div class="form-section">
+                <h3>Turnover Data</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="departures">Regrettable Departures in Last 12 Months *</label>
+                        <input type="number" id="departures" required min="1" max="100" placeholder="3">
+                        <span class="helper-text">Count voluntary departures you wish you could have prevented</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Average Weeks to Fill a Role</label>
+                        <div class="slider-group">
+                            <div class="slider-wrapper">
+                                <input type="range" id="weeksToFill" min="2" max="20" value="8" oninput="updateSliderValue('weeksToFill', 'weeksValue')">
+                                <span id="weeksValue" class="slider-value">8 weeks</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Average Months to Full Productivity</label>
+                        <div class="slider-group">
+                            <div class="slider-wrapper">
+                                <input type="range" id="monthsToProductivity" min="1" max="12" value="6" oninput="updateSliderValue('monthsToProductivity', 'monthsValue')">
+                                <span id="monthsValue" class="slider-value">6 months</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Advanced Settings -->
+            <div class="form-section">
+                <div class="advanced-toggle" onclick="toggleAdvanced()">
+                    <span class="arrow">&#9654;</span>
+                    <span>Adjust Assumptions (Optional)</span>
+                </div>
+                <div id="advancedSettings" class="advanced-settings">
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Recruiting Costs</strong>
+                            <span>Agency fees, job boards, recruiter time</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="recruitingCost" value="15" min="10" max="30">%
+                    </div>
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Hiring Process Costs</strong>
+                            <span>Interview time, assessments, background checks</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="hiringProcess" value="5" min="3" max="10">%
+                    </div>
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Onboarding/Training</strong>
+                            <span>Formal training, setup, compliance</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="onboarding" value="10" min="5" max="20">%
+                    </div>
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Vacancy Productivity Loss</strong>
+                            <span>Work not done or delayed during vacancy</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="vacancyProductivity" value="50" min="25" max="75">%
+                    </div>
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Vacancy Coverage Costs</strong>
+                            <span>Overtime, contractor coverage</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="vacancyCoverage" value="25" min="10" max="50">%
+                    </div>
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Knowledge Loss</strong>
+                            <span>Expertise, relationships, context lost</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="knowledgeLoss" value="25" min="5" max="100">%
+                    </div>
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Team Disruption</strong>
+                            <span>Productivity drag on remaining team</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="teamDisruption" value="15" min="5" max="25">%
+                    </div>
+                    <div class="multiplier-row">
+                        <div class="multiplier-label">
+                            <strong>Manager Time</strong>
+                            <span>Exit management, backfill coordination</span>
+                        </div>
+                        <input type="number" class="form-group multiplier-input" id="managerTime" value="5" min="3" max="10">%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Projection -->
+            <div class="form-section">
+                <h3>Projection Timeframe</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="projectionYears">Projection Period</label>
+                        <select id="projectionYears">
+                            <option value="1">1 year</option>
+                            <option value="2">2 years</option>
+                            <option value="3" selected>3 years</option>
+                            <option value="5">5 years</option>
+                        </select>
+                        <span class="helper-text">Assumes current turnover rate continues</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" class="submit-button">Calculate True Cost</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Page -->
+    <div id="results" class="results-container">
+        <!-- Content will be dynamically generated -->
+    </div>
+
+    <script src="/js/header.js" defer></script>
+    <script src="/js/breadcrumbs.js" defer></script>
+
+    <script>
+        // Store form data and results
+        let formData = {};
+        let calculationResults = {};
+
+        // Check for URL parameters from Team Health Assessment
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.get('source') === 'assessment') {
+                const archetype = params.get('archetype');
+                const company = params.get('company');
+                const teamsize = params.get('teamsize');
+
+                if (archetype) {
+                    const archetypeNames = {
+                        'quiet-crack': 'The Quiet Crack',
+                        'firefight-loop': 'The Firefight Loop',
+                        'performance-theater': 'Performance Theater',
+                        'siloed-stars': 'Siloed Stars',
+                        'comfortable-stall': 'The Comfortable Stall'
+                    };
+                    document.getElementById('archetypeName').textContent = archetypeNames[archetype] || archetype;
+                    document.getElementById('archetypePersonalization').classList.add('visible');
+                }
+
+                if (company) {
+                    document.getElementById('companyName').value = decodeURIComponent(company);
+                }
+
+                if (teamsize) {
+                    // Suggest departures based on team size (rough estimate)
+                    const size = parseInt(teamsize);
+                    if (size > 0) {
+                        const suggestedDepartures = Math.max(1, Math.round(size * 0.15)); // ~15% turnover
+                        document.getElementById('departures').placeholder = suggestedDepartures.toString();
+                    }
+                }
+            }
+        });
+
+        // Show form
+        function showForm() {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('formSection').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle salary input type
+        function toggleSalaryInput(type) {
+            const buttons = document.querySelectorAll('.salary-toggle button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('salaryRange').classList.toggle('active', type === 'range');
+            document.getElementById('salaryExact').classList.toggle('active', type === 'exact');
+
+            // Update required attributes
+            document.getElementById('salaryRangeSelect').required = (type === 'range');
+            document.getElementById('salaryExactInput').required = (type === 'exact');
+        }
+
+        // Update slider display value
+        function updateSliderValue(sliderId, valueId) {
+            const slider = document.getElementById(sliderId);
+            const valueEl = document.getElementById(valueId);
+            const unit = sliderId === 'weeksToFill' ? ' weeks' : ' months';
+            valueEl.textContent = slider.value + unit;
+        }
+
+        // Toggle advanced settings
+        function toggleAdvanced() {
+            const toggle = document.querySelector('.advanced-toggle');
+            const settings = document.getElementById('advancedSettings');
+            toggle.classList.toggle('expanded');
+            settings.classList.toggle('visible');
+        }
+
+        // Update knowledge loss default based on role level
+        function updateKnowledgeLoss() {
+            const roleLevel = document.getElementById('roleLevel').value;
+            const defaults = {
+                'entry': 10,
+                'mid': 25,
+                'senior': 50,
+                'executive': 75
+            };
+            document.getElementById('knowledgeLoss').value = defaults[roleLevel] || 25;
+        }
+
+        // Get salary value
+        function getSalary() {
+            const rangeActive = document.getElementById('salaryRange').classList.contains('active');
+            if (rangeActive) {
+                return parseFloat(document.getElementById('salaryRangeSelect').value) || 125000;
+            } else {
+                return parseFloat(document.getElementById('salaryExactInput').value) || 125000;
+            }
+        }
+
+        // Ramp multiplier based on months to productivity
+        function getRampMultiplier(months) {
+            const multipliers = {
+                1: 0.50, 2: 0.75, 3: 1.00, 4: 1.25, 5: 1.50, 6: 1.80,
+                7: 2.00, 8: 2.20, 9: 2.40, 10: 2.60, 11: 2.80, 12: 3.00
+            };
+            return multipliers[months] || 1.80;
+        }
+
+        // Calculate results
+        function calculateResults(event) {
+            event.preventDefault();
+
+            // Gather form data
+            formData = {
+                userName: document.getElementById('userName').value,
+                companyName: document.getElementById('companyName').value,
+                userEmail: document.getElementById('userEmail').value,
+                department: document.getElementById('department').value,
+                roleLevel: document.getElementById('roleLevel').value,
+                salary: getSalary(),
+                departures: parseInt(document.getElementById('departures').value),
+                weeksToFill: parseInt(document.getElementById('weeksToFill').value),
+                monthsToProductivity: parseInt(document.getElementById('monthsToProductivity').value),
+                projectionYears: parseInt(document.getElementById('projectionYears').value),
+                multipliers: {
+                    recruiting: parseFloat(document.getElementById('recruitingCost').value) / 100,
+                    hiring: parseFloat(document.getElementById('hiringProcess').value) / 100,
+                    onboarding: parseFloat(document.getElementById('onboarding').value) / 100,
+                    vacancyProductivity: parseFloat(document.getElementById('vacancyProductivity').value) / 100,
+                    vacancyCoverage: parseFloat(document.getElementById('vacancyCoverage').value) / 100,
+                    knowledgeLoss: parseFloat(document.getElementById('knowledgeLoss').value) / 100,
+                    teamDisruption: parseFloat(document.getElementById('teamDisruption').value) / 100,
+                    managerTime: parseFloat(document.getElementById('managerTime').value) / 100
+                }
+            };
+
+            // Calculate costs
+            const salary = formData.salary;
+            const m = formData.multipliers;
+
+            // Direct Costs
+            const directCosts = salary * (m.recruiting + m.hiring + m.onboarding);
+
+            // Vacancy Costs
+            const weeklySalary = salary / 52;
+            const vacancyCosts = weeklySalary * formData.weeksToFill * (m.vacancyProductivity + m.vacancyCoverage);
+
+            // Ramp-Up Costs
+            const monthlySalary = salary / 12;
+            const rampMultiplier = getRampMultiplier(formData.monthsToProductivity);
+            const rampCosts = monthlySalary * rampMultiplier;
+
+            // Knowledge Loss
+            const knowledgeCosts = salary * m.knowledgeLoss;
+
+            // Ripple Effects
+            const rippleEffects = salary * (m.teamDisruption + m.managerTime);
+
+            // Total per departure
+            const costPerDeparture = directCosts + vacancyCosts + rampCosts + knowledgeCosts + rippleEffects;
+
+            // Annual cost
+            const annualCost = costPerDeparture * formData.departures;
+
+            // What finance tracks (estimate: ~20% of salary per departure)
+            const trackedCost = salary * 0.20 * formData.departures;
+
+            // The gap
+            const gap = annualCost - trackedCost;
+            const gapPercentage = (gap / annualCost) * 100;
+
+            // Projection
+            const projectedCost = annualCost * formData.projectionYears;
+
+            // Savings from preventing 1 departure per year
+            const savingsPerPrevention = costPerDeparture * formData.projectionYears;
+
+            calculationResults = {
+                costPerDeparture,
+                annualCost,
+                trackedCost,
+                gap,
+                gapPercentage,
+                projectedCost,
+                savingsPerPrevention,
+                breakdown: {
+                    directCosts,
+                    vacancyCosts,
+                    rampCosts,
+                    knowledgeCosts,
+                    rippleEffects
+                },
+                breakdownDetails: {
+                    recruiting: salary * m.recruiting,
+                    hiring: salary * m.hiring,
+                    onboarding: salary * m.onboarding,
+                    vacancyLostProductivity: weeklySalary * formData.weeksToFill * m.vacancyProductivity,
+                    vacancyCoverageActual: weeklySalary * formData.weeksToFill * m.vacancyCoverage,
+                    teamDisruption: salary * m.teamDisruption,
+                    managerTimeActual: salary * m.managerTime
+                }
+            };
+
+            displayResults();
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Display results
+        function displayResults() {
+            const r = calculationResults;
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Calculate percentages for bars
+            const maxCost = Math.max(r.breakdown.directCosts, r.breakdown.vacancyCosts, r.breakdown.rampCosts, r.breakdown.knowledgeCosts, r.breakdown.rippleEffects);
+            const getBarWidth = (cost) => (cost / r.costPerDeparture * 100).toFixed(1);
+
+            // Build projection rows
+            let projectionRows = '';
+            for (let i = 1; i <= formData.projectionYears; i++) {
+                projectionRows += `
+                    <tr>
+                        <td>Year ${i}</td>
+                        <td>${formatCurrency(r.annualCost * i)}</td>
+                    </tr>
+                `;
+            }
+
+            const resultsHTML = `
+                <div class="results-header">
+                    <h1>Your Turnover Cost Analysis</h1>
+                    <p class="results-meta">
+                        <strong>${formData.companyName}</strong> | Generated ${today}<br>
+                        Based on ${formData.departures} regrettable departure${formData.departures > 1 ? 's' : ''} over 12 months
+                    </p>
+                </div>
+
+                <!-- Big Number -->
+                <div class="big-number-section">
+                    <div class="big-number">${formatCurrency(r.annualCost)}</div>
+                    <div class="big-number-label">Estimated 12-Month Turnover Cost</div>
+                    <div class="per-departure">
+                        ${formatCurrency(r.costPerDeparture)} per departure × ${formData.departures} departure${formData.departures > 1 ? 's' : ''}
+                    </div>
+                </div>
+
+                <!-- Breakdown -->
+                <div class="results-card">
+                    <h2><span class="icon">📊</span> Cost Breakdown</h2>
+                    <div class="breakdown-chart">
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Direct Replacement</div>
+                            <div class="breakdown-bar-container">
+                                <div class="breakdown-bar direct" style="width: ${getBarWidth(r.breakdown.directCosts)}%"></div>
+                            </div>
+                            <div class="breakdown-value">${formatCurrency(r.breakdown.directCosts)}</div>
+                        </div>
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Vacancy Costs</div>
+                            <div class="breakdown-bar-container">
+                                <div class="breakdown-bar vacancy" style="width: ${getBarWidth(r.breakdown.vacancyCosts)}%"></div>
+                            </div>
+                            <div class="breakdown-value">${formatCurrency(r.breakdown.vacancyCosts)}</div>
+                        </div>
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Ramp-Up Costs</div>
+                            <div class="breakdown-bar-container">
+                                <div class="breakdown-bar ramp" style="width: ${getBarWidth(r.breakdown.rampCosts)}%"></div>
+                            </div>
+                            <div class="breakdown-value">${formatCurrency(r.breakdown.rampCosts)}</div>
+                        </div>
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Knowledge Loss</div>
+                            <div class="breakdown-bar-container">
+                                <div class="breakdown-bar knowledge" style="width: ${getBarWidth(r.breakdown.knowledgeCosts)}%"></div>
+                            </div>
+                            <div class="breakdown-value">${formatCurrency(r.breakdown.knowledgeCosts)}</div>
+                        </div>
+                        <div class="breakdown-row">
+                            <div class="breakdown-label">Team Ripple Effects</div>
+                            <div class="breakdown-bar-container">
+                                <div class="breakdown-bar ripple" style="width: ${getBarWidth(r.breakdown.rippleEffects)}%"></div>
+                            </div>
+                            <div class="breakdown-value">${formatCurrency(r.breakdown.rippleEffects)}</div>
+                        </div>
+                    </div>
+                    <div class="breakdown-total">
+                        <span>Total Per Departure</span>
+                        <span>${formatCurrency(r.costPerDeparture)}</span>
+                    </div>
+                </div>
+
+                <!-- The Gap -->
+                <div class="results-card">
+                    <h2><span class="icon">🔍</span> The Gap: What Finance Misses</h2>
+                    <div class="gap-visualization">
+                        <div class="gap-box tracked">
+                            <div class="amount">${formatCurrency(r.trackedCost)}</div>
+                            <div class="label">What Finance Probably Tracks</div>
+                        </div>
+                        <div class="gap-arrow">→</div>
+                        <div class="gap-box actual">
+                            <div class="amount">${formatCurrency(r.annualCost)}</div>
+                            <div class="label">What It Actually Costs</div>
+                        </div>
+                    </div>
+                    <div class="gap-summary">
+                        <div class="gap-amount">${formatCurrency(r.gap)} in untracked costs</div>
+                        <div class="gap-percentage">(${r.gapPercentage.toFixed(0)}% of total cost is invisible to finance)</div>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.95rem;">
+                        Most finance teams track recruiting fees and some training costs. They miss vacancy productivity loss, ramp-up time, knowledge drain, and team disruption. That's where the real cost hides.
+                    </p>
+                </div>
+
+                <!-- Projection -->
+                <div class="results-card">
+                    <h2><span class="icon">📈</span> ${formData.projectionYears}-Year Projection</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">If current patterns continue:</p>
+                    <table class="projection-table">
+                        <thead>
+                            <tr>
+                                <th>Period</th>
+                                <th>Cumulative Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${projectionRows}
+                            <tr class="total">
+                                <td>${formData.projectionYears}-Year Total</td>
+                                <td>${formatCurrency(r.projectedCost)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="savings-note">
+                        <strong>Preventing just 1 departure per year saves: ${formatCurrency(r.savingsPerPrevention)}</strong> over ${formData.projectionYears} years
+                    </div>
+                </div>
+
+                <!-- Deep Dive -->
+                <div class="results-card">
+                    <h2><span class="icon">🔬</span> Detailed Breakdown</h2>
+                    <div class="deep-dive-toggle" onclick="toggleDeepDive()">
+                        <span>See the math behind these numbers</span>
+                        <span>▼</span>
+                    </div>
+                    <div id="deepDiveContent" class="deep-dive-content">
+                        <div class="deep-dive-section">
+                            <h4>Direct Replacement Costs <span>${formatCurrency(r.breakdown.directCosts)}</span></h4>
+                            <ul>
+                                <li><span>Recruiting costs (${(formData.multipliers.recruiting * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdownDetails.recruiting)}</span></li>
+                                <li><span>Hiring process (${(formData.multipliers.hiring * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdownDetails.hiring)}</span></li>
+                                <li><span>Onboarding/training (${(formData.multipliers.onboarding * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdownDetails.onboarding)}</span></li>
+                            </ul>
+                        </div>
+                        <div class="deep-dive-section">
+                            <h4>Vacancy Costs <span>${formatCurrency(r.breakdown.vacancyCosts)}</span></h4>
+                            <ul>
+                                <li><span>Lost productivity (${formData.weeksToFill} weeks at ${(formData.multipliers.vacancyProductivity * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdownDetails.vacancyLostProductivity)}</span></li>
+                                <li><span>Coverage costs (${formData.weeksToFill} weeks at ${(formData.multipliers.vacancyCoverage * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdownDetails.vacancyCoverageActual)}</span></li>
+                            </ul>
+                        </div>
+                        <div class="deep-dive-section">
+                            <h4>Ramp-Up Costs <span>${formatCurrency(r.breakdown.rampCosts)}</span></h4>
+                            <ul>
+                                <li><span>Reduced productivity over ${formData.monthsToProductivity} months</span><span>${formatCurrency(r.breakdown.rampCosts)}</span></li>
+                            </ul>
+                        </div>
+                        <div class="deep-dive-section">
+                            <h4>Knowledge Loss <span>${formatCurrency(r.breakdown.knowledgeCosts)}</span></h4>
+                            <ul>
+                                <li><span>${formData.roleLevel.charAt(0).toUpperCase() + formData.roleLevel.slice(1)} role multiplier (${(formData.multipliers.knowledgeLoss * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdown.knowledgeCosts)}</span></li>
+                            </ul>
+                        </div>
+                        <div class="deep-dive-section">
+                            <h4>Team Ripple Effects <span>${formatCurrency(r.breakdown.rippleEffects)}</span></h4>
+                            <ul>
+                                <li><span>Team productivity drag (${(formData.multipliers.teamDisruption * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdownDetails.teamDisruption)}</span></li>
+                                <li><span>Manager time (${(formData.multipliers.managerTime * 100).toFixed(0)}%)</span><span>${formatCurrency(r.breakdownDetails.managerTimeActual)}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTAs -->
+                <div class="cta-section">
+                    <div class="cta-card">
+                        <h3>Take This To Your CFO</h3>
+                        <p>Download a professional one-pager with your numbers</p>
+                        <button class="cta-button primary" onclick="downloadPDF()">Download One-Pager (PDF)</button>
+                    </div>
+                    <div class="cta-card">
+                        <h3>See Which Teams Are Driving These Numbers</h3>
+                        <p>15 minutes. Find out where the risk is hiding.</p>
+                        <a href="https://calendly.com/clover-era/turnover-analysis" target="_blank" class="cta-button secondary">Schedule Free Analysis</a>
+                    </div>
+                    <div class="email-cta">
+                        <p>Want a copy sent to your inbox?</p>
+                        <button onclick="emailReport()">Email Me This Report</button>
+                    </div>
+                </div>
+
+                <!-- Methodology -->
+                <div class="methodology-footer">
+                    <strong>Methodology</strong>
+                    Cost estimates based on SHRM research indicating turnover costs 50-200% of salary depending on role level. Productivity curves based on industry benchmarks for professional roles. Actual costs may vary by industry, location, and role specificity.
+                </div>
+            `;
+
+            document.getElementById('results').innerHTML = resultsHTML;
+            document.getElementById('formSection').classList.remove('active');
+            document.getElementById('results').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle deep dive
+        function toggleDeepDive() {
+            document.getElementById('deepDiveContent').classList.toggle('visible');
+        }
+
+        // Download PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const r = calculationResults;
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Colors
+            const teal = [13, 124, 136];
+            const charcoal = [31, 41, 55];
+            const coral = [224, 122, 95];
+            const lightGray = [248, 249, 250];
+
+            // Header
+            doc.setFillColor(...teal);
+            doc.rect(0, 0, 210, 35, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont('helvetica', 'bold');
+            doc.text('CLOVER ERA', 20, 18);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Turnover Cost Analysis', 20, 28);
+
+            // Company info
+            doc.setTextColor(...charcoal);
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text(formData.companyName, 20, 50);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Prepared ${today}`, 20, 57);
+
+            // Big Number Box
+            doc.setFillColor(...coral);
+            doc.roundedRect(20, 65, 170, 35, 3, 3, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(28);
+            doc.setFont('helvetica', 'bold');
+            doc.text(formatCurrency(r.annualCost), 105, 82, { align: 'center' });
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text('12-Month Turnover Cost', 105, 93, { align: 'center' });
+
+            // Details
+            doc.setTextColor(...charcoal);
+            doc.setFontSize(9);
+            doc.text(`Based on ${formData.departures} regrettable departure${formData.departures > 1 ? 's' : ''} | Average salary: ${formatCurrency(formData.salary)} | Role level: ${formData.roleLevel}`, 105, 108, { align: 'center' });
+
+            // Cost Breakdown Section
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('COST BREAKDOWN', 20, 120);
+
+            const breakdown = [
+                { label: 'Direct Replacement', value: r.breakdown.directCosts, color: teal },
+                { label: 'Vacancy Costs', value: r.breakdown.vacancyCosts, color: [70, 174, 184] },
+                { label: 'Ramp-Up Costs', value: r.breakdown.rampCosts, color: [107, 184, 192] },
+                { label: 'Knowledge Loss', value: r.breakdown.knowledgeCosts, color: coral },
+                { label: 'Team Impact', value: r.breakdown.rippleEffects, color: [244, 162, 97] }
+            ];
+
+            let yPos = 128;
+            breakdown.forEach(item => {
+                const barWidth = (item.value / r.costPerDeparture) * 100;
+                doc.setFillColor(...lightGray);
+                doc.rect(20, yPos, 100, 8, 'F');
+                doc.setFillColor(...item.color);
+                doc.rect(20, yPos, barWidth, 8, 'F');
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...charcoal);
+                doc.text(item.label, 125, yPos + 6);
+                doc.text(formatCurrency(item.value), 180, yPos + 6, { align: 'right' });
+                yPos += 12;
+            });
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('Per Departure:', 125, yPos + 4);
+            doc.text(formatCurrency(r.costPerDeparture), 180, yPos + 4, { align: 'right' });
+
+            // The Gap Section
+            yPos += 18;
+            doc.setFontSize(12);
+            doc.text('THE GAP', 20, yPos);
+
+            yPos += 10;
+            // Tracked box
+            doc.setFillColor(...lightGray);
+            doc.roundedRect(20, yPos, 60, 25, 2, 2, 'F');
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(...charcoal);
+            doc.text(formatCurrency(r.trackedCost), 50, yPos + 12, { align: 'center' });
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('What Finance Tracks', 50, yPos + 20, { align: 'center' });
+
+            // Arrow
+            doc.setFontSize(16);
+            doc.text('→', 95, yPos + 14, { align: 'center' });
+
+            // Actual box
+            doc.setFillColor(...coral);
+            doc.roundedRect(110, yPos, 60, 25, 2, 2, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text(formatCurrency(r.annualCost), 140, yPos + 12, { align: 'center' });
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Actual Cost', 140, yPos + 20, { align: 'center' });
+
+            // Gap summary
+            doc.setTextColor(...coral);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${formatCurrency(r.gap)} untracked (${r.gapPercentage.toFixed(0)}%)`, 105, yPos + 35, { align: 'center' });
+
+            // Projection Section
+            yPos += 50;
+            doc.setTextColor(...charcoal);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${formData.projectionYears}-YEAR PROJECTION`, 20, yPos);
+
+            yPos += 8;
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`If current patterns continue: ${formatCurrency(r.projectedCost)}`, 20, yPos);
+            yPos += 6;
+            doc.setTextColor(16, 185, 129);
+            doc.text(`Preventing 1 departure/year saves: ${formatCurrency(r.savingsPerPrevention)}`, 20, yPos);
+
+            // CTA Box
+            yPos += 15;
+            doc.setFillColor(...teal);
+            doc.roundedRect(20, yPos, 170, 25, 3, 3, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+            doc.text('See which teams are driving these numbers', 105, yPos + 10, { align: 'center' });
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Schedule your free Turnover Analysis: cloverera.com/talk', 105, yPos + 18, { align: 'center' });
+
+            // Footer
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(7);
+            doc.text('Methodology: SHRM research + Clover ERA analysis. Actual costs may vary by industry and role.', 105, 285, { align: 'center' });
+            doc.text('contact@cloverera.com | cloverera.com', 105, 290, { align: 'center' });
+
+            // Save
+            doc.save(`${formData.companyName.replace(/\s+/g, '-')}-Turnover-Cost-Analysis.pdf`);
+        }
+
+        // Email report (placeholder - would need backend)
+        function emailReport() {
+            alert(`A copy of this report will be sent to ${formData.userEmail}.\n\n(Email delivery requires backend integration - for now, please use the PDF download.)`);
+        }
+    </script>
+</body>
+</html>
