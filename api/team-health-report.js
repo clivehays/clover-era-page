@@ -465,8 +465,6 @@ This assessment found [key insight] from six questions answered once, from your 
 
 That's the cost of not knowing. Clover ERA gives you the visibility and the actions to change it.
 
-[CTAs]
-
 ---
 
 === CRITICAL INSTRUCTIONS ===
@@ -481,6 +479,7 @@ That's the cost of not knowing. Clover ERA gives you the visibility and the acti
 8. Be direct and specific, never vague or hedging
 9. If they named someone multiple times, build their complete profile
 10. The goal is recognition - they should feel *seen*, not judged
+11. NEVER output placeholder CTAs like "[Learn more about Clover ERA]" or "[Schedule a demo]" - the frontend handles CTAs
 
 === IMPORTANT: CLOVER ERA PRODUCT ACCURACY ===
 
