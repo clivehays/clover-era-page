@@ -1953,6 +1953,16 @@
         function renderMarkdown(markdown) {
             if (!markdown) return '';
 
+            // Debug: log the raw markdown to see what we're working with
+            console.log('Raw markdown received:', markdown.substring(0, 1000));
+
+            // First, let's look for the CLOVER Profile section and extract it specially
+            // This handles cases where Claude doesn't use standard table format
+            const cloverProfileMatch = markdown.match(/###\s*Your CLOVER Profile[\s\S]*?(?=###|$)/i);
+            if (cloverProfileMatch) {
+                console.log('Found CLOVER Profile section:', cloverProfileMatch[0].substring(0, 500));
+            }
+
             // Process tables first (before other transformations break them)
             // More robust approach: find consecutive lines containing | characters
             const lines = markdown.split('\n');
@@ -1964,16 +1974,19 @@
                 const line = lines[i];
                 const trimmedLine = line.trim();
 
-                // Check if this line looks like a table row (contains | and has content)
-                const isTableRow = trimmedLine.includes('|') &&
-                                   (trimmedLine.startsWith('|') || trimmedLine.includes(' | '));
+                // Check if this line looks like a table row
+                // Must contain | and either start with | or have at least 2 | characters
+                const pipeCount = (trimmedLine.match(/\|/g) || []).length;
+                const isTableRow = pipeCount >= 2 || (trimmedLine.startsWith('|') && pipeCount >= 1);
 
                 if (isTableRow) {
                     inTable = true;
                     tableLines.push(trimmedLine);
+                    console.log('Table row detected:', trimmedLine);
                 } else {
                     // If we were in a table and now we're not, process the table
                     if (inTable && tableLines.length > 0) {
+                        console.log('Processing table with', tableLines.length, 'rows');
                         result.push(processTable(tableLines));
                         tableLines = [];
                         inTable = false;
@@ -1984,6 +1997,7 @@
 
             // Don't forget to process any remaining table at the end
             if (tableLines.length > 0) {
+                console.log('Processing final table with', tableLines.length, 'rows');
                 result.push(processTable(tableLines));
             }
 
@@ -1993,17 +2007,21 @@
             function processTable(rows) {
                 if (rows.length === 0) return '';
 
+                console.log('processTable called with rows:', rows);
+
                 let tableHtml = '<table class="clover-table">';
                 let isFirstDataRow = true;
 
-                rows.forEach((row) => {
+                rows.forEach((row, idx) => {
                     // Skip separator rows (|---|---|---| or |:---|:---:|---:|)
                     if (/^[\|\s\-:]+$/.test(row) && row.includes('-')) {
+                        console.log('Skipping separator row:', row);
                         return;
                     }
 
                     // Extract cells: split by | and filter out empty strings
                     let cells = row.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
+                    console.log('Row', idx, 'cells:', cells);
 
                     if (cells.length === 0) return;
 
