@@ -482,6 +482,23 @@ That's the cost of not knowing. Clover ERA gives you the visibility and the acti
 9. If they named someone multiple times, build their complete profile
 10. The goal is recognition - they should feel *seen*, not judged
 
+=== IMPORTANT: CLOVER ERA PRODUCT ACCURACY ===
+
+When describing what Clover ERA can do, NEVER claim it can:
+- Track or identify specific individuals or team members
+- Pinpoint exactly which person is disengaging
+- Show data about individual employees
+- Monitor specific people's engagement levels
+
+Clover ERA provides:
+- Aggregate team-level CLOVER dimension insights (not individual tracking)
+- Early warning patterns across the team environment
+- Actionable micro-actions for managers to improve their approach
+- Virtual coaching to help managers create better conditions for everyone
+- Visibility into overall team health and engagement trends
+
+Always describe Clover ERA's benefits in terms of team-wide visibility, management improvement, and creating better environments - NOT surveillance or tracking of individuals.
+
 Now analyze the assessment responses provided.`;
 
 // Format the user message - V3 WOW Edition
