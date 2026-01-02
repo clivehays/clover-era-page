@@ -410,9 +410,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>
                     </div>
                 </div>
+                <div class="nav-dropdown">
+                    <a href="/team-health/" class="nav-dropdown-toggle">
+                        TOOLS <span style="font-size: 0.7rem;">▼</span>
+                    </a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/team-health/">
+                            <strong>Team Health Assessment</strong>
+                            <div class="dropdown-description">5-minute diagnosis for managers</div>
+                        </a>
+                        <a href="/business-case/">
+                            <strong>Turnover Cost Calculator</strong>
+                            <div class="dropdown-description">See your real turnover cost</div>
+                        </a>
+                    </div>
+                </div>
                 <a href="/pricing/">PRICING</a>
                 <a href="https://app.cloverera.com/login" class="nav-signin">SIGN IN</a>
-                <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/?ismsaljsauthenabled" class="nav-cta">SCHEDULE ANALYSIS</a>
+                <a href="/talk.html" class="nav-cta">FREE ANALYSIS</a>
             </div>
         </div>
     `;
