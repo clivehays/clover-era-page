@@ -2043,14 +2043,27 @@
                 });
 
                 tableHtml += '</tbody></table>';
+                console.log('Generated table HTML:', tableHtml.substring(0, 300));
                 return tableHtml;
             }
+
+            console.log('Markdown after table processing:', markdown.substring(0, 500));
 
             let html = markdown
                 // Escape HTML (but not our already-converted tables)
                 .replace(/&(?!amp;|lt;|gt;)/g, '&amp;')
-                .replace(/<(?!\/?(?:table|thead|tbody|tr|th|td)[>\s])/g, '&lt;')
-                .replace(/(?<!["=])>/g, '&gt;')
+                // Don't escape < for table elements
+                .replace(/<(?!\/?(?:table|thead|tbody|tr|th|td)\b)/g, '&lt;')
+                // Don't escape > that's part of table tags - match > not preceded by table tag names
+                .replace(/>(?!<)/g, function(match, offset, string) {
+                    // Check if this > is closing a table-related tag
+                    const before = string.substring(Math.max(0, offset - 50), offset);
+                    if (/<(?:table|thead|tbody|tr|th|td)[^>]*$/.test(before) ||
+                        /<\/(?:table|thead|tbody|tr|th|td)$/.test(before)) {
+                        return '>'; // Keep the >
+                    }
+                    return '&gt;'; // Escape it
+                })
                 // Headers
                 .replace(/^### (.*$)/gm, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gm, '<h2>$1</h2>')
