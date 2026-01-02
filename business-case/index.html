@@ -2083,9 +2083,10 @@
             doc.setFont('helvetica', 'normal');
             doc.text('What Finance Tracks', 57, yPos + 20, { align: 'center' });
 
-            // Arrow
-            doc.setFontSize(16);
-            doc.text('→', 105, yPos + 14, { align: 'center' });
+            // Arrow - use simple characters since Unicode arrows don't render in jsPDF
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('>>', 105, yPos + 14, { align: 'center' });
 
             // Actual box - wider to accommodate large numbers
             doc.setFillColor(...coral);
