@@ -1507,7 +1507,9 @@
             // Edge case flags
             const isSmallTeam = teamSizeLow < 5;
             const isLargeTeam = avgTeamSize > 1000;
-            const hasNegativeROI = netBenefitTwo <= 0;
+            // Only flag negative ROI if break-even is unrealistic (more than half of annual departures)
+            // For larger teams with many departures, the investment usually makes sense
+            const hasNegativeROI = netBenefitTwo <= 0 && breakEvenDepartures > (departures / 2);
             const isSingleDeparture = departures === 1;
 
             return {
