@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li><a href="/how-it-works.html">How It Works</a></li>
                     <li><a href="/clover-framework.html">The CLOVER Framework</a></li>
                     <li><a href="/our-science.html">The Science</a></li>
-                    <li><a href="/calculator/">ROI Calculator</a></li>
+                    <li><a href="/implementation-guide.html">Implementation Guide</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -116,11 +116,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 </ul>
             </div>
             <div class="footer-section">
+                <h4>FREE TOOLS</h4>
+                <ul>
+                    <li><a href="/team-health/">Team Health Assessment</a></li>
+                    <li><a href="/business-case/">Turnover Cost Calculator</a></li>
+                    <li><a href="/calculator/">ROI Calculator</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
                 <h4>GET STARTED</h4>
                 <ul>
                     <li><a href="/pricing/">Pricing</a></li>
-                    <li><a href="/calculator/">Calculate Your ROI</a></li>
-                    <li><a href="/pricing/">Schedule Analysis</a></li>
+                    <li><a href="/talk.html">Schedule Analysis</a></li>
+                    <li><a href="/roundtable/">Manager Roundtable</a></li>
+                    <li><a href="/signal/">The Signal</a></li>
                     <li><a href="https://app.cloverera.com/login">Sign In</a></li>
                 </ul>
             </div>
