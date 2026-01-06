@@ -606,10 +606,18 @@
 
     <!-- Form Handler -->
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKvBzkdo7X0v6nU2vOdqCciT-T_fXYveJJr-r3AzdSsLxPvU4huF27KMZRjcDVajrf/exec';
-
         // Track when form was loaded
         const formLoadTime = Date.now();
+
+        // Get UTM parameters from URL
+        function getUtmParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                utmSource: params.get('utm_source'),
+                utmMedium: params.get('utm_medium'),
+                utmCampaign: params.get('utm_campaign')
+            };
+        }
 
         document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -657,27 +665,34 @@
             btn.textContent = 'Joining...';
 
             try {
-                const formData = new FormData();
-                formData.append('firstName', firstName);
-                formData.append('email', email);
-                formData.append('source', 'alreadygone-waitlist');
-                formData.append('timestamp', new Date().toISOString());
+                const utmParams = getUtmParams();
 
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                const response = await fetch('/api/book-waitlist', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        firstName: firstName,
+                        email: email,
+                        bookSlug: 'already-gone',
+                        source: 'alreadygone-waitlist',
+                        ...utmParams
+                    })
                 });
 
-                if (response.ok) {
-                    message.textContent = "You're on the list. Check your inbox for confirmation.";
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    message.textContent = data.message || "You're on the list. Check your inbox for confirmation.";
                     message.className = 'form-message success';
                     document.getElementById('waitlistForm').reset();
                 } else {
-                    throw new Error('Network response was not ok');
+                    throw new Error(data.error || 'Submission failed');
                 }
             } catch (error) {
                 console.error('Submission error:', error);
-                message.textContent = 'Something went wrong. Please try again.';
+                message.textContent = error.message || 'Something went wrong. Please try again.';
                 message.className = 'form-message error';
             } finally {
                 btn.disabled = false;
