@@ -28,8 +28,9 @@ async function sendConfirmationEmail(firstName, email) {
         console.log('Sending email to:', email);
 
         // Build email payload
+        // Note: Using clive.hays@cloverera.com as it's verified with Resend
         const emailPayload = {
-            from: 'Clive Hays <contact@cloverera.com>',
+            from: 'Clive Hays <clive.hays@cloverera.com>',
             to: email,
             subject: 'Your 12 Early Warning Signals PDF',
             text: `Hi ${firstName},
@@ -51,7 +52,7 @@ Clive Hays
 Co-Founder, Clover ERA
 cloverera.com
 `,
-            reply_to: 'contact@cloverera.com',
+            reply_to: 'clive.hays@cloverera.com',
         };
 
         // Note: PDF attachment will be added once file is uploaded
