@@ -8,6 +8,63 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_KEY
 );
 
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+
+// Send confirmation email via Resend
+async function sendConfirmationEmail(firstName, email) {
+    if (!RESEND_API_KEY) {
+        console.warn('RESEND_API_KEY not configured, skipping email');
+        return false;
+    }
+
+    try {
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${RESEND_API_KEY}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                from: 'Clive Hays <clive.hays@cloverera.com>',
+                to: email,
+                subject: "You're on the Already Gone waitlist",
+                text: `${firstName} -
+
+You're on the list for "Already Gone: Why Your Best People Leave Before You See It Coming."
+
+The book launches January 28, 2026.
+
+As a waitlist member, you'll get:
+- Early access to read the book before it hits Amazon
+- The Signals Checklist: 20 warning signs most managers miss
+- Launch day notification
+
+Thanks for your interest. More soon.
+
+Clive & Neil Hays
+
+---
+Clover ERA | cloverera.com
+`,
+                reply_to: 'clive.hays@cloverera.com',
+            }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Resend API error:', errorText);
+            return false;
+        }
+
+        const result = await response.json();
+        console.log('Confirmation email sent:', result.id);
+        return true;
+    } catch (error) {
+        console.error('Error sending confirmation email:', error);
+        return false;
+    }
+}
+
 export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -107,9 +164,22 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'Failed to join waitlist' });
         }
 
+        // Send confirmation email (don't fail if email fails)
+        const emailSent = await sendConfirmationEmail(cleanFirstName, cleanEmail);
+
+        // Update status to confirmed if email sent
+        if (emailSent) {
+            await supabase
+                .from('book_waitlist')
+                .update({ status: 'confirmed', confirmed_at: new Date().toISOString() })
+                .eq('id', signup.id);
+        }
+
         return res.status(201).json({
             success: true,
-            message: "You're on the list. Check your inbox for confirmation."
+            message: emailSent
+                ? "You're on the list. Check your inbox for confirmation."
+                : "You're on the list!"
         });
 
     } catch (error) {
