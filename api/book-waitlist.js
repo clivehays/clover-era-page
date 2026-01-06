@@ -2,6 +2,8 @@
 // POST /api/book-waitlist
 
 import { createClient } from '@supabase/supabase-js';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -10,7 +12,20 @@ const supabase = createClient(
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
-// Send confirmation email via Resend
+// Get PDF attachment as base64
+function getPdfAttachment() {
+    try {
+        // PDF should be in /public/downloads/12-early-warning-signals.pdf
+        const pdfPath = join(process.cwd(), 'public', 'downloads', '12-early-warning-signals.pdf');
+        const pdfBuffer = readFileSync(pdfPath);
+        return pdfBuffer.toString('base64');
+    } catch (error) {
+        console.error('Error reading PDF attachment:', error);
+        return null;
+    }
+}
+
+// Send confirmation email via Resend with PDF attachment
 async function sendConfirmationEmail(firstName, email) {
     if (!RESEND_API_KEY) {
         console.warn('RESEND_API_KEY not configured, skipping email');
@@ -18,36 +33,53 @@ async function sendConfirmationEmail(firstName, email) {
     }
 
     try {
+        // Build email payload
+        const emailPayload = {
+            from: 'Clive Hays <contact@cloverera.com>',
+            to: email,
+            subject: 'Your 12 Early Warning Signals PDF',
+            text: `Hi ${firstName},
+
+Thanks for joining the Already Gone waitlist.
+
+Attached is the PDF I promised: 12 Early Warning Signals Your Employee Is About to Leave.
+
+Takes about 3 minutes to read. You'll probably recognise a few of these from your own team.
+
+The full book launches January 28. You'll hear from me a few days before with early access - you'll be able to read it before it hits Amazon.
+
+Until then, if any of those 12 signals hit close to home and you want to talk through what you're seeing, just reply to this email.
+
+Clive
+
+--
+Clive Hays
+Co-Founder, Clover ERA
+cloverera.com
+`,
+            reply_to: 'contact@cloverera.com',
+        };
+
+        // Try to attach PDF if available
+        const pdfBase64 = getPdfAttachment();
+        if (pdfBase64) {
+            emailPayload.attachments = [
+                {
+                    filename: '12-early-warning-signals.pdf',
+                    content: pdfBase64,
+                }
+            ];
+        } else {
+            console.warn('PDF attachment not found, sending email without attachment');
+        }
+
         const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${RESEND_API_KEY}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                from: 'Clive Hays <clive.hays@cloverera.com>',
-                to: email,
-                subject: "You're on the Already Gone waitlist",
-                text: `${firstName} -
-
-You're on the list for "Already Gone: Why Your Best People Leave Before You See It Coming."
-
-The book launches January 28, 2026.
-
-As a waitlist member, you'll get:
-- Early access to read the book before it hits Amazon
-- The Signals Checklist: 20 warning signs most managers miss
-- Launch day notification
-
-Thanks for your interest. More soon.
-
-Clive & Neil Hays
-
----
-Clover ERA | cloverera.com
-`,
-                reply_to: 'clive.hays@cloverera.com',
-            }),
+            body: JSON.stringify(emailPayload),
         });
 
         if (!response.ok) {
@@ -178,7 +210,7 @@ export default async function handler(req, res) {
         return res.status(201).json({
             success: true,
             message: emailSent
-                ? "You're on the list. Check your inbox for confirmation."
+                ? "You're on the list. Check your inbox - the 12 Early Warning Signals PDF is on its way."
                 : "You're on the list!"
         });
 
