@@ -2,37 +2,31 @@
 // POST /api/book-waitlist
 
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-);
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
-// Get PDF attachment as base64
-function getPdfAttachment() {
-    try {
-        // PDF should be in /public/downloads/12-early-warning-signals.pdf
-        const pdfPath = join(process.cwd(), 'public', 'downloads', '12-early-warning-signals.pdf');
-        const pdfBuffer = readFileSync(pdfPath);
-        return pdfBuffer.toString('base64');
-    } catch (error) {
-        console.error('Error reading PDF attachment:', error);
-        return null;
+// Lazy initialization to avoid issues with env vars at module load
+let supabase = null;
+function getSupabase() {
+    if (!supabase) {
+        supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_KEY
+        );
     }
+    return supabase;
 }
 
-// Send confirmation email via Resend with PDF attachment
+// Send confirmation email via Resend
 async function sendConfirmationEmail(firstName, email) {
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+
     if (!RESEND_API_KEY) {
-        console.warn('RESEND_API_KEY not configured, skipping email');
+        console.error('RESEND_API_KEY not configured');
         return false;
     }
 
     try {
+        console.log('Sending email to:', email);
+
         // Build email payload
         const emailPayload = {
             from: 'Clive Hays <contact@cloverera.com>',
@@ -60,18 +54,8 @@ cloverera.com
             reply_to: 'contact@cloverera.com',
         };
 
-        // Try to attach PDF if available
-        const pdfBase64 = getPdfAttachment();
-        if (pdfBase64) {
-            emailPayload.attachments = [
-                {
-                    filename: '12-early-warning-signals.pdf',
-                    content: pdfBase64,
-                }
-            ];
-        } else {
-            console.warn('PDF attachment not found, sending email without attachment');
-        }
+        // Note: PDF attachment will be added once file is uploaded
+        // For now, sending email without attachment
 
         const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
@@ -144,6 +128,8 @@ export default async function handler(req, res) {
                           null;
         const userAgent = req.headers['user-agent'] || null;
 
+        const supabase = getSupabase();
+
         // Check for existing signup
         const { data: existing } = await supabase
             .from('book_waitlist')
@@ -215,7 +201,8 @@ export default async function handler(req, res) {
         });
 
     } catch (error) {
-        console.error('Waitlist signup error:', error);
+        console.error('Waitlist signup error:', error.message || error);
+        console.error('Full error:', JSON.stringify(error, null, 2));
         return res.status(500).json({ error: 'Internal server error' });
     }
 }
