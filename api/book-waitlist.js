@@ -15,6 +15,31 @@ function getSupabase() {
     return supabase;
 }
 
+// PDF URL for the 12 Early Warning Signals document
+const PDF_URL = 'https://cloverera.com/public/downloads/12-early-warning-signals.pdf';
+
+// Fetch PDF and convert to base64
+async function fetchPdfAsBase64() {
+    try {
+        console.log('Fetching PDF from:', PDF_URL);
+        const response = await fetch(PDF_URL);
+
+        if (!response.ok) {
+            console.error('Failed to fetch PDF:', response.status);
+            return null;
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const base64 = buffer.toString('base64');
+        console.log('PDF fetched successfully, size:', buffer.length, 'bytes');
+        return base64;
+    } catch (error) {
+        console.error('Error fetching PDF:', error.message);
+        return null;
+    }
+}
+
 // Send confirmation email via Resend
 async function sendConfirmationEmail(firstName, email) {
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -23,7 +48,6 @@ async function sendConfirmationEmail(firstName, email) {
     console.log('Recipient:', email);
     console.log('First name:', firstName);
     console.log('RESEND_API_KEY exists:', !!RESEND_API_KEY);
-    console.log('RESEND_API_KEY length:', RESEND_API_KEY ? RESEND_API_KEY.length : 0);
 
     if (!RESEND_API_KEY) {
         console.error('RESEND_API_KEY not configured - env var is missing');
@@ -31,6 +55,9 @@ async function sendConfirmationEmail(firstName, email) {
     }
 
     try {
+        // Fetch PDF for attachment
+        const pdfBase64 = await fetchPdfAsBase64();
+
         // Build email payload
         // Note: Using clive.hays@cloverera.com as it's verified with Resend
         const emailPayload = {
@@ -59,6 +86,19 @@ cloverera.com
             reply_to: 'clive.hays@cloverera.com',
         };
 
+        // Add PDF attachment if available
+        if (pdfBase64) {
+            emailPayload.attachments = [
+                {
+                    filename: '12-Early-Warning-Signals.pdf',
+                    content: pdfBase64,
+                }
+            ];
+            console.log('PDF attachment added');
+        } else {
+            console.log('Sending email without PDF attachment');
+        }
+
         console.log('Calling Resend API...');
 
         const response = await fetch('https://api.resend.com/emails', {
@@ -82,7 +122,7 @@ cloverera.com
 
         const result = JSON.parse(responseText);
         console.log('Email sent successfully, ID:', result.id);
-        return { sent: true, emailId: result.id };
+        return { sent: true, emailId: result.id, hasAttachment: !!pdfBase64 };
     } catch (error) {
         console.error('Exception in sendConfirmationEmail:', error.message);
         console.error('Stack:', error.stack);
