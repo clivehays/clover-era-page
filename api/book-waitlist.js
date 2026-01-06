@@ -70,7 +70,7 @@ Thanks for joining the Already Gone waitlist.
 
 Attached is the PDF I promised: 12 Early Warning Signals Your Employee Is About to Leave.
 
-Takes about 3 minutes to read. You'll probably recognise a few of these from your own team.
+You'll probably recognise a few of these from your own team.
 
 The full book launches January 28. You'll hear from me a few days before with early access - you'll be able to read it before it hits Amazon.
 
