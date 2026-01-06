@@ -19,14 +19,18 @@ function getSupabase() {
 async function sendConfirmationEmail(firstName, email) {
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
+    console.log('=== EMAIL SEND ATTEMPT ===');
+    console.log('Recipient:', email);
+    console.log('First name:', firstName);
+    console.log('RESEND_API_KEY exists:', !!RESEND_API_KEY);
+    console.log('RESEND_API_KEY length:', RESEND_API_KEY ? RESEND_API_KEY.length : 0);
+
     if (!RESEND_API_KEY) {
-        console.error('RESEND_API_KEY not configured');
-        return false;
+        console.error('RESEND_API_KEY not configured - env var is missing');
+        return { sent: false, error: 'RESEND_API_KEY not configured' };
     }
 
     try {
-        console.log('Sending email to:', email);
-
         // Build email payload
         // Note: Using clive.hays@cloverera.com as it's verified with Resend
         const emailPayload = {
@@ -55,8 +59,7 @@ cloverera.com
             reply_to: 'clive.hays@cloverera.com',
         };
 
-        // Note: PDF attachment will be added once file is uploaded
-        // For now, sending email without attachment
+        console.log('Calling Resend API...');
 
         const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
@@ -67,18 +70,23 @@ cloverera.com
             body: JSON.stringify(emailPayload),
         });
 
+        console.log('Resend API response status:', response.status);
+
+        const responseText = await response.text();
+        console.log('Resend API response body:', responseText);
+
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Resend API error:', errorText);
-            return false;
+            console.error('Resend API error - status:', response.status);
+            return { sent: false, error: `Resend API error: ${response.status} - ${responseText}` };
         }
 
-        const result = await response.json();
-        console.log('Confirmation email sent:', result.id);
-        return true;
+        const result = JSON.parse(responseText);
+        console.log('Email sent successfully, ID:', result.id);
+        return { sent: true, emailId: result.id };
     } catch (error) {
-        console.error('Error sending confirmation email:', error);
-        return false;
+        console.error('Exception in sendConfirmationEmail:', error.message);
+        console.error('Stack:', error.stack);
+        return { sent: false, error: error.message };
     }
 }
 
@@ -184,10 +192,12 @@ export default async function handler(req, res) {
         }
 
         // Send confirmation email (don't fail if email fails)
-        const emailSent = await sendConfirmationEmail(cleanFirstName, cleanEmail);
+        console.log('About to send confirmation email...');
+        const emailResult = await sendConfirmationEmail(cleanFirstName, cleanEmail);
+        console.log('Email result:', JSON.stringify(emailResult));
 
         // Update status to confirmed if email sent
-        if (emailSent) {
+        if (emailResult.sent) {
             await supabase
                 .from('book_waitlist')
                 .update({ status: 'confirmed', confirmed_at: new Date().toISOString() })
@@ -196,9 +206,15 @@ export default async function handler(req, res) {
 
         return res.status(201).json({
             success: true,
-            message: emailSent
+            message: emailResult.sent
                 ? "You're on the list. Check your inbox - the 12 Early Warning Signals PDF is on its way."
-                : "You're on the list!"
+                : "You're on the list!",
+            // Include debug info temporarily
+            _debug: {
+                emailSent: emailResult.sent,
+                emailError: emailResult.error || null,
+                emailId: emailResult.emailId || null
+            }
         });
 
     } catch (error) {
