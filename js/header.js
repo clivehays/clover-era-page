@@ -224,17 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
             margin-top: 0 !important;
         }
 
-        @media (max-width: 1024px) {
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .nav-links a {
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 768px) {
+        @media (max-width: 1600px) {
             .mobile-menu-toggle {
                 display: flex !important;
             }
@@ -450,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
             // Only prevent default on mobile (when hamburger is visible)
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1600) {
                 e.preventDefault();
                 const dropdown = this.parentElement;
                 dropdown.classList.toggle('active');
