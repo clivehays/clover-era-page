@@ -703,6 +703,578 @@
             gap: 1rem;
         }
 
+        /* ========== SALES PLAYBOOK STYLES ========== */
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--medium-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Qualification Checklist Styles */
+        .qual-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .qual-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .qual-section-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .qual-score-badge {
+            background: var(--warning-orange);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .qual-score-badge.qualified {
+            background: var(--primary-green);
+        }
+
+        .qual-score-badge.not-qualified {
+            background: var(--danger-red);
+        }
+
+        .qual-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .qual-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .qual-item:hover {
+            background: var(--light-gray);
+        }
+
+        .qual-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--primary-green);
+        }
+
+        .qual-label {
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .qual-help {
+            width: 16px;
+            height: 16px;
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            cursor: help;
+        }
+
+        .qual-warning {
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: #FEF3C7;
+            border-left: 3px solid var(--warning-orange);
+            border-radius: 0 4px 4px 0;
+            font-size: 0.8rem;
+            color: #92400E;
+        }
+
+        .qual-ready {
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: var(--light-green);
+            border-left: 3px solid var(--primary-green);
+            border-radius: 0 4px 4px 0;
+            font-size: 0.8rem;
+            color: #065F46;
+        }
+
+        /* Discovery Progress Styles */
+        .discovery-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .discovery-badge {
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .discovery-badge.complete {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .discovery-phases {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .discovery-phase {
+            padding: 0.75rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .discovery-phase.in-progress {
+            border-color: var(--warning-orange);
+            background: #FFFBEB;
+        }
+
+        .discovery-phase.complete {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phase-status {
+            font-size: 1rem;
+        }
+
+        .phase-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex: 1;
+        }
+
+        .phase-questions {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .phase-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Business Case Builder Styles */
+        .bc-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .bc-status {
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+        }
+
+        .bc-status.in-progress {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .bc-status.complete {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .bc-buyer-type {
+            margin-bottom: 1rem;
+        }
+
+        .bc-type-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .bc-type-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .bc-type-option:hover {
+            border-color: var(--primary-green);
+        }
+
+        .bc-type-option.selected {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+        }
+
+        .bc-calculator {
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .bc-calculator h4 {
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .bc-input-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .bc-input-group label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .bc-input-group small {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .bc-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            margin-top: 0.75rem;
+            border: 2px solid var(--primary-green);
+        }
+
+        .bc-result-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .bc-result-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .roi-item {
+            padding: 0.5rem;
+            background: var(--light-gray);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .roi-item.highlight {
+            background: var(--light-green);
+            border: 1px solid var(--primary-green);
+        }
+
+        .roi-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .roi-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .roi-value.positive {
+            color: var(--primary-green);
+        }
+
+        /* Stakeholder Map Styles */
+        .stakeholder-badge {
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .stakeholder-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stakeholder-card {
+            padding: 0.75rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stakeholder-card:hover {
+            border-color: var(--primary-green);
+            background: var(--light-gray);
+        }
+
+        .stakeholder-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stakeholder-icon {
+            font-size: 1rem;
+        }
+
+        .stakeholder-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .stakeholder-sentiment {
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            color: white;
+            text-transform: capitalize;
+        }
+
+        .stakeholder-sentiment.champion { background: var(--primary-green); }
+        .stakeholder-sentiment.supporter { background: #60A5FA; }
+        .stakeholder-sentiment.neutral { background: #9CA3AF; }
+        .stakeholder-sentiment.skeptic { background: var(--warning-orange); }
+        .stakeholder-sentiment.blocker { background: var(--danger-red); }
+
+        .stakeholder-role {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .stakeholder-concerns {
+            font-size: 0.75rem;
+            padding: 0.4rem;
+            background: #FEF3C7;
+            border-radius: 4px;
+            color: #92400E;
+            margin-top: 0.5rem;
+        }
+
+        .stakeholder-warnings {
+            margin-top: 0.75rem;
+        }
+
+        .stakeholder-warning {
+            padding: 0.5rem;
+            background: #FEF3C7;
+            border-left: 3px solid var(--warning-orange);
+            border-radius: 0 4px 4px 0;
+            font-size: 0.75rem;
+            color: #92400E;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Wizard Progress Styles */
+        .wizard-progress {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--medium-gray);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-green);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .wizard-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-label {
+            display: block;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .wizard-tip {
+            padding: 0.75rem;
+            background: #EFF6FF;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #1E40AF;
+        }
+
+        /* Quick Actions Enhanced */
+        .quick-action-group {
+            margin-bottom: 1rem;
+        }
+
+        .quick-action-group-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-action-btn {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            margin-bottom: 0.4rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .quick-action-btn:hover {
+            border-color: var(--primary-green);
+            background: var(--light-gray);
+        }
+
+        .quick-action-btn .icon {
+            font-size: 1.1rem;
+        }
+
+        /* Opportunity Playbook Tabs */
+        .opp-playbook-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--medium-gray);
+            margin-top: 1rem;
+        }
+
+        .opp-playbook-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .opp-playbook-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .opp-playbook-tab.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+
+        .opp-playbook-content {
+            display: none;
+            padding-top: 1rem;
+        }
+
+        .opp-playbook-content.active {
+            display: block;
+        }
+
+        /* ========== END SALES PLAYBOOK STYLES ========== */
+
         @media (max-width: 768px) {
             .container {
                 padding: 0 1rem;
@@ -842,11 +1414,58 @@
                         <div class="section-header">
                             <h2>Quick Actions</h2>
                         </div>
-                        <div class="quick-actions">
-                            <button class="btn btn-primary" onclick="showAddOpportunityModal()">+ New Opportunity</button>
-                            <button class="btn btn-secondary" onclick="showAddContactModal()">+ Add Contact</button>
-                            <button class="btn btn-secondary" onclick="showAddActivityModal()">+ Log Activity</button>
+
+                        <!-- Create New -->
+                        <div class="quick-action-group">
+                            <div class="quick-action-group-title">Create New</div>
+                            <button class="quick-action-btn" onclick="showAddOpportunityModal()">
+                                <span class="icon">+</span> New Opportunity
+                            </button>
+                            <button class="quick-action-btn" onclick="showAddContactModal()">
+                                <span class="icon">+</span> Add Contact
+                            </button>
+                            <button class="quick-action-btn" onclick="showAddStakeholderModal()">
+                                <span class="icon">+</span> Add Stakeholder
+                            </button>
                         </div>
+
+                        <!-- Log Activity -->
+                        <div class="quick-action-group">
+                            <div class="quick-action-group-title">Log Activity</div>
+                            <button class="quick-action-btn" onclick="scheduleTeamsMeeting()">
+                                <span class="icon">📅</span> Schedule Meeting
+                            </button>
+                            <button class="quick-action-btn" onclick="showLogEmailModal()">
+                                <span class="icon">✉️</span> Log Email
+                            </button>
+                            <button class="quick-action-btn" onclick="showLogCallModal()">
+                                <span class="icon">📞</span> Log Call
+                            </button>
+                            <button class="quick-action-btn" onclick="showAddActivityModal()">
+                                <span class="icon">📝</span> Other Activity
+                            </button>
+                        </div>
+
+                        <!-- Sales Tools -->
+                        <div class="quick-action-group">
+                            <div class="quick-action-group-title">Sales Tools</div>
+                            <button class="quick-action-btn" onclick="copyDemoEmailTemplate()">
+                                <span class="icon">📋</span> Copy Demo Email
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stakeholder Map Card -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Stakeholders (<span id="stakeholderCount">0</span>)</h2>
+                        </div>
+                        <div id="stakeholderList" class="stakeholder-list">
+                            <div class="empty-state" style="padding: 1rem;">
+                                <p style="font-size: 0.85rem;">No stakeholders mapped yet</p>
+                            </div>
+                        </div>
+                        <div id="stakeholderWarnings" class="stakeholder-warnings" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -1068,6 +1687,192 @@
                     <button type="submit" class="btn btn-primary">Save Activity</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Log Email Modal -->
+    <div id="logEmailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Log Email</h2>
+                <button class="modal-close" onclick="hideLogEmailModal()">&times;</button>
+            </div>
+            <form id="logEmailForm" onsubmit="saveLoggedEmail(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Related Opportunity</label>
+                        <select id="logEmailOpportunity">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="logEmailSubject">Email Subject *</label>
+                        <input type="text" id="logEmailSubject" required placeholder="e.g., Demo follow-up">
+                    </div>
+                    <div class="form-group">
+                        <label for="logEmailDate">Date Sent/Received</label>
+                        <input type="datetime-local" id="logEmailDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="logEmailSummary">Summary</label>
+                        <textarea id="logEmailSummary" rows="4" placeholder="Brief summary of the email..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideLogEmailModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Log Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Log Call Modal -->
+    <div id="logCallModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Log Call</h2>
+                <button class="modal-close" onclick="hideLogCallModal()">&times;</button>
+            </div>
+            <form id="logCallForm" onsubmit="saveLoggedCall(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Related Opportunity</label>
+                        <select id="logCallOpportunity">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact</label>
+                        <select id="logCallContact">
+                            <option value="">Select contact...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="logCallSubject">Call Subject *</label>
+                        <input type="text" id="logCallSubject" required placeholder="e.g., Initial discovery call">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="logCallDate">Call Date</label>
+                            <input type="datetime-local" id="logCallDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="logCallDuration">Duration (minutes)</label>
+                            <input type="number" id="logCallDuration" min="1" placeholder="30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="logCallNotes">Notes / Outcome</label>
+                        <textarea id="logCallNotes" rows="4" placeholder="What was discussed? Key takeaways..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideLogCallModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Log Call</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Stakeholder Modal -->
+    <div id="stakeholderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="stakeholderModalTitle">Add Stakeholder</h2>
+                <button class="modal-close" onclick="hideStakeholderModal()">&times;</button>
+            </div>
+            <form id="stakeholderForm" onsubmit="saveStakeholder(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="stakeholderId">
+                    <input type="hidden" id="stakeholderOppId">
+                    <div class="form-group">
+                        <label>Contact</label>
+                        <select id="stakeholderContact">
+                            <option value="">Select existing contact...</option>
+                        </select>
+                        <small style="color: var(--text-secondary);">Or leave blank to add details manually below</small>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="stakeholderName">Name</label>
+                            <input type="text" id="stakeholderName" placeholder="If not selecting contact">
+                        </div>
+                        <div class="form-group">
+                            <label for="stakeholderTitle">Title</label>
+                            <input type="text" id="stakeholderTitle" placeholder="e.g., VP of HR">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="stakeholderRole">Role in Deal *</label>
+                        <select id="stakeholderRole" required>
+                            <option value="">Select role...</option>
+                            <option value="mobilizer">Mobilizer (Your Champion)</option>
+                            <option value="decision_maker">Decision Maker (Signs Contract)</option>
+                            <option value="budget_holder">Budget Holder (Controls Spend)</option>
+                            <option value="influencer">Influencer (Has Sway)</option>
+                            <option value="end_user">End User (Will Use Product)</option>
+                            <option value="blocker">Potential Blocker</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="stakeholderSentiment">Sentiment</label>
+                        <select id="stakeholderSentiment">
+                            <option value="neutral">Neutral</option>
+                            <option value="champion">Champion (Strong Supporter)</option>
+                            <option value="supporter">Supporter</option>
+                            <option value="skeptic">Skeptic</option>
+                            <option value="blocker">Blocker (Against)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="stakeholderConcerns">Key Concerns</label>
+                        <textarea id="stakeholderConcerns" rows="2" placeholder="What are their main concerns or objections?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="stakeholderNotes">Notes</label>
+                        <textarea id="stakeholderNotes" rows="2" placeholder="Additional notes about this stakeholder..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideStakeholderModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Stakeholder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Discovery Wizard Modal -->
+    <div id="discoveryWizardModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 id="discoveryWizardTitle">Discovery: Current State</h2>
+                <button class="modal-close" onclick="closeDiscoveryWizard()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wizard-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="wizardProgressFill" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text" id="wizardProgressText">Question 1 of 4</span>
+                </div>
+                <div id="wizardQuestionContainer">
+                    <!-- Questions populated by JS -->
+                </div>
+                <div class="wizard-tip" id="wizardTip">
+                    💡 <strong>Tip:</strong> Use their exact words when possible. These become powerful quotes in your business case.
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button class="btn btn-secondary" id="wizardPrevBtn" onclick="wizardPrevQuestion()" style="display: none;">
+                    ← Previous
+                </button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="wizardSkipQuestion()">Skip</button>
+                    <button class="btn btn-primary" id="wizardNextBtn" onclick="wizardNextQuestion()">
+                        Save & Continue →
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1495,16 +2300,153 @@
                                 </div>
                             </div>
 
+                            <!-- ========== SALES PLAYBOOK SECTION ========== -->
+                            ${!isClosed ? `
+                            <div class="opp-playbook-tabs">
+                                <button class="opp-playbook-tab active" onclick="switchPlaybookTab('${opp.id}', 'qualification')">
+                                    Qualification <span class="qual-score-badge ${getQualificationClass(opp)}">${getQualificationScore(opp)}/7</span>
+                                </button>
+                                <button class="opp-playbook-tab" onclick="switchPlaybookTab('${opp.id}', 'discovery')">
+                                    Discovery <span class="discovery-badge ${getDiscoveryClass(opp)}">${getDiscoveryProgress(opp)}/5</span>
+                                </button>
+                                <button class="opp-playbook-tab" onclick="switchPlaybookTab('${opp.id}', 'business-case')">
+                                    Business Case
+                                </button>
+                            </div>
+
+                            <!-- Qualification Tab -->
+                            <div class="opp-playbook-content active" id="opp-${opp.id}-qualification">
+                                <div class="qual-checklist">
+                                    <label class="qual-item">
+                                        <input type="checkbox" ${opp.qual_problem_acknowledged ? 'checked' : ''} onchange="updateQualification('${opp.id}', 'qual_problem_acknowledged', this.checked)">
+                                        <span class="qual-label">Problem acknowledged</span>
+                                        <span class="qual-help" title="Have they explicitly stated they have a turnover/engagement problem?">?</span>
+                                    </label>
+                                    <label class="qual-item">
+                                        <input type="checkbox" ${opp.qual_problem_quantifiable ? 'checked' : ''} onchange="updateQualification('${opp.id}', 'qual_problem_quantifiable', this.checked)">
+                                        <span class="qual-label">Problem quantifiable</span>
+                                        <span class="qual-help" title="Can they put numbers to it? (turnover rate, costs, engagement scores)">?</span>
+                                    </label>
+                                    <label class="qual-item">
+                                        <input type="checkbox" ${opp.qual_decision_maker_identified ? 'checked' : ''} onchange="updateQualification('${opp.id}', 'qual_decision_maker_identified', this.checked)">
+                                        <span class="qual-label">Decision maker identified</span>
+                                        <span class="qual-help" title="Do you know who can sign the contract?">?</span>
+                                    </label>
+                                    <label class="qual-item">
+                                        <input type="checkbox" ${opp.qual_decision_maker_access ? 'checked' : ''} onchange="updateQualification('${opp.id}', 'qual_decision_maker_access', this.checked)">
+                                        <span class="qual-label">Access to decision maker</span>
+                                        <span class="qual-help" title="Can you get a meeting with them?">?</span>
+                                    </label>
+                                    <label class="qual-item">
+                                        <input type="checkbox" ${opp.qual_budget_confirmed ? 'checked' : ''} onchange="updateQualification('${opp.id}', 'qual_budget_confirmed', this.checked)">
+                                        <span class="qual-label">Budget confirmed</span>
+                                        <span class="qual-help" title="Is there budget allocated?">?</span>
+                                    </label>
+                                    <label class="qual-item">
+                                        <input type="checkbox" ${opp.qual_timeline_or_trigger ? 'checked' : ''} onchange="updateQualification('${opp.id}', 'qual_timeline_or_trigger', this.checked)">
+                                        <span class="qual-label">Timeline or trigger event</span>
+                                        <span class="qual-help" title="Is there a compelling event driving urgency?">?</span>
+                                    </label>
+                                    <label class="qual-item">
+                                        <input type="checkbox" ${opp.qual_mobilizer_identified ? 'checked' : ''} onchange="updateQualification('${opp.id}', 'qual_mobilizer_identified', this.checked)">
+                                        <span class="qual-label">Internal mobilizer identified</span>
+                                        <span class="qual-help" title="Do you have a champion inside?">?</span>
+                                    </label>
+                                </div>
+                                ${getQualificationScore(opp) < 5 ? `
+                                    <div class="qual-warning">⚠️ Minimum 5/7 required before sending proposal</div>
+                                ` : `
+                                    <div class="qual-ready">✓ Deal is qualified. Ready to proceed.</div>
+                                `}
+                            </div>
+
+                            <!-- Discovery Tab -->
+                            <div class="opp-playbook-content" id="opp-${opp.id}-discovery">
+                                <div class="discovery-phases">
+                                    <div class="discovery-phase ${opp.discovery_current_state_complete ? 'complete' : ''}" onclick="openDiscoveryWizard('${opp.id}', 'current_state')">
+                                        <div class="phase-header">
+                                            <span class="phase-status">${opp.discovery_current_state_complete ? '✓' : '○'}</span>
+                                            <span class="phase-title">Phase 1: Current State</span>
+                                        </div>
+                                    </div>
+                                    <div class="discovery-phase ${opp.discovery_impact_cost_complete ? 'complete' : ''}" onclick="openDiscoveryWizard('${opp.id}', 'impact_cost')">
+                                        <div class="phase-header">
+                                            <span class="phase-status">${opp.discovery_impact_cost_complete ? '✓' : '○'}</span>
+                                            <span class="phase-title">Phase 2: Impact & Cost</span>
+                                        </div>
+                                    </div>
+                                    <div class="discovery-phase ${opp.discovery_future_state_complete ? 'complete' : ''}" onclick="openDiscoveryWizard('${opp.id}', 'future_state')">
+                                        <div class="phase-header">
+                                            <span class="phase-status">${opp.discovery_future_state_complete ? '✓' : '○'}</span>
+                                            <span class="phase-title">Phase 3: Future State</span>
+                                        </div>
+                                    </div>
+                                    <div class="discovery-phase ${opp.discovery_decision_process_complete ? 'complete' : ''}" onclick="openDiscoveryWizard('${opp.id}', 'decision_process')">
+                                        <div class="phase-header">
+                                            <span class="phase-status">${opp.discovery_decision_process_complete ? '✓' : '○'}</span>
+                                            <span class="phase-title">Phase 4: Decision Process</span>
+                                        </div>
+                                    </div>
+                                    <div class="discovery-phase ${opp.discovery_stakeholder_map_complete ? 'complete' : ''}" onclick="openDiscoveryWizard('${opp.id}', 'stakeholder_map')">
+                                        <div class="phase-header">
+                                            <span class="phase-status">${opp.discovery_stakeholder_map_complete ? '✓' : '○'}</span>
+                                            <span class="phase-title">Phase 5: Stakeholder Map</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Business Case Tab -->
+                            <div class="opp-playbook-content" id="opp-${opp.id}-business-case">
+                                <div class="bc-buyer-type">
+                                    <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Primary Pain Point</label>
+                                    <div class="bc-type-options">
+                                        <label class="bc-type-option ${opp.buyer_type === 'turnover' ? 'selected' : ''}">
+                                            <input type="radio" name="buyerType-${opp.id}" value="turnover" ${opp.buyer_type === 'turnover' ? 'checked' : ''} onchange="updateBuyerType('${opp.id}', 'turnover')">
+                                            <span><strong>Turnover</strong> - Losing good people</span>
+                                        </label>
+                                        <label class="bc-type-option ${opp.buyer_type === 'disengaged' ? 'selected' : ''}">
+                                            <input type="radio" name="buyerType-${opp.id}" value="disengaged" ${opp.buyer_type === 'disengaged' ? 'checked' : ''} onchange="updateBuyerType('${opp.id}', 'disengaged')">
+                                            <span><strong>Disengaged</strong> - Low productivity</span>
+                                        </label>
+                                        <label class="bc-type-option ${opp.buyer_type === 'both' ? 'selected' : ''}">
+                                            <input type="radio" name="buyerType-${opp.id}" value="both" ${opp.buyer_type === 'both' ? 'checked' : ''} onchange="updateBuyerType('${opp.id}', 'both')">
+                                            <span><strong>Both</strong> - Turnover AND engagement</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                ${opp.buyer_type ? `
+                                <div class="bc-calculator">
+                                    <h4>ROI Calculator</h4>
+                                    <div class="bc-input-group">
+                                        <label>Annual problem cost ($)</label>
+                                        <input type="number" value="${opp.bc_problem_cost || ''}" onchange="updateBusinessCase('${opp.id}', 'bc_problem_cost', this.value)" placeholder="e.g., 500000">
+                                    </div>
+                                    <div class="bc-input-group">
+                                        <label>Clover ERA Investment ($)</label>
+                                        <input type="number" value="${opp.value || 96000}" readonly style="background: var(--medium-gray);">
+                                    </div>
+                                    <div class="bc-result">
+                                        <span class="bc-result-label">ROI Multiple:</span>
+                                        <span class="bc-result-value">${opp.bc_problem_cost ? ((opp.bc_problem_cost * 0.33) / (opp.value || 96000)).toFixed(1) + 'x' : '-'}</span>
+                                    </div>
+                                </div>
+                                ` : '<p style="color: var(--text-secondary); font-size: 0.9rem;">Select a pain point above to calculate ROI</p>'}
+                            </div>
+                            ` : ''}
+                            <!-- ========== END SALES PLAYBOOK ========== -->
+
                             <!-- Meta Info (read-only) -->
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--medium-gray);">
                                 Created: ${new Date(opp.created_at).toLocaleDateString()}
                                 ${opp.actual_close_date ? ` | Closed: ${new Date(opp.actual_close_date).toLocaleDateString()}` : ''}
                                 ${opp.stage_entered_at ? ` | In stage: ${Math.floor((new Date() - new Date(opp.stage_entered_at)) / (1000 * 60 * 60 * 24))} days` : ''}
                             </div>
 
                             <!-- Actions -->
-                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                <button class="btn btn-danger btn-small" onclick="deleteOpportunity('${opp.id}')">Delete Opportunity</button>
+                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;">
+                                <button class="btn btn-secondary btn-small" onclick="showAddStakeholderForOpp('${opp.id}')">+ Add Stakeholder</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteOpportunity('${opp.id}')">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -1970,11 +2912,659 @@
             }
         }
 
+        // ========== SALES PLAYBOOK FUNCTIONS ==========
+
+        // Get qualification score for an opportunity
+        function getQualificationScore(opp) {
+            let score = 0;
+            if (opp.qual_problem_acknowledged) score++;
+            if (opp.qual_problem_quantifiable) score++;
+            if (opp.qual_decision_maker_identified) score++;
+            if (opp.qual_decision_maker_access) score++;
+            if (opp.qual_budget_confirmed) score++;
+            if (opp.qual_timeline_or_trigger) score++;
+            if (opp.qual_mobilizer_identified) score++;
+            return score;
+        }
+
+        // Get qualification CSS class
+        function getQualificationClass(opp) {
+            const score = getQualificationScore(opp);
+            if (score >= 5) return 'qualified';
+            if (score >= 3) return '';
+            return 'not-qualified';
+        }
+
+        // Get discovery progress count
+        function getDiscoveryProgress(opp) {
+            let count = 0;
+            if (opp.discovery_current_state_complete) count++;
+            if (opp.discovery_impact_cost_complete) count++;
+            if (opp.discovery_future_state_complete) count++;
+            if (opp.discovery_decision_process_complete) count++;
+            if (opp.discovery_stakeholder_map_complete) count++;
+            return count;
+        }
+
+        // Get discovery CSS class
+        function getDiscoveryClass(opp) {
+            const progress = getDiscoveryProgress(opp);
+            return progress === 5 ? 'complete' : '';
+        }
+
+        // Switch playbook tabs within an opportunity card
+        function switchPlaybookTab(oppId, tabName) {
+            // Update tab buttons
+            const tabButtons = document.querySelectorAll(`#opp-${oppId} .opp-playbook-tab`);
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.opp-playbook-tab').classList.add('active');
+
+            // Update tab content
+            const tabContents = document.querySelectorAll(`#opp-${oppId} .opp-playbook-content`);
+            tabContents.forEach(content => content.classList.remove('active'));
+            document.getElementById(`opp-${oppId}-${tabName}`).classList.add('active');
+        }
+
+        // Update qualification checkbox
+        async function updateQualification(oppId, field, value) {
+            try {
+                const { error } = await supabaseClient
+                    .from('opportunities')
+                    .update({ [field]: value })
+                    .eq('id', oppId);
+
+                if (error) throw error;
+
+                // Update local data
+                const opp = opportunities.find(o => o.id === oppId);
+                if (opp) opp[field] = value;
+
+                // Re-render to update the score badge
+                renderOpportunities();
+
+            } catch (error) {
+                console.error('Error updating qualification:', error);
+            }
+        }
+
+        // Update buyer type for business case
+        async function updateBuyerType(oppId, buyerType) {
+            try {
+                const { error } = await supabaseClient
+                    .from('opportunities')
+                    .update({ buyer_type: buyerType })
+                    .eq('id', oppId);
+
+                if (error) throw error;
+
+                // Update local data and re-render
+                const opp = opportunities.find(o => o.id === oppId);
+                if (opp) opp.buyer_type = buyerType;
+                renderOpportunities();
+
+            } catch (error) {
+                console.error('Error updating buyer type:', error);
+            }
+        }
+
+        // Update business case field
+        async function updateBusinessCase(oppId, field, value) {
+            try {
+                const { error } = await supabaseClient
+                    .from('opportunities')
+                    .update({ [field]: parseInt(value) || null })
+                    .eq('id', oppId);
+
+                if (error) throw error;
+
+                // Update local data and re-render
+                const opp = opportunities.find(o => o.id === oppId);
+                if (opp) opp[field] = parseInt(value) || null;
+                renderOpportunities();
+
+            } catch (error) {
+                console.error('Error updating business case:', error);
+            }
+        }
+
+        // ========== DISCOVERY WIZARD ==========
+        let currentWizardOppId = null;
+        let currentWizardPhase = null;
+
+        const DISCOVERY_PHASES = {
+            current_state: {
+                title: 'Current State',
+                questions: [
+                    { id: 'current_situation', label: 'What\'s happening in your organization right now with employee engagement/turnover?' },
+                    { id: 'what_tried', label: 'What have you tried so far to address this?' },
+                    { id: 'why_not_working', label: 'Why do you think those approaches haven\'t fully worked?' },
+                    { id: 'how_long', label: 'How long has this been a challenge?' }
+                ]
+            },
+            impact_cost: {
+                title: 'Impact & Cost',
+                questions: [
+                    { id: 'turnover_rate', label: 'What is your current turnover rate?' },
+                    { id: 'cost_per_exit', label: 'What does it cost when someone leaves? (recruiting, training, lost productivity)' },
+                    { id: 'engagement_score', label: 'Do you have engagement survey scores? What are they?' },
+                    { id: 'business_impact', label: 'How is this impacting your business results?' },
+                    { id: 'executive_concern', label: 'Is leadership concerned about this? Why?' }
+                ]
+            },
+            future_state: {
+                title: 'Future State',
+                questions: [
+                    { id: 'ideal_outcome', label: 'What would success look like 12 months from now?' },
+                    { id: 'target_metrics', label: 'What specific metrics would you want to improve?' },
+                    { id: 'priorities', label: 'What\'s most important to you in a solution?' },
+                    { id: 'concerns', label: 'What concerns do you have about implementing something new?' }
+                ]
+            },
+            decision_process: {
+                title: 'Decision Process',
+                questions: [
+                    { id: 'decision_timeline', label: 'What\'s your timeline for making a decision?' },
+                    { id: 'decision_criteria', label: 'What criteria will you use to evaluate solutions?' },
+                    { id: 'buying_process', label: 'Walk me through your typical buying process for HR tech.' },
+                    { id: 'budget_source', label: 'Where would budget for this come from?' },
+                    { id: 'procurement', label: 'Does this need to go through procurement?' }
+                ]
+            },
+            stakeholder_map: {
+                title: 'Stakeholder Map',
+                questions: [
+                    { id: 'decision_maker', label: 'Who ultimately signs off on purchases like this?' },
+                    { id: 'influencers', label: 'Who else will be involved in the evaluation?' },
+                    { id: 'champion', label: 'Who internally is most excited about solving this problem?' },
+                    { id: 'blockers', label: 'Is there anyone who might be skeptical or resistant?' }
+                ]
+            }
+        };
+
+        function openDiscoveryWizard(oppId, phase) {
+            currentWizardOppId = oppId;
+            currentWizardPhase = phase;
+
+            const phaseData = DISCOVERY_PHASES[phase];
+            document.getElementById('discoveryWizardTitle').textContent = `Discovery: ${phaseData.title}`;
+
+            // Render first question
+            renderWizardQuestion(0);
+
+            document.getElementById('discoveryWizardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderWizardQuestion(index) {
+            const phaseData = DISCOVERY_PHASES[currentWizardPhase];
+            const opp = opportunities.find(o => o.id === currentWizardOppId);
+            const question = phaseData.questions[index];
+            const fieldName = `discovery_${currentWizardPhase}_${question.id}`;
+
+            // Update progress
+            const progress = ((index + 1) / phaseData.questions.length) * 100;
+            document.getElementById('wizardProgressFill').style.width = `${progress}%`;
+            document.getElementById('wizardProgressText').textContent = `Question ${index + 1} of ${phaseData.questions.length}`;
+
+            // Render question
+            document.getElementById('wizardQuestionContainer').innerHTML = `
+                <div class="wizard-question">
+                    <label class="question-label">${question.label}</label>
+                    <textarea class="question-input" id="wizardAnswer" rows="4" placeholder="Enter their response...">${opp[fieldName] || ''}</textarea>
+                </div>
+            `;
+
+            // Update navigation
+            document.getElementById('wizardPrevBtn').style.display = index > 0 ? 'block' : 'none';
+            document.getElementById('wizardNextBtn').textContent = index === phaseData.questions.length - 1 ? 'Complete Phase →' : 'Save & Continue →';
+
+            // Store current index
+            document.getElementById('wizardQuestionContainer').dataset.questionIndex = index;
+        }
+
+        async function wizardNextQuestion() {
+            const phaseData = DISCOVERY_PHASES[currentWizardPhase];
+            const index = parseInt(document.getElementById('wizardQuestionContainer').dataset.questionIndex);
+            const question = phaseData.questions[index];
+            const fieldName = `discovery_${currentWizardPhase}_${question.id}`;
+            const answer = document.getElementById('wizardAnswer').value;
+
+            // Save answer
+            try {
+                const updates = { [fieldName]: answer };
+
+                // If this is the last question, mark phase complete
+                if (index === phaseData.questions.length - 1) {
+                    updates[`discovery_${currentWizardPhase}_complete`] = true;
+                }
+
+                await supabaseClient
+                    .from('opportunities')
+                    .update(updates)
+                    .eq('id', currentWizardOppId);
+
+                // Update local data
+                const opp = opportunities.find(o => o.id === currentWizardOppId);
+                if (opp) {
+                    opp[fieldName] = answer;
+                    if (index === phaseData.questions.length - 1) {
+                        opp[`discovery_${currentWizardPhase}_complete`] = true;
+                    }
+                }
+
+                // Move to next question or close
+                if (index < phaseData.questions.length - 1) {
+                    renderWizardQuestion(index + 1);
+                } else {
+                    closeDiscoveryWizard();
+                    renderOpportunities();
+                }
+            } catch (error) {
+                console.error('Error saving discovery answer:', error);
+            }
+        }
+
+        function wizardPrevQuestion() {
+            const index = parseInt(document.getElementById('wizardQuestionContainer').dataset.questionIndex);
+            if (index > 0) {
+                renderWizardQuestion(index - 1);
+            }
+        }
+
+        function wizardSkipQuestion() {
+            const phaseData = DISCOVERY_PHASES[currentWizardPhase];
+            const index = parseInt(document.getElementById('wizardQuestionContainer').dataset.questionIndex);
+            if (index < phaseData.questions.length - 1) {
+                renderWizardQuestion(index + 1);
+            } else {
+                closeDiscoveryWizard();
+            }
+        }
+
+        function closeDiscoveryWizard() {
+            document.getElementById('discoveryWizardModal').classList.remove('active');
+            document.body.style.overflow = '';
+            currentWizardOppId = null;
+            currentWizardPhase = null;
+        }
+
+        // ========== STAKEHOLDER FUNCTIONS ==========
+        let stakeholders = [];
+
+        async function loadStakeholders() {
+            try {
+                const oppIds = opportunities.map(o => o.id);
+                if (oppIds.length === 0) return;
+
+                const { data, error } = await supabaseClient
+                    .from('stakeholders')
+                    .select('*')
+                    .in('opportunity_id', oppIds);
+
+                if (error) throw error;
+                stakeholders = data || [];
+                renderStakeholders();
+            } catch (error) {
+                console.error('Error loading stakeholders:', error);
+            }
+        }
+
+        function renderStakeholders() {
+            const container = document.getElementById('stakeholderList');
+            document.getElementById('stakeholderCount').textContent = stakeholders.length;
+
+            if (stakeholders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 1rem;">
+                        <p style="font-size: 0.85rem;">No stakeholders mapped yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const roleIcons = {
+                mobilizer: '⭐',
+                decision_maker: '👔',
+                budget_holder: '💰',
+                influencer: '🗣️',
+                end_user: '👤',
+                blocker: '🚫'
+            };
+
+            const roleLabels = {
+                mobilizer: 'Mobilizer',
+                decision_maker: 'Decision Maker',
+                budget_holder: 'Budget Holder',
+                influencer: 'Influencer',
+                end_user: 'End User',
+                blocker: 'Blocker'
+            };
+
+            container.innerHTML = stakeholders.map(sh => {
+                const contact = contacts.find(c => c.id === sh.contact_id);
+                const name = sh.name || (contact ? `${contact.first_name} ${contact.last_name}` : 'Unknown');
+                const title = sh.title || (contact ? contact.title : '');
+
+                return `
+                    <div class="stakeholder-card" onclick="editStakeholder('${sh.id}')">
+                        <div class="stakeholder-header">
+                            <span class="stakeholder-icon">${roleIcons[sh.role] || '👤'}</span>
+                            <span class="stakeholder-name">${name}</span>
+                            <span class="stakeholder-sentiment ${sh.sentiment}">${sh.sentiment}</span>
+                        </div>
+                        <div class="stakeholder-role">${roleLabels[sh.role] || sh.role}${title ? ` - ${title}` : ''}</div>
+                        ${sh.concerns ? `<div class="stakeholder-concerns">${sh.concerns}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Check for warnings
+            const warnings = [];
+            const hasMobilizer = stakeholders.some(sh => sh.role === 'mobilizer');
+            const hasDecisionMaker = stakeholders.some(sh => sh.role === 'decision_maker');
+            const hasBlocker = stakeholders.some(sh => sh.sentiment === 'blocker');
+
+            if (!hasMobilizer) warnings.push('⚠️ No mobilizer identified - find your internal champion');
+            if (!hasDecisionMaker) warnings.push('⚠️ Decision maker not mapped - who signs the contract?');
+            if (hasBlocker) warnings.push('⚠️ Blocker identified - develop strategy to address concerns');
+
+            const warningsContainer = document.getElementById('stakeholderWarnings');
+            if (warnings.length > 0) {
+                warningsContainer.style.display = 'block';
+                warningsContainer.innerHTML = warnings.map(w => `<div class="stakeholder-warning">${w}</div>`).join('');
+            } else {
+                warningsContainer.style.display = 'none';
+            }
+        }
+
+        function showAddStakeholderModal() {
+            document.getElementById('stakeholderModalTitle').textContent = 'Add Stakeholder';
+            document.getElementById('stakeholderForm').reset();
+            document.getElementById('stakeholderId').value = '';
+            document.getElementById('stakeholderOppId').value = opportunities.length > 0 ? opportunities[0].id : '';
+
+            // Populate contact dropdown
+            const contactSelect = document.getElementById('stakeholderContact');
+            contactSelect.innerHTML = '<option value="">Select existing contact...</option>' +
+                contacts.map(c => `<option value="${c.id}">${c.first_name} ${c.last_name}</option>`).join('');
+
+            document.getElementById('stakeholderModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showAddStakeholderForOpp(oppId) {
+            showAddStakeholderModal();
+            document.getElementById('stakeholderOppId').value = oppId;
+        }
+
+        function hideStakeholderModal() {
+            document.getElementById('stakeholderModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveStakeholder(event) {
+            event.preventDefault();
+
+            const stakeholderData = {
+                opportunity_id: document.getElementById('stakeholderOppId').value || opportunities[0]?.id,
+                contact_id: document.getElementById('stakeholderContact').value || null,
+                name: document.getElementById('stakeholderName').value || null,
+                title: document.getElementById('stakeholderTitle').value || null,
+                role: document.getElementById('stakeholderRole').value,
+                sentiment: document.getElementById('stakeholderSentiment').value,
+                concerns: document.getElementById('stakeholderConcerns').value || null,
+                notes: document.getElementById('stakeholderNotes').value || null
+            };
+
+            const stakeholderId = document.getElementById('stakeholderId').value;
+
+            try {
+                if (stakeholderId) {
+                    const { error } = await supabaseClient
+                        .from('stakeholders')
+                        .update(stakeholderData)
+                        .eq('id', stakeholderId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await supabaseClient
+                        .from('stakeholders')
+                        .insert([stakeholderData]);
+                    if (error) throw error;
+                }
+
+                hideStakeholderModal();
+                await loadStakeholders();
+
+            } catch (error) {
+                console.error('Error saving stakeholder:', error);
+                alert('Failed to save stakeholder');
+            }
+        }
+
+        function editStakeholder(stakeholderId) {
+            const sh = stakeholders.find(s => s.id === stakeholderId);
+            if (!sh) return;
+
+            document.getElementById('stakeholderModalTitle').textContent = 'Edit Stakeholder';
+            document.getElementById('stakeholderId').value = sh.id;
+            document.getElementById('stakeholderOppId').value = sh.opportunity_id;
+            document.getElementById('stakeholderContact').value = sh.contact_id || '';
+            document.getElementById('stakeholderName').value = sh.name || '';
+            document.getElementById('stakeholderTitle').value = sh.title || '';
+            document.getElementById('stakeholderRole').value = sh.role;
+            document.getElementById('stakeholderSentiment').value = sh.sentiment;
+            document.getElementById('stakeholderConcerns').value = sh.concerns || '';
+            document.getElementById('stakeholderNotes').value = sh.notes || '';
+
+            document.getElementById('stakeholderModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ========== QUICK ACTION FUNCTIONS ==========
+
+        // Schedule Teams Meeting
+        async function scheduleTeamsMeeting() {
+            if (contacts.length === 0) {
+                alert('Please add a contact first to schedule a meeting.');
+                return;
+            }
+
+            const contact = contacts[0];
+            const opp = opportunities.length > 0 ? opportunities[0] : null;
+
+            // Create meeting invite
+            const meetingDate = new Date();
+            meetingDate.setDate(meetingDate.getDate() + 7);
+            meetingDate.setHours(14, 0, 0, 0);
+
+            const meetingEnd = new Date(meetingDate);
+            meetingEnd.setMinutes(meetingEnd.getMinutes() + 60);
+
+            const formatICSDate = (date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Clover ERA CRM//EN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:REQUEST',
+                'BEGIN:VEVENT',
+                `UID:${Date.now()}@cloverera.com`,
+                `DTSTAMP:${formatICSDate(new Date())}`,
+                `DTSTART:${formatICSDate(meetingDate)}`,
+                `DTEND:${formatICSDate(meetingEnd)}`,
+                `SUMMARY:Meeting with ${company.name}`,
+                `DESCRIPTION:Meeting scheduled via Clover ERA CRM`,
+                'LOCATION:Microsoft Teams',
+                `ATTENDEE;RSVP=TRUE:mailto:${contact.email}`,
+                'STATUS:CONFIRMED',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            // Download .ics file
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `meeting-${company.name.replace(/\s+/g, '-')}.ics`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            // Log the activity
+            await supabaseClient.from('activities').insert([{
+                company_id: companyId,
+                opportunity_id: opp?.id || null,
+                type: 'meeting',
+                subject: `Meeting scheduled with ${company.name}`,
+                description: `Teams meeting invite sent to ${contact.first_name} ${contact.last_name}`,
+                due_date: meetingDate.toISOString(),
+                owner_id: currentUserId,
+                completed: false
+            }]);
+
+            await loadCompanyData();
+            alert('Meeting invite downloaded! Open the .ics file to add to your calendar.');
+        }
+
+        // Log Email Modal
+        function showLogEmailModal() {
+            document.getElementById('logEmailForm').reset();
+
+            // Populate opportunity dropdown
+            const oppSelect = document.getElementById('logEmailOpportunity');
+            oppSelect.innerHTML = '<option value="">None</option>' +
+                opportunities.map(o => `<option value="${o.id}">${o.title}</option>`).join('');
+
+            // Set default date to now
+            const now = new Date();
+            document.getElementById('logEmailDate').value = now.toISOString().slice(0, 16);
+
+            document.getElementById('logEmailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLogEmailModal() {
+            document.getElementById('logEmailModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveLoggedEmail(event) {
+            event.preventDefault();
+
+            const activityData = {
+                company_id: companyId,
+                opportunity_id: document.getElementById('logEmailOpportunity').value || null,
+                type: 'email',
+                subject: document.getElementById('logEmailSubject').value,
+                description: document.getElementById('logEmailSummary').value,
+                due_date: document.getElementById('logEmailDate').value ? new Date(document.getElementById('logEmailDate').value).toISOString() : null,
+                owner_id: currentUserId,
+                completed: true
+            };
+
+            try {
+                const { error } = await supabaseClient.from('activities').insert([activityData]);
+                if (error) throw error;
+
+                hideLogEmailModal();
+                await loadCompanyData();
+            } catch (error) {
+                console.error('Error logging email:', error);
+                alert('Failed to log email');
+            }
+        }
+
+        // Log Call Modal
+        function showLogCallModal() {
+            document.getElementById('logCallForm').reset();
+
+            // Populate dropdowns
+            document.getElementById('logCallOpportunity').innerHTML = '<option value="">None</option>' +
+                opportunities.map(o => `<option value="${o.id}">${o.title}</option>`).join('');
+
+            document.getElementById('logCallContact').innerHTML = '<option value="">Select contact...</option>' +
+                contacts.map(c => `<option value="${c.id}">${c.first_name} ${c.last_name}</option>`).join('');
+
+            // Set default date to now
+            document.getElementById('logCallDate').value = new Date().toISOString().slice(0, 16);
+
+            document.getElementById('logCallModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLogCallModal() {
+            document.getElementById('logCallModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveLoggedCall(event) {
+            event.preventDefault();
+
+            const activityData = {
+                company_id: companyId,
+                opportunity_id: document.getElementById('logCallOpportunity').value || null,
+                contact_id: document.getElementById('logCallContact').value || null,
+                type: 'call',
+                subject: document.getElementById('logCallSubject').value,
+                description: document.getElementById('logCallNotes').value,
+                due_date: document.getElementById('logCallDate').value ? new Date(document.getElementById('logCallDate').value).toISOString() : null,
+                duration_minutes: parseInt(document.getElementById('logCallDuration').value) || null,
+                owner_id: currentUserId,
+                completed: true
+            };
+
+            try {
+                const { error } = await supabaseClient.from('activities').insert([activityData]);
+                if (error) throw error;
+
+                hideLogCallModal();
+                await loadCompanyData();
+            } catch (error) {
+                console.error('Error logging call:', error);
+                alert('Failed to log call');
+            }
+        }
+
+        // Copy Demo Email Template
+        async function copyDemoEmailTemplate() {
+            if (contacts.length === 0) {
+                alert('Please add a contact first.');
+                return;
+            }
+
+            const contact = contacts[0];
+            const template = `Hi ${contact.first_name},
+
+Thank you for your time today. As discussed, I'd love to show you how Clover ERA can help ${company.name} improve employee engagement and reduce turnover.
+
+Would you be available for a 45-minute demo next week? I'm flexible on timing - just let me know what works best for you.
+
+In the meantime, here are a few resources that might be helpful:
+- [Link to case study]
+- [Link to ROI calculator]
+
+Looking forward to connecting soon!
+
+Best regards`;
+
+            try {
+                await navigator.clipboard.writeText(template);
+                alert('Demo email template copied to clipboard!');
+            } catch (error) {
+                console.error('Failed to copy:', error);
+                prompt('Copy this email template:', template);
+            }
+        }
+
+        // ========== END SALES PLAYBOOK FUNCTIONS ==========
+
         // Initialize
         async function init() {
             const authenticated = await checkAuth();
             if (authenticated) {
                 await loadCompanyData();
+                await loadStakeholders();
             }
         }
 
