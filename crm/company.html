@@ -1299,6 +1299,30 @@
             `;
         }
 
+        // Stage options matching Kanban board exactly
+        const STAGES = [
+            { id: 'lead', name: 'Lead' },
+            { id: 'qualified', name: 'Qualified' },
+            { id: 'demo-scheduled', name: 'Demo Scheduled' },
+            { id: 'demo-completed', name: 'Demo Completed' },
+            { id: 'proposal', name: 'Proposal Sent' },
+            { id: 'negotiation', name: 'Negotiation' },
+            { id: 'pilot', name: 'Pilot' },
+            { id: 'closed-won', name: 'Closed Won' },
+            { id: 'closed-lost', name: 'Closed Lost' }
+        ];
+
+        // Source options
+        const SOURCES = [
+            { id: 'partner', name: 'Partner' },
+            { id: 'direct', name: 'Direct' },
+            { id: 'referral', name: 'Referral' },
+            { id: 'inbound', name: 'Inbound' },
+            { id: 'outbound', name: 'Outbound' },
+            { id: 'event', name: 'Event' },
+            { id: 'website', name: 'Website' }
+        ];
+
         // Render opportunities
         function renderOpportunities() {
             const container = document.getElementById('opportunitiesList');
@@ -1318,6 +1342,22 @@
                 const health = calculateDealHealth(opp);
                 const isClosed = ['closed-won', 'closed-lost'].includes(opp.stage);
 
+                // Build stage options
+                const stageOptions = STAGES.map(s =>
+                    `<option value="${s.id}" ${opp.stage === s.id ? 'selected' : ''}>${s.name}</option>`
+                ).join('');
+
+                // Build source options
+                const sourceOptions = SOURCES.map(s =>
+                    `<option value="${s.id}" ${opp.source === s.id ? 'selected' : ''}>${s.name}</option>`
+                ).join('');
+
+                // Find primary contact for this opportunity
+                const primaryContact = contacts.find(c => c.id === opp.contact_id);
+                const contactOptions = contacts.map(c =>
+                    `<option value="${c.id}" ${opp.contact_id === c.id ? 'selected' : ''}>${c.first_name} ${c.last_name}</option>`
+                ).join('');
+
                 return `
                     <div class="expandable-card" id="opp-${opp.id}">
                         <div class="expandable-card-header" onclick="toggleOpportunityCard('${opp.id}')">
@@ -1332,41 +1372,139 @@
                             <span class="expandable-card-toggle">></span>
                         </div>
                         <div class="expandable-card-content">
-                            <div class="quick-edit-grid">
-                                <div class="quick-edit-field">
-                                    <label>Stage</label>
-                                    <select onchange="quickUpdateOpportunity('${opp.id}', 'stage', this.value)">
-                                        <option value="lead" ${opp.stage === 'lead' ? 'selected' : ''}>Lead</option>
-                                        <option value="qualified" ${opp.stage === 'qualified' ? 'selected' : ''}>Qualified</option>
-                                        <option value="demo-scheduled" ${opp.stage === 'demo-scheduled' ? 'selected' : ''}>Demo Scheduled</option>
-                                        <option value="demo-completed" ${opp.stage === 'demo-completed' ? 'selected' : ''}>Demo Completed</option>
-                                        <option value="proposal" ${opp.stage === 'proposal' ? 'selected' : ''}>Proposal</option>
-                                        <option value="negotiation" ${opp.stage === 'negotiation' ? 'selected' : ''}>Negotiation</option>
-                                        <option value="pilot" ${opp.stage === 'pilot' ? 'selected' : ''}>Pilot</option>
-                                        <option value="closed-won" ${opp.stage === 'closed-won' ? 'selected' : ''}>Closed Won</option>
-                                        <option value="closed-lost" ${opp.stage === 'closed-lost' ? 'selected' : ''}>Closed Lost</option>
-                                    </select>
+                            <!-- Stage & Core Info Section -->
+                            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--medium-gray);">
+                                <div class="quick-edit-grid">
+                                    <div class="quick-edit-field">
+                                        <label>Stage</label>
+                                        <select onchange="quickUpdateOpportunity('${opp.id}', 'stage', this.value)">
+                                            ${stageOptions}
+                                        </select>
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>Value ($)</label>
+                                        <input type="number" value="${opp.value || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'value', this.value)">
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>Expected Close</label>
+                                        <input type="date" value="${opp.expected_close_date || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'expected_close_date', this.value)">
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>Probability (%)</label>
+                                        <input type="number" min="0" max="100" value="${opp.probability || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'probability', this.value)">
+                                    </div>
                                 </div>
+                            </div>
+
+                            <!-- Next Step Section -->
+                            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--medium-gray);">
                                 <div class="quick-edit-field">
-                                    <label>Value ($)</label>
-                                    <input type="number" value="${opp.value || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'value', this.value)">
-                                </div>
-                                <div class="quick-edit-field">
-                                    <label>Expected Close</label>
-                                    <input type="date" value="${opp.expected_close_date || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'expected_close_date', this.value)">
-                                </div>
-                                <div class="quick-edit-field">
-                                    <label>Probability (%)</label>
-                                    <input type="number" min="0" max="100" value="${opp.probability || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'probability', this.value)">
-                                </div>
-                                <div class="quick-edit-field" style="grid-column: span 2;">
                                     <label>Next Step</label>
-                                    <input type="text" value="${opp.next_step || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'next_step', this.value)">
+                                    <input type="text" value="${opp.next_step || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'next_step', this.value)" placeholder="What's the next action?">
                                 </div>
-                                <div class="quick-edit-actions">
-                                    <a href="opportunity.html?id=${opp.id}" class="btn btn-secondary btn-small">View Full Details</a>
-                                    <button class="btn btn-danger btn-small" onclick="deleteOpportunity('${opp.id}')">Delete</button>
+                            </div>
+
+                            <!-- Contact & Source Section -->
+                            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--medium-gray);">
+                                <div class="quick-edit-grid">
+                                    <div class="quick-edit-field">
+                                        <label>Primary Contact</label>
+                                        <select onchange="quickUpdateOpportunity('${opp.id}', 'contact_id', this.value)">
+                                            <option value="">Select contact...</option>
+                                            ${contactOptions}
+                                        </select>
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>Source</label>
+                                        <select onchange="quickUpdateOpportunity('${opp.id}', 'source', this.value)">
+                                            <option value="">Select source...</option>
+                                            ${sourceOptions}
+                                        </select>
+                                    </div>
+                                    ${opp.source === 'partner' ? `
+                                    <div class="quick-edit-field" style="grid-column: span 2;">
+                                        <label>Partner Name</label>
+                                        <input type="text" value="${opp.partner_name || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'partner_name', this.value)">
+                                    </div>
+                                    ` : ''}
                                 </div>
+                            </div>
+
+                            <!-- Deal Size Details Section -->
+                            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--medium-gray);">
+                                <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.85rem;">DEAL SIZE DETAILS</div>
+                                <div class="quick-edit-grid">
+                                    <div class="quick-edit-field">
+                                        <label>Managers Count</label>
+                                        <input type="number" min="0" value="${opp.managers_count || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'managers_count', this.value)">
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>Employees Covered</label>
+                                        <input type="number" min="0" value="${opp.employees_covered || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'employees_covered', this.value)">
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>MRR ($)</label>
+                                        <input type="number" min="0" value="${opp.monthly_recurring_revenue || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'monthly_recurring_revenue', this.value)">
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>ACV ($)</label>
+                                        <input type="number" min="0" value="${opp.annual_contract_value || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'annual_contract_value', this.value)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pilot Dates Section (if applicable) -->
+                            ${opp.stage === 'pilot' || opp.pilot_start_date || opp.pilot_end_date ? `
+                            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--medium-gray);">
+                                <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.85rem;">PILOT DATES</div>
+                                <div class="quick-edit-grid">
+                                    <div class="quick-edit-field">
+                                        <label>Pilot Start</label>
+                                        <input type="date" value="${opp.pilot_start_date || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'pilot_start_date', this.value)">
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>Pilot End</label>
+                                        <input type="date" value="${opp.pilot_end_date || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'pilot_end_date', this.value)">
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Lost Deal Section (if closed-lost) -->
+                            ${opp.stage === 'closed-lost' ? `
+                            <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--medium-gray);">
+                                <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.85rem;">LOSS DETAILS</div>
+                                <div class="quick-edit-grid">
+                                    <div class="quick-edit-field">
+                                        <label>Lost Reason</label>
+                                        <input type="text" value="${opp.lost_reason || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'lost_reason', this.value)" placeholder="Why did we lose?">
+                                    </div>
+                                    <div class="quick-edit-field">
+                                        <label>Competitor</label>
+                                        <input type="text" value="${opp.competitor || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'competitor', this.value)" placeholder="Who did they choose?">
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+
+                            <!-- Notes Section -->
+                            <div style="margin-bottom: 1rem;">
+                                <div class="quick-edit-field">
+                                    <label>Notes</label>
+                                    <textarea rows="3" onchange="quickUpdateOpportunity('${opp.id}', 'notes', this.value)" placeholder="Additional notes...">${opp.notes || ''}</textarea>
+                                </div>
+                            </div>
+
+                            <!-- Meta Info (read-only) -->
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                Created: ${new Date(opp.created_at).toLocaleDateString()}
+                                ${opp.actual_close_date ? ` | Closed: ${new Date(opp.actual_close_date).toLocaleDateString()}` : ''}
+                                ${opp.stage_entered_at ? ` | In stage: ${Math.floor((new Date() - new Date(opp.stage_entered_at)) / (1000 * 60 * 60 * 24))} days` : ''}
+                            </div>
+
+                            <!-- Actions -->
+                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                <button class="btn btn-danger btn-small" onclick="deleteOpportunity('${opp.id}')">Delete Opportunity</button>
                             </div>
                         </div>
                     </div>
@@ -1567,7 +1705,7 @@
         function formatStage(stage) {
             const stages = {
                 'lead': 'Lead', 'qualified': 'Qualified', 'demo-scheduled': 'Demo Scheduled',
-                'demo-completed': 'Demo Completed', 'proposal': 'Proposal', 'negotiation': 'Negotiation',
+                'demo-completed': 'Demo Completed', 'proposal': 'Proposal Sent', 'negotiation': 'Negotiation',
                 'pilot': 'Pilot', 'closed-won': 'Closed Won', 'closed-lost': 'Closed Lost'
             };
             return stages[stage] || stage;
