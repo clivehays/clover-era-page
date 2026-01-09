@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Details - Clover ERA CRM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background: #f9fafb;
+            --medium-gray: #e5e7eb;
+            --border-color: #d1d5db;
+            --danger-red: #EF4444;
+            --warning-orange: #F59E0B;
+            --light-gray: #F8F9FA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--light-gray);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-green);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-green);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--background);
+        }
+
+        .btn-danger {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: var(--border-color);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Content Grid - Sidebar + Main */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        /* Section Styling */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        /* Health Indicator Styles */
+        .health-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .health-badge.healthy { background: #D1FAE5; color: #065F46; }
+        .health-badge.at-risk { background: #FEF3C7; color: #92400E; }
+        .health-badge.stalled { background: #FEE2E2; color: #991B1B; }
+        .health-badge.neutral { background: #F3F4F6; color: #6B7280; }
+
+        .health-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .health-dot.healthy { background: #10B981; }
+        .health-dot.at-risk { background: #F59E0B; }
+        .health-dot.stalled { background: #EF4444; }
+        .health-dot.neutral { background: #9CA3AF; }
+
+        /* Stage Badges */
+        .stage-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .stage-lead { background: #E0F2FE; color: #0369A1; }
+        .stage-qualified { background: #DBEAFE; color: #1E40AF; }
+        .stage-demo-scheduled { background: #E0E7FF; color: #4338CA; }
+        .stage-demo-completed { background: #F3E8FF; color: #7C3AED; }
+        .stage-proposal { background: #FEF3C7; color: #D97706; }
+        .stage-negotiation { background: #FED7AA; color: #C2410C; }
+        .stage-pilot { background: #D1FAE5; color: #047857; }
+        .stage-closed-won { background: #D1FAE5; color: #065F46; }
+        .stage-closed-lost { background: #FEE2E2; color: #991B1B; }
+
+        /* Sidebar Styles */
+        .sidebar .section {
+            margin-bottom: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .info-value a {
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* Editable Field */
+        .editable-field {
+            position: relative;
+        }
+
+        .editable-field .edit-input {
+            display: none;
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--primary-green);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .editable-field.editing .info-value {
+            display: none;
+        }
+
+        .editable-field.editing .edit-input {
+            display: block;
+        }
+
+        /* Health Summary Card */
+        .health-summary {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .health-summary .health-badge {
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .health-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .health-stat {
+            text-align: center;
+        }
+
+        .health-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .health-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quick-actions .btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Expandable Card */
+        .expandable-card {
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .expandable-card:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .expandable-card-header {
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        .expandable-card-header:hover {
+            background: var(--light-gray);
+        }
+
+        .expandable-card-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .expandable-card-meta {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .expandable-card-toggle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+        }
+
+        .expandable-card.expanded .expandable-card-toggle {
+            transform: rotate(90deg);
+        }
+
+        .expandable-card-content {
+            padding: 0 1rem 1rem;
+            display: none;
+            border-top: 1px solid var(--medium-gray);
+            background: var(--light-gray);
+        }
+
+        .expandable-card.expanded .expandable-card-content {
+            display: block;
+            padding-top: 1rem;
+        }
+
+        /* Quick Edit Form */
+        .quick-edit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .quick-edit-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quick-edit-field label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .quick-edit-field input,
+        .quick-edit-field select,
+        .quick-edit-field textarea {
+            padding: 0.5rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .quick-edit-field input:focus,
+        .quick-edit-field select:focus,
+        .quick-edit-field textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        .quick-edit-actions {
+            grid-column: span 2;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+        }
+
+        /* Contact Card */
+        .contact-card {
+            padding: 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-card:hover {
+            background: var(--light-gray);
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .contact-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-details {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Activity Timeline */
+        .activity-timeline {
+            position: relative;
+        }
+
+        .activity-date-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-date-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .activity-item {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .activity-item:hover {
+            background: var(--light-gray);
+        }
+
+        .activity-icon {
+            font-size: 1.25rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-subject {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .activity-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .activity-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .activity-status {
+            display: flex;
+            align-items: center;
+        }
+
+        .activity-status-toggle {
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--medium-gray);
+            border-top: 3px solid var(--primary-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 2px solid var(--medium-gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-edit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-edit-actions {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html" class="active">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="kanban.html">Kanban</a>
+            <a href="blog-articles.html">Blog</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+            <span id="userInfo" style="color: var(--text-secondary);"></span>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading company details...</p>
+        </div>
+
+        <!-- Main Content (hidden until loaded) -->
+        <div id="mainContent" style="display: none;">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <div class="breadcrumb">
+                        <a href="companies.html">Companies</a> / <span id="companyNameBreadcrumb">Company</span>
+                    </div>
+                    <h1 id="companyName">Company Name</h1>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="editCompanyInfo()">Edit Company</button>
+                    <button class="btn btn-danger" onclick="deleteCompany()">Delete</button>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Main Content Area -->
+                <div class="main-content">
+                    <!-- Opportunities Section -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Opportunities (<span id="oppCount">0</span>)</h2>
+                            <button class="btn btn-primary btn-small" onclick="showAddOpportunityModal()">+ Add New</button>
+                        </div>
+                        <div id="opportunitiesList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">-</div>
+                                <p>No opportunities yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contacts Section -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Contacts (<span id="contactCount">0</span>)</h2>
+                            <button class="btn btn-primary btn-small" onclick="showAddContactModal()">+ Add New</button>
+                        </div>
+                        <div id="contactsList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">-</div>
+                                <p>No contacts yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activities Section -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Activities (<span id="activityCount">0</span>)</h2>
+                            <button class="btn btn-primary btn-small" onclick="showAddActivityModal()">+ Log Activity</button>
+                        </div>
+                        <div id="activitiesList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">-</div>
+                                <p>No activities yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Company Info Card -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Company Info</h2>
+                        </div>
+                        <div class="info-grid" id="companyInfoGrid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Health Summary Card -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Deal Health</h2>
+                        </div>
+                        <div class="health-summary" id="healthSummary">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Card -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Quick Actions</h2>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="showAddOpportunityModal()">+ New Opportunity</button>
+                            <button class="btn btn-secondary" onclick="showAddContactModal()">+ Add Contact</button>
+                            <button class="btn btn-secondary" onclick="showAddActivityModal()">+ Log Activity</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Company Modal -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Company</h2>
+                <button class="modal-close" onclick="hideCompanyModal()">&times;</button>
+            </div>
+            <form id="companyForm" onsubmit="saveCompany(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="companyNameInput">Company Name *</label>
+                        <input type="text" id="companyNameInput" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyIndustry">Industry</label>
+                            <input type="text" id="companyIndustry">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyStatus">Status</label>
+                            <select id="companyStatus">
+                                <option value="prospect">Prospect</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="customer">Customer</option>
+                                <option value="churned">Churned</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyWebsite">Website</label>
+                            <input type="url" id="companyWebsite">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyEmployees">Employee Count</label>
+                            <input type="number" id="companyEmployees" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyNotes">Notes</label>
+                        <textarea id="companyNotes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideCompanyModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Opportunity Modal -->
+    <div id="opportunityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="opportunityModalTitle">Add Opportunity</h2>
+                <button class="modal-close" onclick="hideOpportunityModal()">&times;</button>
+            </div>
+            <form id="opportunityForm" onsubmit="saveOpportunity(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="opportunityId">
+                    <div class="form-group">
+                        <label for="oppTitle">Opportunity Title *</label>
+                        <input type="text" id="oppTitle" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="oppStage">Stage</label>
+                            <select id="oppStage">
+                                <option value="lead">Lead</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="demo-scheduled">Demo Scheduled</option>
+                                <option value="demo-completed">Demo Completed</option>
+                                <option value="proposal">Proposal</option>
+                                <option value="negotiation">Negotiation</option>
+                                <option value="pilot">Pilot</option>
+                                <option value="closed-won">Closed Won</option>
+                                <option value="closed-lost">Closed Lost</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="oppValue">Value ($)</label>
+                            <input type="number" id="oppValue" min="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="oppCloseDate">Expected Close Date</label>
+                            <input type="date" id="oppCloseDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="oppProbability">Probability (%)</label>
+                            <input type="number" id="oppProbability" min="0" max="100">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="oppNextStep">Next Step</label>
+                        <input type="text" id="oppNextStep">
+                    </div>
+                    <div class="form-group">
+                        <label for="oppNotes">Notes</label>
+                        <textarea id="oppNotes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideOpportunityModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Opportunity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="contactModalTitle">Add Contact</h2>
+                <button class="modal-close" onclick="hideContactModal()">&times;</button>
+            </div>
+            <form id="contactForm" onsubmit="saveContact(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="contactId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactFirstName">First Name *</label>
+                            <input type="text" id="contactFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactLastName">Last Name *</label>
+                            <input type="text" id="contactLastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactTitle">Job Title</label>
+                        <input type="text" id="contactTitle">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactEmail">Email</label>
+                            <input type="email" id="contactEmail">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactPhone">Phone</label>
+                            <input type="tel" id="contactPhone">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactLinkedIn">LinkedIn URL</label>
+                        <input type="url" id="contactLinkedIn">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideContactModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Activity Modal -->
+    <div id="activityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Log Activity</h2>
+                <button class="modal-close" onclick="hideActivityModal()">&times;</button>
+            </div>
+            <form id="activityForm" onsubmit="saveActivity(event)">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="activityType">Type *</label>
+                            <select id="activityType" required>
+                                <option value="call">Call</option>
+                                <option value="email">Email</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="demo">Demo</option>
+                                <option value="note">Note</option>
+                                <option value="task">Task</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="activityOpportunity">Related Opportunity</label>
+                            <select id="activityOpportunity">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="activitySubject">Subject *</label>
+                        <input type="text" id="activitySubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="activityDescription">Description</label>
+                        <textarea id="activityDescription" rows="4"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="activityDueDate">Due Date (for tasks)</label>
+                            <input type="date" id="activityDueDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="activityCompleted">Status</label>
+                            <select id="activityCompleted">
+                                <option value="false">Pending</option>
+                                <option value="true">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideActivityModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ===== SUPABASE CONFIGURATION =====
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // State
+        let companyId = null;
+        let company = null;
+        let opportunities = [];
+        let contacts = [];
+        let activities = [];
+        let currentUserId = null;
+
+        // Get company ID from URL
+        function getCompanyIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Check authentication
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = '/crm/login.html';
+                return false;
+            }
+            currentUserId = session.user.id;
+
+            // Check if admin
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (profile && profile.role === 'admin') {
+                document.getElementById('adminLink').style.display = 'inline-block';
+            }
+
+            return true;
+        }
+
+        // Logout
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = '/crm/login.html';
+        }
+
+        // Load all company data
+        async function loadCompanyData() {
+            companyId = getCompanyIdFromUrl();
+            if (!companyId) {
+                window.location.href = '/crm/companies.html';
+                return;
+            }
+
+            try {
+                // Parallel fetch all data
+                const [companyResult, oppsResult, contactsResult, activitiesResult] = await Promise.all([
+                    supabaseClient.from('companies').select('*').eq('id', companyId).single(),
+                    supabaseClient.from('opportunities').select('*').eq('company_id', companyId).order('created_at', { ascending: false }),
+                    supabaseClient.from('contacts').select('*').eq('company_id', companyId).order('first_name'),
+                    supabaseClient.from('activities').select('*').eq('company_id', companyId).order('created_at', { ascending: false }).limit(50)
+                ]);
+
+                if (companyResult.error) throw companyResult.error;
+
+                company = companyResult.data;
+                opportunities = oppsResult.data || [];
+                contacts = contactsResult.data || [];
+                activities = activitiesResult.data || [];
+
+                // Render everything
+                renderCompanyInfo();
+                renderHealthSummary();
+                renderOpportunities();
+                renderContacts();
+                renderActivities();
+
+                // Update page
+                document.getElementById('companyName').textContent = company.name;
+                document.getElementById('companyNameBreadcrumb').textContent = company.name;
+                document.title = `${company.name} - Clover ERA CRM`;
+
+                // Show content
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading company:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div class="empty-state-icon">-</div>
+                    <p>Failed to load company details</p>
+                    <a href="companies.html" class="btn btn-primary" style="margin-top: 1rem;">Back to Companies</a>
+                `;
+            }
+        }
+
+        // Render company info sidebar
+        function renderCompanyInfo() {
+            const grid = document.getElementById('companyInfoGrid');
+            grid.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">Industry</span>
+                    <span class="info-value">${company.industry || '-'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <span class="info-value">${formatStatus(company.status)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Type</span>
+                    <span class="info-value">${formatCompanyType(company.company_type)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Employees</span>
+                    <span class="info-value">${company.employee_count ? company.employee_count.toLocaleString() : '-'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Website</span>
+                    <span class="info-value">${company.website ? `<a href="${company.website}" target="_blank">${company.website}</a>` : '-'}</span>
+                </div>
+                ${company.notes ? `
+                <div class="info-item">
+                    <span class="info-label">Notes</span>
+                    <span class="info-value">${company.notes}</span>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        // Calculate deal health
+        function calculateDealHealth(opp) {
+            const now = new Date();
+
+            // Find activities for this opportunity
+            const oppActivities = activities.filter(a => a.opportunity_id === opp.id);
+            let lastContactDate = null;
+
+            if (oppActivities.length > 0) {
+                const sorted = oppActivities.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                lastContactDate = new Date(sorted[0].created_at);
+            }
+
+            const daysSinceContact = lastContactDate
+                ? Math.floor((now - lastContactDate) / (1000 * 60 * 60 * 24))
+                : 999;
+
+            const stageEnteredAt = opp.stage_entered_at ? new Date(opp.stage_entered_at) : new Date(opp.created_at);
+            const daysInStage = Math.floor((now - stageEnteredAt) / (1000 * 60 * 60 * 24));
+
+            if (daysInStage >= 21 || daysSinceContact >= 14) {
+                return { health: 'stalled', label: 'Stalled' };
+            } else if (daysInStage >= 14 || daysSinceContact >= 7) {
+                return { health: 'at-risk', label: 'At Risk' };
+            } else {
+                return { health: 'healthy', label: 'Healthy' };
+            }
+        }
+
+        // Render health summary
+        function renderHealthSummary() {
+            const container = document.getElementById('healthSummary');
+
+            // Filter active opportunities
+            const activeOpps = opportunities.filter(o => !['closed-won', 'closed-lost'].includes(o.stage));
+
+            if (activeOpps.length === 0) {
+                container.innerHTML = `
+                    <span class="health-badge neutral"><span class="health-dot neutral"></span>No Active Deals</span>
+                    <div class="health-stats">
+                        <div class="health-stat">
+                            <div class="health-stat-value">$0</div>
+                            <div class="health-stat-label">Pipeline Value</div>
+                        </div>
+                        <div class="health-stat">
+                            <div class="health-stat-value">0</div>
+                            <div class="health-stat-label">Open Opps</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate overall health
+            let stalledCount = 0, atRiskCount = 0, healthyCount = 0;
+            activeOpps.forEach(opp => {
+                const health = calculateDealHealth(opp);
+                if (health.health === 'stalled') stalledCount++;
+                else if (health.health === 'at-risk') atRiskCount++;
+                else healthyCount++;
+            });
+
+            let overallHealth = 'healthy';
+            let overallLabel = 'Healthy';
+            if (stalledCount > 0) {
+                overallHealth = 'stalled';
+                overallLabel = 'Stalled';
+            } else if (atRiskCount > 0) {
+                overallHealth = 'at-risk';
+                overallLabel = 'At Risk';
+            }
+
+            const pipelineValue = activeOpps.reduce((sum, opp) => sum + (opp.value || 0), 0);
+            const weightedValue = activeOpps.reduce((sum, opp) => sum + ((opp.value || 0) * (opp.probability || 0) / 100), 0);
+
+            container.innerHTML = `
+                <span class="health-badge ${overallHealth}"><span class="health-dot ${overallHealth}"></span>${overallLabel}</span>
+                ${stalledCount > 0 || atRiskCount > 0 ? `
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        ${stalledCount > 0 ? `${stalledCount} stalled` : ''}${stalledCount > 0 && atRiskCount > 0 ? ', ' : ''}${atRiskCount > 0 ? `${atRiskCount} at-risk` : ''}
+                    </div>
+                ` : ''}
+                <div class="health-stats">
+                    <div class="health-stat">
+                        <div class="health-stat-value">$${pipelineValue.toLocaleString()}</div>
+                        <div class="health-stat-label">Pipeline Value</div>
+                    </div>
+                    <div class="health-stat">
+                        <div class="health-stat-value">${activeOpps.length}</div>
+                        <div class="health-stat-label">Open Opps</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render opportunities
+        function renderOpportunities() {
+            const container = document.getElementById('opportunitiesList');
+            document.getElementById('oppCount').textContent = opportunities.length;
+
+            if (opportunities.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">-</div>
+                        <p>No opportunities yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = opportunities.map(opp => {
+                const health = calculateDealHealth(opp);
+                const isClosed = ['closed-won', 'closed-lost'].includes(opp.stage);
+
+                return `
+                    <div class="expandable-card" id="opp-${opp.id}">
+                        <div class="expandable-card-header" onclick="toggleOpportunityCard('${opp.id}')">
+                            <div>
+                                <div class="expandable-card-title">${opp.title}</div>
+                                <div class="expandable-card-meta">
+                                    <span class="stage-badge stage-${opp.stage}">${formatStage(opp.stage)}</span>
+                                    ${!isClosed ? `<span class="health-badge ${health.health}"><span class="health-dot ${health.health}"></span>${health.label}</span>` : ''}
+                                    <span>$${(opp.value || 0).toLocaleString()}</span>
+                                </div>
+                            </div>
+                            <span class="expandable-card-toggle">></span>
+                        </div>
+                        <div class="expandable-card-content">
+                            <div class="quick-edit-grid">
+                                <div class="quick-edit-field">
+                                    <label>Stage</label>
+                                    <select onchange="quickUpdateOpportunity('${opp.id}', 'stage', this.value)">
+                                        <option value="lead" ${opp.stage === 'lead' ? 'selected' : ''}>Lead</option>
+                                        <option value="qualified" ${opp.stage === 'qualified' ? 'selected' : ''}>Qualified</option>
+                                        <option value="demo-scheduled" ${opp.stage === 'demo-scheduled' ? 'selected' : ''}>Demo Scheduled</option>
+                                        <option value="demo-completed" ${opp.stage === 'demo-completed' ? 'selected' : ''}>Demo Completed</option>
+                                        <option value="proposal" ${opp.stage === 'proposal' ? 'selected' : ''}>Proposal</option>
+                                        <option value="negotiation" ${opp.stage === 'negotiation' ? 'selected' : ''}>Negotiation</option>
+                                        <option value="pilot" ${opp.stage === 'pilot' ? 'selected' : ''}>Pilot</option>
+                                        <option value="closed-won" ${opp.stage === 'closed-won' ? 'selected' : ''}>Closed Won</option>
+                                        <option value="closed-lost" ${opp.stage === 'closed-lost' ? 'selected' : ''}>Closed Lost</option>
+                                    </select>
+                                </div>
+                                <div class="quick-edit-field">
+                                    <label>Value ($)</label>
+                                    <input type="number" value="${opp.value || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'value', this.value)">
+                                </div>
+                                <div class="quick-edit-field">
+                                    <label>Expected Close</label>
+                                    <input type="date" value="${opp.expected_close_date || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'expected_close_date', this.value)">
+                                </div>
+                                <div class="quick-edit-field">
+                                    <label>Probability (%)</label>
+                                    <input type="number" min="0" max="100" value="${opp.probability || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'probability', this.value)">
+                                </div>
+                                <div class="quick-edit-field" style="grid-column: span 2;">
+                                    <label>Next Step</label>
+                                    <input type="text" value="${opp.next_step || ''}" onchange="quickUpdateOpportunity('${opp.id}', 'next_step', this.value)">
+                                </div>
+                                <div class="quick-edit-actions">
+                                    <a href="opportunity.html?id=${opp.id}" class="btn btn-secondary btn-small">View Full Details</a>
+                                    <button class="btn btn-danger btn-small" onclick="deleteOpportunity('${opp.id}')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Toggle opportunity card
+        function toggleOpportunityCard(oppId) {
+            const card = document.getElementById(`opp-${oppId}`);
+            card.classList.toggle('expanded');
+        }
+
+        // Quick update opportunity
+        async function quickUpdateOpportunity(oppId, field, value) {
+            try {
+                const updateData = { [field]: value || null };
+
+                // If stage changed, update stage_entered_at
+                if (field === 'stage') {
+                    updateData.stage_entered_at = new Date().toISOString();
+                }
+
+                const { error } = await supabaseClient
+                    .from('opportunities')
+                    .update(updateData)
+                    .eq('id', oppId);
+
+                if (error) throw error;
+
+                // Update local data
+                const opp = opportunities.find(o => o.id === oppId);
+                if (opp) {
+                    Object.assign(opp, updateData);
+                }
+
+                // Re-render health summary (may have changed)
+                renderHealthSummary();
+
+            } catch (error) {
+                console.error('Error updating opportunity:', error);
+                alert('Failed to update opportunity');
+            }
+        }
+
+        // Render contacts
+        function renderContacts() {
+            const container = document.getElementById('contactsList');
+            document.getElementById('contactCount').textContent = contacts.length;
+
+            if (contacts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">-</div>
+                        <p>No contacts yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = contacts.map(contact => `
+                <div class="contact-card">
+                    <div class="contact-info">
+                        <div class="contact-name">${contact.first_name} ${contact.last_name}</div>
+                        ${contact.title ? `<div class="contact-title">${contact.title}</div>` : ''}
+                        <div class="contact-details">
+                            ${contact.email || ''}${contact.email && contact.phone ? ' | ' : ''}${contact.phone || ''}
+                        </div>
+                    </div>
+                    <div class="contact-actions">
+                        <button class="btn btn-secondary btn-small" onclick="editContact('${contact.id}')">Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteContact('${contact.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render activities
+        function renderActivities() {
+            const container = document.getElementById('activitiesList');
+            document.getElementById('activityCount').textContent = activities.length;
+
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">-</div>
+                        <p>No activities yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by date
+            const groups = groupActivitiesByDate(activities);
+
+            const activityIcons = {
+                call: 'C',
+                email: 'E',
+                meeting: 'M',
+                demo: 'D',
+                note: 'N',
+                task: 'T'
+            };
+
+            container.innerHTML = Object.entries(groups).map(([label, items]) => `
+                <div class="activity-date-group">
+                    <div class="activity-date-label">${label}</div>
+                    ${items.map(activity => `
+                        <div class="activity-item">
+                            <span class="activity-icon">${activityIcons[activity.type] || 'A'}</span>
+                            <div class="activity-content">
+                                <div class="activity-subject">${activity.subject}</div>
+                                ${activity.description ? `<div class="activity-description">${activity.description.substring(0, 100)}${activity.description.length > 100 ? '...' : ''}</div>` : ''}
+                                <div class="activity-meta">
+                                    ${new Date(activity.created_at).toLocaleString()}
+                                    ${activity.due_date ? ` | Due: ${new Date(activity.due_date).toLocaleDateString()}` : ''}
+                                </div>
+                            </div>
+                            ${activity.type === 'task' ? `
+                                <div class="activity-status">
+                                    <span class="activity-status-toggle" onclick="toggleActivityStatus('${activity.id}', ${!activity.completed})">
+                                        ${activity.completed ? 'Y' : 'X'}
+                                    </span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        // Group activities by date
+        function groupActivitiesByDate(activities) {
+            const groups = {};
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const weekAgo = new Date(today);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            activities.forEach(activity => {
+                const date = new Date(activity.created_at);
+                let label;
+
+                if (date >= today) {
+                    label = 'Today';
+                } else if (date >= yesterday) {
+                    label = 'Yesterday';
+                } else if (date >= weekAgo) {
+                    label = 'This Week';
+                } else {
+                    label = 'Earlier';
+                }
+
+                if (!groups[label]) groups[label] = [];
+                groups[label].push(activity);
+            });
+
+            return groups;
+        }
+
+        // Toggle activity status
+        async function toggleActivityStatus(activityId, newStatus) {
+            try {
+                const { error } = await supabaseClient
+                    .from('activities')
+                    .update({ completed: newStatus, completed_at: newStatus ? new Date().toISOString() : null })
+                    .eq('id', activityId);
+
+                if (error) throw error;
+
+                // Update local data
+                const activity = activities.find(a => a.id === activityId);
+                if (activity) {
+                    activity.completed = newStatus;
+                }
+
+                renderActivities();
+
+            } catch (error) {
+                console.error('Error updating activity:', error);
+                alert('Failed to update activity');
+            }
+        }
+
+        // Format helpers
+        function formatStatus(status) {
+            const statuses = { prospect: 'Prospect', qualified: 'Qualified', customer: 'Customer', churned: 'Churned', inactive: 'Inactive' };
+            return statuses[status] || status || '-';
+        }
+
+        function formatCompanyType(type) {
+            const types = { customer: 'Customer', partner: 'Partner', both: 'Both' };
+            return types[type] || type || 'Customer';
+        }
+
+        function formatStage(stage) {
+            const stages = {
+                'lead': 'Lead', 'qualified': 'Qualified', 'demo-scheduled': 'Demo Scheduled',
+                'demo-completed': 'Demo Completed', 'proposal': 'Proposal', 'negotiation': 'Negotiation',
+                'pilot': 'Pilot', 'closed-won': 'Closed Won', 'closed-lost': 'Closed Lost'
+            };
+            return stages[stage] || stage;
+        }
+
+        // Modal functions
+        function editCompanyInfo() {
+            document.getElementById('companyNameInput').value = company.name;
+            document.getElementById('companyIndustry').value = company.industry || '';
+            document.getElementById('companyStatus').value = company.status || 'prospect';
+            document.getElementById('companyWebsite').value = company.website || '';
+            document.getElementById('companyEmployees').value = company.employee_count || '';
+            document.getElementById('companyNotes').value = company.notes || '';
+
+            document.getElementById('companyModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideCompanyModal() {
+            document.getElementById('companyModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveCompany(event) {
+            event.preventDefault();
+
+            try {
+                const { error } = await supabaseClient
+                    .from('companies')
+                    .update({
+                        name: document.getElementById('companyNameInput').value,
+                        industry: document.getElementById('companyIndustry').value || null,
+                        status: document.getElementById('companyStatus').value,
+                        website: document.getElementById('companyWebsite').value || null,
+                        employee_count: document.getElementById('companyEmployees').value ? parseInt(document.getElementById('companyEmployees').value) : null,
+                        notes: document.getElementById('companyNotes').value || null
+                    })
+                    .eq('id', companyId);
+
+                if (error) throw error;
+
+                hideCompanyModal();
+                await loadCompanyData();
+
+            } catch (error) {
+                console.error('Error saving company:', error);
+                alert('Failed to save company');
+            }
+        }
+
+        async function deleteCompany() {
+            if (!confirm(`Are you sure you want to delete "${company.name}"?\n\nThis will also delete all contacts, opportunities, and activities associated with this company.\n\nThis action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                // Delete in order: activities, contacts, opportunities, company
+                await supabaseClient.from('activities').delete().eq('company_id', companyId);
+                await supabaseClient.from('contacts').delete().eq('company_id', companyId);
+                await supabaseClient.from('opportunities').delete().eq('company_id', companyId);
+                const { error } = await supabaseClient.from('companies').delete().eq('id', companyId);
+
+                if (error) throw error;
+
+                window.location.href = '/crm/companies.html';
+
+            } catch (error) {
+                console.error('Error deleting company:', error);
+                alert('Failed to delete company');
+            }
+        }
+
+        // Opportunity modal functions
+        function showAddOpportunityModal() {
+            document.getElementById('opportunityModalTitle').textContent = 'Add Opportunity';
+            document.getElementById('opportunityForm').reset();
+            document.getElementById('opportunityId').value = '';
+            document.getElementById('opportunityModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideOpportunityModal() {
+            document.getElementById('opportunityModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveOpportunity(event) {
+            event.preventDefault();
+
+            const oppId = document.getElementById('opportunityId').value;
+            const oppData = {
+                company_id: companyId,
+                title: document.getElementById('oppTitle').value,
+                stage: document.getElementById('oppStage').value,
+                value: document.getElementById('oppValue').value ? parseFloat(document.getElementById('oppValue').value) : null,
+                expected_close_date: document.getElementById('oppCloseDate').value || null,
+                probability: document.getElementById('oppProbability').value ? parseInt(document.getElementById('oppProbability').value) : null,
+                next_step: document.getElementById('oppNextStep').value || null,
+                notes: document.getElementById('oppNotes').value || null,
+                owner_id: currentUserId
+            };
+
+            try {
+                if (oppId) {
+                    const { error } = await supabaseClient.from('opportunities').update(oppData).eq('id', oppId);
+                    if (error) throw error;
+                } else {
+                    oppData.stage_entered_at = new Date().toISOString();
+                    const { error } = await supabaseClient.from('opportunities').insert([oppData]);
+                    if (error) throw error;
+                }
+
+                hideOpportunityModal();
+                await loadCompanyData();
+
+            } catch (error) {
+                console.error('Error saving opportunity:', error);
+                alert('Failed to save opportunity');
+            }
+        }
+
+        async function deleteOpportunity(oppId) {
+            if (!confirm('Are you sure you want to delete this opportunity?')) return;
+
+            try {
+                await supabaseClient.from('activities').delete().eq('opportunity_id', oppId);
+                const { error } = await supabaseClient.from('opportunities').delete().eq('id', oppId);
+                if (error) throw error;
+
+                await loadCompanyData();
+
+            } catch (error) {
+                console.error('Error deleting opportunity:', error);
+                alert('Failed to delete opportunity');
+            }
+        }
+
+        // Contact modal functions
+        function showAddContactModal() {
+            document.getElementById('contactModalTitle').textContent = 'Add Contact';
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactId').value = '';
+            document.getElementById('contactModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideContactModal() {
+            document.getElementById('contactModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function editContact(contactId) {
+            const contact = contacts.find(c => c.id === contactId);
+            if (!contact) return;
+
+            document.getElementById('contactModalTitle').textContent = 'Edit Contact';
+            document.getElementById('contactId').value = contact.id;
+            document.getElementById('contactFirstName').value = contact.first_name;
+            document.getElementById('contactLastName').value = contact.last_name;
+            document.getElementById('contactTitle').value = contact.title || '';
+            document.getElementById('contactEmail').value = contact.email || '';
+            document.getElementById('contactPhone').value = contact.phone || '';
+            document.getElementById('contactLinkedIn').value = contact.linkedin_url || '';
+
+            document.getElementById('contactModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function saveContact(event) {
+            event.preventDefault();
+
+            const contactId = document.getElementById('contactId').value;
+            const contactData = {
+                company_id: companyId,
+                first_name: document.getElementById('contactFirstName').value,
+                last_name: document.getElementById('contactLastName').value,
+                title: document.getElementById('contactTitle').value || null,
+                email: document.getElementById('contactEmail').value || null,
+                phone: document.getElementById('contactPhone').value || null,
+                linkedin_url: document.getElementById('contactLinkedIn').value || null
+            };
+
+            try {
+                if (contactId) {
+                    const { error } = await supabaseClient.from('contacts').update(contactData).eq('id', contactId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await supabaseClient.from('contacts').insert([contactData]);
+                    if (error) throw error;
+                }
+
+                hideContactModal();
+                await loadCompanyData();
+
+            } catch (error) {
+                console.error('Error saving contact:', error);
+                alert('Failed to save contact');
+            }
+        }
+
+        async function deleteContact(contactId) {
+            if (!confirm('Are you sure you want to delete this contact?')) return;
+
+            try {
+                const { error } = await supabaseClient.from('contacts').delete().eq('id', contactId);
+                if (error) throw error;
+
+                await loadCompanyData();
+
+            } catch (error) {
+                console.error('Error deleting contact:', error);
+                alert('Failed to delete contact');
+            }
+        }
+
+        // Activity modal functions
+        function showAddActivityModal() {
+            document.getElementById('activityForm').reset();
+
+            // Populate opportunity dropdown
+            const oppSelect = document.getElementById('activityOpportunity');
+            oppSelect.innerHTML = '<option value="">None</option>' +
+                opportunities.map(opp => `<option value="${opp.id}">${opp.title}</option>`).join('');
+
+            document.getElementById('activityModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideActivityModal() {
+            document.getElementById('activityModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function saveActivity(event) {
+            event.preventDefault();
+
+            const activityData = {
+                company_id: companyId,
+                opportunity_id: document.getElementById('activityOpportunity').value || null,
+                type: document.getElementById('activityType').value,
+                subject: document.getElementById('activitySubject').value,
+                description: document.getElementById('activityDescription').value || null,
+                due_date: document.getElementById('activityDueDate').value || null,
+                completed: document.getElementById('activityCompleted').value === 'true',
+                created_by: currentUserId
+            };
+
+            if (activityData.completed) {
+                activityData.completed_at = new Date().toISOString();
+            }
+
+            try {
+                const { error } = await supabaseClient.from('activities').insert([activityData]);
+                if (error) throw error;
+
+                hideActivityModal();
+                await loadCompanyData();
+
+            } catch (error) {
+                console.error('Error saving activity:', error);
+                alert('Failed to save activity');
+            }
+        }
+
+        // Initialize
+        async function init() {
+            const authenticated = await checkAuth();
+            if (authenticated) {
+                await loadCompanyData();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

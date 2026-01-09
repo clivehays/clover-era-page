@@ -149,7 +149,7 @@
 
         .filters-row {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
             gap: 1rem;
             align-items: end;
         }
@@ -288,6 +288,84 @@
         .badge-partner-active { background: #D1FAE5; color: #065F46; }
         .badge-partner-pending { background: #FEF3C7; color: #92400E; }
         .badge-partner-inactive { background: #F3F4F6; color: #4B5563; }
+
+        /* Health Indicator Styles */
+        .health-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .health-dot.healthy { background: #10B981; }
+        .health-dot.at-risk { background: #F59E0B; }
+        .health-dot.stalled { background: #EF4444; }
+        .health-dot.neutral { background: #9CA3AF; }
+
+        .health-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .health-badge.healthy { background: #D1FAE5; color: #065F46; }
+        .health-badge.at-risk { background: #FEF3C7; color: #92400E; }
+        .health-badge.stalled { background: #FEE2E2; color: #991B1B; }
+        .health-badge.neutral { background: #F3F4F6; color: #6B7280; }
+
+        /* Pipeline Value Styles */
+        .pipeline-value {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .pipeline-count {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Next Action Styles */
+        .next-action {
+            font-size: 0.9rem;
+        }
+        .next-action.overdue {
+            color: #DC2626;
+            font-weight: 600;
+        }
+        .next-action.due-soon {
+            color: #D97706;
+        }
+        .next-action.upcoming {
+            color: var(--text-secondary);
+        }
+
+        /* Sortable Headers */
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        th.sortable:hover {
+            background: var(--medium-gray);
+        }
+        th.sortable::after {
+            content: ' ';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        th.sortable.asc::after {
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid var(--text-primary);
+        }
+        th.sortable.desc::after {
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid var(--text-primary);
+        }
 
         /* Loading */
         .loading {
@@ -646,6 +724,15 @@
                     </select>
                 </div>
                 <div class="filter-group">
+                    <label>Health Status</label>
+                    <select id="healthFilter" onchange="filterCompanies()">
+                        <option value="">All Health</option>
+                        <option value="stalled">Stalled Only</option>
+                        <option value="at-risk">At Risk</option>
+                        <option value="healthy">Healthy</option>
+                    </select>
+                </div>
+                <div class="filter-group">
                     <label>&nbsp;</label>
                     <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
                 </div>
@@ -675,12 +762,12 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Company Name</th>
+                            <th class="sortable" onclick="sortCompanies('name')">Company Name</th>
+                            <th class="sortable" onclick="sortCompanies('health')">Health</th>
+                            <th class="sortable" onclick="sortCompanies('pipelineValue')">Pipeline Value</th>
+                            <th class="sortable" onclick="sortCompanies('nextActionDue')">Next Action</th>
                             <th>Type</th>
-                            <th>Industry</th>
-                            <th>Status</th>
                             <th>Assigned To</th>
-                            <th>Last Action</th>
                         </tr>
                     </thead>
                     <tbody id="companiesTableBody">
@@ -954,6 +1041,91 @@
             window.location.href = '/crm/login.html';
         }
 
+        // Calculate deal health based on last activity and days in stage
+        function calculateDealHealth(opp, activities) {
+            const now = new Date();
+
+            // Get last activity date for this opportunity
+            const oppActivities = activities.filter(a => a.opportunity_id === opp.id);
+            let lastContactDate = null;
+
+            if (oppActivities.length > 0) {
+                const sorted = oppActivities.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                lastContactDate = new Date(sorted[0].created_at);
+            }
+
+            // Calculate days since last contact
+            const daysSinceContact = lastContactDate
+                ? Math.floor((now - lastContactDate) / (1000 * 60 * 60 * 24))
+                : 999;
+
+            // Calculate days in current stage
+            const stageEnteredAt = opp.stage_entered_at ? new Date(opp.stage_entered_at) : new Date(opp.created_at);
+            const daysInStage = Math.floor((now - stageEnteredAt) / (1000 * 60 * 60 * 24));
+
+            // Health logic
+            if (daysInStage >= 21 || daysSinceContact >= 14) {
+                return { health: 'stalled', daysSinceContact, daysInStage };
+            } else if (daysInStage >= 14 || daysSinceContact >= 7) {
+                return { health: 'at-risk', daysSinceContact, daysInStage };
+            } else {
+                return { health: 'healthy', daysSinceContact, daysInStage };
+            }
+        }
+
+        // Calculate company health (worst health across all opportunities)
+        function calculateCompanyHealth(companyOpportunities, activities) {
+            if (!companyOpportunities || companyOpportunities.length === 0) {
+                return { health: 'neutral', label: 'No Opps' };
+            }
+
+            let worstHealth = 'healthy';
+            const healthPriority = { 'stalled': 3, 'at-risk': 2, 'healthy': 1, 'neutral': 0 };
+
+            companyOpportunities.forEach(opp => {
+                const oppHealth = calculateDealHealth(opp, activities);
+                if (healthPriority[oppHealth.health] > healthPriority[worstHealth]) {
+                    worstHealth = oppHealth.health;
+                }
+            });
+
+            const labels = { 'healthy': 'Healthy', 'at-risk': 'At Risk', 'stalled': 'Stalled' };
+            return { health: worstHealth, label: labels[worstHealth] };
+        }
+
+        // Get earliest next action date
+        function getNextActionDue(companyOpportunities, activities) {
+            let earliestDate = null;
+            let nextStepText = null;
+
+            // Check opportunity expected close dates and next steps
+            companyOpportunities.forEach(opp => {
+                if (opp.expected_close_date) {
+                    const closeDate = new Date(opp.expected_close_date);
+                    if (!earliestDate || closeDate < earliestDate) {
+                        earliestDate = closeDate;
+                        nextStepText = opp.next_step || 'Follow up';
+                    }
+                }
+            });
+
+            // Check pending activities
+            const pendingActivities = activities.filter(a =>
+                !a.completed && a.due_date &&
+                companyOpportunities.some(opp => opp.id === a.opportunity_id || opp.company_id === a.company_id)
+            );
+
+            pendingActivities.forEach(activity => {
+                const dueDate = new Date(activity.due_date);
+                if (!earliestDate || dueDate < earliestDate) {
+                    earliestDate = dueDate;
+                    nextStepText = activity.subject;
+                }
+            });
+
+            return { date: earliestDate, text: nextStepText };
+        }
+
         // Load companies
         async function loadCompanies() {
             try {
@@ -965,18 +1137,19 @@
 
                 if (error) throw error;
 
-                // Get the most recent opportunity for each company (to find assigned owner)
+                // Get all opportunities with full data for health calculation
                 const { data: opportunities, error: oppError } = await supabaseClient
                     .from('opportunities')
-                    .select('company_id, owner_id')
+                    .select('id, company_id, owner_id, value, stage, stage_entered_at, expected_close_date, next_step, created_at')
+                    .not('stage', 'in', '("closed-won","closed-lost")')
                     .order('created_at', { ascending: false });
 
                 if (oppError) console.error('Error loading opportunities:', oppError);
 
-                // Get the most recent activity for each company
+                // Get activities for health calculation
                 const { data: activities, error: actError } = await supabaseClient
                     .from('activities')
-                    .select('company_id, subject, type, created_at, due_date')
+                    .select('id, company_id, opportunity_id, subject, type, created_at, due_date, completed')
                     .order('created_at', { ascending: false });
 
                 if (actError) console.error('Error loading activities:', actError);
@@ -989,6 +1162,21 @@
                 if (profileError) console.error('Error loading profiles:', profileError);
 
                 // Create lookup maps
+                const profileMap = {};
+                (profiles || []).forEach(profile => {
+                    profileMap[profile.id] = profile;
+                });
+
+                // Group opportunities by company
+                const companyOppsMap = {};
+                (opportunities || []).forEach(opp => {
+                    if (!companyOppsMap[opp.company_id]) {
+                        companyOppsMap[opp.company_id] = [];
+                    }
+                    companyOppsMap[opp.company_id].push(opp);
+                });
+
+                // Create owner map (first owner from opportunities)
                 const ownerMap = {};
                 (opportunities || []).forEach(opp => {
                     if (!ownerMap[opp.company_id] && opp.owner_id) {
@@ -996,27 +1184,30 @@
                     }
                 });
 
-                const lastActivityMap = {};
-                (activities || []).forEach(activity => {
-                    if (!lastActivityMap[activity.company_id]) {
-                        lastActivityMap[activity.company_id] = activity;
-                    }
-                });
-
-                const profileMap = {};
-                (profiles || []).forEach(profile => {
-                    profileMap[profile.id] = profile;
-                });
-
                 allCompanies = companies.map(company => {
+                    const companyOpps = companyOppsMap[company.id] || [];
                     const ownerId = ownerMap[company.id];
                     const owner = ownerId ? profileMap[ownerId] : null;
-                    const lastActivity = lastActivityMap[company.id];
+
+                    // Calculate pipeline value
+                    const pipelineValue = companyOpps.reduce((sum, opp) => sum + (opp.value || 0), 0);
+                    const oppCount = companyOpps.length;
+
+                    // Calculate health
+                    const healthInfo = calculateCompanyHealth(companyOpps, activities || []);
+
+                    // Get next action due
+                    const nextAction = getNextActionDue(companyOpps, activities || []);
 
                     return {
                         ...company,
                         owner_name: owner ? (owner.full_name || owner.email) : 'Unassigned',
-                        last_activity: lastActivity
+                        pipelineValue,
+                        oppCount,
+                        health: healthInfo.health,
+                        healthLabel: healthInfo.label,
+                        nextActionDue: nextAction.date,
+                        nextActionText: nextAction.text
                     };
                 });
 
@@ -1080,14 +1271,16 @@
             const typeFilter = document.getElementById('typeFilter').value;
             const statusFilter = document.getElementById('statusFilter').value;
             const industryFilter = document.getElementById('industryFilter').value;
+            const healthFilter = document.getElementById('healthFilter').value;
 
             filteredCompanies = allCompanies.filter(company => {
                 const matchesSearch = company.name.toLowerCase().includes(search);
                 const matchesType = !typeFilter || company.company_type === typeFilter;
                 const matchesStatus = !statusFilter || company.status === statusFilter;
                 const matchesIndustry = !industryFilter || company.industry === industryFilter;
+                const matchesHealth = !healthFilter || company.health === healthFilter;
 
-                return matchesSearch && matchesType && matchesStatus && matchesIndustry;
+                return matchesSearch && matchesType && matchesStatus && matchesIndustry && matchesHealth;
             });
 
             renderCompaniesTable();
@@ -1099,7 +1292,112 @@
             document.getElementById('typeFilter').value = '';
             document.getElementById('statusFilter').value = '';
             document.getElementById('industryFilter').value = '';
+            document.getElementById('healthFilter').value = '';
             filterCompanies();
+        }
+
+        // Sorting state
+        let currentSort = { field: 'name', direction: 'asc' };
+
+        // Sort companies
+        function sortCompanies(field) {
+            // Toggle direction if same field, else default to appropriate direction
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                // Default sort directions
+                if (field === 'health') {
+                    currentSort.direction = 'desc'; // Worst first
+                } else if (field === 'pipelineValue') {
+                    currentSort.direction = 'desc'; // Highest first
+                } else if (field === 'nextActionDue') {
+                    currentSort.direction = 'asc'; // Soonest first
+                } else {
+                    currentSort.direction = 'asc';
+                }
+            }
+
+            // Health priority for sorting
+            const healthPriority = { 'stalled': 3, 'at-risk': 2, 'healthy': 1, 'neutral': 0 };
+
+            filteredCompanies.sort((a, b) => {
+                let valA, valB;
+
+                switch (field) {
+                    case 'name':
+                        valA = (a.name || '').toLowerCase();
+                        valB = (b.name || '').toLowerCase();
+                        break;
+                    case 'health':
+                        valA = healthPriority[a.health] || 0;
+                        valB = healthPriority[b.health] || 0;
+                        break;
+                    case 'pipelineValue':
+                        valA = a.pipelineValue || 0;
+                        valB = b.pipelineValue || 0;
+                        break;
+                    case 'nextActionDue':
+                        valA = a.nextActionDue ? new Date(a.nextActionDue).getTime() : Infinity;
+                        valB = b.nextActionDue ? new Date(b.nextActionDue).getTime() : Infinity;
+                        break;
+                    default:
+                        valA = a[field] || '';
+                        valB = b[field] || '';
+                }
+
+                if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            // Update header styling
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.classList.remove('asc', 'desc');
+            });
+            const currentHeader = document.querySelector(`th.sortable[onclick="sortCompanies('${field}')"]`);
+            if (currentHeader) {
+                currentHeader.classList.add(currentSort.direction);
+            }
+
+            renderCompaniesTable();
+        }
+
+        // Format next action due date
+        function formatNextActionDue(date, text) {
+            if (!date) return '<span class="next-action upcoming">-</span>';
+
+            const now = new Date();
+            const dueDate = new Date(date);
+            const diffDays = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+
+            let className = 'upcoming';
+            let timeText = '';
+
+            if (diffDays < 0) {
+                className = 'overdue';
+                timeText = `${Math.abs(diffDays)}d overdue`;
+            } else if (diffDays === 0) {
+                className = 'due-soon';
+                timeText = 'Today';
+            } else if (diffDays === 1) {
+                className = 'due-soon';
+                timeText = 'Tomorrow';
+            } else if (diffDays <= 7) {
+                className = 'due-soon';
+                timeText = `In ${diffDays} days`;
+            } else {
+                timeText = dueDate.toLocaleDateString();
+            }
+
+            const truncatedText = text ? (text.length > 30 ? text.substring(0, 30) + '...' : text) : '';
+
+            return `
+                <div class="next-action ${className}">
+                    <strong>${timeText}</strong>
+                    ${truncatedText ? `<br><small style="color: var(--text-secondary);">${truncatedText}</small>` : ''}
+                </div>
+            `;
         }
 
         // Render companies table
@@ -1120,54 +1418,44 @@
             tableContent.style.display = 'block';
 
             tbody.innerHTML = filteredCompanies.map(company => {
-                const lastActivity = company.last_activity;
-                let lastActionText = '-';
+                // Format pipeline value
+                const pipelineDisplay = company.pipelineValue > 0
+                    ? `<span class="pipeline-value">$${company.pipelineValue.toLocaleString()}</span><br><span class="pipeline-count">(${company.oppCount} opp${company.oppCount !== 1 ? 's' : ''})</span>`
+                    : '<span class="pipeline-count">-</span>';
 
-                if (lastActivity) {
-                    const activityIcons = {
-                        task: '✅',
-                        meeting: '📅',
-                        call: '📞',
-                        email: '✉️',
-                        note: '📝',
-                        demo: '🎯'
-                    };
-                    const icon = activityIcons[lastActivity.type] || '📋';
-                    const timeAgo = getTimeAgo(new Date(lastActivity.created_at));
-                    lastActionText = `${icon} ${lastActivity.subject}<br><small style="color: var(--text-secondary);">${timeAgo}</small>`;
-                }
+                // Format health badge
+                const healthDisplay = `<span class="health-badge ${company.health}"><span class="health-dot ${company.health}"></span>${company.healthLabel}</span>`;
+
+                // Format next action
+                const nextActionDisplay = formatNextActionDue(company.nextActionDue, company.nextActionText);
 
                 return `
                     <tr onclick="viewCompany('${company.id}')">
                         <td>
                             <strong>${company.name}</strong>
-                            ${company.website ? `<br><small style="color: var(--text-secondary);">${company.website}</small>` : ''}
+                            ${company.industry ? `<br><small style="color: var(--text-secondary);">${company.industry}</small>` : ''}
                         </td>
+                        <td>${healthDisplay}</td>
+                        <td>${pipelineDisplay}</td>
+                        <td>${nextActionDisplay}</td>
                         <td>
                             <span class="badge badge-${company.company_type || 'customer'}">
                                 ${formatCompanyType(company.company_type)}
                             </span>
-                            ${company.company_type === 'partner' && company.partner_status ? `
-                                <br><span class="badge badge-partner-${company.partner_status}" style="margin-top: 0.25rem;">
-                                    ${formatPartnerStatus(company.partner_status)}
-                                </span>
-                            ` : ''}
-                        </td>
-                        <td>${company.industry || '-'}</td>
-                        <td>
-                            <span class="badge badge-${company.status}">
-                                ${formatStatus(company.status)}
-                            </span>
                         </td>
                         <td>${company.owner_name}</td>
-                        <td>${lastActionText}</td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // View company details
-        async function viewCompany(companyId) {
+        // View company details - navigate to company.html
+        function viewCompany(companyId) {
+            window.location.href = `/crm/company.html?id=${companyId}`;
+        }
+
+        // View company details in modal (kept for backwards compatibility)
+        async function viewCompanyModal(companyId) {
             currentCompanyId = companyId;
             const company = allCompanies.find(c => c.id === companyId);
             if (!company) return;
