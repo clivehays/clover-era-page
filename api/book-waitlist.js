@@ -63,20 +63,57 @@ async function sendConfirmationEmail(firstName, email) {
         const emailPayload = {
             from: 'Clive Hays <clive.hays@cloverera.com>',
             to: email,
-            subject: 'Your 12 Early Warning Signals PDF',
+            subject: 'Your 12 Early Warning Signals PDF is here',
+            html: `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1F2937; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .button { display: inline-block; background: #DC2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 20px 0; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB; font-size: 14px; color: #6B7280; }
+    </style>
+</head>
+<body>
+    <p>Hi ${firstName},</p>
+
+    <p>Thanks for joining the Already Gone waitlist.</p>
+
+    <p>As promised, here's your free PDF: <strong>12 Early Warning Signals Your Employee Is About to Leave</strong></p>
+
+    <a href="${PDF_URL}" class="button">Download PDF</a>
+
+    <p>This is the checklist I wish every manager had. The signals are there. Most people just don't know what to look for.</p>
+
+    <p>The book launches January 28. You'll be the first to know when it goes live.</p>
+
+    <p>Talk soon,</p>
+
+    <p>Clive</p>
+
+    <p><em>P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 4.</em></p>
+
+    <div class="footer">
+        <p>Clive Hays<br>Co-Founder, Clover ERA<br><a href="https://cloverera.com">cloverera.com</a></p>
+    </div>
+</body>
+</html>`,
             text: `Hi ${firstName},
 
 Thanks for joining the Already Gone waitlist.
 
-Attached is the PDF I promised: 12 Early Warning Signals Your Employee Is About to Leave.
+As promised, here's your free PDF: 12 Early Warning Signals Your Employee Is About to Leave
 
-You'll probably recognise a few of these from your own team.
+Download it here: ${PDF_URL}
 
-The full book launches January 28. You'll hear from me a few days before with early access - you'll be able to read it before it hits Amazon.
+This is the checklist I wish every manager had. The signals are there. Most people just don't know what to look for.
 
-Until then, if any of those 12 signals hit close to home and you want to talk through what you're seeing, just reply to this email.
+The book launches January 28. You'll be the first to know when it goes live.
+
+Talk soon,
 
 Clive
+
+P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 4.
 
 --
 Clive Hays
