@@ -383,11 +383,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="nav-dropdown-menu">
                         <a href="/book/">
                             <strong>The Trillion Dollar Problem</strong>
-                            <div class="dropdown-description">Our book on Amazon</div>
+                            <div class="dropdown-description">Our first book on Amazon</div>
                         </a>
-                        <a href="/neuroscience-of-employee-engagement/">
-                            <strong>Neuroscience of Engagement</strong>
-                            <div class="dropdown-description">New book coming March 2026</div>
+                        <a href="/alreadygone/">
+                            <strong>Already Gone</strong>
+                            <div class="dropdown-description">New book - January 28, 2026</div>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="/Blog/">
