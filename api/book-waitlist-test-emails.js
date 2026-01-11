@@ -4,8 +4,23 @@
 
 export default async function handler(req, res) {
     // Require admin key
-    if (req.query.key !== process.env.ADMIN_KEY) {
-        return res.status(401).json({ error: 'Unauthorized - add ?key=ADMIN_KEY' });
+    const providedKey = req.query.key;
+    const expectedKey = process.env.ADMIN_KEY;
+
+    // Debug: check if ADMIN_KEY is configured
+    if (!expectedKey) {
+        return res.status(500).json({
+            error: 'ADMIN_KEY environment variable is not configured in Vercel',
+            hint: 'Add ADMIN_KEY to Vercel Environment Variables and redeploy'
+        });
+    }
+
+    if (providedKey !== expectedKey) {
+        return res.status(401).json({
+            error: 'Unauthorized - invalid key',
+            keyProvided: !!providedKey,
+            keyLength: providedKey?.length || 0
+        });
     }
 
     const testEmail = req.query.email;
