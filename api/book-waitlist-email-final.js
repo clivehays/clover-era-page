@@ -133,8 +133,16 @@ export default async function handler(req, res) {
         let failed = 0;
         const errors = [];
 
+        // Helper to add delay between sends (avoid rate limit: 2 req/sec)
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
         for (const subscriber of subscribers || []) {
             try {
+                // Rate limit: wait 600ms between sends
+                if (sent > 0 || failed > 0) {
+                    await delay(600);
+                }
+
                 const response = await fetch('https://api.resend.com/emails', {
                     method: 'POST',
                     headers: {
