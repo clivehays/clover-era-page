@@ -1063,6 +1063,7 @@
                 <td>
                     <button class="action-btn view-btn" onclick="event.stopPropagation(); viewAssessment('${assessment.id}')">View</button>
                     <button class="action-btn export-btn" onclick="event.stopPropagation(); exportAssessment('${assessment.id}')" ${assessment.status !== 'completed' ? 'disabled' : ''}>Export</button>
+                    ${assessment.status === 'completed' && !scores ? `<button class="action-btn recalc-btn" onclick="event.stopPropagation(); recalculateScores('${assessment.id}')" style="background: #805ad5;">Recalc</button>` : ''}
                 </td>
             `;
 
@@ -1296,6 +1297,33 @@
             } catch (error) {
                 console.error('Error downloading Excel:', error);
                 showToast('Error downloading file. Please try again.');
+            }
+        }
+
+        // Recalculate scores for assessments missing scores
+        async function recalculateScores(id) {
+            if (!confirm('Recalculate scores for this assessment?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/clover-eq-admin?action=recalculate&id=${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminKey}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showToast('Scores recalculated successfully!');
+                    loadAssessments(); // Refresh the list
+                } else {
+                    showToast('Error: ' + (data.error || 'Failed to recalculate scores'));
+                }
+            } catch (error) {
+                console.error('Error recalculating scores:', error);
+                showToast('Error recalculating scores. Please try again.');
             }
         }
 

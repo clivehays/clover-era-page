@@ -263,6 +263,131 @@ export default async function handler(req, res) {
             });
         }
 
+        // Recalculate scores for a completed assessment missing scores
+        if (action === 'recalculate' && id) {
+            // Validate UUID format
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            if (!uuidRegex.test(id)) {
+                return res.status(400).json({ error: 'Invalid assessment ID format' });
+            }
+
+            // Get assessment
+            const { data: assessment, error: assessmentError } = await db
+                .from('assessments')
+                .select('id, status')
+                .eq('id', id)
+                .single();
+
+            if (assessmentError || !assessment) {
+                return res.status(404).json({ error: 'Assessment not found' });
+            }
+
+            if (assessment.status !== 'completed') {
+                return res.status(400).json({ error: 'Assessment is not completed' });
+            }
+
+            // Check if scores already exist
+            const { data: existingScores } = await db
+                .from('assessment_scores')
+                .select('id')
+                .eq('assessment_id', id)
+                .single();
+
+            if (existingScores) {
+                return res.status(400).json({ error: 'Scores already exist for this assessment' });
+            }
+
+            // Get all responses
+            const { data: responses, error: responsesError } = await db
+                .from('assessment_responses')
+                .select('question_id, response')
+                .eq('assessment_id', id);
+
+            if (responsesError || !responses) {
+                return res.status(500).json({ error: 'Failed to fetch responses' });
+            }
+
+            // Convert to map
+            const responsesMap = {};
+            responses.forEach(r => {
+                responsesMap[r.question_id] = r.response;
+            });
+
+            // Check if all 30 questions are answered
+            const requiredQuestions = [
+                'C1', 'C2', 'C3', 'C4', 'C5',
+                'L1', 'L2', 'L3', 'L4', 'L5',
+                'O1', 'O2', 'O3', 'O4', 'O5',
+                'V1', 'V2', 'V3', 'V4', 'V5',
+                'E1', 'E2', 'E3', 'E4', 'E5',
+                'R1', 'R2', 'R3', 'R4', 'R5'
+            ];
+
+            const missingQuestions = requiredQuestions.filter(q => !responsesMap[q]);
+            if (missingQuestions.length > 0) {
+                return res.status(400).json({
+                    error: 'Assessment has missing responses',
+                    missing: missingQuestions
+                });
+            }
+
+            // Calculate scores
+            const getZone = (score) => {
+                if (score >= 20) return 'strength';
+                if (score >= 15) return 'development';
+                if (score >= 10) return 'priority';
+                return 'critical';
+            };
+
+            const communication = responsesMap['C1'] + responsesMap['C2'] + responsesMap['C3'] + responsesMap['C4'] + responsesMap['C5'];
+            const learning = responsesMap['L1'] + responsesMap['L2'] + responsesMap['L3'] + responsesMap['L4'] + responsesMap['L5'];
+            const opportunities = responsesMap['O1'] + responsesMap['O2'] + responsesMap['O3'] + responsesMap['O4'] + responsesMap['O5'];
+            const vulnerability = responsesMap['V1'] + responsesMap['V2'] + responsesMap['V3'] + responsesMap['V4'] + responsesMap['V5'];
+            const enablement = responsesMap['E1'] + responsesMap['E2'] + responsesMap['E3'] + responsesMap['E4'] + responsesMap['E5'];
+            const reflection = responsesMap['R1'] + responsesMap['R2'] + responsesMap['R3'] + responsesMap['R4'] + responsesMap['R5'];
+            const total = communication + learning + opportunities + vulnerability + enablement + reflection;
+
+            // Insert scores
+            const { error: insertError } = await db
+                .from('assessment_scores')
+                .insert({
+                    assessment_id: id,
+                    communication,
+                    learning,
+                    opportunities,
+                    vulnerability,
+                    enablement,
+                    reflection,
+                    total,
+                    communication_zone: getZone(communication),
+                    learning_zone: getZone(learning),
+                    opportunities_zone: getZone(opportunities),
+                    vulnerability_zone: getZone(vulnerability),
+                    enablement_zone: getZone(enablement),
+                    reflection_zone: getZone(reflection),
+                    calculated_at: new Date().toISOString()
+                });
+
+            if (insertError) {
+                console.error('Error inserting scores:', insertError);
+                return res.status(500).json({ error: 'Failed to save scores' });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Scores recalculated successfully',
+                scores: {
+                    communication: { score: communication, zone: getZone(communication) },
+                    learning: { score: learning, zone: getZone(learning) },
+                    opportunities: { score: opportunities, zone: getZone(opportunities) },
+                    vulnerability: { score: vulnerability, zone: getZone(vulnerability) },
+                    enablement: { score: enablement, zone: getZone(enablement) },
+                    reflection: { score: reflection, zone: getZone(reflection) },
+                    total
+                }
+            });
+        }
+
         return res.status(400).json({ error: 'Invalid action' });
 
     } catch (error) {
