@@ -460,6 +460,55 @@
             background: #059669;
         }
 
+        /* Notes Text Box Styles */
+        .notes-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .notes-section label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .notes-section textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .notes-section textarea::placeholder {
+            color: #9CA3AF;
+        }
+
+        .notes-save-indicator {
+            font-size: 0.85rem;
+            color: var(--success);
+            margin-top: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .notes-save-indicator.visible {
+            opacity: 1;
+        }
+
         /* Completion Page Styles */
         .completion-page {
             display: none;
@@ -824,6 +873,7 @@
         let assessmentId = null;
         let currentSection = 0;
         let responses = {};
+        let notes = {}; // Store notes for each section
         let participantName = '';
         let participantEmail = '';
         let isReturning = false;
@@ -879,6 +929,13 @@
                                 });
                             }
 
+                            // Load notes
+                            if (data.notes) {
+                                data.notes.forEach(n => {
+                                    notes[n.section_id] = n.note_text;
+                                });
+                            }
+
                             // Show assessment page
                             renderSections();
                             showAssessmentPage();
@@ -927,6 +984,16 @@
                                 </div>
                             </div>
                         `).join('')}
+                        <div class="notes-section">
+                            <label for="notes_${section.id}">If you have anything you would like to add, or any additional context, please detail it in the text box below.</label>
+                            <textarea
+                                id="notes_${section.id}"
+                                name="notes_${section.id}"
+                                placeholder="Optional: Add any additional context or thoughts about ${section.name.toLowerCase()}..."
+                                onblur="handleNoteChange('${section.id}', this.value)"
+                            >${notes[section.id] || ''}</textarea>
+                            <div class="notes-save-indicator" id="notesSaveIndicator_${section.id}">Saved</div>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -1001,6 +1068,40 @@
                 });
             } catch (error) {
                 console.error('Error saving response:', error);
+            }
+        }
+
+        // Handle note change (auto-save on blur)
+        async function handleNoteChange(sectionId, text) {
+            notes[sectionId] = text;
+
+            if (!assessmentId) return;
+
+            try {
+                // Show save indicator for this section
+                const indicator = document.getElementById(`notesSaveIndicator_${sectionId}`);
+                if (indicator) {
+                    indicator.classList.add('visible');
+                }
+
+                await fetch('/api/clover-eq-notes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assessment_id: assessmentId,
+                        section_id: sectionId,
+                        note_text: text
+                    })
+                });
+
+                // Hide indicator after delay
+                setTimeout(() => {
+                    if (indicator) {
+                        indicator.classList.remove('visible');
+                    }
+                }, 1500);
+            } catch (error) {
+                console.error('Error saving note:', error);
             }
         }
 

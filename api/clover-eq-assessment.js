@@ -137,22 +137,27 @@ export default async function handler(req, res) {
                 console.error('Error fetching responses:', responsesError);
             }
 
-            // Convert responses array to object
-            const responsesMap = {};
-            if (responses) {
-                responses.forEach(r => {
-                    responsesMap[r.question_id] = r.response;
-                });
+            // Get notes for this assessment
+            const { data: notes, error: notesError } = await db
+                .from('assessment_notes')
+                .select('section_id, note_text')
+                .eq('assessment_id', id);
+
+            if (notesError) {
+                console.error('Error fetching notes:', notesError);
             }
 
             return res.status(200).json({
-                id: assessment.id,
-                name: assessment.participant_name,
-                email: assessment.participant_email,
-                status: assessment.status,
-                started_at: assessment.started_at,
-                completed_at: assessment.completed_at,
-                responses: responsesMap
+                assessment: {
+                    id: assessment.id,
+                    participant_name: assessment.participant_name,
+                    participant_email: assessment.participant_email,
+                    status: assessment.status,
+                    started_at: assessment.started_at,
+                    completed_at: assessment.completed_at
+                },
+                responses: responses || [],
+                notes: notes || []
             });
         }
 

@@ -242,8 +242,13 @@
             letter-spacing: 0.05em;
         }
 
-        tr:hover {
-            background: #f7fafc;
+        tr.clickable {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        tr.clickable:hover {
+            background: #edf2f7;
         }
 
         .status-badge {
@@ -293,9 +298,8 @@
             color: #c53030;
         }
 
-        .export-btn {
+        .action-btn {
             padding: 0.375rem 0.75rem;
-            background: #38a169;
             color: white;
             border: none;
             border-radius: 6px;
@@ -303,13 +307,26 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
+            margin-right: 0.25rem;
+        }
+
+        .view-btn {
+            background: #3182ce;
+        }
+
+        .view-btn:hover {
+            background: #2c5282;
+        }
+
+        .export-btn {
+            background: #38a169;
         }
 
         .export-btn:hover {
             background: #2f855a;
         }
 
-        .export-btn:disabled {
+        .action-btn:disabled {
             background: #a0aec0;
             cursor: not-allowed;
         }
@@ -318,6 +335,275 @@
             text-align: center;
             padding: 3rem;
             color: #718096;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: #1a365d;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+            padding: 0.5rem;
+        }
+
+        .modal-close:hover {
+            color: #1a365d;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        /* Detail View Styles */
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .participant-info h3 {
+            font-size: 1.25rem;
+            color: #1a365d;
+            margin-bottom: 0.25rem;
+        }
+
+        .participant-info p {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .total-score {
+            text-align: right;
+            background: #f7fafc;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+        }
+
+        .total-score .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a365d;
+        }
+
+        .total-score .score-label {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .score-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .score-card .element-name {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #718096;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-card .score-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a365d;
+        }
+
+        .score-card .score-max {
+            font-size: 0.875rem;
+            color: #a0aec0;
+        }
+
+        .section-detail {
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #1a365d;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        .question-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question-row:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            flex: 1;
+            color: #4a5568;
+            font-size: 0.875rem;
+        }
+
+        .question-id {
+            font-weight: 600;
+            color: #1a365d;
+            margin-right: 0.75rem;
+            min-width: 30px;
+        }
+
+        .response-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a365d;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .note-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .note-box .note-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .note-box .note-text {
+            color: #78350f;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c5282;
+        }
+
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
         }
 
         /* Toast notification */
@@ -333,7 +619,7 @@
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s ease;
-            z-index: 1000;
+            z-index: 1001;
         }
 
         .toast.show {
@@ -389,6 +675,19 @@
 
             .refresh-btn {
                 margin-left: 0;
+            }
+
+            .modal {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .scores-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -456,7 +755,7 @@
                             <th>Email</th>
                             <th>Status</th>
                             <th>Completed</th>
-                            <th>Total Score</th>
+                            <th>Total</th>
                             <th>C</th>
                             <th>L</th>
                             <th>O</th>
@@ -476,11 +775,68 @@
         </div>
     </div>
 
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Assessment Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
         let adminKey = '';
+        let currentAssessmentId = null;
+
+        // Question definitions for display
+        const QUESTIONS = {
+            C1: "I adjust my communication style based on who I'm talking to.",
+            C2: "I notice when my message isn't landing and change my approach mid-conversation.",
+            C3: "I ask clarifying questions before assuming I understand someone's concern.",
+            C4: "I remain calm and curious when receiving critical feedback.",
+            C5: "I check in on how my tone and delivery are being received.",
+            L1: "I actively seek feedback on my work and approach.",
+            L2: "I can separate the content of feedback from the way it was delivered.",
+            L3: "I ask others for help when I'm struggling with a challenge.",
+            L4: "I change my approach based on what hasn't worked before.",
+            L5: "I can accurately identify my own skill gaps.",
+            O1: "I share knowledge and opportunities with others even when I could handle it faster myself.",
+            O2: "I advocate for colleagues' growth and contributions to others.",
+            O3: "I notice potential in people that others might overlook.",
+            O4: "I support colleagues trying new approaches even when I'm uncertain about the outcome.",
+            O5: "I have conversations about growth and development outside of formal review processes.",
+            V1: "I admit when I don't know something.",
+            V2: "I acknowledge my mistakes before others discover them.",
+            V3: "I share my uncertainties with colleagues when appropriate.",
+            V4: "I ask for help on things I 'should' know how to do.",
+            V5: "I take ownership of project failures without excessive blame or defensiveness.",
+            E1: "I remove myself as a bottleneck even when it reduces my visibility.",
+            E2: "I ask colleagues what's getting in their way and act on it when I can.",
+            E3: "I support decisions others make even when I would have done it differently.",
+            E4: "I advocate upward for resources and support that would help my colleagues.",
+            E5: "I trust colleagues to handle their work without excessive check-ins or monitoring.",
+            R1: "I review my own behavior after difficult interactions.",
+            R2: "I recognize when I'm having an unproductive emotional reaction in the moment.",
+            R3: "I can identify patterns in feedback I've received over time.",
+            R4: "I actively work on changing behaviors that aren't serving me.",
+            R5: "I take time to assess my approach and contribution after projects, not just outcomes."
+        };
+
+        const SECTIONS = [
+            { id: 'communication', name: 'Communication', prefix: 'C' },
+            { id: 'learning', name: 'Learning', prefix: 'L' },
+            { id: 'opportunities', name: 'Opportunities', prefix: 'O' },
+            { id: 'vulnerability', name: 'Vulnerability', prefix: 'V' },
+            { id: 'enablement', name: 'Enablement', prefix: 'E' },
+            { id: 'reflection', name: 'Reflection', prefix: 'R' }
+        ];
 
         // Check for stored admin key
         function checkAuth() {
@@ -499,7 +855,6 @@
                 return;
             }
 
-            // Test the key by making an API call
             try {
                 const response = await fetch('/api/clover-eq-admin?action=list', {
                     headers: {
@@ -601,11 +956,6 @@
         }
 
         function updateStats(assessments) {
-            const total = assessments.length;
-            const completed = assessments.filter(a => a.status === 'completed').length;
-            const inProgress = assessments.filter(a => a.status === 'in_progress').length;
-
-            // For total stats, we need to fetch all without filter
             fetch('/api/clover-eq-admin?action=list', {
                 headers: { 'Authorization': `Bearer ${adminKey}` }
             })
@@ -620,6 +970,7 @@
 
         function createTableRow(assessment) {
             const tr = document.createElement('tr');
+            tr.className = 'clickable';
             const scores = assessment.scores;
 
             const completedDate = assessment.completed_at
@@ -641,11 +992,12 @@
                 <td>${scores ? createZoneBadge(scores.enablement, scores.enablement_zone) : '-'}</td>
                 <td>${scores ? createZoneBadge(scores.reflection, scores.reflection_zone) : '-'}</td>
                 <td>
-                    <button class="export-btn" onclick="exportAssessment('${assessment.id}')" ${assessment.status !== 'completed' ? 'disabled title="Only completed assessments can be exported"' : ''}>
-                        Export
-                    </button>
+                    <button class="action-btn view-btn" onclick="event.stopPropagation(); viewAssessment('${assessment.id}')">View</button>
+                    <button class="action-btn export-btn" onclick="event.stopPropagation(); exportAssessment('${assessment.id}')" ${assessment.status !== 'completed' ? 'disabled' : ''}>Export</button>
                 </td>
             `;
+
+            tr.onclick = () => viewAssessment(assessment.id);
 
             return tr;
         }
@@ -660,7 +1012,130 @@
             return div.innerHTML;
         }
 
-        // Export assessment
+        // View assessment details
+        async function viewAssessment(id) {
+            currentAssessmentId = id;
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            openModal();
+
+            try {
+                const response = await fetch(`/api/clover-eq-admin?action=detail&id=${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminKey}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch assessment details');
+                }
+
+                const data = await response.json();
+                modalBody.innerHTML = renderDetailView(data);
+
+            } catch (error) {
+                console.error('Error loading assessment:', error);
+                modalBody.innerHTML = '<div class="no-data">Error loading assessment details.</div>';
+            }
+        }
+
+        function renderDetailView(data) {
+            const { assessment, responses, notes } = data;
+            const scores = assessment.scores;
+
+            const completedDate = assessment.completed_at
+                ? new Date(assessment.completed_at).toLocaleDateString('en-US', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                  })
+                : 'In Progress';
+
+            let html = `
+                <div class="detail-header">
+                    <div class="participant-info">
+                        <h3>${escapeHtml(assessment.participant_name)}</h3>
+                        <p>${escapeHtml(assessment.participant_email)}</p>
+                        <p>Completed: ${completedDate}</p>
+                    </div>
+                    ${scores ? `
+                    <div class="total-score">
+                        <div class="score-value">${scores.total}</div>
+                        <div class="score-label">out of 150</div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            if (scores) {
+                html += `
+                    <div class="scores-grid">
+                        ${SECTIONS.map(s => `
+                            <div class="score-card">
+                                <div class="element-name">${s.name}</div>
+                                <div class="score-number">${scores[s.id]}</div>
+                                <div class="score-max">/25</div>
+                                <span class="zone-badge zone-${scores[s.id + '_zone']}">${scores[s.id + '_zone']}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Section details
+            SECTIONS.forEach(section => {
+                const sectionScore = scores ? scores[section.id] : '-';
+                const sectionZone = scores ? scores[section.id + '_zone'] : '';
+
+                html += `
+                    <div class="section-detail">
+                        <div class="section-header">
+                            <h4>${section.name}</h4>
+                            ${scores ? `<span class="zone-badge zone-${sectionZone}">${sectionScore}/25 - ${sectionZone}</span>` : ''}
+                        </div>
+                        <div class="section-content">
+                `;
+
+                for (let i = 1; i <= 5; i++) {
+                    const qId = section.prefix + i;
+                    const qText = QUESTIONS[qId];
+                    const response = responses[qId] || '-';
+
+                    html += `
+                        <div class="question-row">
+                            <span class="question-id">${qId}</span>
+                            <span class="question-text">${qText}</span>
+                            <span class="response-value">${response}</span>
+                        </div>
+                    `;
+                }
+
+                // Add note if exists
+                if (notes && notes[section.id]) {
+                    html += `
+                        <div class="note-box">
+                            <div class="note-label">Additional Notes</div>
+                            <div class="note-text">${escapeHtml(notes[section.id])}</div>
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                    <button class="btn btn-success" onclick="exportAssessment('${assessment.id}')" ${assessment.status !== 'completed' ? 'disabled' : ''}>Export JSON</button>
+                    <button class="btn btn-primary" onclick="downloadExcel('${assessment.id}')" ${assessment.status !== 'completed' ? 'disabled' : ''}>Download Excel</button>
+                </div>
+            `;
+
+            return html;
+        }
+
+        // Export assessment as JSON
         async function exportAssessment(id) {
             try {
                 const response = await fetch(`/api/clover-eq-admin?action=export&id=${id}`, {
@@ -674,18 +1149,98 @@
                 }
 
                 const data = await response.json();
-
-                // Format JSON nicely
                 const jsonString = JSON.stringify(data, null, 2);
-
-                // Copy to clipboard
                 await navigator.clipboard.writeText(jsonString);
-
-                showToast('Assessment data copied to clipboard!');
+                showToast('Assessment JSON copied to clipboard!');
 
             } catch (error) {
                 console.error('Error exporting assessment:', error);
                 showToast('Error exporting assessment. Please try again.');
+            }
+        }
+
+        // Download as Excel (CSV format)
+        async function downloadExcel(id) {
+            try {
+                const response = await fetch(`/api/clover-eq-admin?action=export&id=${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminKey}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to export assessment');
+                }
+
+                const data = await response.json();
+
+                // Create CSV content
+                let csv = 'CLOVER-EQ Assessment Report\n\n';
+                csv += 'PARTICIPANT INFORMATION\n';
+                csv += `Name,${data.participant.name}\n`;
+                csv += `Email,${data.participant.email}\n`;
+                csv += `Completed,${data.participant.completed_at ? new Date(data.participant.completed_at).toLocaleDateString() : 'N/A'}\n\n`;
+
+                csv += 'SCORES SUMMARY\n';
+                csv += 'Element,Score,Max,Zone\n';
+                if (data.scores) {
+                    csv += `Communication,${data.scores.communication},25,${data.scores.communication_zone}\n`;
+                    csv += `Learning,${data.scores.learning},25,${data.scores.learning_zone}\n`;
+                    csv += `Opportunities,${data.scores.opportunities},25,${data.scores.opportunities_zone}\n`;
+                    csv += `Vulnerability,${data.scores.vulnerability},25,${data.scores.vulnerability_zone}\n`;
+                    csv += `Enablement,${data.scores.enablement},25,${data.scores.enablement_zone}\n`;
+                    csv += `Reflection,${data.scores.reflection},25,${data.scores.reflection_zone}\n`;
+                    csv += `TOTAL,${data.scores.total},150,\n`;
+                }
+
+                csv += '\nDETAILED RESPONSES\n';
+                csv += 'Question ID,Question,Response\n';
+
+                Object.entries(QUESTIONS).forEach(([qId, qText]) => {
+                    const response = data.responses[qId] || '';
+                    csv += `${qId},"${qText.replace(/"/g, '""')}",${response}\n`;
+                });
+
+                if (data.notes && Object.keys(data.notes).length > 0) {
+                    csv += '\nADDITIONAL NOTES\n';
+                    csv += 'Section,Notes\n';
+                    Object.entries(data.notes).forEach(([section, note]) => {
+                        if (note) {
+                            csv += `${section},"${note.replace(/"/g, '""')}"\n`;
+                        }
+                    });
+                }
+
+                // Download CSV
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `CLOVER-EQ_${data.participant.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+                link.click();
+
+                showToast('Excel file downloaded!');
+
+            } catch (error) {
+                console.error('Error downloading Excel:', error);
+                showToast('Error downloading file. Please try again.');
+            }
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            currentAssessmentId = null;
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target === event.currentTarget) {
+                closeModal();
             }
         }
 
@@ -703,6 +1258,13 @@
         document.getElementById('adminKeyInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 login();
+            }
+        });
+
+        // Handle escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
             }
         });
 

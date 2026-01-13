@@ -130,11 +130,29 @@ export default async function handler(req, res) {
                 console.error('Error fetching responses:', responsesError);
             }
 
+            // Get notes
+            const { data: notes, error: notesError } = await db
+                .from('assessment_notes')
+                .select('section_id, note_text')
+                .eq('assessment_id', id);
+
+            if (notesError) {
+                console.error('Error fetching notes:', notesError);
+            }
+
             // Convert responses to object
             const responsesMap = {};
             if (responses) {
                 responses.forEach(r => {
                     responsesMap[r.question_id] = r.response;
+                });
+            }
+
+            // Convert notes to object
+            const notesMap = {};
+            if (notes) {
+                notes.forEach(n => {
+                    notesMap[n.section_id] = n.note_text;
                 });
             }
 
@@ -160,10 +178,89 @@ export default async function handler(req, res) {
                     reflection_zone: scores.reflection_zone,
                     total: scores.total
                 } : null,
-                responses: responsesMap
+                responses: responsesMap,
+                notes: notesMap
             };
 
             return res.status(200).json(exportData);
+        }
+
+        // Get detailed view of a single assessment
+        if (action === 'detail' && id) {
+            // Validate UUID format
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            if (!uuidRegex.test(id)) {
+                return res.status(400).json({ error: 'Invalid assessment ID format' });
+            }
+
+            // Get assessment with scores
+            const { data: assessment, error: assessmentError } = await db
+                .from('assessments')
+                .select(`
+                    id,
+                    participant_name,
+                    participant_email,
+                    status,
+                    started_at,
+                    completed_at,
+                    assessment_scores (
+                        communication,
+                        learning,
+                        opportunities,
+                        vulnerability,
+                        enablement,
+                        reflection,
+                        total,
+                        communication_zone,
+                        learning_zone,
+                        opportunities_zone,
+                        vulnerability_zone,
+                        enablement_zone,
+                        reflection_zone
+                    )
+                `)
+                .eq('id', id)
+                .single();
+
+            if (assessmentError || !assessment) {
+                return res.status(404).json({ error: 'Assessment not found' });
+            }
+
+            // Get responses
+            const { data: responses } = await db
+                .from('assessment_responses')
+                .select('question_id, response')
+                .eq('assessment_id', id);
+
+            // Get notes
+            const { data: notes } = await db
+                .from('assessment_notes')
+                .select('section_id, note_text')
+                .eq('assessment_id', id);
+
+            // Convert to maps
+            const responsesMap = {};
+            if (responses) {
+                responses.forEach(r => {
+                    responsesMap[r.question_id] = r.response;
+                });
+            }
+
+            const notesMap = {};
+            if (notes) {
+                notes.forEach(n => {
+                    notesMap[n.section_id] = n.note_text;
+                });
+            }
+
+            return res.status(200).json({
+                assessment: {
+                    ...assessment,
+                    scores: assessment.assessment_scores?.[0] || null
+                },
+                responses: responsesMap,
+                notes: notesMap
+            });
         }
 
         return res.status(400).json({ error: 'Invalid action' });
