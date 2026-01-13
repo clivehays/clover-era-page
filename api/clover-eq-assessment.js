@@ -27,7 +27,9 @@ export default async function handler(req, res) {
     try {
         // POST - Create new assessment
         if (req.method === 'POST') {
-            const { name, email } = req.body;
+            // Accept both naming conventions
+            const name = req.body.name || req.body.participant_name;
+            const email = req.body.email || req.body.participant_email;
 
             if (!name || !email) {
                 return res.status(400).json({
