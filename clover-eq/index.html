@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLOVER-EQ Rapid Assessment | Clover ERA</title>
+    <meta name="description" content="Complete your CLOVER-EQ Rapid Assessment. 30 questions, 5-7 minutes. Identify your development priorities as a manager.">
+
+    <!-- No indexing -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--warm-white);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--medium-gray);
+            padding: 1rem 2rem;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--teal);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo img {
+            height: 30px;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Landing Page Styles */
+        .landing-page h1 {
+            font-size: 2rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .landing-page .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .info-box {
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h2 {
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .info-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        .scale-box {
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .scale-box h2 {
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .scale-items {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .scale-item {
+            padding: 0.75rem 0.5rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+        }
+
+        .scale-item .number {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .scale-item .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .form-section h2 {
+            font-size: 1.25rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .form-group input:read-only {
+            background: var(--light-gray);
+            color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .form-message.error {
+            display: block;
+            background: #FEE2E2;
+            color: var(--error);
+        }
+
+        .form-message.success {
+            display: block;
+            background: #D1FAE5;
+            color: var(--success);
+        }
+
+        /* Assessment Page Styles */
+        .assessment-page {
+            display: none;
+        }
+
+        .progress-bar-container {
+            background: var(--medium-gray);
+            border-radius: 999px;
+            height: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--teal);
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .save-link {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .save-link button {
+            background: none;
+            border: none;
+            color: var(--teal);
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .save-link button:hover {
+            color: var(--deep-teal);
+        }
+
+        .save-indicator {
+            display: inline-block;
+            margin-left: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--success);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .save-indicator.visible {
+            opacity: 1;
+        }
+
+        .section-header {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .section-content {
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            padding: 1.5rem;
+        }
+
+        .question-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .question-id {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 60px;
+        }
+
+        .rating-option input {
+            display: none;
+        }
+
+        .rating-option label {
+            display: block;
+            padding: 0.75rem 0.5rem;
+            background: var(--light-gray);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rating-option label:hover {
+            border-color: var(--teal);
+        }
+
+        .rating-option input:checked + label {
+            background: var(--teal);
+            color: var(--white);
+            border-color: var(--teal);
+        }
+
+        .rating-option .rating-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .rating-option .rating-label {
+            font-size: 0.7rem;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-secondary {
+            padding: 0.875rem 1.5rem;
+            background: var(--white);
+            color: var(--charcoal);
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .btn-nav {
+            padding: 0.875rem 2rem;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav:hover {
+            background: var(--deep-teal);
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-submit {
+            background: var(--success);
+        }
+
+        .btn-submit:hover {
+            background: #059669;
+        }
+
+        /* Completion Page Styles */
+        .completion-page {
+            display: none;
+            text-align: center;
+        }
+
+        .completion-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+        }
+
+        .completion-icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--white);
+        }
+
+        .completion-page h1 {
+            font-size: 2rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .completion-page .message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .next-steps {
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .next-steps h2 {
+            font-size: 1.25rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .next-steps ol {
+            padding-left: 1.5rem;
+        }
+
+        .next-steps li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--medium-gray);
+            border-top-color: var(--teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 2rem 1rem;
+            }
+
+            .landing-page h1 {
+                font-size: 1.5rem;
+            }
+
+            .scale-items {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0.25rem;
+            }
+
+            .scale-item {
+                padding: 0.5rem 0.25rem;
+            }
+
+            .scale-item .number {
+                font-size: 1rem;
+            }
+
+            .scale-item .label {
+                font-size: 0.65rem;
+            }
+
+            .rating-options {
+                flex-direction: column;
+            }
+
+            .rating-option {
+                min-width: 100%;
+            }
+
+            .rating-option label {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .rating-option .rating-label {
+                display: inline;
+                margin-top: 0;
+                margin-left: 0.5rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .btn-secondary, .btn-nav {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <img src="/images/Clover-era-new-logo-1.png" alt="Clover ERA">
+                CLOVER ERA
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Landing Page -->
+        <div class="landing-page" id="landingPage">
+            <h1>CLOVER-EQ Rapid Assessment</h1>
+            <p class="subtitle">This 30-question self-evaluation takes 5-7 minutes to complete.</p>
+
+            <div class="info-box">
+                <h2>Before You Begin</h2>
+                <ul>
+                    <li>There are no right or wrong answers</li>
+                    <li>Answer based on your typical behavior, not ideal behavior</li>
+                    <li>Be honest — this helps identify YOUR development priorities</li>
+                    <li>Individual results are confidential between you and your coach</li>
+                </ul>
+            </div>
+
+            <div class="scale-box">
+                <h2>Rating Scale</h2>
+                <div class="scale-items">
+                    <div class="scale-item">
+                        <div class="number">1</div>
+                        <div class="label">Rarely/<br>Never</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="number">2</div>
+                        <div class="label">Occasionally</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="number">3</div>
+                        <div class="label">Sometimes</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="number">4</div>
+                        <div class="label">Often</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="number">5</div>
+                        <div class="label">Almost<br>Always</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Let's Get Started</h2>
+                <form id="startForm">
+                    <div class="form-group">
+                        <label for="participantName">Your Name</label>
+                        <input type="text" id="participantName" name="participantName" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="participantEmail">Your Email</label>
+                        <input type="email" id="participantEmail" name="participantEmail" required placeholder="Enter your email address">
+                    </div>
+                    <button type="submit" class="btn-primary" id="startBtn">Begin Assessment</button>
+                    <div class="form-message" id="startFormMessage"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Assessment Page -->
+        <div class="assessment-page" id="assessmentPage">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+            <div class="progress-text">
+                <span id="progressText">0 of 30 questions answered</span>
+                <span id="progressPercent">0%</span>
+            </div>
+
+            <div class="save-link">
+                <button type="button" id="saveProgressBtn">📋 Copy link to save your progress</button>
+                <span class="save-indicator" id="saveIndicator">✓ Saved</span>
+            </div>
+
+            <div id="sectionsContainer">
+                <!-- Sections will be dynamically generated -->
+            </div>
+
+            <div class="navigation-buttons">
+                <button type="button" class="btn-secondary" id="prevBtn" style="visibility: hidden;">← Previous Section</button>
+                <button type="button" class="btn-nav" id="nextBtn">Next Section →</button>
+                <button type="button" class="btn-nav btn-submit" id="submitBtn" style="display: none;">Submit Assessment</button>
+            </div>
+        </div>
+
+        <!-- Completion Page -->
+        <div class="completion-page" id="completionPage">
+            <div class="completion-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h1>Assessment Complete!</h1>
+            <p class="message">Thank you for completing the CLOVER-EQ Rapid Assessment. Your responses have been recorded.</p>
+
+            <div class="next-steps">
+                <h2>What Happens Next</h2>
+                <ol>
+                    <li><strong>Your coach reviews your results</strong> — They'll analyze your responses and identify development priorities.</li>
+                    <li><strong>You'll schedule your first coaching session</strong> — If you haven't already, you'll be contacted to set up your initial session.</li>
+                    <li><strong>Discussion and planning</strong> — In that session, you'll discuss your results together and create a personalized development plan.</li>
+                </ol>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Assessment Questions Data
+        const SECTIONS = [
+            {
+                id: 'communication',
+                name: 'Communication',
+                prefix: 'C',
+                questions: [
+                    { id: 'C1', text: 'I adjust my communication style based on who I\'m talking to.' },
+                    { id: 'C2', text: 'I notice when my message isn\'t landing and change my approach mid-conversation.' },
+                    { id: 'C3', text: 'I ask clarifying questions before assuming I understand someone\'s concern.' },
+                    { id: 'C4', text: 'I remain calm and curious when receiving critical feedback.' },
+                    { id: 'C5', text: 'I check in on how my tone and delivery are being received.' }
+                ]
+            },
+            {
+                id: 'learning',
+                name: 'Learning',
+                prefix: 'L',
+                questions: [
+                    { id: 'L1', text: 'I actively seek feedback on my management approach.' },
+                    { id: 'L2', text: 'I can separate the content of feedback from the way it was delivered.' },
+                    { id: 'L3', text: 'I ask others for help when I\'m struggling with a challenge.' },
+                    { id: 'L4', text: 'I change my approach based on what hasn\'t worked before.' },
+                    { id: 'L5', text: 'I can accurately identify my own skill gaps.' }
+                ]
+            },
+            {
+                id: 'opportunities',
+                name: 'Opportunities',
+                prefix: 'O',
+                questions: [
+                    { id: 'O1', text: 'I delegate meaningful work even when I could do it faster myself.' },
+                    { id: 'O2', text: 'I advocate for team members\' growth to senior leadership.' },
+                    { id: 'O3', text: 'I notice potential in people that others might overlook.' },
+                    { id: 'O4', text: 'I let team members try approaches I\'m not sure will work.' },
+                    { id: 'O5', text: 'I have conversations about career development that aren\'t tied to performance reviews.' }
+                ]
+            },
+            {
+                id: 'vulnerability',
+                name: 'Vulnerability',
+                prefix: 'V',
+                questions: [
+                    { id: 'V1', text: 'I admit when I don\'t know something.' },
+                    { id: 'V2', text: 'I acknowledge my mistakes before others discover them.' },
+                    { id: 'V3', text: 'I share my uncertainties with my team when appropriate.' },
+                    { id: 'V4', text: 'I ask for help on things I \'should\' know how to do.' },
+                    { id: 'V5', text: 'I take ownership of project failures without excessive blame or defensiveness.' }
+                ]
+            },
+            {
+                id: 'enablement',
+                name: 'Enablement',
+                prefix: 'E',
+                questions: [
+                    { id: 'E1', text: 'I remove myself as a bottleneck even when it reduces my visibility.' },
+                    { id: 'E2', text: 'I ask my team what\'s getting in their way and act on it.' },
+                    { id: 'E3', text: 'I let decisions stand even when I would have done it differently.' },
+                    { id: 'E4', text: 'I advocate upward for resources my team needs.' },
+                    { id: 'E5', text: 'I trust my team to handle work without checking in excessively.' }
+                ]
+            },
+            {
+                id: 'reflection',
+                name: 'Reflection',
+                prefix: 'R',
+                questions: [
+                    { id: 'R1', text: 'I review my own behavior after difficult interactions.' },
+                    { id: 'R2', text: 'I recognize when I\'m having an unproductive emotional reaction in the moment.' },
+                    { id: 'R3', text: 'I can identify patterns in feedback I\'ve received over time.' },
+                    { id: 'R4', text: 'I actively work on changing behaviors that aren\'t serving me.' },
+                    { id: 'R5', text: 'I take time to assess my leadership after projects, not just outcomes.' }
+                ]
+            }
+        ];
+
+        const RATING_LABELS = {
+            1: 'Rarely/Never',
+            2: 'Occasionally',
+            3: 'Sometimes',
+            4: 'Often',
+            5: 'Almost Always'
+        };
+
+        // State
+        let assessmentId = null;
+        let currentSection = 0;
+        let responses = {};
+        let participantName = '';
+        let participantEmail = '';
+        let isReturning = false;
+
+        // DOM Elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const landingPage = document.getElementById('landingPage');
+        const assessmentPage = document.getElementById('assessmentPage');
+        const completionPage = document.getElementById('completionPage');
+        const startForm = document.getElementById('startForm');
+        const startFormMessage = document.getElementById('startFormMessage');
+        const sectionsContainer = document.getElementById('sectionsContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const progressPercent = document.getElementById('progressPercent');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const saveProgressBtn = document.getElementById('saveProgressBtn');
+        const saveIndicator = document.getElementById('saveIndicator');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check for existing assessment ID in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const existingId = urlParams.get('id');
+
+            if (existingId) {
+                showLoading();
+                try {
+                    const response = await fetch(`/api/clover-eq-assessment?id=${existingId}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.assessment) {
+                            // Load existing assessment
+                            assessmentId = data.assessment.id;
+                            participantName = data.assessment.participant_name;
+                            participantEmail = data.assessment.participant_email;
+
+                            // Check if already completed
+                            if (data.assessment.status === 'completed') {
+                                showCompletionPage();
+                                hideLoading();
+                                return;
+                            }
+
+                            isReturning = true;
+
+                            // Load responses
+                            if (data.responses) {
+                                data.responses.forEach(r => {
+                                    responses[r.question_id] = r.response;
+                                });
+                            }
+
+                            // Show assessment page
+                            renderSections();
+                            showAssessmentPage();
+                            updateProgress();
+                            hideLoading();
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading assessment:', error);
+                }
+                hideLoading();
+            }
+
+            // Show landing page
+            renderSections();
+        });
+
+        // Render sections
+        function renderSections() {
+            sectionsContainer.innerHTML = SECTIONS.map((section, sectionIndex) => `
+                <div class="section-wrapper" data-section="${sectionIndex}" style="display: ${sectionIndex === 0 ? 'block' : 'none'}">
+                    <div class="section-header">
+                        <h2>Section ${sectionIndex + 1} of 6: ${section.name}</h2>
+                    </div>
+                    <div class="section-content">
+                        ${section.questions.map(q => `
+                            <div class="question-card">
+                                <div class="question-id">${q.id}</div>
+                                <div class="question-text">${q.text}</div>
+                                <div class="rating-options">
+                                    ${[1, 2, 3, 4, 5].map(value => `
+                                        <div class="rating-option">
+                                            <input type="radio"
+                                                   id="${q.id}_${value}"
+                                                   name="${q.id}"
+                                                   value="${value}"
+                                                   ${responses[q.id] === value ? 'checked' : ''}
+                                                   onchange="handleResponseChange('${q.id}', ${value})">
+                                            <label for="${q.id}_${value}">
+                                                <span class="rating-value">${value}</span>
+                                                <span class="rating-label">${RATING_LABELS[value]}</span>
+                                            </label>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle form submission
+        startForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('participantName').value.trim();
+            const email = document.getElementById('participantEmail').value.trim();
+
+            if (!name || !email) {
+                showFormMessage('Please enter your name and email.', 'error');
+                return;
+            }
+
+            showLoading();
+            startFormMessage.className = 'form-message';
+            startFormMessage.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/clover-eq-assessment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        participant_name: name,
+                        participant_email: email
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.id) {
+                    assessmentId = data.id;
+                    participantName = name;
+                    participantEmail = email;
+
+                    // Update URL with assessment ID
+                    const newUrl = `${window.location.pathname}?id=${assessmentId}`;
+                    window.history.replaceState({}, '', newUrl);
+
+                    showAssessmentPage();
+                } else {
+                    throw new Error(data.error || 'Failed to start assessment');
+                }
+            } catch (error) {
+                console.error('Error starting assessment:', error);
+                showFormMessage(error.message || 'Something went wrong. Please try again.', 'error');
+            }
+
+            hideLoading();
+        });
+
+        // Handle response change (auto-save)
+        async function handleResponseChange(questionId, value) {
+            responses[questionId] = value;
+            updateProgress();
+
+            if (!assessmentId) return;
+
+            try {
+                showSaveIndicator();
+                await fetch('/api/clover-eq-response', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assessment_id: assessmentId,
+                        question_id: questionId,
+                        response: value
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving response:', error);
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const answered = Object.keys(responses).length;
+            const total = 30;
+            const percent = Math.round((answered / total) * 100);
+
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = `${answered} of ${total} questions answered`;
+            progressPercent.textContent = `${percent}%`;
+
+            // Update submit button visibility
+            const isLastSection = currentSection === SECTIONS.length - 1;
+            if (isLastSection && answered === 30) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+                submitBtn.disabled = false;
+            } else if (isLastSection) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+                submitBtn.disabled = true;
+            } else {
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        // Navigation
+        prevBtn.addEventListener('click', () => {
+            if (currentSection > 0) {
+                currentSection--;
+                showSection(currentSection);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSection < SECTIONS.length - 1) {
+                currentSection++;
+                showSection(currentSection);
+            }
+        });
+
+        submitBtn.addEventListener('click', async () => {
+            const answered = Object.keys(responses).length;
+            if (answered < 30) {
+                alert('Please answer all 30 questions before submitting.');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch('/api/clover-eq-submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        assessment_id: assessmentId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showCompletionPage();
+                } else {
+                    throw new Error(data.error || 'Failed to submit assessment');
+                }
+            } catch (error) {
+                console.error('Error submitting assessment:', error);
+                alert('Error submitting assessment: ' + error.message);
+            }
+
+            hideLoading();
+        });
+
+        // Show section
+        function showSection(index) {
+            document.querySelectorAll('.section-wrapper').forEach((el, i) => {
+                el.style.display = i === index ? 'block' : 'none';
+            });
+
+            // Update navigation buttons
+            prevBtn.style.visibility = index > 0 ? 'visible' : 'hidden';
+
+            const isLastSection = index === SECTIONS.length - 1;
+            const answered = Object.keys(responses).length;
+
+            if (isLastSection) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+                submitBtn.disabled = answered < 30;
+            } else {
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Save progress link
+        saveProgressBtn.addEventListener('click', () => {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                saveProgressBtn.textContent = '✓ Link copied!';
+                setTimeout(() => {
+                    saveProgressBtn.textContent = '📋 Copy link to save your progress';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                saveProgressBtn.textContent = '✓ Link copied!';
+                setTimeout(() => {
+                    saveProgressBtn.textContent = '📋 Copy link to save your progress';
+                }, 2000);
+            });
+        });
+
+        // Show save indicator
+        function showSaveIndicator() {
+            saveIndicator.classList.add('visible');
+            setTimeout(() => {
+                saveIndicator.classList.remove('visible');
+            }, 1500);
+        }
+
+        // Page transitions
+        function showAssessmentPage() {
+            landingPage.style.display = 'none';
+            assessmentPage.style.display = 'block';
+            completionPage.style.display = 'none';
+            updateProgress();
+        }
+
+        function showCompletionPage() {
+            landingPage.style.display = 'none';
+            assessmentPage.style.display = 'none';
+            completionPage.style.display = 'block';
+        }
+
+        // Helper functions
+        function showLoading() {
+            loadingOverlay.classList.add('visible');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.remove('visible');
+        }
+
+        function showFormMessage(message, type) {
+            startFormMessage.textContent = message;
+            startFormMessage.className = `form-message ${type}`;
+            startFormMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

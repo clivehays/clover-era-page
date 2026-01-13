@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>CLOVER-EQ Assessments - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a365d;
+        }
+
+        .login-box p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #3182ce;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-box button:hover {
+            background: #2c5282;
+        }
+
+        .login-error {
+            color: #c53030;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            color: #1a365d;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: #e2e8f0;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #cbd5e0;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .filter-group select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #3182ce;
+        }
+
+        .refresh-btn {
+            padding: 0.5rem 1rem;
+            background: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: auto;
+        }
+
+        .refresh-btn:hover {
+            background: #2c5282;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a365d;
+        }
+
+        .stat-card .label {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-completed {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .status-in_progress {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .zone-badge {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .zone-strength {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .zone-development {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+
+        .zone-priority {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .zone-critical {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .export-btn {
+            padding: 0.375rem 0.75rem;
+            background: #38a169;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .export-btn:hover {
+            background: #2f855a;
+        }
+
+        .export-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: #38a169;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #3182ce;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .refresh-btn {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-box">
+                <h1>CLOVER-EQ Admin</h1>
+                <p>Enter your admin key to access the dashboard</p>
+                <input type="password" id="adminKeyInput" placeholder="Admin Key" autocomplete="off">
+                <button onclick="login()">Login</button>
+                <p class="login-error" id="loginError">Invalid admin key. Please try again.</p>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <header>
+                <h1>CLOVER-EQ Assessments</h1>
+                <div class="header-actions">
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="totalCount">-</div>
+                    <div class="label">Total Assessments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="completedCount">-</div>
+                    <div class="label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="inProgressCount">-</div>
+                    <div class="label">In Progress</div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="statusFilter">Status:</label>
+                    <select id="statusFilter" onchange="loadAssessments()">
+                        <option value="">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="in_progress">In Progress</option>
+                    </select>
+                </div>
+                <button class="refresh-btn" onclick="loadAssessments()">Refresh</button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                </div>
+                <table id="assessmentsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Completed</th>
+                            <th>Total Score</th>
+                            <th>C</th>
+                            <th>L</th>
+                            <th>O</th>
+                            <th>V</th>
+                            <th>E</th>
+                            <th>R</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+                <div class="no-data" id="noData" style="display: none;">
+                    No assessments found
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let adminKey = '';
+
+        // Check for stored admin key
+        function checkAuth() {
+            const storedKey = sessionStorage.getItem('clover_eq_admin_key');
+            if (storedKey) {
+                adminKey = storedKey;
+                showDashboard();
+            }
+        }
+
+        // Login
+        async function login() {
+            const inputKey = document.getElementById('adminKeyInput').value.trim();
+            if (!inputKey) {
+                showLoginError();
+                return;
+            }
+
+            // Test the key by making an API call
+            try {
+                const response = await fetch('/api/clover-eq-admin?action=list', {
+                    headers: {
+                        'Authorization': `Bearer ${inputKey}`
+                    }
+                });
+
+                if (response.ok) {
+                    adminKey = inputKey;
+                    sessionStorage.setItem('clover_eq_admin_key', inputKey);
+                    hideLoginError();
+                    showDashboard();
+                } else {
+                    showLoginError();
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showLoginError();
+            }
+        }
+
+        function logout() {
+            adminKey = '';
+            sessionStorage.removeItem('clover_eq_admin_key');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminKeyInput').value = '';
+        }
+
+        function showLoginError() {
+            document.getElementById('loginError').style.display = 'block';
+        }
+
+        function hideLoginError() {
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            loadAssessments();
+        }
+
+        // Load assessments
+        async function loadAssessments() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const loading = document.getElementById('loading');
+            const table = document.getElementById('assessmentsTable');
+            const noData = document.getElementById('noData');
+            const tbody = document.getElementById('tableBody');
+
+            loading.style.display = 'flex';
+            table.style.display = 'none';
+            noData.style.display = 'none';
+
+            try {
+                let url = '/api/clover-eq-admin?action=list';
+                if (statusFilter) {
+                    url += `&status=${statusFilter}`;
+                }
+
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${adminKey}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch assessments');
+                }
+
+                const data = await response.json();
+
+                // Update stats
+                updateStats(data.assessments);
+
+                loading.style.display = 'none';
+
+                if (data.assessments.length === 0) {
+                    noData.style.display = 'block';
+                    return;
+                }
+
+                // Render table
+                tbody.innerHTML = '';
+                data.assessments.forEach(assessment => {
+                    const row = createTableRow(assessment);
+                    tbody.appendChild(row);
+                });
+
+                table.style.display = 'table';
+
+            } catch (error) {
+                console.error('Error loading assessments:', error);
+                loading.style.display = 'none';
+                noData.textContent = 'Error loading assessments. Please try again.';
+                noData.style.display = 'block';
+            }
+        }
+
+        function updateStats(assessments) {
+            const total = assessments.length;
+            const completed = assessments.filter(a => a.status === 'completed').length;
+            const inProgress = assessments.filter(a => a.status === 'in_progress').length;
+
+            // For total stats, we need to fetch all without filter
+            fetch('/api/clover-eq-admin?action=list', {
+                headers: { 'Authorization': `Bearer ${adminKey}` }
+            })
+            .then(r => r.json())
+            .then(data => {
+                const all = data.assessments;
+                document.getElementById('totalCount').textContent = all.length;
+                document.getElementById('completedCount').textContent = all.filter(a => a.status === 'completed').length;
+                document.getElementById('inProgressCount').textContent = all.filter(a => a.status === 'in_progress').length;
+            });
+        }
+
+        function createTableRow(assessment) {
+            const tr = document.createElement('tr');
+            const scores = assessment.scores;
+
+            const completedDate = assessment.completed_at
+                ? new Date(assessment.completed_at).toLocaleDateString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric'
+                  })
+                : '-';
+
+            tr.innerHTML = `
+                <td><strong>${escapeHtml(assessment.participant_name)}</strong></td>
+                <td>${escapeHtml(assessment.participant_email)}</td>
+                <td><span class="status-badge status-${assessment.status}">${assessment.status === 'in_progress' ? 'In Progress' : 'Completed'}</span></td>
+                <td>${completedDate}</td>
+                <td>${scores ? `<strong>${scores.total}</strong>/150` : '-'}</td>
+                <td>${scores ? createZoneBadge(scores.communication, scores.communication_zone) : '-'}</td>
+                <td>${scores ? createZoneBadge(scores.learning, scores.learning_zone) : '-'}</td>
+                <td>${scores ? createZoneBadge(scores.opportunities, scores.opportunities_zone) : '-'}</td>
+                <td>${scores ? createZoneBadge(scores.vulnerability, scores.vulnerability_zone) : '-'}</td>
+                <td>${scores ? createZoneBadge(scores.enablement, scores.enablement_zone) : '-'}</td>
+                <td>${scores ? createZoneBadge(scores.reflection, scores.reflection_zone) : '-'}</td>
+                <td>
+                    <button class="export-btn" onclick="exportAssessment('${assessment.id}')" ${assessment.status !== 'completed' ? 'disabled title="Only completed assessments can be exported"' : ''}>
+                        Export
+                    </button>
+                </td>
+            `;
+
+            return tr;
+        }
+
+        function createZoneBadge(score, zone) {
+            return `<span class="zone-badge zone-${zone}">${score}</span>`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Export assessment
+        async function exportAssessment(id) {
+            try {
+                const response = await fetch(`/api/clover-eq-admin?action=export&id=${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminKey}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to export assessment');
+                }
+
+                const data = await response.json();
+
+                // Format JSON nicely
+                const jsonString = JSON.stringify(data, null, 2);
+
+                // Copy to clipboard
+                await navigator.clipboard.writeText(jsonString);
+
+                showToast('Assessment data copied to clipboard!');
+
+            } catch (error) {
+                console.error('Error exporting assessment:', error);
+                showToast('Error exporting assessment. Please try again.');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle enter key on login
+        document.getElementById('adminKeyInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        // Check auth on page load
+        checkAuth();
+    </script>
+</body>
+</html>
