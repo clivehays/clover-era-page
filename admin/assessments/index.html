@@ -728,6 +728,42 @@
                     <div class="number" id="inProgressCount">-</div>
                     <div class="label">In Progress</div>
                 </div>
+                <div class="stat-card">
+                    <div class="number" id="avgScore">-</div>
+                    <div class="label">Avg Total Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="avgPercent">-</div>
+                    <div class="label">Avg Percentage</div>
+                </div>
+            </div>
+
+            <!-- Average Scores by Element -->
+            <div class="stats" id="elementAverages" style="display: none;">
+                <div class="stat-card">
+                    <div class="number" id="avgC">-</div>
+                    <div class="label">Avg Communication</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="avgL">-</div>
+                    <div class="label">Avg Learning</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="avgO">-</div>
+                    <div class="label">Avg Opportunities</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="avgV">-</div>
+                    <div class="label">Avg Vulnerability</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="avgE">-</div>
+                    <div class="label">Avg Enablement</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="avgR">-</div>
+                    <div class="label">Avg Reflection</div>
+                </div>
             </div>
 
             <!-- Filters -->
@@ -962,9 +998,42 @@
             .then(r => r.json())
             .then(data => {
                 const all = data.assessments;
+                const completed = all.filter(a => a.status === 'completed' && a.scores);
+
                 document.getElementById('totalCount').textContent = all.length;
-                document.getElementById('completedCount').textContent = all.filter(a => a.status === 'completed').length;
+                document.getElementById('completedCount').textContent = completed.length;
                 document.getElementById('inProgressCount').textContent = all.filter(a => a.status === 'in_progress').length;
+
+                // Calculate averages for completed assessments
+                if (completed.length > 0) {
+                    // Total score average
+                    const avgTotal = completed.reduce((sum, a) => sum + a.scores.total, 0) / completed.length;
+                    const avgPercentage = (avgTotal / 150) * 100;
+
+                    document.getElementById('avgScore').textContent = avgTotal.toFixed(1);
+                    document.getElementById('avgPercent').textContent = avgPercentage.toFixed(1) + '%';
+
+                    // Element averages
+                    const avgC = completed.reduce((sum, a) => sum + a.scores.communication, 0) / completed.length;
+                    const avgL = completed.reduce((sum, a) => sum + a.scores.learning, 0) / completed.length;
+                    const avgO = completed.reduce((sum, a) => sum + a.scores.opportunities, 0) / completed.length;
+                    const avgV = completed.reduce((sum, a) => sum + a.scores.vulnerability, 0) / completed.length;
+                    const avgE = completed.reduce((sum, a) => sum + a.scores.enablement, 0) / completed.length;
+                    const avgR = completed.reduce((sum, a) => sum + a.scores.reflection, 0) / completed.length;
+
+                    document.getElementById('avgC').innerHTML = `${avgC.toFixed(1)} <small style="font-size: 0.6em; color: #718096;">(${((avgC/25)*100).toFixed(0)}%)</small>`;
+                    document.getElementById('avgL').innerHTML = `${avgL.toFixed(1)} <small style="font-size: 0.6em; color: #718096;">(${((avgL/25)*100).toFixed(0)}%)</small>`;
+                    document.getElementById('avgO').innerHTML = `${avgO.toFixed(1)} <small style="font-size: 0.6em; color: #718096;">(${((avgO/25)*100).toFixed(0)}%)</small>`;
+                    document.getElementById('avgV').innerHTML = `${avgV.toFixed(1)} <small style="font-size: 0.6em; color: #718096;">(${((avgV/25)*100).toFixed(0)}%)</small>`;
+                    document.getElementById('avgE').innerHTML = `${avgE.toFixed(1)} <small style="font-size: 0.6em; color: #718096;">(${((avgE/25)*100).toFixed(0)}%)</small>`;
+                    document.getElementById('avgR').innerHTML = `${avgR.toFixed(1)} <small style="font-size: 0.6em; color: #718096;">(${((avgR/25)*100).toFixed(0)}%)</small>`;
+
+                    document.getElementById('elementAverages').style.display = 'grid';
+                } else {
+                    document.getElementById('avgScore').textContent = '-';
+                    document.getElementById('avgPercent').textContent = '-';
+                    document.getElementById('elementAverages').style.display = 'none';
+                }
             });
         }
 
@@ -1059,7 +1128,7 @@
                     ${scores ? `
                     <div class="total-score">
                         <div class="score-value">${scores.total}</div>
-                        <div class="score-label">out of 150</div>
+                        <div class="score-label">out of 150 (${((scores.total / 150) * 100).toFixed(1)}%)</div>
                     </div>
                     ` : ''}
                 </div>
@@ -1068,14 +1137,17 @@
             if (scores) {
                 html += `
                     <div class="scores-grid">
-                        ${SECTIONS.map(s => `
+                        ${SECTIONS.map(s => {
+                            const score = scores[s.id];
+                            const percent = ((score / 25) * 100).toFixed(0);
+                            return `
                             <div class="score-card">
                                 <div class="element-name">${s.name}</div>
-                                <div class="score-number">${scores[s.id]}</div>
-                                <div class="score-max">/25</div>
+                                <div class="score-number">${score}</div>
+                                <div class="score-max">/25 (${percent}%)</div>
                                 <span class="zone-badge zone-${scores[s.id + '_zone']}">${scores[s.id + '_zone']}</span>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 `;
             }
@@ -1084,12 +1156,13 @@
             SECTIONS.forEach(section => {
                 const sectionScore = scores ? scores[section.id] : '-';
                 const sectionZone = scores ? scores[section.id + '_zone'] : '';
+                const sectionPercent = scores ? ((scores[section.id] / 25) * 100).toFixed(0) : 0;
 
                 html += `
                     <div class="section-detail">
                         <div class="section-header">
                             <h4>${section.name}</h4>
-                            ${scores ? `<span class="zone-badge zone-${sectionZone}">${sectionScore}/25 - ${sectionZone}</span>` : ''}
+                            ${scores ? `<span class="zone-badge zone-${sectionZone}">${sectionScore}/25 (${sectionPercent}%) - ${sectionZone}</span>` : ''}
                         </div>
                         <div class="section-content">
                 `;
@@ -1182,15 +1255,15 @@
                 csv += `Completed,${data.participant.completed_at ? new Date(data.participant.completed_at).toLocaleDateString() : 'N/A'}\n\n`;
 
                 csv += 'SCORES SUMMARY\n';
-                csv += 'Element,Score,Max,Zone\n';
+                csv += 'Element,Score,Max,Percentage,Zone\n';
                 if (data.scores) {
-                    csv += `Communication,${data.scores.communication},25,${data.scores.communication_zone}\n`;
-                    csv += `Learning,${data.scores.learning},25,${data.scores.learning_zone}\n`;
-                    csv += `Opportunities,${data.scores.opportunities},25,${data.scores.opportunities_zone}\n`;
-                    csv += `Vulnerability,${data.scores.vulnerability},25,${data.scores.vulnerability_zone}\n`;
-                    csv += `Enablement,${data.scores.enablement},25,${data.scores.enablement_zone}\n`;
-                    csv += `Reflection,${data.scores.reflection},25,${data.scores.reflection_zone}\n`;
-                    csv += `TOTAL,${data.scores.total},150,\n`;
+                    csv += `Communication,${data.scores.communication},25,${((data.scores.communication/25)*100).toFixed(1)}%,${data.scores.communication_zone}\n`;
+                    csv += `Learning,${data.scores.learning},25,${((data.scores.learning/25)*100).toFixed(1)}%,${data.scores.learning_zone}\n`;
+                    csv += `Opportunities,${data.scores.opportunities},25,${((data.scores.opportunities/25)*100).toFixed(1)}%,${data.scores.opportunities_zone}\n`;
+                    csv += `Vulnerability,${data.scores.vulnerability},25,${((data.scores.vulnerability/25)*100).toFixed(1)}%,${data.scores.vulnerability_zone}\n`;
+                    csv += `Enablement,${data.scores.enablement},25,${((data.scores.enablement/25)*100).toFixed(1)}%,${data.scores.enablement_zone}\n`;
+                    csv += `Reflection,${data.scores.reflection},25,${((data.scores.reflection/25)*100).toFixed(1)}%,${data.scores.reflection_zone}\n`;
+                    csv += `TOTAL,${data.scores.total},150,${((data.scores.total/150)*100).toFixed(1)}%,\n`;
                 }
 
                 csv += '\nDETAILED RESPONSES\n';
