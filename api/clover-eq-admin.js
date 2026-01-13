@@ -38,31 +38,10 @@ export default async function handler(req, res) {
     try {
         // List all assessments
         if (action === 'list' || !action) {
+            // Fetch assessments
             let query = db
                 .from('assessments')
-                .select(`
-                    id,
-                    participant_name,
-                    participant_email,
-                    status,
-                    started_at,
-                    completed_at,
-                    assessment_scores (
-                        communication,
-                        learning,
-                        opportunities,
-                        vulnerability,
-                        enablement,
-                        reflection,
-                        total,
-                        communication_zone,
-                        learning_zone,
-                        opportunities_zone,
-                        vulnerability_zone,
-                        enablement_zone,
-                        reflection_zone
-                    )
-                `)
+                .select('id, participant_name, participant_email, status, started_at, completed_at')
                 .order('started_at', { ascending: false });
 
             // Filter by status if provided
@@ -77,7 +56,38 @@ export default async function handler(req, res) {
                 return res.status(500).json({ error: 'Failed to fetch assessments' });
             }
 
-            // Transform data to flatten scores
+            // Fetch all scores separately
+            const { data: allScores, error: scoresError } = await db
+                .from('assessment_scores')
+                .select('assessment_id, communication, learning, opportunities, vulnerability, enablement, reflection, total, communication_zone, learning_zone, opportunities_zone, vulnerability_zone, enablement_zone, reflection_zone');
+
+            if (scoresError) {
+                console.error('Error fetching scores:', scoresError);
+            }
+
+            // Create a map of scores by assessment_id
+            const scoresMap = {};
+            if (allScores) {
+                allScores.forEach(s => {
+                    scoresMap[s.assessment_id] = {
+                        communication: s.communication,
+                        learning: s.learning,
+                        opportunities: s.opportunities,
+                        vulnerability: s.vulnerability,
+                        enablement: s.enablement,
+                        reflection: s.reflection,
+                        total: s.total,
+                        communication_zone: s.communication_zone,
+                        learning_zone: s.learning_zone,
+                        opportunities_zone: s.opportunities_zone,
+                        vulnerability_zone: s.vulnerability_zone,
+                        enablement_zone: s.enablement_zone,
+                        reflection_zone: s.reflection_zone
+                    };
+                });
+            }
+
+            // Transform data to include scores
             const transformed = assessments.map(a => ({
                 id: a.id,
                 participant_name: a.participant_name,
@@ -85,7 +95,7 @@ export default async function handler(req, res) {
                 status: a.status,
                 started_at: a.started_at,
                 completed_at: a.completed_at,
-                scores: a.assessment_scores?.[0] || null
+                scores: scoresMap[a.id] || null
             }));
 
             return res.status(200).json({
@@ -193,38 +203,23 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'Invalid assessment ID format' });
             }
 
-            // Get assessment with scores
+            // Get assessment
             const { data: assessment, error: assessmentError } = await db
                 .from('assessments')
-                .select(`
-                    id,
-                    participant_name,
-                    participant_email,
-                    status,
-                    started_at,
-                    completed_at,
-                    assessment_scores (
-                        communication,
-                        learning,
-                        opportunities,
-                        vulnerability,
-                        enablement,
-                        reflection,
-                        total,
-                        communication_zone,
-                        learning_zone,
-                        opportunities_zone,
-                        vulnerability_zone,
-                        enablement_zone,
-                        reflection_zone
-                    )
-                `)
+                .select('id, participant_name, participant_email, status, started_at, completed_at')
                 .eq('id', id)
                 .single();
 
             if (assessmentError || !assessment) {
                 return res.status(404).json({ error: 'Assessment not found' });
             }
+
+            // Get scores separately
+            const { data: scores } = await db
+                .from('assessment_scores')
+                .select('communication, learning, opportunities, vulnerability, enablement, reflection, total, communication_zone, learning_zone, opportunities_zone, vulnerability_zone, enablement_zone, reflection_zone')
+                .eq('assessment_id', id)
+                .single();
 
             // Get responses
             const { data: responses } = await db
@@ -256,7 +251,7 @@ export default async function handler(req, res) {
             return res.status(200).json({
                 assessment: {
                     ...assessment,
-                    scores: assessment.assessment_scores?.[0] || null
+                    scores: scores || null
                 },
                 responses: responsesMap,
                 notes: notesMap
