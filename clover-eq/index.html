@@ -1140,6 +1140,20 @@
         });
 
         nextBtn.addEventListener('click', () => {
+            // Check if all questions in current section are answered
+            const section = SECTIONS[currentSection];
+            const unanswered = section.questions.filter(q => !responses[q.id]);
+
+            if (unanswered.length > 0) {
+                alert(`Please answer all questions in this section before continuing.\n\n${unanswered.length} question(s) remaining.`);
+                // Scroll to first unanswered question
+                const firstUnanswered = document.querySelector(`[name="${unanswered[0].id}"]`);
+                if (firstUnanswered) {
+                    firstUnanswered.closest('.question-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return;
+            }
+
             if (currentSection < SECTIONS.length - 1) {
                 currentSection++;
                 showSection(currentSection);
@@ -1147,6 +1161,20 @@
         });
 
         submitBtn.addEventListener('click', async () => {
+            // Check if all questions in last section are answered
+            const section = SECTIONS[currentSection];
+            const unanswered = section.questions.filter(q => !responses[q.id]);
+
+            if (unanswered.length > 0) {
+                alert(`Please answer all questions in this section before submitting.\n\n${unanswered.length} question(s) remaining.`);
+                // Scroll to first unanswered question
+                const firstUnanswered = document.querySelector(`[name="${unanswered[0].id}"]`);
+                if (firstUnanswered) {
+                    firstUnanswered.closest('.question-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return;
+            }
+
             const answered = Object.keys(responses).length;
             if (answered < 30) {
                 alert('Please answer all 30 questions before submitting.');
