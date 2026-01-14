@@ -747,7 +747,7 @@
             </div>
 
             <div class="save-link">
-                <button type="button" id="saveProgressBtn">📋 Copy link to save your progress</button>
+                <button type="button" id="saveProgressBtn">Copy link to save your progress</button>
                 <span class="save-indicator" id="saveIndicator">✓ Saved</span>
             </div>
 
@@ -793,10 +793,10 @@
                 prefix: 'C',
                 questions: [
                     { id: 'C1', text: 'I adjust my communication style based on who I\'m talking to.' },
-                    { id: 'C2', text: 'I notice when my message isn\'t landing and change my approach mid-conversation.' },
-                    { id: 'C3', text: 'I ask clarifying questions before assuming I understand someone\'s concern.' },
-                    { id: 'C4', text: 'I remain calm and curious when receiving critical feedback.' },
-                    { id: 'C5', text: 'I check in on how my tone and delivery are being received.' }
+                    { id: 'C2', text: 'I recognise when my message isn\'t landing and adjust my approach during the conversation.' },
+                    { id: 'C3', text: 'I ask clarifying questions before assuming I understand someone\'s concerns.' },
+                    { id: 'C4', text: 'I remain calm and open-minded when receiving critical feedback.' },
+                    { id: 'C5', text: 'I check whether my tone and delivery are being received as intended.' }
                 ]
             },
             {
@@ -805,10 +805,10 @@
                 prefix: 'L',
                 questions: [
                     { id: 'L1', text: 'I actively seek feedback on my work and approach.' },
-                    { id: 'L2', text: 'I can separate the content of feedback from the way it was delivered.' },
-                    { id: 'L3', text: 'I ask others for help when I\'m struggling with a challenge.' },
-                    { id: 'L4', text: 'I change my approach based on what hasn\'t worked before.' },
-                    { id: 'L5', text: 'I can accurately identify my own skill gaps.' }
+                    { id: 'L2', text: 'I can separate what is being said in feedback from how it is said.' },
+                    { id: 'L3', text: 'I seek support from others when I\'m struggling.' },
+                    { id: 'L4', text: 'I change my approach based on what hasn\'t worked in the past.' },
+                    { id: 'L5', text: 'I have a good understanding of where I need to develop my skills.' }
                 ]
             },
             {
@@ -817,10 +817,10 @@
                 prefix: 'O',
                 questions: [
                     { id: 'O1', text: 'I share knowledge and opportunities with others even when I could handle it faster myself.' },
-                    { id: 'O2', text: 'I advocate for colleagues\' growth and contributions to others.' },
+                    { id: 'O2', text: 'I advocate for colleagues\' growth and contributions when they\'re not in the room.' },
                     { id: 'O3', text: 'I notice potential in people that others might overlook.' },
                     { id: 'O4', text: 'I support colleagues trying new approaches even when I\'m uncertain about the outcome.' },
-                    { id: 'O5', text: 'I have conversations about growth and development outside of formal review processes.' }
+                    { id: 'O5', text: 'I talk with others about growth and development outside of formal reviews.' }
                 ]
             },
             {
@@ -829,10 +829,10 @@
                 prefix: 'V',
                 questions: [
                     { id: 'V1', text: 'I admit when I don\'t know something.' },
-                    { id: 'V2', text: 'I acknowledge my mistakes before others discover them.' },
+                    { id: 'V2', text: 'I acknowledge my mistakes without waiting to be called out.' },
                     { id: 'V3', text: 'I share my uncertainties with colleagues when appropriate.' },
-                    { id: 'V4', text: 'I ask for help on things I \'should\' know how to do.' },
-                    { id: 'V5', text: 'I take ownership of project failures without excessive blame or defensiveness.' }
+                    { id: 'V4', text: 'I ask for help even when I feel I should already know how to do something.' },
+                    { id: 'V5', text: 'I take ownership of project failures without blaming others.' }
                 ]
             },
             {
@@ -843,7 +843,7 @@
                     { id: 'E1', text: 'I remove myself as a bottleneck even when it reduces my visibility.' },
                     { id: 'E2', text: 'I ask colleagues what\'s getting in their way and act on it when I can.' },
                     { id: 'E3', text: 'I support decisions others make even when I would have done it differently.' },
-                    { id: 'E4', text: 'I advocate upward for resources and support that would help my colleagues.' },
+                    { id: 'E4', text: 'I speak up to get my colleagues the resources or support they need.' },
                     { id: 'E5', text: 'I trust colleagues to handle their work without excessive check-ins or monitoring.' }
                 ]
             },
@@ -852,7 +852,7 @@
                 name: 'Reflection',
                 prefix: 'R',
                 questions: [
-                    { id: 'R1', text: 'I review my own behavior after difficult interactions.' },
+                    { id: 'R1', text: 'I reflect on my own behaviour after difficult interactions.' },
                     { id: 'R2', text: 'I recognize when I\'m having an unproductive emotional reaction in the moment.' },
                     { id: 'R3', text: 'I can identify patterns in feedback I\'ve received over time.' },
                     { id: 'R4', text: 'I actively work on changing behaviors that aren\'t serving me.' },
@@ -1208,9 +1208,9 @@
         saveProgressBtn.addEventListener('click', () => {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {
-                saveProgressBtn.textContent = '✓ Link copied!';
+                saveProgressBtn.textContent = 'Link copied!';
                 setTimeout(() => {
-                    saveProgressBtn.textContent = '📋 Copy link to save your progress';
+                    saveProgressBtn.textContent = 'Copy link to save your progress';
                 }, 2000);
             }).catch(() => {
                 // Fallback for older browsers
@@ -1220,9 +1220,9 @@
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-                saveProgressBtn.textContent = '✓ Link copied!';
+                saveProgressBtn.textContent = 'Link copied!';
                 setTimeout(() => {
-                    saveProgressBtn.textContent = '📋 Copy link to save your progress';
+                    saveProgressBtn.textContent = 'Copy link to save your progress';
                 }, 2000);
             });
         });
