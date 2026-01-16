@@ -1,5 +1,5 @@
-// API Route: Book Waitlist Launch Email (Jan 28, 2026)
-// Triggered by Vercel Cron: 0 13 28 1 *
+// API Route: Book Waitlist Launch Email (Feb 11, 2026)
+// Triggered by Vercel Cron: 0 13 11 2 *
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -42,7 +42,7 @@ function generateLaunchEmailHtml(firstName) {
     <p>78 short entries. No fluff. No corporate frameworks. Just the patterns behind unexpected resignations.</p>
 
     <div class="pricing">
-        <p><strong>Your waitlist pricing (ends February 4):</strong></p>
+        <p><strong>Your waitlist pricing (ends February 18):</strong></p>
         <ul>
             <li>Kindle: $4.99 (then $9.99)</li>
             <li>Hardcover: $9.99 (then $15.99)</li>
@@ -80,7 +80,7 @@ Already Gone: Why Your Best People Leave Before You See It Coming
 
 78 short entries. No fluff. No corporate frameworks. Just the patterns behind unexpected resignations.
 
-Your waitlist pricing (ends February 4):
+Your waitlist pricing (ends February 18):
 - Kindle: $4.99 (then $9.99)
 - Hardcover: $9.99 (then $15.99)
 

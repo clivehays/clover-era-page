@@ -1,5 +1,5 @@
-// API Route: Book Waitlist Final Email (Feb 3, 2026)
-// Triggered by Vercel Cron: 0 14 3 2 *
+// API Route: Book Waitlist Final Email (Feb 17, 2026)
+// Triggered by Vercel Cron: 0 14 17 2 *
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -47,7 +47,7 @@ function generateFinalEmailHtml(firstName) {
     <p>If you haven't ordered yet, just a heads up: the launch price ends tomorrow.</p>
 
     <div class="pricing">
-        <p><strong>After February 4:</strong></p>
+        <p><strong>After February 18:</strong></p>
         <ul>
             <li>Kindle goes from $4.99 to $9.99</li>
             <li>Hardcover goes from $9.99 to $15.99</li>
@@ -80,7 +80,7 @@ Use it here: https://cloverera.com/business-case/
 
 If you haven't ordered yet, just a heads up: the launch price ends tomorrow.
 
-After February 4:
+After February 18:
 - Kindle goes from $4.99 to $9.99
 - Hardcover goes from $9.99 to $15.99
 

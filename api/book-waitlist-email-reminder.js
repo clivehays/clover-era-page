@@ -1,5 +1,5 @@
-// API Route: Book Waitlist Reminder Email (Jan 31, 2026)
-// Triggered by Vercel Cron: 0 14 31 1 *
+// API Route: Book Waitlist Reminder Email (Feb 14, 2026)
+// Triggered by Vercel Cron: 0 14 14 2 *
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -37,7 +37,7 @@ function generateReminderEmailHtml(firstName) {
 
     <p>If you've already ordered Already Gone - thank you so much. It means a lot.</p>
 
-    <p>If not, just a reminder: the launch price ends on February 4.</p>
+    <p>If not, just a reminder: the launch price ends on February 18.</p>
 
     <div class="pricing">
         <p>After that:</p>
@@ -67,7 +67,7 @@ Quick note.
 
 If you've already ordered Already Gone - thank you so much. It means a lot.
 
-If not, just a reminder: the launch price ends on February 4.
+If not, just a reminder: the launch price ends on February 18.
 
 After that:
 - Kindle goes from $4.99 to $9.99

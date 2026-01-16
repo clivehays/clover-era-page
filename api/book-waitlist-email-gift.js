@@ -1,5 +1,5 @@
-// API Route: Book Waitlist Gift Email (Jan 26, 2026)
-// Triggered by Vercel Cron: 0 14 26 1 *
+// API Route: Book Waitlist Gift Email (Feb 8, 2026)
+// Triggered by Vercel Cron: 0 14 8 2 *
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -40,7 +40,7 @@ function generateGiftEmailHtml(firstName) {
 
     <p>Think of it as a companion to the book. The assessment shows you where to look. The book explains what you're seeing.</p>
 
-    <p>See you on January 28.</p>
+    <p>See you on February 11.</p>
 
     <p>Clive</p>
 
@@ -66,7 +66,7 @@ Take it here: https://cloverera.com/team-health/
 
 Think of it as a companion to the book. The assessment shows you where to look. The book explains what you're seeing.
 
-See you on January 28.
+See you on February 11.
 
 Clive
 
