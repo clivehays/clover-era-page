@@ -64,13 +64,13 @@ export default async function handler(req, res) {
 
     <p>This is the checklist I wish every manager had. The signals are there. Most people just don't know what to look for.</p>
 
-    <p>The book launches January 28. You'll be the first to know when it goes live.</p>
+    <p>The book launches February 11. You'll be the first to know when it goes live.</p>
 
     <p>Talk soon,</p>
 
     <p>Clive</p>
 
-    <p><em>P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 4.</em></p>
+    <p><em>P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 18.</em></p>
 
     <div class="footer">
         <p>Clive Hays<br>Co-Founder, Clover ERA<br><a href="https://cloverera.com">cloverera.com</a></p>
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
 </html>`
         },
         {
-            name: 'Gift Email (Jan 26)',
+            name: 'Gift Email (Feb 8)',
             subject: '[TEST] A gift before the book launches (2 days early)',
             html: `<!DOCTYPE html>
 <html>
@@ -105,7 +105,7 @@ export default async function handler(req, res) {
 
     <p>Think of it as a companion to the book. The assessment shows you where to look. The book explains what you're seeing.</p>
 
-    <p>See you on January 28.</p>
+    <p>See you on February 11.</p>
 
     <p>Clive</p>
 
@@ -116,7 +116,7 @@ export default async function handler(req, res) {
 </html>`
         },
         {
-            name: 'Launch Email (Jan 28)',
+            name: 'Launch Email (Feb 11)',
             subject: '[TEST] Already Gone is live - your early access link',
             html: `<!DOCTYPE html>
 <html>
@@ -140,7 +140,7 @@ export default async function handler(req, res) {
     <p>78 short entries. No fluff. No corporate frameworks. Just the patterns behind unexpected resignations.</p>
 
     <div class="pricing">
-        <p><strong>Your waitlist pricing (ends February 4):</strong></p>
+        <p><strong>Your waitlist pricing (ends February 18):</strong></p>
         <ul>
             <li>Kindle: $4.99 (then $9.99)</li>
             <li>Hardcover: $9.99 (then $15.99)</li>
@@ -169,7 +169,7 @@ export default async function handler(req, res) {
 </html>`
         },
         {
-            name: 'Reminder Email (Jan 31)',
+            name: 'Reminder Email (Feb 14)',
             subject: '[TEST] Launch pricing ends in 4 days',
             html: `<!DOCTYPE html>
 <html>
@@ -189,7 +189,7 @@ export default async function handler(req, res) {
 
     <p>If you've already ordered Already Gone - thank you so much. It means a lot.</p>
 
-    <p>If not, just a reminder: the launch price ends on February 4.</p>
+    <p>If not, just a reminder: the launch price ends on February 18.</p>
 
     <div class="pricing">
         <p>After that:</p>
@@ -212,7 +212,7 @@ export default async function handler(req, res) {
 </html>`
         },
         {
-            name: 'Final Email (Feb 3)',
+            name: 'Final Email (Feb 17)',
             subject: '[TEST] 24 hours left - and a thank you gift',
             html: `<!DOCTYPE html>
 <html>
@@ -242,7 +242,7 @@ export default async function handler(req, res) {
     <p>If you haven't ordered yet, just a heads up: the launch price ends tomorrow.</p>
 
     <div class="pricing">
-        <p><strong>After February 4:</strong></p>
+        <p><strong>After February 18:</strong></p>
         <ul>
             <li>Kindle goes from $4.99 to $9.99</li>
             <li>Hardcover goes from $9.99 to $15.99</li>

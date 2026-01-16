@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>
                         <a href="/alreadygone/">
                             <strong>Already Gone</strong>
-                            <div class="dropdown-description">New book - January 28, 2026</div>
+                            <div class="dropdown-description">New book - February 11, 2026</div>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="/Blog/">

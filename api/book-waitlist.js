@@ -84,13 +84,13 @@ async function sendConfirmationEmail(firstName, email) {
 
     <p>This is the checklist I wish every manager had. The signals are there. Most people just don't know what to look for.</p>
 
-    <p>The book launches January 28. You'll be the first to know when it goes live.</p>
+    <p>The book launches February 11. You'll be the first to know when it goes live.</p>
 
     <p>Talk soon,</p>
 
     <p>Clive</p>
 
-    <p><em>P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 4.</em></p>
+    <p><em>P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 18.</em></p>
 
     <div class="footer">
         <p>Clive Hays<br>Co-Founder, Clover ERA<br><a href="https://cloverera.com">cloverera.com</a></p>
@@ -107,13 +107,13 @@ Download it here: ${PDF_URL}
 
 This is the checklist I wish every manager had. The signals are there. Most people just don't know what to look for.
 
-The book launches January 28. You'll be the first to know when it goes live.
+The book launches February 11. You'll be the first to know when it goes live.
 
 Talk soon,
 
 Clive
 
-P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 4.
+P.S. - Waitlist members get launch week pricing: Kindle $4.99 (then $9.99), Hardcover $9.99 (then $15.99). Price goes up February 18.
 
 --
 Clive Hays
