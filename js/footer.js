@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li><a href="/clover-framework.html">The CLOVER Framework</a></li>
                     <li><a href="/our-science.html">The Science</a></li>
                     <li><a href="/implementation-guide.html">Implementation Guide</a></li>
+                    <li><a href="/team-coaching/">Team Coaching</a></li>
                 </ul>
             </div>
             <div class="footer-section">
