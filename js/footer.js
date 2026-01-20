@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© CLOVER ERA 2025 | Employee Turnover Prevention Platform</p>
+            <p>© CLOVER ERA 2026 | Employee Turnover Prevention Platform</p>
             <p style="margin-top: 0.5rem; font-size: 0.8rem;">
                 <a href="#" onclick="openCookiePreferences(); return false;" rel="nofollow">Cookie Settings</a>
             </p>
