@@ -173,16 +173,19 @@ serve(async (req) => {
     const title = apolloPersonData?.title || contact.title || 'Executive';
     const linkedinUrl = apolloPersonData?.linkedin_url || contact.linkedin_url;
 
-    // Step 3: AI Research using Claude
+    // Step 3: PRE-CALCULATE turnover estimates (don't let AI do math)
+    const avgSalary = getIndustrySalary(industry);
+    const turnoverEstimateLow = Math.round(employeeCount * 0.12 * avgSalary * 1.0);
+    const turnoverEstimateHigh = Math.round(employeeCount * 0.18 * avgSalary * 1.5);
+    const turnoverEstimateMid = Math.round((turnoverEstimateLow + turnoverEstimateHigh) / 2);
+
     let researchSummary = '';
     let growthSignals: string[] = [];
     let personalizationAngle = '';
-    let turnoverEstimateLow = 0;
-    let turnoverEstimateHigh = 0;
 
     if (ANTHROPIC_API_KEY) {
       try {
-        const researchPrompt = `You are researching a prospect for Clover ERA, a manager enablement platform that helps companies understand hidden turnover costs.
+        const researchPrompt = `You are researching a prospect for Clover ERA, a manager enablement platform that helps companies reduce hidden turnover costs.
 
 PROSPECT INFORMATION:
 - Name: ${contact.first_name} ${contact.last_name}
@@ -195,41 +198,24 @@ PROSPECT INFORMATION:
 ${apolloPersonData ? `- Apollo Data: ${JSON.stringify(apolloPersonData, null, 2)}` : ''}
 ${apolloCompanyData ? `- Company Data: ${JSON.stringify(apolloCompanyData, null, 2)}` : ''}
 
+PRE-CALCULATED TURNOVER COST (use these exact numbers):
+- Low estimate: $${turnoverEstimateLow.toLocaleString()}
+- High estimate: $${turnoverEstimateHigh.toLocaleString()}
+- Mid-point: $${turnoverEstimateMid.toLocaleString()}
+
+These are the CORRECT annual turnover costs for a ${employeeCount}-employee company. DO NOT recalculate or change these numbers.
+
 TASKS:
 1. Write a 2-3 sentence research summary about this person and company, focusing on anything relevant to employee retention, growth, management challenges.
 
 2. Identify growth signals from the available data (e.g., hiring, funding, expansion, recent press). Return as JSON array of strings.
 
-3. Calculate estimated ANNUAL turnover cost using THIS EXACT FORMULA:
-
-   CLOVER ERA TURNOVER COST METHODOLOGY:
-   - Industry average turnover rate: 15% (use 12% for low estimate, 18% for high)
-   - Average salary by industry: Tech/Finance $95K, Healthcare $75K, Manufacturing $65K, Retail/Hospitality $45K, Other $70K
-   - Replacement cost multiplier: 100% of salary (low) to 150% of salary (high)
-   - This captures: recruiting, onboarding, lost productivity, institutional knowledge loss, team disruption
-
-   FORMULA:
-   - Low estimate: employees × 0.12 × industry_avg_salary × 1.0
-   - High estimate: employees × 0.18 × industry_avg_salary × 1.5
-
-   EXAMPLE for 100 employees in tech:
-   - Low: 100 × 0.12 × $95,000 × 1.0 = $1,140,000
-   - High: 100 × 0.18 × $95,000 × 1.5 = $2,565,000
-
-   EXAMPLE for 100 employees in manufacturing:
-   - Low: 100 × 0.12 × $65,000 × 1.0 = $780,000
-   - High: 100 × 0.18 × $65,000 × 1.5 = $1,755,000
-
-   For ${employeeCount} employees in ${industry}, calculate the LOW and HIGH estimates. These numbers should be in the hundreds of thousands or millions for companies with 50+ employees.
-
-4. Write a compelling personalization angle for cold email (1-2 sentences). Connect something specific about them/their company to hidden turnover costs.
+3. Write a compelling personalization angle for cold email (1-2 sentences). Reference the turnover cost ($${formatMillions(turnoverEstimateMid)}) and connect it to something specific about them/their company.
 
 Respond in JSON format:
 {
   "research_summary": "string",
   "growth_signals": ["string"],
-  "turnover_estimate_low": number,
-  "turnover_estimate_high": number,
   "personalization_angle": "string"
 }`;
 
@@ -259,29 +245,20 @@ Respond in JSON format:
           // Parse JSON from response
           const jsonMatch = responseText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
-            const research = JSON.parse(jsonMatch[0]);
-            researchSummary = research.research_summary || '';
-            growthSignals = research.growth_signals || [];
-            personalizationAngle = research.personalization_angle || '';
-            turnoverEstimateLow = research.turnover_estimate_low || 0;
-            turnoverEstimateHigh = research.turnover_estimate_high || 0;
+            const aiResearch = JSON.parse(jsonMatch[0]);
+            researchSummary = aiResearch.research_summary || '';
+            growthSignals = aiResearch.growth_signals || [];
+            personalizationAngle = aiResearch.personalization_angle || '';
           }
           console.log('Claude research complete');
         }
       } catch (claudeError) {
         console.error('Claude research error:', claudeError);
-        // Generate fallback using Clover ERA methodology
-        // Formula: employees × turnover_rate × avg_salary × replacement_multiplier
-        const avgSalary = getIndustrySalary(industry);
-        turnoverEstimateLow = Math.round(employeeCount * 0.12 * avgSalary * 1.0);
-        turnoverEstimateHigh = Math.round(employeeCount * 0.18 * avgSalary * 1.5);
-        personalizationAngle = `At ${employeeCount} employees, even 12% turnover means a $${formatMillions(turnoverEstimateLow)}+ hole that doesn't show up on any dashboard.`;
+        // Fallback personalization (turnover numbers already calculated above)
+        personalizationAngle = `At ${employeeCount} employees, even 12% turnover means a $${formatMillions(turnoverEstimateLow)}+ hole that won't show up on any dashboard.`;
       }
     } else {
-      // Fallback calculation without AI - use Clover ERA methodology
-      const avgSalary = getIndustrySalary(industry);
-      turnoverEstimateLow = Math.round(employeeCount * 0.12 * avgSalary * 1.0);
-      turnoverEstimateHigh = Math.round(employeeCount * 0.18 * avgSalary * 1.5);
+      // Fallback without AI (turnover numbers already calculated above)
       personalizationAngle = `At ${employeeCount} employees in ${industry}, turnover costs are likely 4x what you're tracking.`;
     }
 
