@@ -932,6 +932,7 @@
                                 <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); resumeCampaign('${campaign.id}')">Resume</button>
                             ` : ''}
                             <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showAddContactsModal('${campaign.id}')">+ Add Contacts</button>
+                            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteCampaign('${campaign.id}', '${campaign.name.replace(/'/g, "\\'")}')">Delete</button>
                         </div>
                     </div>
                 `).join('');
@@ -959,6 +960,33 @@
             await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
             loadCampaigns();
             loadStats();
+        }
+
+        async function deleteCampaign(id, name) {
+            if (!confirm(`Delete campaign "${name}"?\n\nThis will also delete all associated contacts and emails from this campaign. This cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                // Delete campaign contacts first (cascade should handle this, but being explicit)
+                await supabaseClient.from('campaign_contacts').delete().eq('campaign_id', id);
+
+                // Delete the campaign
+                const { error } = await supabaseClient.from('outreach_campaigns').delete().eq('id', id);
+
+                if (error) throw error;
+
+                // Clear selection if this was selected
+                if (selectedCampaignId === id) {
+                    selectedCampaignId = null;
+                }
+
+                loadCampaigns();
+                loadStats();
+            } catch (error) {
+                console.error('Error deleting campaign:', error);
+                alert('Failed to delete campaign: ' + error.message);
+            }
         }
 
         function selectCampaign(id) {
