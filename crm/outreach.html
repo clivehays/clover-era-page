@@ -570,7 +570,52 @@
     <div class="container">
         <div class="header">
             <h1>Outreach Agent</h1>
-            <button class="btn btn-primary" onclick="showNewCampaignModal()">+ New Campaign</button>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-secondary" onclick="toggleTestMode()">🧪 Test Mode</button>
+                <button class="btn btn-primary" onclick="showNewCampaignModal()">+ New Campaign</button>
+            </div>
+        </div>
+
+        <!-- Test Mode Panel -->
+        <div id="testModePanel" class="section" style="display: none; border: 2px dashed var(--warning-orange); background: #FEF9E7;">
+            <div class="section-header" style="border-bottom-color: var(--warning-orange);">
+                <h2>🧪 Test Mode</h2>
+                <button class="btn btn-secondary btn-sm" onclick="toggleTestMode()">Close</button>
+            </div>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                Test the complete outreach flow by sending emails to yourself. This uses your real email address so you can verify everything works.
+            </p>
+
+            <div class="form-row" style="margin-bottom: 1.5rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="testEmail">Your Test Email Address</label>
+                    <input type="email" id="testEmail" placeholder="your.email@example.com">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="testCompany">Test Company Name</label>
+                    <input type="text" id="testCompany" value="Acme Corp" placeholder="Test Company Name">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <button class="btn btn-primary" onclick="runFullTest()">
+                    🚀 Run Full Test (Research + Generate + Send)
+                </button>
+                <button class="btn btn-secondary" onclick="testResearchOnly()">
+                    🔍 Test Research Only
+                </button>
+                <button class="btn btn-secondary" onclick="testGenerateOnly()">
+                    ✍️ Test Generate Only
+                </button>
+                <button class="btn btn-warning" onclick="sendTestEmail()">
+                    📧 Send Test Email
+                </button>
+            </div>
+
+            <div id="testResults" style="display: none;">
+                <h3 style="margin-bottom: 1rem;">Test Results</h3>
+                <div id="testResultsContent" style="background: white; padding: 1rem; border-radius: 8px; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: auto;"></div>
+            </div>
         </div>
 
         <!-- Stats -->
@@ -1316,6 +1361,416 @@
                 console.error('Error loading sequences:', error);
             }
         }
+
+        // ==================== TEST MODE FUNCTIONS ====================
+
+        function toggleTestMode() {
+            const panel = document.getElementById('testModePanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showTestResult(message, isError = false) {
+            const results = document.getElementById('testResults');
+            const content = document.getElementById('testResultsContent');
+            results.style.display = 'block';
+
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = isError ? '❌' : '✅';
+            const color = isError ? 'var(--danger-red)' : 'var(--success-green)';
+
+            content.innerHTML += `<div style="color: ${color}; margin-bottom: 0.5rem;">[${timestamp}] ${prefix} ${message}</div>`;
+            content.scrollTop = content.scrollHeight;
+        }
+
+        function clearTestResults() {
+            document.getElementById('testResultsContent').innerHTML = '';
+        }
+
+        async function runFullTest() {
+            const email = document.getElementById('testEmail').value;
+            const company = document.getElementById('testCompany').value;
+
+            if (!email) {
+                alert('Please enter your test email address');
+                return;
+            }
+
+            clearTestResults();
+            showTestResult('Starting full test...');
+
+            try {
+                // Step 1: Create or find test contact
+                showTestResult('Step 1: Creating/finding test contact...');
+
+                let { data: existingContact } = await supabaseClient
+                    .from('contacts')
+                    .select('id, company_id')
+                    .eq('email', email.toLowerCase())
+                    .single();
+
+                let contactId, companyId;
+
+                if (existingContact) {
+                    contactId = existingContact.id;
+                    companyId = existingContact.company_id;
+                    showTestResult(`Found existing contact: ${contactId}`);
+                } else {
+                    // Create test company
+                    const { data: newCompany } = await supabaseClient
+                        .from('companies')
+                        .insert({
+                            name: company || 'Test Company',
+                            employee_count: 150,
+                            industry: 'Technology'
+                        })
+                        .select()
+                        .single();
+
+                    companyId = newCompany.id;
+                    showTestResult(`Created test company: ${companyId}`);
+
+                    // Create test contact
+                    const { data: newContact } = await supabaseClient
+                        .from('contacts')
+                        .insert({
+                            company_id: companyId,
+                            first_name: 'Test',
+                            last_name: 'User',
+                            email: email.toLowerCase(),
+                            title: 'CEO'
+                        })
+                        .select()
+                        .single();
+
+                    contactId = newContact.id;
+                    showTestResult(`Created test contact: ${contactId}`);
+                }
+
+                // Step 2: Create test campaign if needed
+                showTestResult('Step 2: Setting up test campaign...');
+
+                const { data: sequences } = await supabaseClient
+                    .from('outreach_sequences')
+                    .select('id')
+                    .eq('is_active', true)
+                    .limit(1);
+
+                if (!sequences || sequences.length === 0) {
+                    throw new Error('No active sequences found. Please check the database.');
+                }
+
+                const { data: testCampaign } = await supabaseClient
+                    .from('outreach_campaigns')
+                    .insert({
+                        name: 'Test Campaign - ' + new Date().toISOString().slice(0, 10),
+                        sequence_id: sequences[0].id,
+                        status: 'active',
+                        created_by: currentUserId
+                    })
+                    .select()
+                    .single();
+
+                showTestResult(`Created test campaign: ${testCampaign.id}`);
+
+                // Step 3: Add contact to campaign
+                showTestResult('Step 3: Adding contact to campaign...');
+
+                const { data: campaignContact } = await supabaseClient
+                    .from('campaign_contacts')
+                    .insert({
+                        campaign_id: testCampaign.id,
+                        contact_id: contactId,
+                        status: 'pending'
+                    })
+                    .select()
+                    .single();
+
+                showTestResult(`Created campaign contact: ${campaignContact.id}`);
+
+                // Step 4: Call research function
+                showTestResult('Step 4: Running prospect research (this may take 10-20 seconds)...');
+
+                const researchResponse = await fetch(`${SUPABASE_URL}/functions/v1/research-prospect`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ campaign_contact_id: campaignContact.id })
+                });
+
+                const researchResult = await researchResponse.json();
+
+                if (!researchResult.success) {
+                    throw new Error('Research failed: ' + (researchResult.error || 'Unknown error'));
+                }
+
+                showTestResult('Research completed successfully!');
+                showTestResult(`Research summary: ${researchResult.research?.research_summary?.substring(0, 200) || 'N/A'}...`);
+
+                // Step 5: Generate emails
+                showTestResult('Step 5: Generating personalized emails (this may take 20-30 seconds)...');
+
+                const generateResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ campaign_contact_id: campaignContact.id })
+                });
+
+                const generateResult = await generateResponse.json();
+
+                if (!generateResult.success) {
+                    throw new Error('Email generation failed: ' + (generateResult.error || 'Unknown error'));
+                }
+
+                showTestResult(`Generated ${generateResult.count} emails!`);
+
+                // Step 6: Display generated emails
+                showTestResult('Step 6: Fetching generated emails...');
+
+                const { data: generatedEmails } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*')
+                    .eq('campaign_contact_id', campaignContact.id)
+                    .order('position');
+
+                generatedEmails.forEach(email => {
+                    showTestResult(`\n--- EMAIL ${email.position} ---`);
+                    showTestResult(`Subject: ${email.subject}`);
+                    showTestResult(`Status: ${email.status}`);
+                    showTestResult(`Body preview: ${email.body.substring(0, 300)}...`);
+                });
+
+                showTestResult('\n✅ FULL TEST COMPLETED SUCCESSFULLY!');
+                showTestResult(`\nTo send a test email, click "Send Test Email" button.`);
+                showTestResult(`Email ID for first email: ${generatedEmails[0]?.id}`);
+
+                // Store for sending
+                window.testEmailId = generatedEmails[0]?.id;
+
+                // Refresh campaigns list
+                loadCampaigns();
+                loadStats();
+
+            } catch (error) {
+                showTestResult(`Error: ${error.message}`, true);
+                console.error('Full test error:', error);
+            }
+        }
+
+        async function testResearchOnly() {
+            const email = document.getElementById('testEmail').value;
+
+            if (!email) {
+                alert('Please enter your test email address');
+                return;
+            }
+
+            clearTestResults();
+            showTestResult('Testing research function...');
+
+            try {
+                // Find contact by email
+                const { data: contact } = await supabaseClient
+                    .from('contacts')
+                    .select('id')
+                    .eq('email', email.toLowerCase())
+                    .single();
+
+                if (!contact) {
+                    throw new Error('Contact not found. Run "Full Test" first to create a test contact.');
+                }
+
+                // Find campaign contact
+                const { data: campaignContact } = await supabaseClient
+                    .from('campaign_contacts')
+                    .select('id')
+                    .eq('contact_id', contact.id)
+                    .order('added_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (!campaignContact) {
+                    throw new Error('No campaign contact found. Run "Full Test" first.');
+                }
+
+                showTestResult(`Found campaign contact: ${campaignContact.id}`);
+                showTestResult('Calling research-prospect function...');
+
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/research-prospect`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ campaign_contact_id: campaignContact.id })
+                });
+
+                const result = await response.json();
+                showTestResult('Response: ' + JSON.stringify(result, null, 2));
+
+            } catch (error) {
+                showTestResult(`Error: ${error.message}`, true);
+            }
+        }
+
+        async function testGenerateOnly() {
+            const email = document.getElementById('testEmail').value;
+
+            if (!email) {
+                alert('Please enter your test email address');
+                return;
+            }
+
+            clearTestResults();
+            showTestResult('Testing email generation function...');
+
+            try {
+                // Find contact by email
+                const { data: contact } = await supabaseClient
+                    .from('contacts')
+                    .select('id')
+                    .eq('email', email.toLowerCase())
+                    .single();
+
+                if (!contact) {
+                    throw new Error('Contact not found. Run "Full Test" first to create a test contact.');
+                }
+
+                // Find campaign contact
+                const { data: campaignContact } = await supabaseClient
+                    .from('campaign_contacts')
+                    .select('id')
+                    .eq('contact_id', contact.id)
+                    .order('added_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (!campaignContact) {
+                    throw new Error('No campaign contact found. Run "Full Test" first.');
+                }
+
+                showTestResult(`Found campaign contact: ${campaignContact.id}`);
+                showTestResult('Calling generate-emails function...');
+
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ campaign_contact_id: campaignContact.id })
+                });
+
+                const result = await response.json();
+                showTestResult('Response: ' + JSON.stringify(result, null, 2));
+
+            } catch (error) {
+                showTestResult(`Error: ${error.message}`, true);
+            }
+        }
+
+        async function sendTestEmail() {
+            clearTestResults();
+
+            // Get the most recent draft email for the test contact
+            const email = document.getElementById('testEmail').value;
+
+            if (!email) {
+                alert('Please enter your test email address');
+                return;
+            }
+
+            showTestResult('Finding test email to send...');
+
+            try {
+                // Find the contact
+                const { data: contact } = await supabaseClient
+                    .from('contacts')
+                    .select('id')
+                    .eq('email', email.toLowerCase())
+                    .single();
+
+                if (!contact) {
+                    throw new Error('Contact not found. Run "Full Test" first.');
+                }
+
+                // Find a draft email
+                const { data: draftEmail } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*')
+                    .eq('contact_id', contact.id)
+                    .eq('status', 'draft')
+                    .order('position')
+                    .limit(1)
+                    .single();
+
+                if (!draftEmail) {
+                    // Try approved
+                    const { data: approvedEmail } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('*')
+                        .eq('contact_id', contact.id)
+                        .eq('status', 'approved')
+                        .order('position')
+                        .limit(1)
+                        .single();
+
+                    if (!approvedEmail) {
+                        throw new Error('No draft or approved emails found. Run "Full Test" first to generate emails.');
+                    }
+
+                    window.testEmailId = approvedEmail.id;
+                } else {
+                    // Approve it first
+                    showTestResult(`Found draft email: ${draftEmail.id}`);
+                    showTestResult('Approving email...');
+
+                    await supabaseClient
+                        .from('outreach_emails')
+                        .update({ status: 'approved' })
+                        .eq('id', draftEmail.id);
+
+                    window.testEmailId = draftEmail.id;
+                }
+
+                showTestResult(`Sending email ${window.testEmailId}...`);
+
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({
+                        type: 'send_single',
+                        email_id: window.testEmailId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Send failed');
+                }
+
+                showTestResult('✅ EMAIL SENT SUCCESSFULLY!');
+                showTestResult(`Message ID: ${result.message_id}`);
+                showTestResult(`Sent to: ${result.to}`);
+                showTestResult('\nCheck your inbox in a few minutes!');
+
+                loadStats();
+
+            } catch (error) {
+                showTestResult(`Error: ${error.message}`, true);
+                console.error('Send test email error:', error);
+            }
+        }
+
+        // ==================== END TEST MODE FUNCTIONS ====================
 
         // Initialize
         async function init() {
