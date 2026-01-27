@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { CLOVER_ERA_CONTEXT, getCompanySizeContext } from '../_shared/brand-context.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -183,39 +184,56 @@ serve(async (req) => {
     let growthSignals: string[] = [];
     let personalizationAngle = '';
 
+    // Get company size context for appropriate messaging
+    const companySizeContext = getCompanySizeContext(employeeCount);
+
     if (ANTHROPIC_API_KEY) {
       try {
-        const researchPrompt = `You are researching a prospect for Clover ERA, a manager enablement platform that helps companies reduce hidden turnover costs.
+        const researchPrompt = `You are researching a prospect for Clover ERA.
 
-PROSPECT INFORMATION:
+${CLOVER_ERA_CONTEXT}
+
+${companySizeContext}
+
+---
+
+PROSPECT TO RESEARCH:
 - Name: ${contact.first_name} ${contact.last_name}
 - Title: ${title}
 - Company: ${companyName}
 - Industry: ${industry}
-- Employee Count: ${employeeCount}
+- Employee Count: ${employeeCount.toLocaleString()}
 - Website: ${contact.company?.website || 'N/A'}
 - LinkedIn: ${linkedinUrl || 'N/A'}
-${apolloPersonData ? `- Apollo Data: ${JSON.stringify(apolloPersonData, null, 2)}` : ''}
-${apolloCompanyData ? `- Company Data: ${JSON.stringify(apolloCompanyData, null, 2)}` : ''}
+${apolloPersonData ? `\nAPOLLO PERSON DATA:\n${JSON.stringify(apolloPersonData, null, 2)}` : ''}
+${apolloCompanyData ? `\nAPOLLO COMPANY DATA:\n${JSON.stringify(apolloCompanyData, null, 2)}` : ''}
 
-PRE-CALCULATED TURNOVER COST (use these exact numbers):
+PRE-CALCULATED TURNOVER COST (these are correct - use them exactly):
 - Low estimate: $${turnoverEstimateLow.toLocaleString()}
 - High estimate: $${turnoverEstimateHigh.toLocaleString()}
-- Mid-point: $${turnoverEstimateMid.toLocaleString()}
+- Mid-point: $${turnoverEstimateMid.toLocaleString()} (use this in personalization)
 
-These are the CORRECT annual turnover costs for a ${employeeCount}-employee company. DO NOT recalculate or change these numbers.
+---
 
-TASKS:
-1. Write a 2-3 sentence research summary about this person and company, focusing on anything relevant to employee retention, growth, management challenges.
+YOUR TASKS:
 
-2. Identify growth signals from the available data (e.g., hiring, funding, expansion, recent press). Return as JSON array of strings.
+1. RESEARCH SUMMARY (2-3 sentences):
+   Write a brief summary of what you know about this person/company. Focus on anything relevant to employee retention, growth challenges, or management.
 
-3. Write a compelling personalization angle for cold email (1-2 sentences). Reference the turnover cost ($${formatMillions(turnoverEstimateMid)}) and connect it to something specific about them/their company.
+2. GROWTH SIGNALS (array of strings):
+   List any signals from the data: hiring activity, funding, expansion, new offices, acquisitions, leadership changes.
+
+3. PERSONALIZATION ANGLE (1-2 sentences):
+   Write an opening hook for a cold email that:
+   - References something SPECIFIC about their company (not generic)
+   - Connects to the turnover cost of $${formatMillions(turnoverEstimateMid)}
+   - Does NOT use banned phrases: "curious", "I'd love to", "either way"
+   - Sounds like an observation, not a pitch
 
 Respond in JSON format:
 {
   "research_summary": "string",
-  "growth_signals": ["string"],
+  "growth_signals": ["string", "string"],
   "personalization_angle": "string"
 }`;
 

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { CLOVER_ERA_CONTEXT, EMAIL_RULES, getCompanySizeContext } from '../_shared/brand-context.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -183,24 +184,42 @@ async function generatePersonalizedEmail(
     };
   }
 
-  // Use AI to improve personalization
-  const prompt = `You are writing a cold email for Clive Hays at Clover ERA, a manager enablement platform that helps companies understand and reduce hidden turnover costs.
+  // Get company size context
+  const companySizeContext = getCompanySizeContext(context.employee_count);
 
-CONTEXT:
-- Recipient: ${context.first_name} ${context.last_name}
+  // Calculate mid-point for reference
+  const turnoverMid = Math.round((context.turnover_estimate_low + context.turnover_estimate_high) / 2);
+  const turnoverFormatted = formatCurrency(turnoverMid);
+
+  // Use AI to improve personalization
+  const prompt = `You are writing a cold email as Clive Hays, founder of Clover ERA.
+
+${CLOVER_ERA_CONTEXT}
+
+${EMAIL_RULES}
+
+${companySizeContext}
+
+---
+
+RECIPIENT DETAILS:
+- Name: ${context.first_name} ${context.last_name}
 - Title: ${context.title}
 - Company: ${context.company_name}
-- Employee Count: ${context.employee_count}
+- Employee Count: ${context.employee_count.toLocaleString()}
 - Industry: ${context.industry}
-- Research: ${context.research_summary || 'No research available'}
-- Personalization Angle: ${context.personalization_angle || 'Focus on hidden turnover costs'}
-- Estimated Annual Turnover Cost: $${context.turnover_estimate_low?.toLocaleString()} - $${context.turnover_estimate_high?.toLocaleString()}
 
-CRITICAL - TURNOVER COST MATH:
-The turnover estimates above are calculated using: employees × turnover_rate (12-18%) × avg_salary × replacement_multiplier (1.0-1.5x).
-For a company with ${context.employee_count} employees, annual turnover costs should be in the HUNDREDS OF THOUSANDS or MILLIONS of dollars.
-Example: 100 employees at 15% turnover with $70K avg salary = 15 people × $70K × 1.2 replacement cost = $1.26M annually.
-If you mention a specific dollar amount, USE THE ESTIMATES PROVIDED. Do not invent smaller numbers.
+PRE-CALCULATED TURNOVER COST (use these exact figures):
+- Annual turnover cost: $${turnoverFormatted}
+- Range: $${formatCurrency(context.turnover_estimate_low)} - $${formatCurrency(context.turnover_estimate_high)}
+
+RESEARCH ON THIS PROSPECT:
+${context.research_summary || 'No specific research available.'}
+
+PERSONALIZATION ANGLE:
+${context.personalization_angle || 'Focus on the gap between what they track and actual turnover cost.'}
+
+---
 
 TEMPLATE TO PERSONALIZE:
 Subject: ${subject}
@@ -208,19 +227,25 @@ Subject: ${subject}
 Body:
 ${body}
 
-RULES:
-1. Keep the email SHORT. 4-6 sentences max in the body.
-2. The subject should be lowercase, no punctuation, conversational
-3. Use the research/personalization angle to make the opening hook specific to them
-4. Replace any remaining {{variables}} with appropriate content
-5. Keep Clive's voice: direct, peer-to-peer, no fluff, no corporate speak
-6. Do NOT add links, CTAs, or meeting requests unless already in template
-7. The personalization hook should be 1 sentence that shows you know something about them
-8. When citing turnover costs, USE the provided estimates - they are calculated correctly and should be large (hundreds of thousands to millions for companies with 50+ employees)
+---
+
+YOUR TASK:
+1. Personalize this template for ${context.first_name} at ${context.company_name}
+2. Replace {{variables}} with specific content
+3. Make the opening line specific to THEIR company (not generic)
+4. Use the turnover cost figure provided: $${turnoverFormatted}
+5. Keep it SHORT (4-6 sentences max)
+6. Sound like a peer sharing an observation, NOT a salesperson
+
+CRITICAL REMINDERS:
+- NEVER use: "curious", "I'd love to", "either way", "happy to help"
+- NEVER add links or meeting requests not in the template
+- NEVER recalculate the turnover number - use $${turnoverFormatted}
+- Sign off with just "Clive"
 
 Respond in JSON format:
 {
-  "subject": "personalized subject line",
+  "subject": "personalized subject line (lowercase, no punctuation)",
   "body": "personalized email body",
   "notes": "brief explanation of personalization choices"
 }`;
