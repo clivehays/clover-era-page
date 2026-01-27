@@ -1369,6 +1369,7 @@
                                     <td class="actions-row">
                                         <button class="btn btn-secondary btn-sm" onclick="previewEmail('${email.id}')">Preview</button>
                                         <button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteEmail('${email.id}')">Delete</button>
                                     </td>
                                 </tr>
                             `}).join('')}
@@ -1396,6 +1397,9 @@
 
             if (!email) return;
 
+            // Store for edit mode
+            currentEmailData = email;
+
             // Use prospect data if available, otherwise contact
             const recipient = email.prospect || email.contact;
             const recipientEmail = recipient?.email || 'N/A';
@@ -1414,6 +1418,13 @@
                         </div>
                     ` : ''}
                 </div>
+            `;
+
+            // Restore footer buttons in case we're coming from edit mode
+            document.querySelector('#emailPreviewModal .modal-footer').innerHTML = `
+                <button type="button" class="btn btn-secondary" onclick="closeModal('emailPreviewModal')">Close</button>
+                <button type="button" class="btn btn-warning" onclick="editEmail()">Edit</button>
+                <button type="button" class="btn btn-success" onclick="approveEmail()">Approve</button>
             `;
 
             showModal('emailPreviewModal');
@@ -1435,6 +1446,105 @@
             } catch (error) {
                 alert('Error approving email: ' + error.message);
             }
+        }
+
+        async function deleteEmail(emailId) {
+            if (!confirm('Are you sure you want to delete this email?')) return;
+
+            try {
+                await supabaseClient
+                    .from('outreach_emails')
+                    .delete()
+                    .eq('id', emailId);
+                loadEmailQueue();
+            } catch (error) {
+                alert('Error deleting email: ' + error.message);
+            }
+        }
+
+        let currentEmailData = null;
+        let isEditMode = false;
+
+        async function editEmail() {
+            if (!selectedEmailId) return;
+
+            // Fetch the email data if not already loaded
+            if (!currentEmailData || currentEmailData.id !== selectedEmailId) {
+                const { data: email } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*')
+                    .eq('id', selectedEmailId)
+                    .single();
+                currentEmailData = email;
+            }
+
+            if (!currentEmailData) return;
+
+            isEditMode = true;
+
+            // Switch to edit mode
+            document.getElementById('emailPreviewContent').innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Subject:</label>
+                    <input type="text" id="editSubject" value="${currentEmailData.subject.replace(/"/g, '&quot;')}"
+                           style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Body:</label>
+                    <textarea id="editBody" rows="15"
+                              style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; font-family: inherit; resize: vertical;">${currentEmailData.body}</textarea>
+                </div>
+            `;
+
+            // Update modal footer buttons
+            document.querySelector('#emailPreviewModal .modal-footer').innerHTML = `
+                <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveEmail()">Save Changes</button>
+            `;
+        }
+
+        async function saveEmail() {
+            if (!selectedEmailId) return;
+
+            const subject = document.getElementById('editSubject').value.trim();
+            const body = document.getElementById('editBody').value.trim();
+
+            if (!subject || !body) {
+                alert('Subject and body are required');
+                return;
+            }
+
+            try {
+                await supabaseClient
+                    .from('outreach_emails')
+                    .update({
+                        subject: subject,
+                        body: body,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', selectedEmailId);
+
+                isEditMode = false;
+                currentEmailData = null;
+                closeModal('emailPreviewModal');
+                loadEmailQueue();
+                alert('Email updated successfully');
+            } catch (error) {
+                alert('Error saving email: ' + error.message);
+            }
+        }
+
+        function cancelEdit() {
+            isEditMode = false;
+            currentEmailData = null;
+            // Reload the preview
+            previewEmail(selectedEmailId);
+            // Restore the footer buttons
+            document.querySelector('#emailPreviewModal .modal-footer').innerHTML = `
+                <button type="button" class="btn btn-secondary" onclick="closeModal('emailPreviewModal')">Close</button>
+                <button type="button" class="btn btn-warning" onclick="editEmail()">Edit</button>
+                <button type="button" class="btn btn-success" onclick="approveEmail()">Approve</button>
+            `;
         }
 
         async function approveAllEmails() {
