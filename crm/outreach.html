@@ -980,14 +980,21 @@
 
         // Campaign actions
         async function activateCampaign(id) {
+            console.log('[Activate] Starting activation for campaign:', id);
+
             // Check how many pending prospects need research
-            const { data: pendingProspects } = await supabaseClient
+            const { data: pendingProspects, error: queryError } = await supabaseClient
                 .from('campaign_prospects')
                 .select('id')
                 .eq('campaign_id', id)
                 .eq('status', 'pending');
 
+            if (queryError) {
+                console.error('[Activate] Error querying pending prospects:', queryError);
+            }
+
             const pendingCount = pendingProspects?.length || 0;
+            console.log('[Activate] Found', pendingCount, 'pending prospects');
 
             let confirmMsg = 'Activate this campaign?\n\n';
             if (pendingCount > 0) {
@@ -1001,16 +1008,20 @@
             }
 
             if (!confirm(confirmMsg)) {
+                console.log('[Activate] User cancelled');
                 return;
             }
 
             try {
                 // Update campaign status
+                console.log('[Activate] Updating campaign status to active');
                 await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
 
                 // Process pending prospects (research + generate emails)
                 if (pendingCount > 0) {
+                    console.log('[Activate] Starting processPendingProspects...');
                     const result = await processPendingProspects(id);
+                    console.log('[Activate] processPendingProspects result:', result);
 
                     if (result.processed > 0) {
                         alert(`Campaign activated!\n\n` +
@@ -1024,7 +1035,9 @@
                     }
                 } else {
                     // No pending prospects, try to send approved emails
+                    console.log('[Activate] No pending prospects, trying to send approved emails');
                     const sendResult = await sendCampaignEmails(id);
+                    console.log('[Activate] sendCampaignEmails result:', sendResult);
 
                     if (sendResult.sent > 0) {
                         alert(`Campaign activated! Sent ${sendResult.sent} email(s).`);
@@ -1036,6 +1049,7 @@
                 loadCampaigns();
                 loadStats();
             } catch (error) {
+                console.error('[Activate] Error:', error);
                 alert('Error activating campaign: ' + error.message);
                 loadCampaigns();
             }
@@ -1043,6 +1057,8 @@
 
         // Process all pending prospects: research + generate emails
         async function processPendingProspects(campaignId) {
+            console.log('[ProcessProspects] Starting for campaign:', campaignId);
+
             const result = {
                 processed: 0,
                 researched: 0,
@@ -1057,15 +1073,20 @@
                 .eq('campaign_id', campaignId)
                 .eq('status', 'pending');
 
+            console.log('[ProcessProspects] Query result:', { count: pendingProspects?.length, error });
+
             if (error || !pendingProspects || pendingProspects.length === 0) {
+                console.log('[ProcessProspects] No prospects found or error, returning early');
                 return result;
             }
+
+            console.log('[ProcessProspects] Processing', pendingProspects.length, 'prospects');
 
             // Process each prospect sequentially (to avoid rate limits)
             for (const cp of pendingProspects) {
                 result.processed++;
                 const prospectName = `${cp.prospect?.first_name || ''} ${cp.prospect?.last_name || ''}`.trim() || 'Unknown';
-                console.log(`Processing prospect ${result.processed}/${pendingProspects.length}: ${prospectName}`);
+                console.log(`[ProcessProspects] Processing ${result.processed}/${pendingProspects.length}: ${prospectName}`);
 
                 try {
                     // Step 1: Update status to researching
