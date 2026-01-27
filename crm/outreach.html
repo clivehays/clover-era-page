@@ -960,6 +960,7 @@
                                 <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); activateCampaign('${campaign.id}')">Activate</button>
                             ` : ''}
                             ${campaign.status === 'active' ? `
+                                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); sendNow('${campaign.id}')">Send Now</button>
                                 <button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); pauseCampaign('${campaign.id}')">Pause</button>
                             ` : ''}
                             ${campaign.status === 'paused' ? `
@@ -979,9 +980,29 @@
 
         // Campaign actions
         async function activateCampaign(id) {
-            await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
-            loadCampaigns();
-            loadStats();
+            if (!confirm('Activate this campaign?\n\nThis will immediately start sending approved emails.')) {
+                return;
+            }
+
+            try {
+                // Update campaign status
+                await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
+
+                // Send first batch of approved emails
+                const sendResult = await sendCampaignEmails(id);
+
+                loadCampaigns();
+                loadStats();
+
+                if (sendResult.sent > 0) {
+                    alert(`Campaign activated! Sent ${sendResult.sent} email(s).`);
+                } else {
+                    alert(`Campaign activated. ${sendResult.message || 'No approved emails to send yet.'}`);
+                }
+            } catch (error) {
+                alert('Error activating campaign: ' + error.message);
+                loadCampaigns();
+            }
         }
 
         async function pauseCampaign(id) {
@@ -991,9 +1012,65 @@
         }
 
         async function resumeCampaign(id) {
-            await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
-            loadCampaigns();
-            loadStats();
+            if (!confirm('Resume this campaign?\n\nThis will start sending approved emails again.')) {
+                return;
+            }
+
+            try {
+                // Update campaign status
+                await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
+
+                // Send batch of approved emails
+                const sendResult = await sendCampaignEmails(id);
+
+                loadCampaigns();
+                loadStats();
+
+                if (sendResult.sent > 0) {
+                    alert(`Campaign resumed! Sent ${sendResult.sent} email(s).`);
+                } else {
+                    alert(`Campaign resumed. ${sendResult.message || 'No approved emails to send yet.'}`);
+                }
+            } catch (error) {
+                alert('Error resuming campaign: ' + error.message);
+                loadCampaigns();
+            }
+        }
+
+        async function sendCampaignEmails(campaignId) {
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                },
+                body: JSON.stringify({ campaign_id: campaignId })
+            });
+
+            const result = await response.json();
+
+            if (!result.success && result.error) {
+                throw new Error(result.error);
+            }
+
+            return result;
+        }
+
+        async function sendNow(campaignId) {
+            try {
+                const result = await sendCampaignEmails(campaignId);
+
+                loadCampaigns();
+                loadStats();
+
+                if (result.sent > 0) {
+                    alert(`Sent ${result.sent} email(s)!`);
+                } else {
+                    alert(result.message || 'No approved emails to send.');
+                }
+            } catch (error) {
+                alert('Error sending emails: ' + error.message);
+            }
         }
 
         async function deleteCampaign(id, name) {
