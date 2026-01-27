@@ -110,12 +110,7 @@ serve(async (req) => {
 
       if (existingResearch) {
         console.log('Using cached research for prospect');
-        if (campaign_prospect_id) {
-          await supabase
-            .from('campaign_prospects')
-            .update({ status: 'ready' })
-            .eq('id', campaign_prospect_id);
-        }
+        // NOTE: Don't set status to 'ready' here - generate-emails will do that after creating emails
         return new Response(
           JSON.stringify({ success: true, research: existingResearch, cached: true }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
@@ -180,12 +175,7 @@ serve(async (req) => {
 
       if (existingResearch) {
         console.log('Using cached research for contact');
-        if (campaign_contact_id) {
-          await supabase
-            .from('campaign_contacts')
-            .update({ status: 'ready' })
-            .eq('id', campaign_contact_id);
-        }
+        // NOTE: Don't set status to 'ready' here - generate-emails will do that after creating emails
         return new Response(
           JSON.stringify({ success: true, research: existingResearch, cached: true }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
@@ -438,18 +428,8 @@ Respond in JSON format:
       throw new Error(`Failed to save research: ${researchError.message}`);
     }
 
-    // Update campaign status to ready
-    if (isProspectBased && campaign_prospect_id) {
-      await supabase
-        .from('campaign_prospects')
-        .update({ status: 'ready' })
-        .eq('id', campaign_prospect_id);
-    } else if (!isProspectBased && campaign_contact_id) {
-      await supabase
-        .from('campaign_contacts')
-        .update({ status: 'ready' })
-        .eq('id', campaign_contact_id);
-    }
+    // NOTE: Status stays at 'researching' until generate-emails sets it to 'ready'
+    // This ensures 'ready' status only happens after emails are actually generated
 
     console.log('Research saved successfully');
 

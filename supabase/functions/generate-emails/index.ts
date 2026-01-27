@@ -179,14 +179,17 @@ serve(async (req) => {
     const generatedEmailContents = await generateEmailSequence(templates, context);
 
     // Build email records with appropriate IDs
+    // Email 1 = draft (for approval), Emails 2 & 3 = pending_followup (wait for Email 1 to be sent)
     const generatedEmails = generatedEmailContents.map((email, index) => {
+      const position = templates[index].position;
       const emailRecord: Record<string, any> = {
         sequence_id: seqId,
-        position: templates[index].position,
+        position: position,
         subject: email.subject,
         body: email.body,
         personalization_notes: email.notes,
-        status: 'draft',
+        // Email 1 is ready for approval, follow-ups wait for Email 1 to be sent
+        status: position === 1 ? 'draft' : 'pending_followup',
       };
 
       if (isProspectBased) {
@@ -200,19 +203,19 @@ serve(async (req) => {
       return emailRecord;
     });
 
-    // Delete any existing draft emails for this campaign target
+    // Delete any existing draft/pending emails for this campaign target (when regenerating)
     if (isProspectBased) {
       await supabase
         .from('outreach_emails')
         .delete()
         .eq('campaign_prospect_id', campaign_prospect_id)
-        .eq('status', 'draft');
+        .in('status', ['draft', 'pending_followup']);
     } else {
       await supabase
         .from('outreach_emails')
         .delete()
         .eq('campaign_contact_id', campaign_contact_id)
-        .eq('status', 'draft');
+        .in('status', ['draft', 'pending_followup']);
     }
 
     // Insert new emails

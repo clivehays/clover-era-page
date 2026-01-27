@@ -996,12 +996,40 @@
             const pendingCount = pendingProspects?.length || 0;
             console.log('[Activate] Found', pendingCount, 'pending prospects');
 
+            // Also check for 'ready' prospects that might be missing emails
+            const { data: readyProspects } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id')
+                .eq('campaign_id', id)
+                .eq('status', 'ready');
+
+            let readyWithoutEmailsCount = 0;
+            if (readyProspects && readyProspects.length > 0) {
+                for (const cp of readyProspects) {
+                    const { data: emails } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('id')
+                        .eq('campaign_prospect_id', cp.id)
+                        .limit(1);
+                    if (!emails || emails.length === 0) {
+                        readyWithoutEmailsCount++;
+                    }
+                }
+            }
+            console.log('[Activate] Found', readyWithoutEmailsCount, 'ready prospects without emails');
+
+            const totalToProcess = pendingCount + readyWithoutEmailsCount;
+
             let confirmMsg = 'Activate this campaign?\n\n';
-            if (pendingCount > 0) {
+            if (totalToProcess > 0) {
                 confirmMsg += `This will:\n`;
-                confirmMsg += `1. Research ${pendingCount} prospect(s) automatically\n`;
-                confirmMsg += `2. Generate draft emails for each\n`;
-                confirmMsg += `3. Emails will appear in the Email Queue for your approval\n\n`;
+                if (pendingCount > 0) {
+                    confirmMsg += `1. Research ${pendingCount} prospect(s) automatically\n`;
+                }
+                if (readyWithoutEmailsCount > 0) {
+                    confirmMsg += `${pendingCount > 0 ? '2' : '1'}. Generate emails for ${readyWithoutEmailsCount} prospect(s) that need emails\n`;
+                }
+                confirmMsg += `${totalToProcess > 0 ? (pendingCount > 0 && readyWithoutEmailsCount > 0 ? '3' : '2') : '1'}. Emails will appear in the Email Queue for your approval\n\n`;
                 confirmMsg += `Note: Research may take 10-20 seconds per prospect.`;
             } else {
                 confirmMsg += `This will send any approved emails immediately.`;
@@ -1017,8 +1045,8 @@
                 console.log('[Activate] Updating campaign status to active');
                 await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
 
-                // Process pending prospects (research + generate emails)
-                if (pendingCount > 0) {
+                // Process pending prospects and ready prospects without emails
+                if (totalToProcess > 0) {
                     console.log('[Activate] Starting processPendingProspects...');
                     const result = await processPendingProspects(id);
                     console.log('[Activate] processPendingProspects result:', result);
@@ -1066,56 +1094,136 @@
                 errors: 0
             };
 
-            // Get all pending prospects for this campaign
-            const { data: pendingProspects, error } = await supabaseClient
+            // Get all pending prospects for this campaign (need research + emails)
+            const { data: pendingProspects, error: pendingError } = await supabaseClient
                 .from('campaign_prospects')
-                .select('id, prospect:outreach_prospects(first_name, last_name)')
+                .select('id, status, prospect:outreach_prospects(first_name, last_name)')
                 .eq('campaign_id', campaignId)
                 .eq('status', 'pending');
 
-            console.log('[ProcessProspects] Query result:', { count: pendingProspects?.length, error });
+            console.log('[ProcessProspects] Pending prospects:', { count: pendingProspects?.length, error: pendingError });
 
-            if (error || !pendingProspects || pendingProspects.length === 0) {
-                console.log('[ProcessProspects] No prospects found or error, returning early');
+            // Also get 'researching' prospects (research started but emails never generated)
+            const { data: researchingProspects, error: researchingError } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id, status, prospect:outreach_prospects(first_name, last_name)')
+                .eq('campaign_id', campaignId)
+                .eq('status', 'researching');
+
+            console.log('[ProcessProspects] Researching prospects:', { count: researchingProspects?.length, error: researchingError });
+
+            // Also get 'ready' prospects that might be missing emails (edge case from old code)
+            const { data: readyProspects, error: readyError } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id, status, prospect:outreach_prospects(first_name, last_name)')
+                .eq('campaign_id', campaignId)
+                .eq('status', 'ready');
+
+            console.log('[ProcessProspects] Ready prospects:', { count: readyProspects?.length, error: readyError });
+
+            // Check which 'researching' prospects have research data (can skip to email generation)
+            const researchingWithData = [];
+            const researchingWithoutData = [];
+            if (researchingProspects && researchingProspects.length > 0) {
+                for (const cp of researchingProspects) {
+                    // Get prospect_id from campaign_prospect
+                    const { data: cpData } = await supabaseClient
+                        .from('campaign_prospects')
+                        .select('prospect_id')
+                        .eq('id', cp.id)
+                        .single();
+
+                    if (cpData?.prospect_id) {
+                        const { data: research } = await supabaseClient
+                            .from('prospect_research')
+                            .select('id')
+                            .eq('prospect_id', cpData.prospect_id)
+                            .limit(1);
+
+                        if (research && research.length > 0) {
+                            console.log('[ProcessProspects] Researching prospect has research data:', cp.prospect?.first_name);
+                            researchingWithData.push(cp);
+                        } else {
+                            console.log('[ProcessProspects] Researching prospect needs research:', cp.prospect?.first_name);
+                            researchingWithoutData.push(cp);
+                        }
+                    }
+                }
+            }
+
+            // Check which 'ready' prospects are actually missing emails
+            const readyWithoutEmails = [];
+            if (readyProspects && readyProspects.length > 0) {
+                for (const cp of readyProspects) {
+                    const { data: emails } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('id')
+                        .eq('campaign_prospect_id', cp.id)
+                        .limit(1);
+
+                    if (!emails || emails.length === 0) {
+                        console.log('[ProcessProspects] Ready prospect missing emails:', cp.prospect?.first_name);
+                        readyWithoutEmails.push(cp);
+                    }
+                }
+            }
+
+            // Combine all prospects that need processing:
+            // 1. Pending - need research + emails
+            // 2. Researching without data - need research + emails
+            // 3. Researching with data - just need emails
+            // 4. Ready without emails - just need emails
+            const allToProcess = [
+                ...(pendingProspects || []).map(p => ({ ...p, needsResearch: true })),
+                ...researchingWithoutData.map(p => ({ ...p, needsResearch: true })),
+                ...researchingWithData.map(p => ({ ...p, needsResearch: false })),
+                ...readyWithoutEmails.map(p => ({ ...p, needsResearch: false }))
+            ];
+
+            if (allToProcess.length === 0) {
+                console.log('[ProcessProspects] No prospects to process');
                 return result;
             }
 
-            console.log('[ProcessProspects] Processing', pendingProspects.length, 'prospects');
+            console.log('[ProcessProspects] Processing', allToProcess.length, 'prospects total');
 
             // Process each prospect sequentially (to avoid rate limits)
-            for (const cp of pendingProspects) {
+            for (const cp of allToProcess) {
                 result.processed++;
                 const prospectName = `${cp.prospect?.first_name || ''} ${cp.prospect?.last_name || ''}`.trim() || 'Unknown';
-                console.log(`[ProcessProspects] Processing ${result.processed}/${pendingProspects.length}: ${prospectName}`);
+                console.log(`[ProcessProspects] Processing ${result.processed}/${allToProcess.length}: ${prospectName} (needsResearch: ${cp.needsResearch})`);
 
                 try {
-                    // Step 1: Update status to researching
-                    await supabaseClient
-                        .from('campaign_prospects')
-                        .update({ status: 'researching' })
-                        .eq('id', cp.id);
+                    // Only do research if needed (pending status)
+                    if (cp.needsResearch) {
+                        // Step 1: Update status to researching
+                        await supabaseClient
+                            .from('campaign_prospects')
+                            .update({ status: 'researching' })
+                            .eq('id', cp.id);
 
-                    // Step 2: Call research function
-                    const researchResponse = await fetch(`${SUPABASE_URL}/functions/v1/research-prospect`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                        },
-                        body: JSON.stringify({ campaign_prospect_id: cp.id })
-                    });
+                        // Step 2: Call research function
+                        const researchResponse = await fetch(`${SUPABASE_URL}/functions/v1/research-prospect`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            },
+                            body: JSON.stringify({ campaign_prospect_id: cp.id })
+                        });
 
-                    const researchResult = await researchResponse.json();
+                        const researchResult = await researchResponse.json();
 
-                    if (!researchResult.success) {
-                        console.error(`Research failed for ${prospectName}:`, researchResult.error);
-                        result.errors++;
-                        continue;
+                        if (!researchResult.success) {
+                            console.error(`Research failed for ${prospectName}:`, researchResult.error);
+                            result.errors++;
+                            continue;
+                        }
+
+                        result.researched++;
                     }
 
-                    result.researched++;
-
-                    // Step 3: Generate emails
+                    // Step 3: Generate emails (always needed)
                     const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
                         method: 'POST',
                         headers: {
@@ -1160,12 +1268,38 @@
 
             const pendingCount = pendingProspects?.length || 0;
 
+            // Also check for 'ready' prospects that might be missing emails
+            const { data: readyProspects } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id')
+                .eq('campaign_id', id)
+                .eq('status', 'ready');
+
+            // Count ready prospects without emails
+            let readyWithoutEmailsCount = 0;
+            if (readyProspects && readyProspects.length > 0) {
+                for (const cp of readyProspects) {
+                    const { data: emails } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('id')
+                        .eq('campaign_prospect_id', cp.id)
+                        .limit(1);
+                    if (!emails || emails.length === 0) {
+                        readyWithoutEmailsCount++;
+                    }
+                }
+            }
+
             let confirmMsg = 'Resume this campaign?\n\n';
-            if (pendingCount > 0) {
+            if (pendingCount > 0 || readyWithoutEmailsCount > 0) {
                 confirmMsg += `This will:\n`;
-                confirmMsg += `1. Research ${pendingCount} pending prospect(s)\n`;
-                confirmMsg += `2. Generate draft emails for each\n`;
-                confirmMsg += `3. Send any already-approved emails\n\n`;
+                if (pendingCount > 0) {
+                    confirmMsg += `1. Research ${pendingCount} pending prospect(s)\n`;
+                }
+                if (readyWithoutEmailsCount > 0) {
+                    confirmMsg += `${pendingCount > 0 ? '2' : '1'}. Generate emails for ${readyWithoutEmailsCount} prospect(s) missing emails\n`;
+                }
+                confirmMsg += `${pendingCount > 0 && readyWithoutEmailsCount > 0 ? '3' : pendingCount > 0 || readyWithoutEmailsCount > 0 ? '2' : '1'}. Send any already-approved emails\n\n`;
                 confirmMsg += `Note: Research may take 10-20 seconds per prospect.`;
             } else {
                 confirmMsg += `This will send any approved emails immediately.`;

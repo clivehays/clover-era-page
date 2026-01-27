@@ -139,6 +139,13 @@ async function sendSingleEmail(supabase: any, emailId: string) {
           current_step: 1,
         })
         .eq('id', email.campaign_prospect_id);
+
+      // Schedule follow-up emails (position 2 and 3)
+      await scheduleFollowUpEmails(supabase, {
+        campaign_prospect_id: email.campaign_prospect_id,
+        sequence_id: email.sequence_id,
+        sent_at: new Date(),
+      });
     }
 
     // Update campaign stats
@@ -163,6 +170,13 @@ async function sendSingleEmail(supabase: any, emailId: string) {
           current_step: 1,
         })
         .eq('id', email.campaign_contact_id);
+
+      // Schedule follow-up emails (position 2 and 3)
+      await scheduleFollowUpEmails(supabase, {
+        campaign_contact_id: email.campaign_contact_id,
+        sequence_id: email.sequence_id,
+        sent_at: new Date(),
+      });
     }
 
     // Update campaign stats
@@ -514,11 +528,12 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
     });
 
     if (result.success) {
+      const sentAt = new Date();
       await supabase
         .from('outreach_emails')
         .update({
           status: 'sent',
-          sent_at: new Date().toISOString(),
+          sent_at: sentAt.toISOString(),
           sendgrid_message_id: result.messageId,
         })
         .eq('id', email.id);
@@ -532,6 +547,15 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
             current_step: email.position,
           })
           .eq('id', email.campaign_prospect_id);
+
+        // Schedule follow-ups when Email 1 is sent
+        if (email.position === 1) {
+          await scheduleFollowUpEmails(supabase, {
+            campaign_prospect_id: email.campaign_prospect_id,
+            sequence_id: email.sequence_id,
+            sent_at: sentAt,
+          });
+        }
       } else if (email.campaign_contact_id) {
         await supabase
           .from('campaign_contacts')
@@ -540,6 +564,15 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
             current_step: email.position,
           })
           .eq('id', email.campaign_contact_id);
+
+        // Schedule follow-ups when Email 1 is sent
+        if (email.position === 1) {
+          await scheduleFollowUpEmails(supabase, {
+            campaign_contact_id: email.campaign_contact_id,
+            sequence_id: email.sequence_id,
+            sent_at: sentAt,
+          });
+        }
       }
 
       results.push({ email_id: email.id, status: 'sent' });
@@ -682,4 +715,81 @@ async function getCampaignProspectIds(supabase: any, campaignId: string): Promis
     .eq('campaign_id', campaignId);
 
   return (data || []).map((cp: any) => cp.id);
+}
+
+// Schedule follow-up emails when Email 1 is sent
+async function scheduleFollowUpEmails(
+  supabase: any,
+  params: {
+    campaign_prospect_id?: string;
+    campaign_contact_id?: string;
+    sequence_id: string;
+    sent_at: Date;
+  }
+): Promise<void> {
+  const { campaign_prospect_id, campaign_contact_id, sequence_id, sent_at } = params;
+
+  // Get sequence templates with days_delay for positions 2 and 3
+  const { data: templates, error: templatesError } = await supabase
+    .from('sequence_templates')
+    .select('position, days_delay')
+    .eq('sequence_id', sequence_id)
+    .gt('position', 1)
+    .order('position', { ascending: true });
+
+  if (templatesError || !templates || templates.length === 0) {
+    console.log('No follow-up templates found for sequence:', sequence_id);
+    return;
+  }
+
+  // Find pending follow-up emails for this prospect/contact
+  let query = supabase
+    .from('outreach_emails')
+    .select('id, position')
+    .eq('status', 'pending_followup')
+    .gt('position', 1);
+
+  if (campaign_prospect_id) {
+    query = query.eq('campaign_prospect_id', campaign_prospect_id);
+  } else if (campaign_contact_id) {
+    query = query.eq('campaign_contact_id', campaign_contact_id);
+  } else {
+    return;
+  }
+
+  const { data: followUpEmails, error: emailsError } = await query;
+
+  if (emailsError || !followUpEmails || followUpEmails.length === 0) {
+    console.log('No pending follow-up emails found');
+    return;
+  }
+
+  // Create a map of position -> days_delay
+  const delayMap: Record<number, number> = {};
+  for (const template of templates) {
+    delayMap[template.position] = template.days_delay || 0;
+  }
+
+  // Schedule each follow-up email
+  for (const email of followUpEmails) {
+    const daysDelay = delayMap[email.position] || 3; // Default 3 days if not set
+    const scheduledAt = new Date(sent_at);
+    scheduledAt.setDate(scheduledAt.getDate() + daysDelay);
+
+    // Set to a reasonable send time (9 AM in the scheduled day)
+    scheduledAt.setHours(9, 0, 0, 0);
+
+    await supabase
+      .from('outreach_emails')
+      .update({
+        status: 'scheduled',
+        scheduled_at: scheduledAt.toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', email.id);
+
+    console.log(`Scheduled email ${email.id} (position ${email.position}) for ${scheduledAt.toISOString()}`);
+  }
+
+  console.log(`Scheduled ${followUpEmails.length} follow-up emails`);
 }
