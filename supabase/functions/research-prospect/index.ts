@@ -19,79 +19,178 @@ serve(async (req) => {
   }
 
   try {
-    const { contact_id, campaign_contact_id } = await req.json();
+    // Support both contact-based and prospect-based research
+    const {
+      contact_id,
+      campaign_contact_id,
+      prospect_id,
+      campaign_prospect_id
+    } = await req.json();
 
-    if (!contact_id && !campaign_contact_id) {
-      throw new Error('contact_id or campaign_contact_id is required');
+    if (!contact_id && !campaign_contact_id && !prospect_id && !campaign_prospect_id) {
+      throw new Error('One of contact_id, campaign_contact_id, prospect_id, or campaign_prospect_id is required');
     }
 
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
-    // Get contact and company data
-    let contactId = contact_id;
-    let campaignContactId = campaign_contact_id;
+    // Determine if this is prospect-based or contact-based
+    const isProspectBased = !!(prospect_id || campaign_prospect_id);
 
-    // If campaign_contact_id provided, get the contact_id from it
-    if (campaign_contact_id && !contact_id) {
-      const { data: cc, error: ccError } = await supabase
-        .from('campaign_contacts')
-        .select('contact_id')
-        .eq('id', campaign_contact_id)
+    // Variables to hold the target data
+    let targetId: string;
+    let targetEmail: string;
+    let targetFirstName: string;
+    let targetLastName: string;
+    let targetTitle: string;
+    let targetLinkedinUrl: string | null;
+    let companyName: string;
+    let companyWebsite: string | null;
+    let companyIndustry: string;
+    let companyEmployeeCount: number;
+    let companyId: string | null = null;
+
+    if (isProspectBased) {
+      // PROSPECT-BASED RESEARCH
+      let prospectIdToUse = prospect_id;
+
+      // If campaign_prospect_id provided, get the prospect_id from it
+      if (campaign_prospect_id && !prospect_id) {
+        const { data: cp, error: cpError } = await supabase
+          .from('campaign_prospects')
+          .select('prospect_id')
+          .eq('id', campaign_prospect_id)
+          .single();
+
+        if (cpError || !cp) {
+          throw new Error(`Campaign prospect not found: ${cpError?.message}`);
+        }
+        prospectIdToUse = cp.prospect_id;
+      }
+
+      // Update campaign_prospect status to researching
+      if (campaign_prospect_id) {
+        await supabase
+          .from('campaign_prospects')
+          .update({ status: 'researching' })
+          .eq('id', campaign_prospect_id);
+      }
+
+      // Get prospect data (denormalized - company info is inline)
+      const { data: prospect, error: prospectError } = await supabase
+        .from('outreach_prospects')
+        .select('*')
+        .eq('id', prospectIdToUse)
         .single();
 
-      if (ccError || !cc) {
-        throw new Error(`Campaign contact not found: ${ccError?.message}`);
+      if (prospectError || !prospect) {
+        throw new Error(`Prospect not found: ${prospectError?.message}`);
       }
-      contactId = cc.contact_id;
-    }
 
-    // Update campaign_contact status to researching
-    if (campaignContactId) {
-      await supabase
-        .from('campaign_contacts')
-        .update({ status: 'researching' })
-        .eq('id', campaignContactId);
-    }
+      console.log('Researching prospect:', prospect.first_name, prospect.last_name);
 
-    // Get contact with company
-    const { data: contact, error: contactError } = await supabase
-      .from('contacts')
-      .select(`
-        *,
-        company:companies(*)
-      `)
-      .eq('id', contactId)
-      .single();
+      // Set variables from prospect data (denormalized)
+      targetId = prospect.id;
+      targetEmail = prospect.email;
+      targetFirstName = prospect.first_name || '';
+      targetLastName = prospect.last_name || '';
+      targetTitle = prospect.title || 'Executive';
+      targetLinkedinUrl = prospect.linkedin_url;
+      companyName = prospect.company_name || 'Unknown Company';
+      companyWebsite = prospect.company_website;
+      companyIndustry = prospect.company_industry || 'Unknown';
+      companyEmployeeCount = prospect.company_employee_count || 100;
 
-    if (contactError || !contact) {
-      throw new Error(`Contact not found: ${contactError?.message}`);
-    }
+      // Check for existing research by prospect_id
+      const { data: existingResearch } = await supabase
+        .from('prospect_research')
+        .select('*')
+        .eq('prospect_id', prospectIdToUse)
+        .gt('expires_at', new Date().toISOString())
+        .single();
 
-    console.log('Researching contact:', contact.first_name, contact.last_name);
+      if (existingResearch) {
+        console.log('Using cached research for prospect');
+        if (campaign_prospect_id) {
+          await supabase
+            .from('campaign_prospects')
+            .update({ status: 'ready' })
+            .eq('id', campaign_prospect_id);
+        }
+        return new Response(
+          JSON.stringify({ success: true, research: existingResearch, cached: true }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
 
-    // Check if we have recent research (not expired)
-    const { data: existingResearch } = await supabase
-      .from('prospect_research')
-      .select('*')
-      .eq('contact_id', contactId)
-      .gt('expires_at', new Date().toISOString())
-      .single();
+    } else {
+      // CONTACT-BASED RESEARCH (legacy support)
+      let contactIdToUse = contact_id;
 
-    if (existingResearch) {
-      console.log('Using cached research');
+      if (campaign_contact_id && !contact_id) {
+        const { data: cc, error: ccError } = await supabase
+          .from('campaign_contacts')
+          .select('contact_id')
+          .eq('id', campaign_contact_id)
+          .single();
 
-      // Update campaign_contact status to ready if applicable
-      if (campaignContactId) {
+        if (ccError || !cc) {
+          throw new Error(`Campaign contact not found: ${ccError?.message}`);
+        }
+        contactIdToUse = cc.contact_id;
+      }
+
+      if (campaign_contact_id) {
         await supabase
           .from('campaign_contacts')
-          .update({ status: 'ready' })
-          .eq('id', campaignContactId);
+          .update({ status: 'researching' })
+          .eq('id', campaign_contact_id);
       }
 
-      return new Response(
-        JSON.stringify({ success: true, research: existingResearch, cached: true }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-      );
+      const { data: contact, error: contactError } = await supabase
+        .from('contacts')
+        .select(`*, company:companies(*)`)
+        .eq('id', contactIdToUse)
+        .single();
+
+      if (contactError || !contact) {
+        throw new Error(`Contact not found: ${contactError?.message}`);
+      }
+
+      console.log('Researching contact:', contact.first_name, contact.last_name);
+
+      targetId = contact.id;
+      targetEmail = contact.email;
+      targetFirstName = contact.first_name || '';
+      targetLastName = contact.last_name || '';
+      targetTitle = contact.title || 'Executive';
+      targetLinkedinUrl = contact.linkedin_url;
+      companyName = contact.company?.name || 'Unknown Company';
+      companyWebsite = contact.company?.website;
+      companyIndustry = contact.company?.industry || 'Unknown';
+      companyEmployeeCount = contact.company?.employee_count || 100;
+      companyId = contact.company_id;
+
+      // Check for existing research by contact_id
+      const { data: existingResearch } = await supabase
+        .from('prospect_research')
+        .select('*')
+        .eq('contact_id', contactIdToUse)
+        .gt('expires_at', new Date().toISOString())
+        .single();
+
+      if (existingResearch) {
+        console.log('Using cached research for contact');
+        if (campaign_contact_id) {
+          await supabase
+            .from('campaign_contacts')
+            .update({ status: 'ready' })
+            .eq('id', campaign_contact_id);
+        }
+        return new Response(
+          JSON.stringify({ success: true, research: existingResearch, cached: true }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+      }
     }
 
     // Step 1: Apollo Enrichment
@@ -102,7 +201,7 @@ serve(async (req) => {
     if (APOLLO_API_KEY) {
       try {
         // Person enrichment
-        if (contact.email) {
+        if (targetEmail) {
           const personResponse = await fetch('https://api.apollo.io/v1/people/match', {
             method: 'POST',
             headers: {
@@ -111,7 +210,7 @@ serve(async (req) => {
               'X-Api-Key': APOLLO_API_KEY,
             },
             body: JSON.stringify({
-              email: contact.email,
+              email: targetEmail,
               reveal_personal_emails: false,
             }),
           });
@@ -125,18 +224,8 @@ serve(async (req) => {
         }
 
         // Company enrichment
-        if (contact.company?.website || contact.company?.name) {
-          const companyResponse = await fetch('https://api.apollo.io/v1/organizations/enrich', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Cache-Control': 'no-cache',
-              'X-Api-Key': APOLLO_API_KEY,
-            },
-          });
-
-          // Alternative: use domain-based lookup
-          const domain = contact.company?.website?.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        if (companyWebsite || companyName) {
+          const domain = companyWebsite?.replace(/^https?:\/\//, '').replace(/\/$/, '');
           if (domain) {
             const orgResponse = await fetch(`https://api.apollo.io/v1/organizations/enrich?domain=${domain}`, {
               method: 'GET',
@@ -155,59 +244,72 @@ serve(async (req) => {
         }
       } catch (apolloError) {
         console.error('Apollo enrichment error:', apolloError);
-        // Continue without Apollo data
       }
     }
 
-    // Step 2: Prepare data for AI research
+    // Step 2: Use enriched data or fallback to provided data
     const employeeCount = apolloCompanyData?.estimated_num_employees
       || apolloPersonData?.organization?.estimated_num_employees
-      || contact.company?.employee_count
-      || 100;
+      || companyEmployeeCount;
 
-    const companyName = contact.company?.name || 'Unknown Company';
     const industry = apolloCompanyData?.industry
       || apolloPersonData?.organization?.industry
-      || contact.company?.industry
-      || 'Unknown';
+      || companyIndustry;
 
-    const title = apolloPersonData?.title || contact.title || 'Executive';
-    const linkedinUrl = apolloPersonData?.linkedin_url || contact.linkedin_url;
+    const title = apolloPersonData?.title || targetTitle;
+    const linkedinUrl = apolloPersonData?.linkedin_url || targetLinkedinUrl;
 
-    // Step 2b: UPDATE companies table with Apollo data if we got better info
-    if (contact.company_id && (apolloCompanyData || apolloPersonData?.organization)) {
+    // Step 2b: Update prospect with Apollo data (for prospects, update inline fields)
+    if (isProspectBased && (apolloCompanyData || apolloPersonData?.organization)) {
+      const prospectUpdates: Record<string, any> = {};
+
+      if (apolloCompanyData?.estimated_num_employees) {
+        prospectUpdates.company_employee_count = apolloCompanyData.estimated_num_employees;
+      } else if (apolloPersonData?.organization?.estimated_num_employees) {
+        prospectUpdates.company_employee_count = apolloPersonData.organization.estimated_num_employees;
+      }
+
+      if (apolloCompanyData?.industry) {
+        prospectUpdates.company_industry = apolloCompanyData.industry;
+      } else if (apolloPersonData?.organization?.industry) {
+        prospectUpdates.company_industry = apolloPersonData.organization.industry;
+      }
+
+      if (Object.keys(prospectUpdates).length > 0) {
+        await supabase
+          .from('outreach_prospects')
+          .update(prospectUpdates)
+          .eq('id', targetId);
+        console.log('Updated prospect with Apollo data:', prospectUpdates);
+      }
+    }
+
+    // Step 2c: Update companies table with Apollo data (for contacts only)
+    if (!isProspectBased && companyId && (apolloCompanyData || apolloPersonData?.organization)) {
       const companyUpdates: Record<string, any> = {};
 
-      // Update employee count if Apollo has it
       if (apolloCompanyData?.estimated_num_employees) {
         companyUpdates.employee_count = apolloCompanyData.estimated_num_employees;
       } else if (apolloPersonData?.organization?.estimated_num_employees) {
         companyUpdates.employee_count = apolloPersonData.organization.estimated_num_employees;
       }
 
-      // Update industry if Apollo has it
       if (apolloCompanyData?.industry) {
         companyUpdates.industry = apolloCompanyData.industry;
       } else if (apolloPersonData?.organization?.industry) {
         companyUpdates.industry = apolloPersonData.organization.industry;
       }
 
-      // Only update if we have new data
       if (Object.keys(companyUpdates).length > 0) {
-        const { error: updateError } = await supabase
+        await supabase
           .from('companies')
           .update(companyUpdates)
-          .eq('id', contact.company_id);
-
-        if (updateError) {
-          console.error('Failed to update company with Apollo data:', updateError);
-        } else {
-          console.log('Updated company with Apollo data:', companyUpdates);
-        }
+          .eq('id', companyId);
+        console.log('Updated company with Apollo data:', companyUpdates);
       }
     }
 
-    // Step 3: PRE-CALCULATE turnover estimates (don't let AI do math)
+    // Step 3: PRE-CALCULATE turnover estimates
     const avgSalary = getIndustrySalary(industry);
     const turnoverEstimateLow = Math.round(employeeCount * 0.12 * avgSalary * 1.0);
     const turnoverEstimateHigh = Math.round(employeeCount * 0.18 * avgSalary * 1.5);
@@ -217,7 +319,6 @@ serve(async (req) => {
     let growthSignals: string[] = [];
     let personalizationAngle = '';
 
-    // Get company size context for appropriate messaging
     const companySizeContext = getCompanySizeContext(employeeCount);
 
     if (ANTHROPIC_API_KEY) {
@@ -231,12 +332,12 @@ ${companySizeContext}
 ---
 
 PROSPECT TO RESEARCH:
-- Name: ${contact.first_name} ${contact.last_name}
+- Name: ${targetFirstName} ${targetLastName}
 - Title: ${title}
 - Company: ${companyName}
 - Industry: ${industry}
 - Employee Count: ${employeeCount.toLocaleString()}
-- Website: ${contact.company?.website || 'N/A'}
+- Website: ${companyWebsite || 'N/A'}
 - LinkedIn: ${linkedinUrl || 'N/A'}
 ${apolloPersonData ? `\nAPOLLO PERSON DATA:\n${JSON.stringify(apolloPersonData, null, 2)}` : ''}
 ${apolloCompanyData ? `\nAPOLLO COMPANY DATA:\n${JSON.stringify(apolloCompanyData, null, 2)}` : ''}
@@ -280,20 +381,13 @@ Respond in JSON format:
           body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 1024,
-            messages: [
-              {
-                role: 'user',
-                content: researchPrompt,
-              },
-            ],
+            messages: [{ role: 'user', content: researchPrompt }],
           }),
         });
 
         if (claudeResponse.ok) {
           const claudeData = await claudeResponse.json();
           const responseText = claudeData.content[0]?.text || '';
-
-          // Parse JSON from response
           const jsonMatch = responseText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const aiResearch = JSON.parse(jsonMatch[0]);
@@ -305,32 +399,37 @@ Respond in JSON format:
         }
       } catch (claudeError) {
         console.error('Claude research error:', claudeError);
-        // Fallback personalization (turnover numbers already calculated above)
         personalizationAngle = `At ${employeeCount} employees, even 12% turnover means a $${formatMillions(turnoverEstimateLow)}+ hole that won't show up on any dashboard.`;
       }
     } else {
-      // Fallback without AI (turnover numbers already calculated above)
       personalizationAngle = `At ${employeeCount} employees in ${industry}, turnover costs are likely 4x what you're tracking.`;
     }
 
     // Step 4: Save research to database
+    const researchData: Record<string, any> = {
+      apollo_person_data: apolloPersonData,
+      apollo_company_data: apolloCompanyData,
+      email_verified: emailVerified,
+      research_summary: researchSummary,
+      growth_signals: growthSignals,
+      turnover_estimate_low: turnoverEstimateLow,
+      turnover_estimate_high: turnoverEstimateHigh,
+      personalization_angle: personalizationAngle,
+      researched_at: new Date().toISOString(),
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+
+    if (isProspectBased) {
+      researchData.prospect_id = targetId;
+    } else {
+      researchData.contact_id = targetId;
+      researchData.company_id = companyId;
+    }
+
     const { data: research, error: researchError } = await supabase
       .from('prospect_research')
-      .upsert({
-        contact_id: contactId,
-        company_id: contact.company_id,
-        apollo_person_data: apolloPersonData,
-        apollo_company_data: apolloCompanyData,
-        email_verified: emailVerified,
-        research_summary: researchSummary,
-        growth_signals: growthSignals,
-        turnover_estimate_low: turnoverEstimateLow,
-        turnover_estimate_high: turnoverEstimateHigh,
-        personalization_angle: personalizationAngle,
-        researched_at: new Date().toISOString(),
-        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-      }, {
-        onConflict: 'contact_id',
+      .upsert(researchData, {
+        onConflict: isProspectBased ? 'prospect_id' : 'contact_id',
       })
       .select()
       .single();
@@ -339,12 +438,17 @@ Respond in JSON format:
       throw new Error(`Failed to save research: ${researchError.message}`);
     }
 
-    // Update campaign_contact status to ready
-    if (campaignContactId) {
+    // Update campaign status to ready
+    if (isProspectBased && campaign_prospect_id) {
+      await supabase
+        .from('campaign_prospects')
+        .update({ status: 'ready' })
+        .eq('id', campaign_prospect_id);
+    } else if (!isProspectBased && campaign_contact_id) {
       await supabase
         .from('campaign_contacts')
         .update({ status: 'ready' })
-        .eq('id', campaignContactId);
+        .eq('id', campaign_contact_id);
     }
 
     console.log('Research saved successfully');
@@ -369,45 +473,32 @@ Respond in JSON format:
   }
 });
 
-// Helper function to get average salary by industry
 function getIndustrySalary(industry: string): number {
   const lowered = (industry || '').toLowerCase();
 
-  // Tech/Software
   if (lowered.includes('tech') || lowered.includes('software') || lowered.includes('computer') ||
       lowered.includes('information') || lowered.includes('saas')) {
     return 95000;
   }
-
-  // Finance/Banking
   if (lowered.includes('financ') || lowered.includes('bank') || lowered.includes('insurance') ||
       lowered.includes('invest')) {
     return 95000;
   }
-
-  // Healthcare
   if (lowered.includes('health') || lowered.includes('medical') || lowered.includes('pharma') ||
       lowered.includes('biotech')) {
     return 75000;
   }
-
-  // Manufacturing/Industrial
   if (lowered.includes('manufactur') || lowered.includes('industrial') || lowered.includes('automotive') ||
       lowered.includes('aerospace')) {
     return 65000;
   }
-
-  // Retail/Hospitality (lower wages but high turnover)
   if (lowered.includes('retail') || lowered.includes('hospitality') || lowered.includes('restaurant') ||
       lowered.includes('food')) {
     return 45000;
   }
-
-  // Default for unknown industries
   return 70000;
 }
 
-// Helper function to format large numbers
 function formatMillions(amount: number): string {
   if (amount >= 1000000) {
     return (amount / 1000000).toFixed(1) + 'M';

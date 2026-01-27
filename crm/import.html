@@ -431,7 +431,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Import Contacts</h1>
+            <h1>Import Prospects</h1>
         </div>
 
         <!-- Step 1: Upload -->
@@ -464,7 +464,7 @@
                 </div>
                 <div class="stat-card warning">
                     <div class="stat-value" id="duplicateRows">0</div>
-                    <div class="stat-label">Existing Contacts</div>
+                    <div class="stat-label">Existing Prospects</div>
                 </div>
                 <div class="stat-card danger">
                     <div class="stat-value" id="invalidRows">0</div>
@@ -485,11 +485,11 @@
                 <div class="option-group">
                     <label>
                         <input type="checkbox" id="skipDuplicates" checked>
-                        Skip existing contacts (match by email)
+                        Skip existing prospects (match by email)
                     </label>
                     <label>
                         <input type="checkbox" id="updateExisting">
-                        Update existing contacts with new data
+                        Update existing prospects with new data
                     </label>
                 </div>
             </div>
@@ -536,7 +536,7 @@
             <div class="action-buttons">
                 <button class="btn btn-secondary" onclick="resetImport()">Cancel</button>
                 <button class="btn btn-primary" id="importBtn" onclick="startImport()">
-                    Import <span id="importCount">0</span> Contacts
+                    Import <span id="importCount">0</span> Prospects
                 </button>
             </div>
         </div>
@@ -563,16 +563,12 @@
 
                 <div class="result-stats">
                     <div class="result-stat">
-                        <div class="result-stat-value" id="resultCompanies">0</div>
-                        <div class="result-stat-label">Companies Created</div>
-                    </div>
-                    <div class="result-stat">
                         <div class="result-stat-value" id="resultContacts">0</div>
-                        <div class="result-stat-label">Contacts Created</div>
+                        <div class="result-stat-label">Prospects Created</div>
                     </div>
                     <div class="result-stat">
                         <div class="result-stat-value" id="resultUpdated">0</div>
-                        <div class="result-stat-label">Contacts Updated</div>
+                        <div class="result-stat-label">Prospects Updated</div>
                     </div>
                     <div class="result-stat">
                         <div class="result-stat-value" id="resultSkipped">0</div>
@@ -595,7 +591,6 @@
 
         let parsedData = [];
         let existingEmails = new Set();
-        let companyMap = new Map(); // name -> id
 
         // Apollo CSV column mappings
         const COLUMN_MAP = {
@@ -668,25 +663,14 @@
         }
 
         async function loadExistingData() {
-            // Load existing contact emails
-            const { data: contacts } = await supabaseClient
-                .from('contacts')
+            // Load existing prospect emails (from outreach_prospects, NOT contacts)
+            const { data: prospects } = await supabaseClient
+                .from('outreach_prospects')
                 .select('email');
 
-            if (contacts) {
-                contacts.forEach(c => {
-                    if (c.email) existingEmails.add(c.email.toLowerCase());
-                });
-            }
-
-            // Load existing companies
-            const { data: companies } = await supabaseClient
-                .from('companies')
-                .select('id, name');
-
-            if (companies) {
-                companies.forEach(c => {
-                    if (c.name) companyMap.set(c.name.toLowerCase(), c.id);
+            if (prospects) {
+                prospects.forEach(p => {
+                    if (p.email) existingEmails.add(p.email.toLowerCase());
                 });
             }
         }
@@ -914,7 +898,7 @@
             });
 
             document.getElementById('progressStatus').textContent =
-                `Sending ${toImport.length} contacts to server...`;
+                `Sending ${toImport.length} prospects to server...`;
             document.getElementById('progressBar').style.width = '50%';
             document.getElementById('progressBar').textContent = '50%';
 
@@ -951,9 +935,8 @@
                 document.getElementById('completeSection').classList.remove('hidden');
 
                 document.getElementById('resultBatchName').textContent = result.importBatch;
-                document.getElementById('resultCompanies').textContent = result.companiesCreated;
-                document.getElementById('resultContacts').textContent = result.contactsCreated;
-                document.getElementById('resultUpdated').textContent = result.contactsUpdated;
+                document.getElementById('resultContacts').textContent = result.prospectsCreated || result.contactsCreated;
+                document.getElementById('resultUpdated').textContent = result.prospectsUpdated || result.contactsUpdated;
                 document.getElementById('resultSkipped').textContent = result.skipped;
 
             } catch (error) {

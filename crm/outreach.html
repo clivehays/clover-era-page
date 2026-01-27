@@ -644,7 +644,7 @@
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="switchTab('campaigns')">Campaigns</button>
-            <button class="tab" onclick="switchTab('contacts')">Contacts Queue</button>
+            <button class="tab" onclick="switchTab('prospects')">Prospects Queue</button>
             <button class="tab" onclick="switchTab('emails')">Email Queue</button>
             <button class="tab" onclick="switchTab('sequences')">Sequences</button>
         </div>
@@ -658,17 +658,17 @@
             <div id="campaignsList"></div>
         </div>
 
-        <!-- Contacts Queue Tab -->
-        <div id="contactsTab" class="tab-content">
+        <!-- Prospects Queue Tab -->
+        <div id="prospectsTab" class="tab-content">
             <div class="section">
                 <div class="section-header">
-                    <h2>Contacts Awaiting Research</h2>
-                    <button class="btn btn-secondary btn-sm" onclick="loadContactsQueue()">Refresh</button>
+                    <h2>Prospects Awaiting Research</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="loadProspectsQueue()">Refresh</button>
                 </div>
-                <div id="contactsQueueLoading" class="loading">
+                <div id="prospectsQueueLoading" class="loading">
                     <div class="spinner"></div>
                 </div>
-                <div id="contactsQueueList"></div>
+                <div id="prospectsQueueList"></div>
             </div>
         </div>
 
@@ -741,31 +741,31 @@
         </div>
     </div>
 
-    <!-- Add Contacts Modal -->
-    <div id="addContactsModal" class="modal">
+    <!-- Add Prospects Modal -->
+    <div id="addProspectsModal" class="modal">
         <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
-                <h2>Add Contacts to Campaign</h2>
-                <button class="modal-close" onclick="closeModal('addContactsModal')">&times;</button>
+                <h2>Add Prospects to Campaign</h2>
+                <button class="modal-close" onclick="closeModal('addProspectsModal')">&times;</button>
             </div>
             <div class="modal-body">
                 <!-- Filters -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
                         <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Import Batch</label>
-                        <select id="filterBatch" onchange="filterContactsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <select id="filterBatch" onchange="filterProspectsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
                             <option value="">All batches</option>
                         </select>
                     </div>
                     <div>
                         <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Industry</label>
-                        <select id="filterIndustry" onchange="filterContactsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <select id="filterIndustry" onchange="filterProspectsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
                             <option value="">All industries</option>
                         </select>
                     </div>
                     <div>
                         <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Employee Count</label>
-                        <select id="filterEmployees" onchange="filterContactsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                        <select id="filterEmployees" onchange="filterProspectsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
                             <option value="">Any size</option>
                             <option value="100-500">100-500</option>
                             <option value="500-1000">500-1,000</option>
@@ -778,20 +778,20 @@
                 <!-- Select All & Count -->
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--light-gray); border-radius: 6px; margin-bottom: 1rem;">
                     <label style="display: flex; align-items: center; cursor: pointer;">
-                        <input type="checkbox" id="selectAllContacts" onchange="toggleSelectAll()" style="margin-right: 0.5rem;">
+                        <input type="checkbox" id="selectAllProspects" onchange="toggleSelectAll()" style="margin-right: 0.5rem;">
                         <span>Select all visible</span>
                     </label>
-                    <span id="contactsCount" style="color: var(--text-secondary); font-size: 0.875rem;">0 contacts</span>
+                    <span id="prospectsCount" style="color: var(--text-secondary); font-size: 0.875rem;">0 prospects</span>
                 </div>
 
-                <!-- Contacts List -->
-                <div id="contactsCheckboxList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--medium-gray); border-radius: 8px;">
-                    <p class="loading" style="padding: 1rem;">Loading contacts...</p>
+                <!-- Prospects List -->
+                <div id="prospectsCheckboxList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--medium-gray); border-radius: 8px;">
+                    <p class="loading" style="padding: 1rem;">Loading prospects...</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('addContactsModal')">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="addSelectedContacts()">Add Selected (<span id="selectedCount">0</span>)</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addProspectsModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="addSelectedProspects()">Add Selected (<span id="selectedCount">0</span>)</button>
             </div>
         </div>
     </div>
@@ -849,7 +849,7 @@
             document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
             document.getElementById(`${tabName}Tab`).classList.add('active');
 
-            if (tabName === 'contacts') loadContactsQueue();
+            if (tabName === 'prospects') loadProspectsQueue();
             if (tabName === 'emails') loadEmailQueue();
             if (tabName === 'sequences') loadSequences();
         }
@@ -965,7 +965,7 @@
                             ${campaign.status === 'paused' ? `
                                 <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); resumeCampaign('${campaign.id}')">Resume</button>
                             ` : ''}
-                            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showAddContactsModal('${campaign.id}')">+ Add Contacts</button>
+                            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showAddProspectsModal('${campaign.id}')">+ Add Prospects</button>
                             <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteCampaign('${campaign.id}', '${campaign.name.replace(/'/g, "\\'")}')">Delete</button>
                         </div>
                     </div>
@@ -1074,38 +1074,40 @@
             }
         }
 
-        // Add Contacts Modal
-        let allAvailableContacts = [];
-        let filteredContacts = [];
+        // Add Prospects Modal
+        let allAvailableProspects = [];
+        let filteredProspects = [];
 
-        async function showAddContactsModal(campaignId) {
+        async function showAddProspectsModal(campaignId) {
             selectedCampaignId = campaignId;
-            showModal('addContactsModal');
+            showModal('addProspectsModal');
 
             // Reset filters
             document.getElementById('filterBatch').value = '';
             document.getElementById('filterIndustry').value = '';
             document.getElementById('filterEmployees').value = '';
-            document.getElementById('selectAllContacts').checked = false;
+            document.getElementById('selectAllProspects').checked = false;
 
-            // Load contacts not in this campaign
-            const { data: existingContacts } = await supabaseClient
-                .from('campaign_contacts')
-                .select('contact_id')
+            // Load prospects not in this campaign (from outreach_prospects table)
+            const { data: existingProspects } = await supabaseClient
+                .from('campaign_prospects')
+                .select('prospect_id')
                 .eq('campaign_id', campaignId);
 
-            const existingIds = existingContacts?.map(c => c.contact_id) || [];
+            const existingIds = existingProspects?.map(p => p.prospect_id) || [];
 
-            const { data: contacts } = await supabaseClient
-                .from('contacts')
-                .select('id, first_name, last_name, email, title, import_batch, imported_at, company:companies(name, industry, employee_count)')
+            // Query outreach_prospects (denormalized - company info inline)
+            const { data: prospects } = await supabaseClient
+                .from('outreach_prospects')
+                .select('id, first_name, last_name, email, title, import_batch, imported_at, company_name, company_industry, company_employee_count')
+                .eq('status', 'imported')  // Only show imported prospects not yet in campaigns
                 .order('imported_at', { ascending: false });
 
-            allAvailableContacts = contacts?.filter(c => !existingIds.includes(c.id)) || [];
+            allAvailableProspects = prospects?.filter(p => !existingIds.includes(p.id)) || [];
 
             // Populate filter dropdowns
-            const batches = [...new Set(allAvailableContacts.map(c => c.import_batch).filter(Boolean))];
-            const industries = [...new Set(allAvailableContacts.map(c => c.company?.industry).filter(Boolean))];
+            const batches = [...new Set(allAvailableProspects.map(p => p.import_batch).filter(Boolean))];
+            const industries = [...new Set(allAvailableProspects.map(p => p.company_industry).filter(Boolean))];
 
             document.getElementById('filterBatch').innerHTML = '<option value="">All batches</option>' +
                 batches.map(b => `<option value="${b}">${b}</option>`).join('');
@@ -1113,20 +1115,20 @@
             document.getElementById('filterIndustry').innerHTML = '<option value="">All industries</option>' +
                 industries.map(i => `<option value="${i}">${i}</option>`).join('');
 
-            filterContactsList();
+            filterProspectsList();
         }
 
-        function filterContactsList() {
+        function filterProspectsList() {
             const batchFilter = document.getElementById('filterBatch').value;
             const industryFilter = document.getElementById('filterIndustry').value;
             const employeeFilter = document.getElementById('filterEmployees').value;
 
-            filteredContacts = allAvailableContacts.filter(contact => {
-                if (batchFilter && contact.import_batch !== batchFilter) return false;
-                if (industryFilter && contact.company?.industry !== industryFilter) return false;
+            filteredProspects = allAvailableProspects.filter(prospect => {
+                if (batchFilter && prospect.import_batch !== batchFilter) return false;
+                if (industryFilter && prospect.company_industry !== industryFilter) return false;
 
                 if (employeeFilter) {
-                    const count = contact.company?.employee_count || 0;
+                    const count = prospect.company_employee_count || 0;
                     if (employeeFilter === '100-500' && (count < 100 || count > 500)) return false;
                     if (employeeFilter === '500-1000' && (count < 500 || count > 1000)) return false;
                     if (employeeFilter === '1000-5000' && (count < 1000 || count > 5000)) return false;
@@ -1136,99 +1138,107 @@
                 return true;
             });
 
-            document.getElementById('contactsCount').textContent = `${filteredContacts.length} contacts`;
-            document.getElementById('selectAllContacts').checked = false;
+            document.getElementById('prospectsCount').textContent = `${filteredProspects.length} prospects`;
+            document.getElementById('selectAllProspects').checked = false;
             updateSelectedCount();
 
-            if (filteredContacts.length === 0) {
-                document.getElementById('contactsCheckboxList').innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-secondary);">No contacts match filters.</p>';
+            if (filteredProspects.length === 0) {
+                document.getElementById('prospectsCheckboxList').innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-secondary);">No prospects match filters.</p>';
                 return;
             }
 
-            document.getElementById('contactsCheckboxList').innerHTML = filteredContacts.map(contact => `
-                <label style="display: flex; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--medium-gray); cursor: pointer;" class="contact-row">
-                    <input type="checkbox" value="${contact.id}" onchange="updateSelectedCount()" style="margin-right: 1rem; flex-shrink: 0;">
+            document.getElementById('prospectsCheckboxList').innerHTML = filteredProspects.map(prospect => `
+                <label style="display: flex; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--medium-gray); cursor: pointer;" class="prospect-row">
+                    <input type="checkbox" value="${prospect.id}" onchange="updateSelectedCount()" style="margin-right: 1rem; flex-shrink: 0;">
                     <div style="flex: 1; min-width: 0;">
-                        <div style="font-weight: 600;">${contact.first_name || ''} ${contact.last_name || ''}</div>
+                        <div style="font-weight: 600;">${prospect.first_name || ''} ${prospect.last_name || ''}</div>
                         <div style="font-size: 0.875rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            ${contact.title || ''} ${contact.company?.name ? '@ ' + contact.company.name : ''}
-                            ${contact.company?.employee_count ? ' (' + contact.company.employee_count.toLocaleString() + ' emp)' : ''}
+                            ${prospect.title || ''} ${prospect.company_name ? '@ ' + prospect.company_name : ''}
+                            ${prospect.company_employee_count ? ' (' + prospect.company_employee_count.toLocaleString() + ' emp)' : ''}
                         </div>
-                        <div style="font-size: 0.75rem; color: var(--info-blue);">${contact.import_batch || 'No batch'}</div>
+                        <div style="font-size: 0.75rem; color: var(--info-blue);">${prospect.import_batch || 'No batch'}</div>
                     </div>
                 </label>
             `).join('');
         }
 
         function toggleSelectAll() {
-            const checked = document.getElementById('selectAllContacts').checked;
-            document.querySelectorAll('#contactsCheckboxList input[type="checkbox"]').forEach(cb => cb.checked = checked);
+            const checked = document.getElementById('selectAllProspects').checked;
+            document.querySelectorAll('#prospectsCheckboxList input[type="checkbox"]').forEach(cb => cb.checked = checked);
             updateSelectedCount();
         }
 
         function updateSelectedCount() {
-            const count = document.querySelectorAll('#contactsCheckboxList input[type="checkbox"]:checked').length;
+            const count = document.querySelectorAll('#prospectsCheckboxList input[type="checkbox"]:checked').length;
             document.getElementById('selectedCount').textContent = count;
         }
 
-        async function addSelectedContacts() {
-            const checkboxes = document.querySelectorAll('#contactsCheckboxList input[type="checkbox"]:checked');
-            const contactIds = Array.from(checkboxes).map(cb => cb.value);
+        async function addSelectedProspects() {
+            const checkboxes = document.querySelectorAll('#prospectsCheckboxList input[type="checkbox"]:checked');
+            const prospectIds = Array.from(checkboxes).map(cb => cb.value);
 
-            if (contactIds.length === 0) {
-                alert('Please select at least one contact');
+            if (prospectIds.length === 0) {
+                alert('Please select at least one prospect');
                 return;
             }
 
             try {
-                const inserts = contactIds.map(contactId => ({
+                // Insert into campaign_prospects (NOT campaign_contacts)
+                const inserts = prospectIds.map(prospectId => ({
                     campaign_id: selectedCampaignId,
-                    contact_id: contactId,
+                    prospect_id: prospectId,
                     status: 'pending'
                 }));
 
-                const { error } = await supabaseClient.from('campaign_contacts').insert(inserts);
+                const { error } = await supabaseClient.from('campaign_prospects').insert(inserts);
                 if (error) throw error;
+
+                // Update prospect status to 'pending'
+                await supabaseClient
+                    .from('outreach_prospects')
+                    .update({ status: 'pending' })
+                    .in('id', prospectIds);
 
                 // Update campaign prospect count
                 await supabaseClient.rpc('update_campaign_stats', { p_campaign_id: selectedCampaignId });
 
-                closeModal('addContactsModal');
+                closeModal('addProspectsModal');
                 loadCampaigns();
-                alert(`Added ${contactIds.length} contacts to campaign. They need to be researched before emails can be generated.`);
+                alert(`Added ${prospectIds.length} prospects to campaign. They need to be researched before emails can be generated.`);
             } catch (error) {
-                alert('Error adding contacts: ' + error.message);
+                alert('Error adding prospects: ' + error.message);
             }
         }
 
-        // Contacts Queue
-        async function loadContactsQueue() {
-            document.getElementById('contactsQueueLoading').style.display = 'block';
-            document.getElementById('contactsQueueList').innerHTML = '';
+        // Prospects Queue
+        async function loadProspectsQueue() {
+            document.getElementById('prospectsQueueLoading').style.display = 'block';
+            document.getElementById('prospectsQueueList').innerHTML = '';
 
             try {
-                const { data: contacts, error } = await supabaseClient
-                    .from('campaign_contacts')
+                // Query campaign_prospects (NOT campaign_contacts)
+                const { data: prospects, error } = await supabaseClient
+                    .from('campaign_prospects')
                     .select(`
                         *,
-                        contact:contacts(id, first_name, last_name, email, title, company:companies(name)),
+                        prospect:outreach_prospects(id, first_name, last_name, email, title, company_name),
                         campaign:outreach_campaigns(name)
                     `)
                     .in('status', ['pending', 'researching'])
                     .order('added_at', { ascending: true });
 
-                document.getElementById('contactsQueueLoading').style.display = 'none';
+                document.getElementById('prospectsQueueLoading').style.display = 'none';
 
-                if (!contacts || contacts.length === 0) {
-                    document.getElementById('contactsQueueList').innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No contacts awaiting research.</p>';
+                if (!prospects || prospects.length === 0) {
+                    document.getElementById('prospectsQueueList').innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No prospects awaiting research.</p>';
                     return;
                 }
 
-                document.getElementById('contactsQueueList').innerHTML = `
+                document.getElementById('prospectsQueueList').innerHTML = `
                     <table>
                         <thead>
                             <tr>
-                                <th>Contact</th>
+                                <th>Prospect</th>
                                 <th>Company</th>
                                 <th>Campaign</th>
                                 <th>Status</th>
@@ -1236,17 +1246,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            ${contacts.map(cc => `
+                            ${prospects.map(cp => `
                                 <tr>
                                     <td>
-                                        <strong>${cc.contact?.first_name} ${cc.contact?.last_name}</strong><br>
-                                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${cc.contact?.email}</span>
+                                        <strong>${cp.prospect?.first_name || ''} ${cp.prospect?.last_name || ''}</strong><br>
+                                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${cp.prospect?.email || ''}</span>
                                     </td>
-                                    <td>${cc.contact?.company?.name || '-'}</td>
-                                    <td>${cc.campaign?.name || '-'}</td>
-                                    <td><span class="badge badge-${cc.status}">${cc.status}</span></td>
+                                    <td>${cp.prospect?.company_name || '-'}</td>
+                                    <td>${cp.campaign?.name || '-'}</td>
+                                    <td><span class="badge badge-${cp.status}">${cp.status}</span></td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm" onclick="researchContact('${cc.id}')">Research</button>
+                                        <button class="btn btn-primary btn-sm" onclick="researchProspect('${cp.id}')">Research</button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -1254,27 +1264,27 @@
                     </table>
                 `;
             } catch (error) {
-                console.error('Error loading contacts queue:', error);
-                document.getElementById('contactsQueueList').innerHTML = '<p style="color: var(--danger-red);">Error loading contacts</p>';
+                console.error('Error loading prospects queue:', error);
+                document.getElementById('prospectsQueueList').innerHTML = '<p style="color: var(--danger-red);">Error loading prospects</p>';
             }
         }
 
-        async function researchContact(campaignContactId) {
+        async function researchProspect(campaignProspectId) {
             try {
                 // Update status to researching
                 await supabaseClient
-                    .from('campaign_contacts')
+                    .from('campaign_prospects')
                     .update({ status: 'researching' })
-                    .eq('id', campaignContactId);
+                    .eq('id', campaignProspectId);
 
-                // Call the research function
+                // Call the research function with campaign_prospect_id
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/research-prospect`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     },
-                    body: JSON.stringify({ campaign_contact_id: campaignContactId })
+                    body: JSON.stringify({ campaign_prospect_id: campaignProspectId })
                 });
 
                 const result = await response.json();
@@ -1290,7 +1300,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     },
-                    body: JSON.stringify({ campaign_contact_id: campaignContactId })
+                    body: JSON.stringify({ campaign_prospect_id: campaignProspectId })
                 });
 
                 const emailResult = await emailResponse.json();
@@ -1300,12 +1310,12 @@
                 }
 
                 alert(`Research complete! Generated ${emailResult.count} emails.`);
-                loadContactsQueue();
+                loadProspectsQueue();
                 loadEmailQueue();
 
             } catch (error) {
                 alert('Error: ' + error.message);
-                loadContactsQueue();
+                loadProspectsQueue();
             }
         }
 
@@ -1315,11 +1325,13 @@
             document.getElementById('emailQueueList').innerHTML = '';
 
             try {
+                // Fetch emails with both contact and prospect data
                 const { data: emails, error } = await supabaseClient
                     .from('outreach_emails')
                     .select(`
                         *,
-                        contact:contacts(first_name, last_name, email, company:companies(name))
+                        contact:contacts(first_name, last_name, email, company:companies(name)),
+                        prospect:outreach_prospects(first_name, last_name, email, company_name)
                     `)
                     .eq('status', 'draft')
                     .order('created_at', { ascending: true });
@@ -1342,11 +1354,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            ${emails.map(email => `
+                            ${emails.map(email => {
+                                // Use prospect data if available, otherwise contact
+                                const recipient = email.prospect || email.contact;
+                                const companyName = email.prospect?.company_name || email.contact?.company?.name || '';
+                                return `
                                 <tr>
                                     <td>
-                                        <strong>${email.contact?.first_name} ${email.contact?.last_name}</strong><br>
-                                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${email.contact?.company?.name || ''}</span>
+                                        <strong>${recipient?.first_name || ''} ${recipient?.last_name || ''}</strong><br>
+                                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${companyName}</span>
                                     </td>
                                     <td>${email.subject}</td>
                                     <td>Email ${email.position}</td>
@@ -1355,7 +1371,7 @@
                                         <button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
                                     </td>
                                 </tr>
-                            `).join('')}
+                            `}).join('')}
                         </tbody>
                     </table>
                 `;
@@ -1372,16 +1388,22 @@
                 .from('outreach_emails')
                 .select(`
                     *,
-                    contact:contacts(first_name, last_name, email, company:companies(name))
+                    contact:contacts(first_name, last_name, email, company:companies(name)),
+                    prospect:outreach_prospects(first_name, last_name, email, company_name)
                 `)
                 .eq('id', emailId)
                 .single();
 
             if (!email) return;
 
+            // Use prospect data if available, otherwise contact
+            const recipient = email.prospect || email.contact;
+            const recipientEmail = recipient?.email || 'N/A';
+            const recipientName = `${recipient?.first_name || ''} ${recipient?.last_name || ''}`.trim() || 'Unknown';
+
             document.getElementById('emailPreviewContent').innerHTML = `
                 <div style="margin-bottom: 1rem;">
-                    <strong>To:</strong> ${email.contact?.first_name} ${email.contact?.last_name} &lt;${email.contact?.email}&gt;
+                    <strong>To:</strong> ${recipientName} &lt;${recipientEmail}&gt;
                 </div>
                 <div class="email-preview">
                     <div class="subject">${email.subject}</div>

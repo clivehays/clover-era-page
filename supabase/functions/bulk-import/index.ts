@@ -9,8 +9,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// This edge function handles bulk import of contacts/companies
-// It bypasses PostgREST and uses the service role for direct database access
+// This edge function handles bulk import of prospects for outreach
+// Writes to outreach_prospects table (NOT contacts/companies)
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -31,142 +31,101 @@ serve(async (req) => {
     const importBatch = batchName || `Import ${new Date().toISOString().split('T')[0]}`;
     const importedAt = new Date().toISOString();
 
-    let companiesCreated = 0;
-    let contactsCreated = 0;
-    let contactsUpdated = 0;
+    let prospectsCreated = 0;
+    let prospectsUpdated = 0;
     let skipped = 0;
 
-    // Get existing emails
-    const { data: existingContacts } = await supabase
-      .from('contacts')
+    // Get existing emails from outreach_prospects (NOT contacts)
+    const { data: existingProspects } = await supabase
+      .from('outreach_prospects')
       .select('email');
 
     const existingEmails = new Set(
-      (existingContacts || [])
-        .map(c => c.email?.toLowerCase())
+      (existingProspects || [])
+        .map(p => p.email?.toLowerCase())
         .filter(Boolean)
     );
 
-    // Get existing companies
-    const { data: existingCompanies } = await supabase
-      .from('companies')
-      .select('id, name');
-
-    const companyMap = new Map<string, string>();
-    (existingCompanies || []).forEach(c => {
-      if (c.name) companyMap.set(c.name.toLowerCase(), c.id);
-    });
-
-    // Group contacts by company
-    const byCompany = new Map<string, any[]>();
+    // Process each contact from the CSV
     for (const contact of contacts) {
+      // Skip invalid emails
       if (!contact.email || !contact.email.includes('@')) {
         skipped++;
         continue;
       }
 
-      const companyKey = contact.companyName?.toLowerCase() || '_no_company_';
-      if (!byCompany.has(companyKey)) {
-        byCompany.set(companyKey, []);
-      }
-      byCompany.get(companyKey)!.push(contact);
-    }
+      const emailLower = contact.email.toLowerCase();
+      const isExisting = existingEmails.has(emailLower);
 
-    // Process each company group
-    for (const [companyKey, companyContacts] of byCompany) {
-      let companyId = companyMap.get(companyKey);
-
-      // Create company if needed
-      if (!companyId && companyKey !== '_no_company_' && companyContacts[0].companyName) {
-        const companyData: Record<string, any> = {
-          name: companyContacts[0].companyName,
-        };
-
-        // Add optional fields if present
-        if (companyContacts[0].website) companyData.website = companyContacts[0].website;
-        if (companyContacts[0].industry) companyData.industry = companyContacts[0].industry;
-        if (companyContacts[0].employees) companyData.employee_count = companyContacts[0].employees;
-
-        const { data: newCompany, error: companyError } = await supabase
-          .from('companies')
-          .insert(companyData)
-          .select('id')
-          .single();
-
-        if (companyError) {
-          console.error('Company insert error:', companyError);
-        } else if (newCompany) {
-          companyId = newCompany.id;
-          companyMap.set(companyKey, companyId);
-          companiesCreated++;
-        }
+      if (isExisting && skipExisting && !updateExisting) {
+        skipped++;
+        continue;
       }
 
-      // Import contacts
-      for (const contact of companyContacts) {
-        const emailLower = contact.email.toLowerCase();
-        const isExisting = existingEmails.has(emailLower);
+      // Build prospect data (denormalized - company info stored inline)
+      const prospectData: Record<string, any> = {
+        email: emailLower,
+        import_batch: importBatch,
+        imported_at: importedAt,
+        status: 'imported',
+      };
 
-        if (isExisting && skipExisting && !updateExisting) {
+      // Add contact fields
+      if (contact.firstName) prospectData.first_name = contact.firstName;
+      if (contact.lastName) prospectData.last_name = contact.lastName;
+      if (contact.title) prospectData.title = contact.title;
+      if (contact.linkedinUrl) prospectData.linkedin_url = contact.linkedinUrl;
+
+      // Add company fields (denormalized - no FK)
+      if (contact.companyName) prospectData.company_name = contact.companyName;
+      if (contact.website) prospectData.company_website = contact.website;
+      if (contact.industry) prospectData.company_industry = contact.industry;
+      if (contact.employees) prospectData.company_employee_count = parseInt(contact.employees) || null;
+
+      if (isExisting && updateExisting) {
+        // Update existing prospect
+        const { error } = await supabase
+          .from('outreach_prospects')
+          .update(prospectData)
+          .eq('email', emailLower);
+
+        if (error) {
+          console.error('Prospect update error:', error);
           skipped++;
-          continue;
-        }
-
-        const contactData: Record<string, any> = {
-          email: emailLower,
-          import_batch: importBatch,
-          imported_at: importedAt,
-        };
-
-        // Add optional fields
-        if (contact.firstName) contactData.first_name = contact.firstName;
-        if (contact.lastName) contactData.last_name = contact.lastName;
-        if (contact.title) contactData.title = contact.title;
-        if (contact.linkedinUrl) contactData.linkedin_url = contact.linkedinUrl;
-        if (companyId) contactData.company_id = companyId;
-
-        if (isExisting && updateExisting) {
-          // Update existing contact
-          const { error } = await supabase
-            .from('contacts')
-            .update(contactData)
-            .eq('email', emailLower);
-
-          if (error) {
-            console.error('Contact update error:', error);
-            skipped++;
-          } else {
-            contactsUpdated++;
-          }
-        } else if (!isExisting) {
-          // Insert new contact
-          const { error } = await supabase
-            .from('contacts')
-            .insert(contactData);
-
-          if (error) {
-            console.error('Contact insert error:', error);
-            skipped++;
-          } else {
-            contactsCreated++;
-            existingEmails.add(emailLower);
-          }
         } else {
-          skipped++;
+          prospectsUpdated++;
         }
+      } else if (!isExisting) {
+        // Insert new prospect
+        const { error } = await supabase
+          .from('outreach_prospects')
+          .insert(prospectData);
+
+        if (error) {
+          console.error('Prospect insert error:', error);
+          skipped++;
+        } else {
+          prospectsCreated++;
+          existingEmails.add(emailLower);
+        }
+      } else {
+        skipped++;
       }
     }
 
-    console.log(`Import complete: ${companiesCreated} companies, ${contactsCreated} contacts created, ${contactsUpdated} updated, ${skipped} skipped`);
+    console.log(`Import complete: ${prospectsCreated} prospects created, ${prospectsUpdated} updated, ${skipped} skipped`);
 
     return new Response(
       JSON.stringify({
         success: true,
-        companiesCreated,
-        contactsCreated,
-        contactsUpdated,
+        prospectsCreated,
+        prospectsUpdated,
         skipped,
         importBatch,
+        // Legacy field names for backward compatibility with UI
+        companiesCreated: 0,
+        contactsCreated: prospectsCreated,
+        contactsUpdated: prospectsUpdated,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );

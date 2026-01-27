@@ -56,12 +56,13 @@ async function sendSingleEmail(supabase: any, emailId: string) {
     throw new Error('email_id is required');
   }
 
-  // Get email with contact data
+  // Get email with contact and prospect data
   const { data: email, error: emailError } = await supabase
     .from('outreach_emails')
     .select(`
       *,
-      contact:contacts(*)
+      contact:contacts(*),
+      prospect:outreach_prospects(*)
     `)
     .eq('id', emailId)
     .single();
@@ -77,6 +78,14 @@ async function sendSingleEmail(supabase: any, emailId: string) {
     );
   }
 
+  // Determine recipient (prospect or contact)
+  const isProspectBased = !!email.prospect_id;
+  const recipient = isProspectBased ? email.prospect : email.contact;
+
+  if (!recipient || !recipient.email) {
+    throw new Error('No recipient found for email');
+  }
+
   // Get settings
   const settings = await getSettings(supabase);
   const fromEmail = settings.from_email || DEFAULT_FROM_EMAIL;
@@ -85,8 +94,8 @@ async function sendSingleEmail(supabase: any, emailId: string) {
 
   // Send via SendGrid
   const result = await sendViaSendGrid({
-    to: email.contact.email,
-    toName: `${email.contact.first_name} ${email.contact.last_name}`,
+    to: recipient.email,
+    toName: `${recipient.first_name || ''} ${recipient.last_name || ''}`.trim() || recipient.email,
     from: fromEmail,
     fromName: fromName,
     replyTo: replyTo,
@@ -119,19 +128,44 @@ async function sendSingleEmail(supabase: any, emailId: string) {
     })
     .eq('id', emailId);
 
-  // Update campaign contact status if this is email 1
-  if (email.position === 1 && email.campaign_contact_id) {
-    await supabase
-      .from('campaign_contacts')
-      .update({
-        status: 'active',
-        current_step: 1,
-      })
-      .eq('id', email.campaign_contact_id);
-  }
+  // Update campaign target status
+  if (isProspectBased && email.campaign_prospect_id) {
+    // Prospect-based email
+    if (email.position === 1) {
+      await supabase
+        .from('campaign_prospects')
+        .update({
+          status: 'active',
+          current_step: 1,
+        })
+        .eq('id', email.campaign_prospect_id);
+    }
 
-  // Update campaign stats
-  if (email.campaign_contact_id) {
+    // Update campaign stats
+    const { data: cp } = await supabase
+      .from('campaign_prospects')
+      .select('campaign_id')
+      .eq('id', email.campaign_prospect_id)
+      .single();
+
+    if (cp?.campaign_id) {
+      await supabase.rpc('increment_campaign_emails_sent', {
+        campaign_id: cp.campaign_id,
+      });
+    }
+  } else if (email.campaign_contact_id) {
+    // Contact-based email (legacy)
+    if (email.position === 1) {
+      await supabase
+        .from('campaign_contacts')
+        .update({
+          status: 'active',
+          current_step: 1,
+        })
+        .eq('id', email.campaign_contact_id);
+    }
+
+    // Update campaign stats
     const { data: cc } = await supabase
       .from('campaign_contacts')
       .select('campaign_id')
@@ -145,14 +179,14 @@ async function sendSingleEmail(supabase: any, emailId: string) {
     }
   }
 
-  console.log('Email sent:', email.contact.email);
+  console.log('Email sent:', recipient.email);
 
   return new Response(
     JSON.stringify({
       success: true,
       email_id: emailId,
       message_id: result.messageId,
-      to: email.contact.email,
+      to: recipient.email,
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   );
@@ -161,13 +195,17 @@ async function sendSingleEmail(supabase: any, emailId: string) {
 async function processScheduledEmails(supabase: any) {
   const now = new Date();
 
-  // Get all scheduled emails due for sending
+  // Get all scheduled emails due for sending (both contact and prospect based)
   const { data: emails, error } = await supabase
     .from('outreach_emails')
     .select(`
       *,
       contact:contacts(*),
+      prospect:outreach_prospects(*),
       campaign_contact:campaign_contacts(
+        campaign:outreach_campaigns(*)
+      ),
+      campaign_prospect:campaign_prospects(
         campaign:outreach_campaigns(*)
       )
     `)
@@ -196,26 +234,47 @@ async function processScheduledEmails(supabase: any) {
   today.setHours(0, 0, 0, 0);
 
   for (const email of emails) {
-    const campaignId = email.campaign_contact?.campaign?.id;
+    // Get campaign ID from either contact or prospect based path
+    const campaignId = email.campaign_contact?.campaign?.id || email.campaign_prospect?.campaign?.id;
     if (campaignId && !campaignCounts[campaignId]) {
-      const { count } = await supabase
-        .from('outreach_emails')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'sent')
-        .gte('sent_at', today.toISOString())
-        .in('campaign_contact_id', await getCampaignContactIds(supabase, campaignId));
+      // Get count from both contact and prospect emails
+      const contactIds = await getCampaignContactIds(supabase, campaignId);
+      const prospectIds = await getCampaignProspectIds(supabase, campaignId);
 
-      campaignCounts[campaignId] = count || 0;
+      let totalCount = 0;
+      if (contactIds.length > 0) {
+        const { count: contactCount } = await supabase
+          .from('outreach_emails')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'sent')
+          .gte('sent_at', today.toISOString())
+          .in('campaign_contact_id', contactIds);
+        totalCount += contactCount || 0;
+      }
+      if (prospectIds.length > 0) {
+        const { count: prospectCount } = await supabase
+          .from('outreach_emails')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'sent')
+          .gte('sent_at', today.toISOString())
+          .in('campaign_prospect_id', prospectIds);
+        totalCount += prospectCount || 0;
+      }
+
+      campaignCounts[campaignId] = totalCount;
     }
   }
 
-  const results = [];
+  const results: Array<{ email_id: string; status: string; reason?: string; error?: string; message_id?: string }> = [];
   const fromEmail = settings.from_email || DEFAULT_FROM_EMAIL;
   const fromName = settings.from_name || DEFAULT_FROM_NAME;
   const replyTo = settings.reply_to || DEFAULT_REPLY_TO;
 
   for (const email of emails) {
-    const campaignId = email.campaign_contact?.campaign?.id;
+    const isProspectBased = !!email.prospect_id;
+    const campaignId = email.campaign_contact?.campaign?.id || email.campaign_prospect?.campaign?.id;
+    const campaign = email.campaign_contact?.campaign || email.campaign_prospect?.campaign;
+    const recipient = isProspectBased ? email.prospect : email.contact;
 
     // Check daily limit
     if (campaignId && campaignCounts[campaignId] >= maxPerDay) {
@@ -228,7 +287,7 @@ async function processScheduledEmails(supabase: any) {
     }
 
     // Check if campaign is paused
-    if (email.campaign_contact?.campaign?.status === 'paused') {
+    if (campaign?.status === 'paused') {
       results.push({
         email_id: email.id,
         status: 'skipped',
@@ -237,10 +296,20 @@ async function processScheduledEmails(supabase: any) {
       continue;
     }
 
+    // Check recipient exists
+    if (!recipient || !recipient.email) {
+      results.push({
+        email_id: email.id,
+        status: 'failed',
+        error: 'No recipient found',
+      });
+      continue;
+    }
+
     // Send the email
     const result = await sendViaSendGrid({
-      to: email.contact.email,
-      toName: `${email.contact.first_name} ${email.contact.last_name}`,
+      to: recipient.email,
+      toName: `${recipient.first_name || ''} ${recipient.last_name || ''}`.trim() || recipient.email,
       from: fromEmail,
       fromName: fromName,
       replyTo: replyTo,
@@ -259,8 +328,16 @@ async function processScheduledEmails(supabase: any) {
         })
         .eq('id', email.id);
 
-      // Update campaign contact
-      if (email.campaign_contact_id) {
+      // Update campaign target (contact or prospect)
+      if (isProspectBased && email.campaign_prospect_id) {
+        await supabase
+          .from('campaign_prospects')
+          .update({
+            status: 'active',
+            current_step: email.position,
+          })
+          .eq('id', email.campaign_prospect_id);
+      } else if (email.campaign_contact_id) {
         await supabase
           .from('campaign_contacts')
           .update({
@@ -333,18 +410,34 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
   const settings = await getSettings(supabase);
   const maxPerDay = campaign.max_emails_per_day || parseInt(settings.max_emails_per_day) || 50;
 
-  // Get today's send count for this campaign
+  // Get today's send count for this campaign (both contact and prospect emails)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const { count: sentToday } = await supabase
-    .from('outreach_emails')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'sent')
-    .gte('sent_at', today.toISOString())
-    .in('campaign_contact_id', await getCampaignContactIds(supabase, campaignId));
+  const contactIds = await getCampaignContactIds(supabase, campaignId);
+  const prospectIds = await getCampaignProspectIds(supabase, campaignId);
 
-  const remaining = maxPerDay - (sentToday || 0);
+  let sentToday = 0;
+  if (contactIds.length > 0) {
+    const { count: contactCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'sent')
+      .gte('sent_at', today.toISOString())
+      .in('campaign_contact_id', contactIds);
+    sentToday += contactCount || 0;
+  }
+  if (prospectIds.length > 0) {
+    const { count: prospectCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'sent')
+      .gte('sent_at', today.toISOString())
+      .in('campaign_prospect_id', prospectIds);
+    sentToday += prospectCount || 0;
+  }
+
+  const remaining = maxPerDay - sentToday;
 
   if (remaining <= 0) {
     return new Response(
@@ -359,8 +452,9 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
     );
   }
 
-  // Get approved emails ready to send
-  const { data: emails, error: emailsError } = await supabase
+  // Get approved emails ready to send (both contact and prospect based)
+  // First, get contact-based emails
+  const { data: contactEmails } = await supabase
     .from('outreach_emails')
     .select(`
       *,
@@ -371,11 +465,22 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
     .eq('campaign_contact.campaign_id', campaignId)
     .limit(remaining);
 
-  if (emailsError) {
-    throw new Error(`Failed to fetch emails: ${emailsError.message}`);
-  }
+  // Then, get prospect-based emails
+  const { data: prospectEmails } = await supabase
+    .from('outreach_emails')
+    .select(`
+      *,
+      prospect:outreach_prospects(*),
+      campaign_prospect:campaign_prospects!inner(campaign_id)
+    `)
+    .eq('status', 'approved')
+    .eq('campaign_prospect.campaign_id', campaignId)
+    .limit(remaining - (contactEmails?.length || 0));
 
-  if (!emails || emails.length === 0) {
+  // Combine and limit
+  const emails = [...(contactEmails || []), ...(prospectEmails || [])].slice(0, remaining);
+
+  if (emails.length === 0) {
     return new Response(
       JSON.stringify({ success: true, sent: 0, message: 'No approved emails to send' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
@@ -386,12 +491,20 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
   const fromName = settings.from_name || DEFAULT_FROM_NAME;
   const replyTo = settings.reply_to || DEFAULT_REPLY_TO;
 
-  const results = [];
+  const results: Array<{ email_id: string; status: string; error?: string }> = [];
 
   for (const email of emails) {
+    const isProspectBased = !!email.prospect_id;
+    const recipient = isProspectBased ? email.prospect : email.contact;
+
+    if (!recipient || !recipient.email) {
+      results.push({ email_id: email.id, status: 'failed', error: 'No recipient found' });
+      continue;
+    }
+
     const result = await sendViaSendGrid({
-      to: email.contact.email,
-      toName: `${email.contact.first_name} ${email.contact.last_name}`,
+      to: recipient.email,
+      toName: `${recipient.first_name || ''} ${recipient.last_name || ''}`.trim() || recipient.email,
       from: fromEmail,
       fromName: fromName,
       replyTo: replyTo,
@@ -409,6 +522,25 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
           sendgrid_message_id: result.messageId,
         })
         .eq('id', email.id);
+
+      // Update campaign target status
+      if (isProspectBased && email.campaign_prospect_id) {
+        await supabase
+          .from('campaign_prospects')
+          .update({
+            status: 'active',
+            current_step: email.position,
+          })
+          .eq('id', email.campaign_prospect_id);
+      } else if (email.campaign_contact_id) {
+        await supabase
+          .from('campaign_contacts')
+          .update({
+            status: 'active',
+            current_step: email.position,
+          })
+          .eq('id', email.campaign_contact_id);
+      }
 
       results.push({ email_id: email.id, status: 'sent' });
     } else {
@@ -541,4 +673,13 @@ async function getCampaignContactIds(supabase: any, campaignId: string): Promise
     .eq('campaign_id', campaignId);
 
   return (data || []).map((cc: any) => cc.id);
+}
+
+async function getCampaignProspectIds(supabase: any, campaignId: string): Promise<string[]> {
+  const { data } = await supabase
+    .from('campaign_prospects')
+    .select('id')
+    .eq('campaign_id', campaignId);
+
+  return (data || []).map((cp: any) => cp.id);
 }

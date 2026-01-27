@@ -18,39 +18,121 @@ serve(async (req) => {
   }
 
   try {
-    const { campaign_contact_id, sequence_id } = await req.json();
+    // Support both contact-based and prospect-based email generation
+    const { campaign_contact_id, campaign_prospect_id, sequence_id } = await req.json();
 
-    if (!campaign_contact_id) {
-      throw new Error('campaign_contact_id is required');
+    if (!campaign_contact_id && !campaign_prospect_id) {
+      throw new Error('campaign_contact_id or campaign_prospect_id is required');
     }
 
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
-    // Get campaign contact with related data
-    const { data: campaignContact, error: ccError } = await supabase
-      .from('campaign_contacts')
-      .select(`
-        *,
-        contact:contacts(*,
-          company:companies(*)
-        ),
-        campaign:outreach_campaigns(*)
-      `)
-      .eq('id', campaign_contact_id)
-      .single();
+    const isProspectBased = !!campaign_prospect_id;
 
-    if (ccError || !campaignContact) {
-      throw new Error(`Campaign contact not found: ${ccError?.message}`);
+    // Variables to hold the target data
+    let targetId: string;
+    let targetFirstName: string;
+    let targetLastName: string;
+    let targetTitle: string;
+    let targetEmail: string;
+    let companyName: string;
+    let companyEmployeeCount: number;
+    let companyIndustry: string;
+    let campaignSequenceId: string | null;
+    let research: any;
+
+    if (isProspectBased) {
+      // PROSPECT-BASED EMAIL GENERATION
+      const { data: campaignProspect, error: cpError } = await supabase
+        .from('campaign_prospects')
+        .select(`
+          *,
+          prospect:outreach_prospects(*),
+          campaign:outreach_campaigns(*)
+        `)
+        .eq('id', campaign_prospect_id)
+        .single();
+
+      if (cpError || !campaignProspect) {
+        throw new Error(`Campaign prospect not found: ${cpError?.message}`);
+      }
+
+      const prospect = campaignProspect.prospect;
+
+      targetId = prospect.id;
+      targetFirstName = prospect.first_name || '';
+      targetLastName = prospect.last_name || '';
+      targetTitle = prospect.title || 'Executive';
+      targetEmail = prospect.email;
+      companyName = prospect.company_name || 'your company';
+      companyEmployeeCount = prospect.company_employee_count || 100;
+      companyIndustry = prospect.company_industry || 'your industry';
+      campaignSequenceId = campaignProspect.campaign?.sequence_id;
+
+      // Get research by prospect_id
+      const { data: prospectResearch } = await supabase
+        .from('prospect_research')
+        .select('*')
+        .eq('prospect_id', targetId)
+        .single();
+
+      if (!prospectResearch) {
+        throw new Error('Research not found. Run research-prospect first.');
+      }
+      research = prospectResearch;
+
+      console.log('Generating emails for prospect:', targetFirstName, targetLastName);
+
+    } else {
+      // CONTACT-BASED EMAIL GENERATION (legacy)
+      const { data: campaignContact, error: ccError } = await supabase
+        .from('campaign_contacts')
+        .select(`
+          *,
+          contact:contacts(*,
+            company:companies(*)
+          ),
+          campaign:outreach_campaigns(*)
+        `)
+        .eq('id', campaign_contact_id)
+        .single();
+
+      if (ccError || !campaignContact) {
+        throw new Error(`Campaign contact not found: ${ccError?.message}`);
+      }
+
+      const contact = campaignContact.contact;
+      const company = contact?.company;
+
+      targetId = contact.id;
+      targetFirstName = contact.first_name || '';
+      targetLastName = contact.last_name || '';
+      targetTitle = contact.title || 'Executive';
+      targetEmail = contact.email;
+      companyName = company?.name || 'your company';
+      companyEmployeeCount = company?.employee_count || 100;
+      companyIndustry = company?.industry || 'your industry';
+      campaignSequenceId = campaignContact.campaign?.sequence_id;
+
+      // Get research by contact_id
+      const { data: contactResearch } = await supabase
+        .from('prospect_research')
+        .select('*')
+        .eq('contact_id', targetId)
+        .single();
+
+      if (!contactResearch) {
+        throw new Error('Research not found. Run research-prospect first.');
+      }
+      research = contactResearch;
+
+      console.log('Generating emails for contact:', targetFirstName, targetLastName);
     }
 
-    const contact = campaignContact.contact;
-    const company = contact?.company;
-
     // Get sequence ID (from parameter, campaign, or default)
-    let seqId = sequence_id || campaignContact.campaign?.sequence_id;
+    let seqId = sequence_id || campaignSequenceId;
 
     if (!seqId) {
-      // Get default sequence
       const { data: defaultSeq } = await supabase
         .from('outreach_sequences')
         .select('id')
@@ -76,29 +158,16 @@ serve(async (req) => {
       throw new Error(`No templates found for sequence: ${templatesError?.message}`);
     }
 
-    // Get prospect research
-    const { data: research } = await supabase
-      .from('prospect_research')
-      .select('*')
-      .eq('contact_id', contact.id)
-      .single();
-
-    if (!research) {
-      throw new Error('Research not found. Run research-prospect first.');
-    }
-
-    console.log('Generating emails for:', contact.first_name, contact.last_name);
-
     // Prepare context for AI
     const context = {
-      first_name: contact.first_name,
-      last_name: contact.last_name,
-      full_name: `${contact.first_name} ${contact.last_name}`,
-      title: contact.title || 'Executive',
-      email: contact.email,
-      company_name: company?.name || 'your company',
-      employee_count: company?.employee_count || 100,
-      industry: company?.industry || 'your industry',
+      first_name: targetFirstName,
+      last_name: targetLastName,
+      full_name: `${targetFirstName} ${targetLastName}`,
+      title: targetTitle,
+      email: targetEmail,
+      company_name: companyName,
+      employee_count: companyEmployeeCount,
+      industry: companyIndustry,
       research_summary: research.research_summary,
       growth_signals: research.growth_signals || [],
       personalization_angle: research.personalization_angle,
@@ -109,23 +178,42 @@ serve(async (req) => {
     // Generate ALL emails in one call for narrative continuity
     const generatedEmailContents = await generateEmailSequence(templates, context);
 
-    const generatedEmails = generatedEmailContents.map((email, index) => ({
-      campaign_contact_id,
-      contact_id: contact.id,
-      sequence_id: seqId,
-      position: templates[index].position,
-      subject: email.subject,
-      body: email.body,
-      personalization_notes: email.notes,
-      status: 'draft',
-    }));
+    // Build email records with appropriate IDs
+    const generatedEmails = generatedEmailContents.map((email, index) => {
+      const emailRecord: Record<string, any> = {
+        sequence_id: seqId,
+        position: templates[index].position,
+        subject: email.subject,
+        body: email.body,
+        personalization_notes: email.notes,
+        status: 'draft',
+      };
 
-    // Delete any existing draft emails for this campaign contact
-    await supabase
-      .from('outreach_emails')
-      .delete()
-      .eq('campaign_contact_id', campaign_contact_id)
-      .eq('status', 'draft');
+      if (isProspectBased) {
+        emailRecord.campaign_prospect_id = campaign_prospect_id;
+        emailRecord.prospect_id = targetId;
+      } else {
+        emailRecord.campaign_contact_id = campaign_contact_id;
+        emailRecord.contact_id = targetId;
+      }
+
+      return emailRecord;
+    });
+
+    // Delete any existing draft emails for this campaign target
+    if (isProspectBased) {
+      await supabase
+        .from('outreach_emails')
+        .delete()
+        .eq('campaign_prospect_id', campaign_prospect_id)
+        .eq('status', 'draft');
+    } else {
+      await supabase
+        .from('outreach_emails')
+        .delete()
+        .eq('campaign_contact_id', campaign_contact_id)
+        .eq('status', 'draft');
+    }
 
     // Insert new emails
     const { data: savedEmails, error: saveError } = await supabase
@@ -137,11 +225,18 @@ serve(async (req) => {
       throw new Error(`Failed to save emails: ${saveError.message}`);
     }
 
-    // Update campaign contact status
-    await supabase
-      .from('campaign_contacts')
-      .update({ status: 'ready' })
-      .eq('id', campaign_contact_id);
+    // Update campaign target status
+    if (isProspectBased) {
+      await supabase
+        .from('campaign_prospects')
+        .update({ status: 'ready' })
+        .eq('id', campaign_prospect_id);
+    } else {
+      await supabase
+        .from('campaign_contacts')
+        .update({ status: 'ready' })
+        .eq('id', campaign_contact_id);
+    }
 
     console.log('Generated', savedEmails.length, 'emails');
 
@@ -260,12 +355,7 @@ JSON response:
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2048,
         system: systemMessage,
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
+        messages: [{ role: 'user', content: prompt }],
       }),
     });
 

@@ -51,7 +51,7 @@ serve(async (req) => {
 });
 
 async function markEmailReplied(supabase: any, emailId: string) {
-  // Get email with contact and campaign data
+  // Get email with contact, prospect, and campaign data
   const { data: email, error: emailError } = await supabase
     .from('outreach_emails')
     .select(`
@@ -59,7 +59,11 @@ async function markEmailReplied(supabase: any, emailId: string) {
       contact:contacts(*,
         company:companies(*)
       ),
+      prospect:outreach_prospects(*),
       campaign_contact:campaign_contacts(
+        campaign:outreach_campaigns(*)
+      ),
+      campaign_prospect:campaign_prospects(
         campaign:outreach_campaigns(*)
       )
     `)
@@ -70,6 +74,8 @@ async function markEmailReplied(supabase: any, emailId: string) {
     throw new Error(`Email not found: ${emailError?.message}`);
   }
 
+  const isProspectBased = !!email.prospect_id;
+
   // Update email status
   await supabase
     .from('outreach_emails')
@@ -79,31 +85,63 @@ async function markEmailReplied(supabase: any, emailId: string) {
     })
     .eq('id', emailId);
 
-  // Update campaign contact status
-  if (email.campaign_contact_id) {
-    await supabase
-      .from('campaign_contacts')
-      .update({ status: 'replied' })
-      .eq('id', email.campaign_contact_id);
+  let contact = email.contact;
+  let company = email.contact?.company;
+  let campaignId = null;
 
-    // Update campaign stats
-    if (email.campaign_contact?.campaign?.id) {
+  if (isProspectBased) {
+    // PROSPECT-BASED: Convert prospect to CRM contact
+    const conversionResult = await convertProspectToContact(supabase, email.prospect);
+    contact = conversionResult.contact;
+    company = conversionResult.company;
+
+    // Update campaign prospect status
+    if (email.campaign_prospect_id) {
       await supabase
-        .from('outreach_campaigns')
-        .update({
-          emails_replied: supabase.sql`emails_replied + 1`,
-        })
-        .eq('id', email.campaign_contact.campaign.id);
+        .from('campaign_prospects')
+        .update({ status: 'replied' })
+        .eq('id', email.campaign_prospect_id);
+
+      campaignId = email.campaign_prospect?.campaign?.id;
     }
+
+    // Cancel any pending follow-up emails for this prospect
+    await supabase
+      .from('outreach_emails')
+      .update({ status: 'draft' })
+      .eq('campaign_prospect_id', email.campaign_prospect_id)
+      .in('status', ['scheduled', 'approved'])
+      .gt('position', email.position);
+
+  } else {
+    // CONTACT-BASED (legacy): Update campaign contact status
+    if (email.campaign_contact_id) {
+      await supabase
+        .from('campaign_contacts')
+        .update({ status: 'replied' })
+        .eq('id', email.campaign_contact_id);
+
+      campaignId = email.campaign_contact?.campaign?.id;
+    }
+
+    // Cancel any pending follow-up emails for this contact
+    await supabase
+      .from('outreach_emails')
+      .update({ status: 'draft' })
+      .eq('campaign_contact_id', email.campaign_contact_id)
+      .in('status', ['scheduled', 'approved'])
+      .gt('position', email.position);
   }
 
-  // Cancel any pending follow-up emails for this contact
-  await supabase
-    .from('outreach_emails')
-    .update({ status: 'draft' }) // Move back to draft rather than delete
-    .eq('campaign_contact_id', email.campaign_contact_id)
-    .in('status', ['scheduled', 'approved'])
-    .gt('position', email.position);
+  // Update campaign stats
+  if (campaignId) {
+    await supabase
+      .from('outreach_campaigns')
+      .update({
+        emails_replied: supabase.sql`emails_replied + 1`,
+      })
+      .eq('id', campaignId);
+  }
 
   // Check settings for auto-opportunity creation
   const { data: settings } = await supabase
@@ -114,24 +152,30 @@ async function markEmailReplied(supabase: any, emailId: string) {
 
   let opportunity = null;
 
-  if (settings?.value === 'true') {
-    opportunity = await createOpportunity(supabase, email.contact, email.contact.company);
+  if (settings?.value === 'true' && contact) {
+    opportunity = await createOpportunity(supabase, contact, company);
   }
 
   // Record event
   await supabase.from('email_events').insert({
     outreach_email_id: emailId,
     event_type: 'replied',
-    event_data: { manually_marked: true },
+    event_data: {
+      manually_marked: true,
+      prospect_converted: isProspectBased,
+    },
     received_at: new Date().toISOString(),
   });
 
-  console.log('Marked email as replied:', emailId);
+  console.log('Marked email as replied:', emailId, isProspectBased ? '(prospect converted)' : '');
 
   return new Response(
     JSON.stringify({
       success: true,
       email_id: emailId,
+      prospect_converted: isProspectBased,
+      contact_id: contact?.id,
+      company_id: company?.id,
       opportunity_created: !!opportunity,
       opportunity_id: opportunity?.id,
     }),
@@ -145,38 +189,68 @@ async function processInboundEmail(
   subject: string,
   bodyText: string
 ) {
-  // Find contact by email
-  const { data: contact, error: contactError } = await supabase
+  const emailLower = fromEmail.toLowerCase();
+
+  // First, check if sender is an existing CRM contact
+  const { data: existingContact } = await supabase
     .from('contacts')
     .select('*, company:companies(*)')
-    .eq('email', fromEmail.toLowerCase())
+    .eq('email', emailLower)
     .single();
 
-  if (contactError || !contact) {
-    console.log('Contact not found for inbound email:', fromEmail);
+  // Also check if sender is an outreach prospect
+  const { data: prospect } = await supabase
+    .from('outreach_prospects')
+    .select('*')
+    .eq('email', emailLower)
+    .single();
+
+  if (!existingContact && !prospect) {
+    console.log('Sender not found in contacts or prospects:', fromEmail);
     return new Response(
-      JSON.stringify({ success: true, matched: false, reason: 'Contact not found' }),
+      JSON.stringify({ success: true, matched: false, reason: 'Sender not found' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );
   }
 
-  // Find most recent sent outreach email to this contact
-  const { data: email } = await supabase
-    .from('outreach_emails')
-    .select('*, campaign_contact:campaign_contacts(*)')
-    .eq('contact_id', contact.id)
-    .in('status', ['sent', 'delivered', 'opened'])
-    .order('sent_at', { ascending: false })
-    .limit(1)
-    .single();
+  // Find most recent sent outreach email (check both contact and prospect)
+  let email: any = null;
+
+  if (existingContact) {
+    const { data: contactEmail } = await supabase
+      .from('outreach_emails')
+      .select('*, campaign_contact:campaign_contacts(*)')
+      .eq('contact_id', existingContact.id)
+      .in('status', ['sent', 'delivered', 'opened'])
+      .order('sent_at', { ascending: false })
+      .limit(1)
+      .single();
+    email = contactEmail;
+  }
+
+  if (!email && prospect) {
+    const { data: prospectEmail } = await supabase
+      .from('outreach_emails')
+      .select('*, campaign_prospect:campaign_prospects(*), prospect:outreach_prospects(*)')
+      .eq('prospect_id', prospect.id)
+      .in('status', ['sent', 'delivered', 'opened'])
+      .order('sent_at', { ascending: false })
+      .limit(1)
+      .single();
+    email = prospectEmail;
+  }
 
   if (!email) {
-    console.log('No recent outreach email found for contact:', contact.id);
+    console.log('No recent outreach email found for:', fromEmail);
     return new Response(
       JSON.stringify({ success: true, matched: false, reason: 'No recent outreach' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );
   }
+
+  const isProspectBased = !!email.prospect_id;
+  let contact = existingContact;
+  let company = existingContact?.company;
 
   // Mark the email as replied
   await supabase
@@ -187,12 +261,27 @@ async function processInboundEmail(
     })
     .eq('id', email.id);
 
-  // Update campaign contact
-  if (email.campaign_contact_id) {
-    await supabase
-      .from('campaign_contacts')
-      .update({ status: 'replied' })
-      .eq('id', email.campaign_contact_id);
+  if (isProspectBased) {
+    // Convert prospect to CRM contact
+    const conversionResult = await convertProspectToContact(supabase, prospect);
+    contact = conversionResult.contact;
+    company = conversionResult.company;
+
+    // Update campaign prospect
+    if (email.campaign_prospect_id) {
+      await supabase
+        .from('campaign_prospects')
+        .update({ status: 'replied' })
+        .eq('id', email.campaign_prospect_id);
+    }
+  } else {
+    // Update campaign contact
+    if (email.campaign_contact_id) {
+      await supabase
+        .from('campaign_contacts')
+        .update({ status: 'replied' })
+        .eq('id', email.campaign_contact_id);
+    }
   }
 
   // Record the reply event with the actual reply content
@@ -203,6 +292,7 @@ async function processInboundEmail(
       subject,
       body_preview: bodyText?.substring(0, 500),
       from: fromEmail,
+      prospect_converted: isProspectBased,
     },
     received_at: new Date().toISOString(),
   });
@@ -216,18 +306,19 @@ async function processInboundEmail(
 
   let opportunity = null;
 
-  if (settings?.value === 'true') {
-    opportunity = await createOpportunity(supabase, contact, contact.company);
+  if (settings?.value === 'true' && contact) {
+    opportunity = await createOpportunity(supabase, contact, company);
   }
 
-  console.log('Processed inbound reply from:', fromEmail);
+  console.log('Processed inbound reply from:', fromEmail, isProspectBased ? '(prospect converted)' : '');
 
   return new Response(
     JSON.stringify({
       success: true,
       matched: true,
       email_id: email.id,
-      contact_id: contact.id,
+      contact_id: contact?.id,
+      prospect_converted: isProspectBased,
       opportunity_created: !!opportunity,
       opportunity_id: opportunity?.id,
     }),
@@ -319,4 +410,116 @@ async function createOpportunity(supabase: any, contact: any, company: any) {
   console.log('Created opportunity:', opportunity.id, 'for contact:', contact.id);
 
   return opportunity;
+}
+
+// THE BRIDGE: Convert outreach prospect to CRM contact/company
+async function convertProspectToContact(
+  supabase: any,
+  prospect: any
+): Promise<{ contact: any; company: any }> {
+  // Check if already converted
+  if (prospect.converted_contact_id) {
+    const { data: existingContact } = await supabase
+      .from('contacts')
+      .select('*, company:companies(*)')
+      .eq('id', prospect.converted_contact_id)
+      .single();
+
+    if (existingContact) {
+      console.log('Prospect already converted to contact:', existingContact.id);
+      return { contact: existingContact, company: existingContact.company };
+    }
+  }
+
+  // Check if contact with this email already exists in CRM
+  const { data: existingByEmail } = await supabase
+    .from('contacts')
+    .select('*, company:companies(*)')
+    .eq('email', prospect.email.toLowerCase())
+    .single();
+
+  if (existingByEmail) {
+    // Link prospect to existing contact
+    await supabase
+      .from('outreach_prospects')
+      .update({
+        status: 'converted',
+        converted_contact_id: existingByEmail.id,
+        converted_at: new Date().toISOString(),
+      })
+      .eq('id', prospect.id);
+
+    console.log('Prospect linked to existing contact:', existingByEmail.id);
+    return { contact: existingByEmail, company: existingByEmail.company };
+  }
+
+  // Create new company if we have company info
+  let company: any = null;
+  if (prospect.company_name) {
+    // Check if company already exists
+    const { data: existingCompany } = await supabase
+      .from('companies')
+      .select('*')
+      .ilike('name', prospect.company_name)
+      .limit(1)
+      .single();
+
+    if (existingCompany) {
+      company = existingCompany;
+    } else {
+      // Create new company
+      const { data: newCompany, error: companyError } = await supabase
+        .from('companies')
+        .insert({
+          name: prospect.company_name,
+          website: prospect.company_website,
+          industry: prospect.company_industry,
+          employee_count: prospect.company_employee_count,
+          source: 'outreach_conversion',
+        })
+        .select()
+        .single();
+
+      if (companyError) {
+        console.error('Failed to create company:', companyError);
+      } else {
+        company = newCompany;
+        console.log('Created company:', newCompany.id, newCompany.name);
+      }
+    }
+  }
+
+  // Create contact
+  const { data: contact, error: contactError } = await supabase
+    .from('contacts')
+    .insert({
+      email: prospect.email.toLowerCase(),
+      first_name: prospect.first_name,
+      last_name: prospect.last_name,
+      title: prospect.title,
+      linkedin_url: prospect.linkedin_url,
+      company_id: company?.id,
+      source: 'outreach_conversion',
+    })
+    .select()
+    .single();
+
+  if (contactError) {
+    console.error('Failed to create contact:', contactError);
+    throw new Error(`Failed to create contact: ${contactError.message}`);
+  }
+
+  // Update prospect with conversion info
+  await supabase
+    .from('outreach_prospects')
+    .update({
+      status: 'converted',
+      converted_contact_id: contact.id,
+      converted_at: new Date().toISOString(),
+    })
+    .eq('id', prospect.id);
+
+  console.log('Converted prospect to contact:', contact.id, prospect.email);
+
+  return { contact, company };
 }
