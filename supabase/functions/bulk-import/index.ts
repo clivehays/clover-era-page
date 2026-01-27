@@ -19,13 +19,17 @@ serve(async (req) => {
   }
 
   try {
-    const { contacts, skipExisting, updateExisting } = await req.json();
+    const { contacts, skipExisting, updateExisting, batchName } = await req.json();
 
     if (!contacts || !Array.isArray(contacts)) {
       throw new Error('contacts array is required');
     }
 
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+
+    // Create import batch identifier
+    const importBatch = batchName || `Import ${new Date().toISOString().split('T')[0]}`;
+    const importedAt = new Date().toISOString();
 
     let companiesCreated = 0;
     let contactsCreated = 0;
@@ -110,6 +114,8 @@ serve(async (req) => {
 
         const contactData: Record<string, any> = {
           email: emailLower,
+          import_batch: importBatch,
+          imported_at: importedAt,
         };
 
         // Add optional fields
@@ -160,6 +166,7 @@ serve(async (req) => {
         contactsCreated,
         contactsUpdated,
         skipped,
+        importBatch,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );

@@ -743,22 +743,55 @@
 
     <!-- Add Contacts Modal -->
     <div id="addContactsModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
                 <h2>Add Contacts to Campaign</h2>
                 <button class="modal-close" onclick="closeModal('addContactsModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Select Contacts</label>
-                    <div id="contactsCheckboxList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--medium-gray); border-radius: 8px; padding: 1rem;">
-                        <p class="loading">Loading contacts...</p>
+                <!-- Filters -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Import Batch</label>
+                        <select id="filterBatch" onchange="filterContactsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <option value="">All batches</option>
+                        </select>
                     </div>
+                    <div>
+                        <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Industry</label>
+                        <select id="filterIndustry" onchange="filterContactsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <option value="">All industries</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Employee Count</label>
+                        <select id="filterEmployees" onchange="filterContactsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <option value="">Any size</option>
+                            <option value="100-500">100-500</option>
+                            <option value="500-1000">500-1,000</option>
+                            <option value="1000-5000">1,000-5,000</option>
+                            <option value="5000+">5,000+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Select All & Count -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--light-gray); border-radius: 6px; margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" id="selectAllContacts" onchange="toggleSelectAll()" style="margin-right: 0.5rem;">
+                        <span>Select all visible</span>
+                    </label>
+                    <span id="contactsCount" style="color: var(--text-secondary); font-size: 0.875rem;">0 contacts</span>
+                </div>
+
+                <!-- Contacts List -->
+                <div id="contactsCheckboxList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--medium-gray); border-radius: 8px;">
+                    <p class="loading" style="padding: 1rem;">Loading contacts...</p>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('addContactsModal')">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="addSelectedContacts()">Add Selected</button>
+                <button type="button" class="btn btn-primary" onclick="addSelectedContacts()">Add Selected (<span id="selectedCount">0</span>)</button>
             </div>
         </div>
     </div>
@@ -1042,9 +1075,18 @@
         }
 
         // Add Contacts Modal
+        let allAvailableContacts = [];
+        let filteredContacts = [];
+
         async function showAddContactsModal(campaignId) {
             selectedCampaignId = campaignId;
             showModal('addContactsModal');
+
+            // Reset filters
+            document.getElementById('filterBatch').value = '';
+            document.getElementById('filterIndustry').value = '';
+            document.getElementById('filterEmployees').value = '';
+            document.getElementById('selectAllContacts').checked = false;
 
             // Load contacts not in this campaign
             const { data: existingContacts } = await supabaseClient
@@ -1054,32 +1096,79 @@
 
             const existingIds = existingContacts?.map(c => c.contact_id) || [];
 
-            let query = supabaseClient
+            const { data: contacts } = await supabaseClient
                 .from('contacts')
-                .select('id, first_name, last_name, email, title, company:companies(name)')
-                .order('first_name');
+                .select('id, first_name, last_name, email, title, import_batch, imported_at, company:companies(name, industry, employee_count)')
+                .order('imported_at', { ascending: false });
 
-            const { data: contacts } = await query;
+            allAvailableContacts = contacts?.filter(c => !existingIds.includes(c.id)) || [];
 
-            const availableContacts = contacts?.filter(c => !existingIds.includes(c.id)) || [];
+            // Populate filter dropdowns
+            const batches = [...new Set(allAvailableContacts.map(c => c.import_batch).filter(Boolean))];
+            const industries = [...new Set(allAvailableContacts.map(c => c.company?.industry).filter(Boolean))];
 
-            if (availableContacts.length === 0) {
-                document.getElementById('contactsCheckboxList').innerHTML = '<p>No available contacts to add.</p>';
+            document.getElementById('filterBatch').innerHTML = '<option value="">All batches</option>' +
+                batches.map(b => `<option value="${b}">${b}</option>`).join('');
+
+            document.getElementById('filterIndustry').innerHTML = '<option value="">All industries</option>' +
+                industries.map(i => `<option value="${i}">${i}</option>`).join('');
+
+            filterContactsList();
+        }
+
+        function filterContactsList() {
+            const batchFilter = document.getElementById('filterBatch').value;
+            const industryFilter = document.getElementById('filterIndustry').value;
+            const employeeFilter = document.getElementById('filterEmployees').value;
+
+            filteredContacts = allAvailableContacts.filter(contact => {
+                if (batchFilter && contact.import_batch !== batchFilter) return false;
+                if (industryFilter && contact.company?.industry !== industryFilter) return false;
+
+                if (employeeFilter) {
+                    const count = contact.company?.employee_count || 0;
+                    if (employeeFilter === '100-500' && (count < 100 || count > 500)) return false;
+                    if (employeeFilter === '500-1000' && (count < 500 || count > 1000)) return false;
+                    if (employeeFilter === '1000-5000' && (count < 1000 || count > 5000)) return false;
+                    if (employeeFilter === '5000+' && count < 5000) return false;
+                }
+
+                return true;
+            });
+
+            document.getElementById('contactsCount').textContent = `${filteredContacts.length} contacts`;
+            document.getElementById('selectAllContacts').checked = false;
+            updateSelectedCount();
+
+            if (filteredContacts.length === 0) {
+                document.getElementById('contactsCheckboxList').innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-secondary);">No contacts match filters.</p>';
                 return;
             }
 
-            document.getElementById('contactsCheckboxList').innerHTML = availableContacts.map(contact => `
-                <label style="display: flex; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--medium-gray); cursor: pointer;">
-                    <input type="checkbox" value="${contact.id}" style="margin-right: 1rem;">
-                    <div>
-                        <div style="font-weight: 600;">${contact.first_name} ${contact.last_name}</div>
-                        <div style="font-size: 0.875rem; color: var(--text-secondary);">
+            document.getElementById('contactsCheckboxList').innerHTML = filteredContacts.map(contact => `
+                <label style="display: flex; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--medium-gray); cursor: pointer;" class="contact-row">
+                    <input type="checkbox" value="${contact.id}" onchange="updateSelectedCount()" style="margin-right: 1rem; flex-shrink: 0;">
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 600;">${contact.first_name || ''} ${contact.last_name || ''}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             ${contact.title || ''} ${contact.company?.name ? '@ ' + contact.company.name : ''}
+                            ${contact.company?.employee_count ? ' (' + contact.company.employee_count.toLocaleString() + ' emp)' : ''}
                         </div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${contact.email}</div>
+                        <div style="font-size: 0.75rem; color: var(--info-blue);">${contact.import_batch || 'No batch'}</div>
                     </div>
                 </label>
             `).join('');
+        }
+
+        function toggleSelectAll() {
+            const checked = document.getElementById('selectAllContacts').checked;
+            document.querySelectorAll('#contactsCheckboxList input[type="checkbox"]').forEach(cb => cb.checked = checked);
+            updateSelectedCount();
+        }
+
+        function updateSelectedCount() {
+            const count = document.querySelectorAll('#contactsCheckboxList input[type="checkbox"]:checked').length;
+            document.getElementById('selectedCount').textContent = count;
         }
 
         async function addSelectedContacts() {

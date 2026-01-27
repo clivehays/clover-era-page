@@ -478,6 +478,10 @@
 
             <div class="import-options">
                 <h3>Import Options</h3>
+                <div style="margin-bottom: 1rem;">
+                    <label for="batchName" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Batch Name (for easy filtering later)</label>
+                    <input type="text" id="batchName" placeholder="e.g., Apollo Q1 CEOs, Tech 500+ employees" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                </div>
                 <div class="option-group">
                     <label>
                         <input type="checkbox" id="skipDuplicates" checked>
@@ -554,7 +558,8 @@
         <div id="completeSection" class="card hidden">
             <div class="import-result success">
                 <h2>Import Complete!</h2>
-                <p>Your contacts have been successfully imported.</p>
+                <p>Batch: <strong id="resultBatchName"></strong></p>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">Use this batch name in Outreach to quickly filter and add these contacts to a campaign.</p>
 
                 <div class="result-stats">
                     <div class="result-stat">
@@ -896,6 +901,7 @@
         async function startImport() {
             const skipDuplicates = document.getElementById('skipDuplicates').checked;
             const updateExisting = document.getElementById('updateExisting').checked;
+            const batchName = document.getElementById('batchName').value.trim();
 
             document.getElementById('previewSection').classList.add('hidden');
             document.getElementById('progressSection').classList.remove('hidden');
@@ -927,6 +933,7 @@
                         contacts: toImport,
                         skipExisting: skipDuplicates,
                         updateExisting: updateExisting,
+                        batchName: batchName || undefined,
                     }),
                 });
 
@@ -943,6 +950,7 @@
                 document.getElementById('progressSection').classList.add('hidden');
                 document.getElementById('completeSection').classList.remove('hidden');
 
+                document.getElementById('resultBatchName').textContent = result.importBatch;
                 document.getElementById('resultCompanies').textContent = result.companiesCreated;
                 document.getElementById('resultContacts').textContent = result.contactsCreated;
                 document.getElementById('resultUpdated').textContent = result.contactsUpdated;
