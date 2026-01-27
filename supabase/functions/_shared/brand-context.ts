@@ -53,12 +53,13 @@ BANNED WORDS AND PHRASES - NEVER USE:
 - "HR software" (use: manager enablement)
 - "Let's chat" / "Let's connect"
 - "leverage" / "synergy" / "best-in-class"
+- "Not pitching" / "Not a pitch"
 
 USE INSTEAD:
 - "Worth a look, or should I close the loop?" (closing)
-- "Not pitching." (positioning)
 - "The math might be interesting." (soft CTA)
 - "If this isn't on your radar, I'll drop it." (easy out)
+- "Does that number land, or feel off?" (soft question)
 
 QUOTABLE LINES (use sparingly):
 - "You can't be alarmed by a number you've never seen."
