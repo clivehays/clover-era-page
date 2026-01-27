@@ -1249,13 +1249,30 @@
         }
 
         async function deleteCampaign(id, name) {
-            if (!confirm(`Delete campaign "${name}"?\n\nThis will also delete all associated contacts and emails from this campaign. This cannot be undone.`)) {
+            if (!confirm(`Delete campaign "${name}"?\n\nThis will also delete all associated prospects and emails from this campaign. This cannot be undone.`)) {
                 return;
             }
 
             try {
-                // Delete campaign contacts first (cascade should handle this, but being explicit)
+                // Get prospect IDs before deletion so we can reset their status
+                const { data: campaignProspects } = await supabaseClient
+                    .from('campaign_prospects')
+                    .select('prospect_id')
+                    .eq('campaign_id', id);
+
+                const prospectIds = campaignProspects?.map(cp => cp.prospect_id) || [];
+
+                // Delete campaign contacts and prospects (cascade will delete emails)
                 await supabaseClient.from('campaign_contacts').delete().eq('campaign_id', id);
+                await supabaseClient.from('campaign_prospects').delete().eq('campaign_id', id);
+
+                // Reset prospect status back to 'imported' so they can be re-added to campaigns
+                if (prospectIds.length > 0) {
+                    await supabaseClient
+                        .from('outreach_prospects')
+                        .update({ status: 'imported' })
+                        .in('id', prospectIds);
+                }
 
                 // Delete the campaign
                 const { error } = await supabaseClient.from('outreach_campaigns').delete().eq('id', id);
