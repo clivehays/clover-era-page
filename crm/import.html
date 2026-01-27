@@ -900,125 +900,61 @@
             document.getElementById('previewSection').classList.add('hidden');
             document.getElementById('progressSection').classList.remove('hidden');
 
+            // Filter to valid/processable contacts
             const toImport = parsedData.filter(row => {
                 if (row._status === 'invalid') return false;
                 if (row._status === 'duplicate' && skipDuplicates && !updateExisting) return false;
                 return true;
             });
 
-            let companiesCreated = 0;
-            let contactsCreated = 0;
-            let contactsUpdated = 0;
-            let skipped = 0;
+            document.getElementById('progressStatus').textContent =
+                `Sending ${toImport.length} contacts to server...`;
+            document.getElementById('progressBar').style.width = '50%';
+            document.getElementById('progressBar').textContent = '50%';
 
-            const total = toImport.length;
+            try {
+                // Get auth token for edge function
+                const { data: { session } } = await supabaseClient.auth.getSession();
 
-            // Group by company for efficiency
-            const byCompany = new Map();
-            for (const row of toImport) {
-                const companyKey = row.companyName?.toLowerCase() || '_no_company_';
-                if (!byCompany.has(companyKey)) {
-                    byCompany.set(companyKey, []);
+                // Call edge function for bulk import (bypasses PostgREST)
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/bulk-import`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session?.access_token || SUPABASE_ANON_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        contacts: toImport,
+                        skipExisting: skipDuplicates,
+                        updateExisting: updateExisting,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || 'Import failed');
                 }
-                byCompany.get(companyKey).push(row);
+
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('progressBar').textContent = '100%';
+
+                // Show results
+                document.getElementById('progressSection').classList.add('hidden');
+                document.getElementById('completeSection').classList.remove('hidden');
+
+                document.getElementById('resultCompanies').textContent = result.companiesCreated;
+                document.getElementById('resultContacts').textContent = result.contactsCreated;
+                document.getElementById('resultUpdated').textContent = result.contactsUpdated;
+                document.getElementById('resultSkipped').textContent = result.skipped;
+
+            } catch (error) {
+                console.error('Import error:', error);
+                alert('Import failed: ' + error.message);
+
+                document.getElementById('progressSection').classList.add('hidden');
+                document.getElementById('previewSection').classList.remove('hidden');
             }
-
-            let processed = 0;
-
-            for (const [companyKey, contacts] of byCompany) {
-                let companyId = companyMap.get(companyKey);
-
-                // Create company if needed
-                if (!companyId && companyKey !== '_no_company_' && contacts[0].companyName) {
-                    const companyData = {
-                        name: contacts[0].companyName,
-                        website: contacts[0].website || null,
-                        industry: contacts[0].industry || null,
-                        employee_count: contacts[0].employees || null,
-                        annual_revenue: contacts[0].revenue || null,
-                        phone: contacts[0].companyPhone || null,
-                        linkedin_url: contacts[0].companyLinkedin || null,
-                        address: contacts[0].companyStreet || null,
-                        city: contacts[0].companyCity || null,
-                        state: contacts[0].companyState || null,
-                        postal_code: contacts[0].companyPostal || null,
-                        country: contacts[0].companyCountry || null,
-                        founded_year: contacts[0].foundedYear || null,
-                        status: 'prospect'
-                    };
-
-                    const { data: newCompany, error } = await supabaseClient
-                        .from('companies')
-                        .insert(companyData)
-                        .select('id')
-                        .single();
-
-                    if (newCompany) {
-                        companyId = newCompany.id;
-                        companyMap.set(companyKey, companyId);
-                        companiesCreated++;
-                    }
-                }
-
-                // Import contacts
-                for (const contact of contacts) {
-                    const contactData = {
-                        first_name: contact.firstName || null,
-                        last_name: contact.lastName || null,
-                        email: contact.email,
-                        title: contact.title || null,
-                        linkedin_url: contact.linkedinUrl || null,
-                        city: contact.city || null,
-                        state: contact.state || null,
-                        country: contact.country || null,
-                        company_id: companyId || null
-                    };
-
-                    if (contact._status === 'duplicate' && updateExisting) {
-                        // Update existing
-                        const { error } = await supabaseClient
-                            .from('contacts')
-                            .update(contactData)
-                            .eq('email', contact.email.toLowerCase());
-
-                        if (!error) {
-                            contactsUpdated++;
-                        } else {
-                            skipped++;
-                        }
-                    } else if (contact._status === 'valid') {
-                        // Insert new
-                        const { error } = await supabaseClient
-                            .from('contacts')
-                            .insert(contactData);
-
-                        if (!error) {
-                            contactsCreated++;
-                            existingEmails.add(contact.email.toLowerCase());
-                        } else {
-                            skipped++;
-                        }
-                    } else {
-                        skipped++;
-                    }
-
-                    processed++;
-                    const percent = Math.round((processed / total) * 100);
-                    document.getElementById('progressBar').style.width = percent + '%';
-                    document.getElementById('progressBar').textContent = percent + '%';
-                    document.getElementById('progressStatus').textContent =
-                        `Processing ${processed} of ${total} contacts...`;
-                }
-            }
-
-            // Show results
-            document.getElementById('progressSection').classList.add('hidden');
-            document.getElementById('completeSection').classList.remove('hidden');
-
-            document.getElementById('resultCompanies').textContent = companiesCreated;
-            document.getElementById('resultContacts').textContent = contactsCreated;
-            document.getElementById('resultUpdated').textContent = contactsUpdated;
-            document.getElementById('resultSkipped').textContent = skipped;
         }
 
         function resetImport() {

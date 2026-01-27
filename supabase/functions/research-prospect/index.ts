@@ -95,8 +95,8 @@ serve(async (req) => {
     }
 
     // Step 1: Apollo Enrichment
-    let apolloPersonData = null;
-    let apolloCompanyData = null;
+    let apolloPersonData: any = null;
+    let apolloCompanyData: any = null;
     let emailVerified = false;
 
     if (APOLLO_API_KEY) {
@@ -173,6 +173,39 @@ serve(async (req) => {
 
     const title = apolloPersonData?.title || contact.title || 'Executive';
     const linkedinUrl = apolloPersonData?.linkedin_url || contact.linkedin_url;
+
+    // Step 2b: UPDATE companies table with Apollo data if we got better info
+    if (contact.company_id && (apolloCompanyData || apolloPersonData?.organization)) {
+      const companyUpdates: Record<string, any> = {};
+
+      // Update employee count if Apollo has it
+      if (apolloCompanyData?.estimated_num_employees) {
+        companyUpdates.employee_count = apolloCompanyData.estimated_num_employees;
+      } else if (apolloPersonData?.organization?.estimated_num_employees) {
+        companyUpdates.employee_count = apolloPersonData.organization.estimated_num_employees;
+      }
+
+      // Update industry if Apollo has it
+      if (apolloCompanyData?.industry) {
+        companyUpdates.industry = apolloCompanyData.industry;
+      } else if (apolloPersonData?.organization?.industry) {
+        companyUpdates.industry = apolloPersonData.organization.industry;
+      }
+
+      // Only update if we have new data
+      if (Object.keys(companyUpdates).length > 0) {
+        const { error: updateError } = await supabase
+          .from('companies')
+          .update(companyUpdates)
+          .eq('id', contact.company_id);
+
+        if (updateError) {
+          console.error('Failed to update company with Apollo data:', updateError);
+        } else {
+          console.log('Updated company with Apollo data:', companyUpdates);
+        }
+      }
+    }
 
     // Step 3: PRE-CALCULATE turnover estimates (don't let AI do math)
     const avgSalary = getIndustrySalary(industry);

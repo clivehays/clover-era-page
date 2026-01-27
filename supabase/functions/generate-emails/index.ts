@@ -196,61 +196,57 @@ Body Template:
 ${t.body_template}
 `).join('\n---\n');
 
-  const prompt = `You are writing a 3-email cold outreach sequence as Clive Hays, founder of Clover ERA.
+  // System message with strict rules
+  const systemMessage = `You are Clive Hays, founder of Clover ERA. You write cold outreach emails directly TO prospects.
+
+CRITICAL RECIPIENT RULE:
+You are writing TO ${context.first_name}. Use "you" and "your" when referring to them.
+- CORRECT: "At ${context.company_name}, your team of ${context.employee_count.toLocaleString()} employees..."
+- WRONG: "${context.first_name} just joined..." (this is third person - DO NOT DO THIS)
+- WRONG: "He/She probably knows..." (this is third person - DO NOT DO THIS)
+
+CRITICAL NUMBER RULES:
+- ${context.company_name} employee count: ${context.employee_count.toLocaleString()}
+- ${context.company_name} turnover cost: $${turnoverFormatted}
+- Example company turnover (Email 2 only): $${exampleFormatted}
+NEVER invent other numbers.
+
+ADVISORY PRINCIPLES (apply these):
+- Pattern interrupt, not pitch (Josh Braun)
+- Make the reader feel understood before asking anything (Chris Voss)
+- Specificity = credibility (Alex Hormozi)
+- One clear idea per email, no feature dumps (Russell Brunson)`;
+
+  const prompt = `Write 3 cold emails for this prospect:
+
+PROSPECT: ${context.first_name} ${context.last_name}, ${context.title} at ${context.company_name}
+EMPLOYEE COUNT: ${context.employee_count.toLocaleString()} (use this exact number)
+TURNOVER COST: $${turnoverFormatted} (use in Email 1 and 3)
+EXAMPLE COMPANY COST: $${exampleFormatted} (use ONLY in Email 2)
+INDUSTRY: ${context.industry}
+
+RESEARCH: ${context.research_summary || 'No specific research available.'}
+ANGLE: ${context.personalization_angle || 'Focus on the gap between what they track and actual turnover cost.'}
+
+${companySizeContext}
 
 ${CLOVER_ERA_CONTEXT}
 
 ${EMAIL_RULES}
 
-${companySizeContext}
-
----
-
-TARGET PROSPECT:
-- Name: ${context.first_name} ${context.last_name}
-- Title: ${context.title}
-- Company: ${context.company_name}
-- Employee Count: ${context.employee_count.toLocaleString()}
-- Industry: ${context.industry}
-
-KEY FIGURES TO USE:
-- ${context.company_name}'s ACTUAL turnover cost: $${turnoverFormatted} (use this in Email 1 and Email 3)
-- Example/comparison company turnover: $${exampleFormatted} (use this ONLY in Email 2's "similar company" story)
-
-RESEARCH ON THIS PROSPECT:
-${context.research_summary || 'No specific research available.'}
-
-PERSONALIZATION ANGLE:
-${context.personalization_angle || 'Focus on the gap between what they track and actual turnover cost.'}
-
----
-
-TEMPLATES TO PERSONALIZE:
+TEMPLATES:
 ${templateDescriptions}
 
----
+EMAIL STRUCTURE:
+- Email 1: Use ${context.company_name}'s $${turnoverFormatted} and ${context.employee_count.toLocaleString()} employees
+- Email 2: Story about a DIFFERENT company using $${exampleFormatted} - do NOT mention ${context.company_name}'s numbers
+- Email 3: Return to ${context.company_name}'s $${turnoverFormatted}
 
-CRITICAL NARRATIVE CONTINUITY RULES:
+BANNED: "curious", "I'd love to", "either way", "happy to help", "Not pitching"
+Sign off: Just "Clive"
 
-1. EMAIL 1: Introduce ${context.company_name}'s own turnover cost ($${turnoverFormatted}). This is THEIR number.
-
-2. EMAIL 2: Tell a story about a DIFFERENT company you spoke with. Use $${exampleFormatted} as that OTHER company's number. Do NOT use ${context.company_name}'s $${turnoverFormatted} here. The point is social proof from a similar situation.
-
-3. EMAIL 3: Return to ${context.company_name}'s specific number ($${turnoverFormatted}). Final ask.
-
-The reader must NEVER be confused about whose number is whose. Email 2's example is explicitly about ANOTHER company, not ${context.company_name}.
-
-VOICE RULES:
-- NEVER use: "curious", "I'd love to", "either way", "happy to help", "I'd be happy to"
-- Short sentences. Direct peer tone.
-- Sign off with just "Clive"
-
-Respond with a JSON array of 3 emails:
-[
-  {"subject": "...", "body": "...", "notes": "..."},
-  {"subject": "...", "body": "...", "notes": "..."},
-  {"subject": "...", "body": "...", "notes": "..."}
-]`;
+JSON response:
+[{"subject": "...", "body": "...", "notes": "..."},{"subject": "...", "body": "...", "notes": "..."},{"subject": "...", "body": "...", "notes": "..."}]`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -263,6 +259,7 @@ Respond with a JSON array of 3 emails:
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2048,
+        system: systemMessage,
         messages: [
           {
             role: 'user',
