@@ -106,22 +106,19 @@ serve(async (req) => {
       turnover_estimate_high: research.turnover_estimate_high,
     };
 
-    // Generate emails for each template
-    const generatedEmails = [];
+    // Generate ALL emails in one call for narrative continuity
+    const generatedEmailContents = await generateEmailSequence(templates, context);
 
-    for (const template of templates) {
-      const email = await generatePersonalizedEmail(template, context);
-      generatedEmails.push({
-        campaign_contact_id,
-        contact_id: contact.id,
-        sequence_id: seqId,
-        position: template.position,
-        subject: email.subject,
-        body: email.body,
-        personalization_notes: email.notes,
-        status: 'draft',
-      });
-    }
+    const generatedEmails = generatedEmailContents.map((email, index) => ({
+      campaign_contact_id,
+      contact_id: contact.id,
+      sequence_id: seqId,
+      position: templates[index].position,
+      subject: email.subject,
+      body: email.body,
+      personalization_notes: email.notes,
+      status: 'draft',
+    }));
 
     // Delete any existing draft emails for this campaign contact
     await supabase
@@ -166,33 +163,40 @@ serve(async (req) => {
   }
 });
 
-async function generatePersonalizedEmail(
-  template: any,
+async function generateEmailSequence(
+  templates: any[],
   context: any
-): Promise<{ subject: string; body: string; notes: string }> {
+): Promise<Array<{ subject: string; body: string; notes: string }>> {
 
-  // First, do simple variable replacement
-  let subject = replaceVariables(template.subject_template, context);
-  let body = replaceVariables(template.body_template, context);
-
-  // If no AI key, return template with basic replacement
+  // If no AI key, return templates with basic replacement
   if (!ANTHROPIC_API_KEY) {
-    return {
-      subject,
-      body,
+    return templates.map(template => ({
+      subject: replaceVariables(template.subject_template, context),
+      body: replaceVariables(template.body_template, context),
       notes: 'Generated without AI personalization',
-    };
+    }));
   }
 
   // Get company size context
   const companySizeContext = getCompanySizeContext(context.employee_count);
 
-  // Calculate mid-point for reference
+  // Calculate turnover figures
   const turnoverMid = Math.round((context.turnover_estimate_low + context.turnover_estimate_high) / 2);
   const turnoverFormatted = formatCurrency(turnoverMid);
 
-  // Use AI to improve personalization
-  const prompt = `You are writing a cold email as Clive Hays, founder of Clover ERA.
+  // Create a DIFFERENT example figure for the "similar company" story (70-85% of their actual)
+  const exampleTurnover = Math.round(turnoverMid * (0.7 + Math.random() * 0.15));
+  const exampleFormatted = formatCurrency(exampleTurnover);
+
+  // Build template descriptions for the prompt
+  const templateDescriptions = templates.map((t, i) => `
+EMAIL ${i + 1} (Position ${t.position}):
+Subject Template: ${t.subject_template}
+Body Template:
+${t.body_template}
+`).join('\n---\n');
+
+  const prompt = `You are writing a 3-email cold outreach sequence as Clive Hays, founder of Clover ERA.
 
 ${CLOVER_ERA_CONTEXT}
 
@@ -202,16 +206,16 @@ ${companySizeContext}
 
 ---
 
-RECIPIENT DETAILS:
+TARGET PROSPECT:
 - Name: ${context.first_name} ${context.last_name}
 - Title: ${context.title}
 - Company: ${context.company_name}
 - Employee Count: ${context.employee_count.toLocaleString()}
 - Industry: ${context.industry}
 
-PRE-CALCULATED TURNOVER COST (use these exact figures):
-- Annual turnover cost: $${turnoverFormatted}
-- Range: $${formatCurrency(context.turnover_estimate_low)} - $${formatCurrency(context.turnover_estimate_high)}
+KEY FIGURES TO USE:
+- ${context.company_name}'s ACTUAL turnover cost: $${turnoverFormatted} (use this in Email 1 and Email 3)
+- Example/comparison company turnover: $${exampleFormatted} (use this ONLY in Email 2's "similar company" story)
 
 RESEARCH ON THIS PROSPECT:
 ${context.research_summary || 'No specific research available.'}
@@ -221,34 +225,32 @@ ${context.personalization_angle || 'Focus on the gap between what they track and
 
 ---
 
-TEMPLATE TO PERSONALIZE:
-Subject: ${subject}
-
-Body:
-${body}
+TEMPLATES TO PERSONALIZE:
+${templateDescriptions}
 
 ---
 
-YOUR TASK:
-1. Personalize this template for ${context.first_name} at ${context.company_name}
-2. Replace {{variables}} with specific content
-3. Make the opening line specific to THEIR company (not generic)
-4. Use the turnover cost figure provided: $${turnoverFormatted}
-5. Keep it SHORT (4-6 sentences max)
-6. Sound like a peer sharing an observation, NOT a salesperson
+CRITICAL NARRATIVE CONTINUITY RULES:
 
-CRITICAL REMINDERS:
-- NEVER use: "curious", "I'd love to", "either way", "happy to help"
-- NEVER add links or meeting requests not in the template
-- NEVER recalculate the turnover number - use $${turnoverFormatted}
+1. EMAIL 1: Introduce ${context.company_name}'s own turnover cost ($${turnoverFormatted}). This is THEIR number.
+
+2. EMAIL 2: Tell a story about a DIFFERENT company you spoke with. Use $${exampleFormatted} as that OTHER company's number. Do NOT use ${context.company_name}'s $${turnoverFormatted} here. The point is social proof from a similar situation.
+
+3. EMAIL 3: Return to ${context.company_name}'s specific number ($${turnoverFormatted}). Final ask.
+
+The reader must NEVER be confused about whose number is whose. Email 2's example is explicitly about ANOTHER company, not ${context.company_name}.
+
+VOICE RULES:
+- NEVER use: "curious", "I'd love to", "either way", "happy to help", "I'd be happy to"
+- Short sentences. Direct peer tone.
 - Sign off with just "Clive"
 
-Respond in JSON format:
-{
-  "subject": "personalized subject line (lowercase, no punctuation)",
-  "body": "personalized email body",
-  "notes": "brief explanation of personalization choices"
-}`;
+Respond with a JSON array of 3 emails:
+[
+  {"subject": "...", "body": "...", "notes": "..."},
+  {"subject": "...", "body": "...", "notes": "..."},
+  {"subject": "...", "body": "...", "notes": "..."}
+]`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -260,7 +262,7 @@ Respond in JSON format:
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
+        max_tokens: 2048,
         messages: [
           {
             role: 'user',
@@ -277,26 +279,28 @@ Respond in JSON format:
     const data = await response.json();
     const responseText = data.content[0]?.text || '';
 
-    // Parse JSON from response
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    // Parse JSON array from response
+    const jsonMatch = responseText.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
-      const result = JSON.parse(jsonMatch[0]);
-      return {
-        subject: result.subject || subject,
-        body: result.body || body,
-        notes: result.notes || 'AI personalized',
-      };
+      const results = JSON.parse(jsonMatch[0]);
+      if (Array.isArray(results) && results.length === templates.length) {
+        return results.map((r: any) => ({
+          subject: r.subject || '',
+          body: r.body || '',
+          notes: r.notes || 'AI personalized',
+        }));
+      }
     }
   } catch (error) {
-    console.error('AI personalization failed:', error);
+    console.error('AI sequence generation failed:', error);
   }
 
   // Fallback to template replacement
-  return {
-    subject,
-    body,
+  return templates.map(template => ({
+    subject: replaceVariables(template.subject_template, context),
+    body: replaceVariables(template.body_template, context),
     notes: 'Template-based (AI unavailable)',
-  };
+  }));
 }
 
 function replaceVariables(text: string, context: any): string {
