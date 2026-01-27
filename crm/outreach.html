@@ -980,7 +980,27 @@
 
         // Campaign actions
         async function activateCampaign(id) {
-            if (!confirm('Activate this campaign?\n\nThis will immediately start sending approved emails.')) {
+            // Check how many pending prospects need research
+            const { data: pendingProspects } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id')
+                .eq('campaign_id', id)
+                .eq('status', 'pending');
+
+            const pendingCount = pendingProspects?.length || 0;
+
+            let confirmMsg = 'Activate this campaign?\n\n';
+            if (pendingCount > 0) {
+                confirmMsg += `This will:\n`;
+                confirmMsg += `1. Research ${pendingCount} prospect(s) automatically\n`;
+                confirmMsg += `2. Generate draft emails for each\n`;
+                confirmMsg += `3. Emails will appear in the Email Queue for your approval\n\n`;
+                confirmMsg += `Note: Research may take 10-20 seconds per prospect.`;
+            } else {
+                confirmMsg += `This will send any approved emails immediately.`;
+            }
+
+            if (!confirm(confirmMsg)) {
                 return;
             }
 
@@ -988,21 +1008,119 @@
                 // Update campaign status
                 await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
 
-                // Send first batch of approved emails
-                const sendResult = await sendCampaignEmails(id);
+                // Process pending prospects (research + generate emails)
+                if (pendingCount > 0) {
+                    const result = await processPendingProspects(id);
+
+                    if (result.processed > 0) {
+                        alert(`Campaign activated!\n\n` +
+                              `Processed ${result.processed} prospect(s):\n` +
+                              `- Researched: ${result.researched}\n` +
+                              `- Emails generated: ${result.emailsGenerated}\n` +
+                              `- Errors: ${result.errors}\n\n` +
+                              `Check the Email Queue tab to review and approve draft emails.`);
+                    } else {
+                        alert(`Campaign activated. No new prospects to process.`);
+                    }
+                } else {
+                    // No pending prospects, try to send approved emails
+                    const sendResult = await sendCampaignEmails(id);
+
+                    if (sendResult.sent > 0) {
+                        alert(`Campaign activated! Sent ${sendResult.sent} email(s).`);
+                    } else {
+                        alert(`Campaign activated. ${sendResult.message || 'No approved emails to send yet.'}`);
+                    }
+                }
 
                 loadCampaigns();
                 loadStats();
-
-                if (sendResult.sent > 0) {
-                    alert(`Campaign activated! Sent ${sendResult.sent} email(s).`);
-                } else {
-                    alert(`Campaign activated. ${sendResult.message || 'No approved emails to send yet.'}`);
-                }
             } catch (error) {
                 alert('Error activating campaign: ' + error.message);
                 loadCampaigns();
             }
+        }
+
+        // Process all pending prospects: research + generate emails
+        async function processPendingProspects(campaignId) {
+            const result = {
+                processed: 0,
+                researched: 0,
+                emailsGenerated: 0,
+                errors: 0
+            };
+
+            // Get all pending prospects for this campaign
+            const { data: pendingProspects, error } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id, prospect:outreach_prospects(first_name, last_name)')
+                .eq('campaign_id', campaignId)
+                .eq('status', 'pending');
+
+            if (error || !pendingProspects || pendingProspects.length === 0) {
+                return result;
+            }
+
+            // Process each prospect sequentially (to avoid rate limits)
+            for (const cp of pendingProspects) {
+                result.processed++;
+                const prospectName = `${cp.prospect?.first_name || ''} ${cp.prospect?.last_name || ''}`.trim() || 'Unknown';
+                console.log(`Processing prospect ${result.processed}/${pendingProspects.length}: ${prospectName}`);
+
+                try {
+                    // Step 1: Update status to researching
+                    await supabaseClient
+                        .from('campaign_prospects')
+                        .update({ status: 'researching' })
+                        .eq('id', cp.id);
+
+                    // Step 2: Call research function
+                    const researchResponse = await fetch(`${SUPABASE_URL}/functions/v1/research-prospect`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({ campaign_prospect_id: cp.id })
+                    });
+
+                    const researchResult = await researchResponse.json();
+
+                    if (!researchResult.success) {
+                        console.error(`Research failed for ${prospectName}:`, researchResult.error);
+                        result.errors++;
+                        continue;
+                    }
+
+                    result.researched++;
+
+                    // Step 3: Generate emails
+                    const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({ campaign_prospect_id: cp.id })
+                    });
+
+                    const emailResult = await emailResponse.json();
+
+                    if (!emailResult.success) {
+                        console.error(`Email generation failed for ${prospectName}:`, emailResult.error);
+                        result.errors++;
+                        continue;
+                    }
+
+                    result.emailsGenerated += emailResult.count || 0;
+
+                } catch (err) {
+                    console.error(`Error processing prospect ${prospectName}:`, err);
+                    result.errors++;
+                }
+            }
+
+            return result;
         }
 
         async function pauseCampaign(id) {
@@ -1012,7 +1130,27 @@
         }
 
         async function resumeCampaign(id) {
-            if (!confirm('Resume this campaign?\n\nThis will start sending approved emails again.')) {
+            // Check how many pending prospects need research
+            const { data: pendingProspects } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id')
+                .eq('campaign_id', id)
+                .eq('status', 'pending');
+
+            const pendingCount = pendingProspects?.length || 0;
+
+            let confirmMsg = 'Resume this campaign?\n\n';
+            if (pendingCount > 0) {
+                confirmMsg += `This will:\n`;
+                confirmMsg += `1. Research ${pendingCount} pending prospect(s)\n`;
+                confirmMsg += `2. Generate draft emails for each\n`;
+                confirmMsg += `3. Send any already-approved emails\n\n`;
+                confirmMsg += `Note: Research may take 10-20 seconds per prospect.`;
+            } else {
+                confirmMsg += `This will send any approved emails immediately.`;
+            }
+
+            if (!confirm(confirmMsg)) {
                 return;
             }
 
@@ -1020,17 +1158,33 @@
                 // Update campaign status
                 await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
 
-                // Send batch of approved emails
-                const sendResult = await sendCampaignEmails(id);
+                // Process pending prospects if any
+                if (pendingCount > 0) {
+                    const processResult = await processPendingProspects(id);
+
+                    // Also send approved emails
+                    const sendResult = await sendCampaignEmails(id);
+
+                    alert(`Campaign resumed!\n\n` +
+                          `Processed ${processResult.processed} prospect(s):\n` +
+                          `- Researched: ${processResult.researched}\n` +
+                          `- Emails generated: ${processResult.emailsGenerated}\n` +
+                          `- Errors: ${processResult.errors}\n\n` +
+                          `Sent ${sendResult.sent || 0} approved email(s).\n\n` +
+                          `Check the Email Queue tab to review and approve draft emails.`);
+                } else {
+                    // No pending prospects, just send approved emails
+                    const sendResult = await sendCampaignEmails(id);
+
+                    if (sendResult.sent > 0) {
+                        alert(`Campaign resumed! Sent ${sendResult.sent} email(s).`);
+                    } else {
+                        alert(`Campaign resumed. ${sendResult.message || 'No approved emails to send yet.'}`);
+                    }
+                }
 
                 loadCampaigns();
                 loadStats();
-
-                if (sendResult.sent > 0) {
-                    alert(`Campaign resumed! Sent ${sendResult.sent} email(s).`);
-                } else {
-                    alert(`Campaign resumed. ${sendResult.message || 'No approved emails to send yet.'}`);
-                }
             } catch (error) {
                 alert('Error resuming campaign: ' + error.message);
                 loadCampaigns();
@@ -1281,7 +1435,7 @@
 
                 closeModal('addProspectsModal');
                 loadCampaigns();
-                alert(`Added ${prospectIds.length} prospects to campaign. They need to be researched before emails can be generated.`);
+                alert(`Added ${prospectIds.length} prospects to campaign.\n\nClick "Activate" to automatically research them and generate draft emails.`);
             } catch (error) {
                 alert('Error adding prospects: ' + error.message);
             }
