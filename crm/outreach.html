@@ -1328,10 +1328,11 @@
             const existingIds = existingProspects?.map(p => p.prospect_id) || [];
 
             // Query outreach_prospects (denormalized - company info inline)
+            // Show all prospects except converted ones (those are now CRM contacts)
             const { data: prospects } = await supabaseClient
                 .from('outreach_prospects')
-                .select('id, first_name, last_name, email, title, import_batch, imported_at, company_name, company_industry, company_employee_count')
-                .eq('status', 'imported')  // Only show imported prospects not yet in campaigns
+                .select('id, first_name, last_name, email, title, status, import_batch, imported_at, company_name, company_industry, company_employee_count')
+                .neq('status', 'converted')  // Exclude converted prospects (they're in CRM now)
                 .order('imported_at', { ascending: false });
 
             allAvailableProspects = prospects?.filter(p => !existingIds.includes(p.id)) || [];
@@ -1378,11 +1379,16 @@
                 return;
             }
 
-            document.getElementById('prospectsCheckboxList').innerHTML = filteredProspects.map(prospect => `
+            document.getElementById('prospectsCheckboxList').innerHTML = filteredProspects.map(prospect => {
+                // Show status badge if not 'imported' (means they were in another campaign)
+                const statusBadge = prospect.status !== 'imported'
+                    ? `<span style="font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; background: #FEF3C7; color: #D97706; margin-left: 0.5rem;">${prospect.status}</span>`
+                    : '';
+                return `
                 <label style="display: flex; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--medium-gray); cursor: pointer;" class="prospect-row">
                     <input type="checkbox" value="${prospect.id}" onchange="updateSelectedCount()" style="margin-right: 1rem; flex-shrink: 0;">
                     <div style="flex: 1; min-width: 0;">
-                        <div style="font-weight: 600;">${prospect.first_name || ''} ${prospect.last_name || ''}</div>
+                        <div style="font-weight: 600;">${prospect.first_name || ''} ${prospect.last_name || ''}${statusBadge}</div>
                         <div style="font-size: 0.875rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             ${prospect.title || ''} ${prospect.company_name ? '@ ' + prospect.company_name : ''}
                             ${prospect.company_employee_count ? ' (' + prospect.company_employee_count.toLocaleString() + ' emp)' : ''}
@@ -1390,7 +1396,7 @@
                         <div style="font-size: 0.75rem; color: var(--info-blue);">${prospect.import_batch || 'No batch'}</div>
                     </div>
                 </label>
-            `).join('');
+            `}).join('');
         }
 
         function toggleSelectAll() {
