@@ -1405,6 +1405,15 @@
         let globalCapacityData = null;
 
         async function loadGlobalCapacity() {
+            const capacityEl = document.getElementById('globalCapacity');
+            const infoEl = document.getElementById('globalCapacityInfo');
+
+            // Show loading state immediately
+            if (capacityEl && infoEl) {
+                capacityEl.style.display = 'block';
+                infoEl.innerHTML = '<span style="color: var(--text-secondary);">Loading capacity...</span>';
+            }
+
             try {
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
                     method: 'POST',
@@ -1416,24 +1425,33 @@
                 });
 
                 const data = await response.json();
+                console.log('Global capacity response:', data);
 
                 if (data.success) {
                     globalCapacityData = data;
-                    const capacityEl = document.getElementById('globalCapacity');
-                    const infoEl = document.getElementById('globalCapacityInfo');
 
                     if (capacityEl && infoEl) {
-                        capacityEl.style.display = 'block';
                         const availColor = data.available_slots > 0 ? 'var(--success-green)' : 'var(--danger-color)';
+                        const approvedInfo = data.approved_ready > 0
+                            ? ` | <strong>${data.approved_ready}</strong> approved ready`
+                            : '';
                         infoEl.innerHTML = `
-                            <strong>${data.sent_today}</strong> sent today |
-                            <strong>${data.scheduled_today}</strong> follow-ups scheduled |
-                            <strong style="color: ${availColor};">${data.available_slots}</strong> of ${data.max_per_day} slots available
+                            <strong>${data.sent_today}</strong> sent |
+                            <strong>${data.scheduled_today}</strong> scheduled |
+                            <strong style="color: ${availColor};">${data.available_slots}</strong>/${data.max_per_day} available${approvedInfo}
                         `;
+                    }
+                } else {
+                    console.error('Global capacity error:', data.error);
+                    if (infoEl) {
+                        infoEl.innerHTML = '<span style="color: var(--danger-color);">Error loading capacity</span>';
                     }
                 }
             } catch (error) {
                 console.error('Error loading global capacity:', error);
+                if (infoEl) {
+                    infoEl.innerHTML = '<span style="color: var(--danger-color);">Error loading capacity</span>';
+                }
             }
         }
 
@@ -1721,6 +1739,7 @@
 
                 closeModal('addProspectsModal');
                 loadCampaigns();
+                loadGlobalCapacity(); // Refresh capacity immediately
 
                 // Automatically start research and email generation
                 if (insertedRows && insertedRows.length > 0) {
@@ -1821,8 +1840,9 @@
             document.getElementById('progressFill').style.width = '100%';
             document.getElementById('progressFill').style.background = errors > 0 ? 'var(--warning-color)' : 'var(--success-color)';
 
-            // Refresh campaigns list
+            // Refresh campaigns list and capacity
             loadCampaigns();
+            loadGlobalCapacity();
 
             // Remove progress after delay
             setTimeout(() => {
