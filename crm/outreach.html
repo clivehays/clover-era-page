@@ -1313,8 +1313,8 @@
                 // Update campaign status
                 await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
 
-                // Process pending prospects if any
-                if (pendingCount > 0) {
+                // Process prospects that need research or emails
+                if (pendingCount > 0 || readyWithoutEmailsCount > 0) {
                     const processResult = await processPendingProspects(id);
 
                     // Also send approved emails
