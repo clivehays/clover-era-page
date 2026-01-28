@@ -651,6 +651,14 @@
 
         <!-- Campaigns Tab -->
         <div id="campaignsTab" class="tab-content active">
+            <!-- Global Daily Capacity -->
+            <div id="globalCapacity" class="global-capacity" style="display: none; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="font-weight: 600;">Daily Email Capacity</div>
+                    <div id="globalCapacityInfo" style="color: var(--text-secondary);"></div>
+                </div>
+            </div>
+
             <div id="campaignsLoading" class="loading">
                 <div class="spinner"></div>
                 <p>Loading campaigns...</p>
@@ -954,10 +962,6 @@
                                 <div class="number">${campaign.emails_replied || 0}</div>
                                 <div class="label">Replied</div>
                             </div>
-                        </div>
-                        <div id="capacity-${campaign.id}" style="margin-top: 0.75rem; padding: 0.5rem; background: var(--light-gray); border-radius: 6px; font-size: 0.8rem; display: none;">
-                            <span style="color: var(--text-secondary);">Daily capacity: </span>
-                            <span class="capacity-info"></span>
                         </div>
                         <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             ${campaign.status === 'draft' ? `
@@ -1397,7 +1401,10 @@
         // Alias for backward compatibility
         const sendNow = sendApprovedEmails;
 
-        async function loadCampaignCapacity(campaignId) {
+        // Global capacity data (shared across all campaigns)
+        let globalCapacityData = null;
+
+        async function loadGlobalCapacity() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
                     method: 'POST',
@@ -1405,46 +1412,73 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     },
-                    body: JSON.stringify({ type: 'get_capacity', campaign_id: campaignId })
+                    body: JSON.stringify({ type: 'get_global_capacity' })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    const capacityEl = document.getElementById(`capacity-${campaignId}`);
-                    if (capacityEl) {
-                        capacityEl.style.display = 'block';
-                        const infoEl = capacityEl.querySelector('.capacity-info');
-                        if (infoEl) {
-                            infoEl.innerHTML = `
-                                <strong>${data.sent_today}</strong> sent today,
-                                <strong>${data.scheduled_today}</strong> follow-ups scheduled,
-                                <strong style="color: var(--success-green);">${data.available_slots}</strong> slots available
-                                ${data.approved_ready > 0 ? ` (<strong>${data.approved_ready}</strong> approved)` : ''}
-                            `;
-                        }
+                    globalCapacityData = data;
+                    const capacityEl = document.getElementById('globalCapacity');
+                    const infoEl = document.getElementById('globalCapacityInfo');
 
-                        // Update send button text
-                        const sendBtn = document.getElementById(`send-btn-${campaignId}`);
-                        if (sendBtn && data.approved_ready > 0) {
-                            sendBtn.textContent = `Send ${Math.min(data.approved_ready, data.available_slots)} Approved`;
-                        }
+                    if (capacityEl && infoEl) {
+                        capacityEl.style.display = 'block';
+                        const availColor = data.available_slots > 0 ? 'var(--success-green)' : 'var(--danger-color)';
+                        infoEl.innerHTML = `
+                            <strong>${data.sent_today}</strong> sent today |
+                            <strong>${data.scheduled_today}</strong> follow-ups scheduled |
+                            <strong style="color: ${availColor};">${data.available_slots}</strong> of ${data.max_per_day} slots available
+                        `;
                     }
                 }
             } catch (error) {
-                console.error('Error loading capacity:', error);
+                console.error('Error loading global capacity:', error);
+            }
+        }
+
+        async function loadCampaignCapacity(campaignId) {
+            // Just update button with approved count for this campaign
+            try {
+                const { data: approvedEmails, error } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('status', 'approved')
+                    .or(`campaign_prospect_id.in.(select id from campaign_prospects where campaign_id = '${campaignId}'),campaign_contact_id.in.(select id from campaign_contacts where campaign_id = '${campaignId}')`);
+
+                // Fallback: query via campaign_prospects
+                const { count: prospectApprovedCount } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*, campaign_prospect:campaign_prospects!inner(campaign_id)', { count: 'exact', head: true })
+                    .eq('status', 'approved')
+                    .eq('campaign_prospect.campaign_id', campaignId);
+
+                const approvedCount = prospectApprovedCount || 0;
+
+                const sendBtn = document.getElementById(`send-btn-${campaignId}`);
+                if (sendBtn && approvedCount > 0 && globalCapacityData) {
+                    const canSend = Math.min(approvedCount, globalCapacityData.available_slots);
+                    sendBtn.textContent = `Send ${canSend} Approved`;
+                } else if (sendBtn && approvedCount > 0) {
+                    sendBtn.textContent = `Send ${approvedCount} Approved`;
+                }
+            } catch (error) {
+                console.error('Error loading campaign capacity:', error);
             }
         }
 
         // Load capacity for all active campaigns after loading campaigns
         async function loadAllCampaignCapacities() {
+            // First load global capacity
+            await loadGlobalCapacity();
+
+            // Then update each campaign's approved count
             const campaignCards = document.querySelectorAll('.campaign-card');
             for (const card of campaignCards) {
                 const onclickAttr = card.getAttribute('onclick');
                 const match = onclickAttr?.match(/selectCampaign\('([^']+)'\)/);
                 if (match) {
                     const campaignId = match[1];
-                    // Check if campaign is active
                     const badge = card.querySelector('.badge-active');
                     if (badge) {
                         await loadCampaignCapacity(campaignId);

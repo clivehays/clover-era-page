@@ -44,6 +44,10 @@ serve(async (req) => {
       return await getCampaignCapacity(supabase, campaign_id);
     }
 
+    if (type === 'get_global_capacity') {
+      return await getGlobalCapacity(supabase);
+    }
+
     if (type === 'activate_campaign') {
       return await activateCampaign(supabase, campaign_id);
     }
@@ -246,46 +250,21 @@ async function processScheduledEmails(supabase: any) {
     );
   }
 
-  // Group emails by campaign to check daily limits
-  const campaignCounts: Record<string, number> = {};
+  // Check GLOBAL daily limit (across all campaigns)
   const settings = await getSettings(supabase);
   const maxPerDay = parseInt(settings.max_emails_per_day) || 50;
 
-  // Get today's send counts per campaign
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  for (const email of emails) {
-    // Get campaign ID from either contact or prospect based path
-    const campaignId = email.campaign_contact?.campaign?.id || email.campaign_prospect?.campaign?.id;
-    if (campaignId && !campaignCounts[campaignId]) {
-      // Get count from both contact and prospect emails
-      const contactIds = await getCampaignContactIds(supabase, campaignId);
-      const prospectIds = await getCampaignProspectIds(supabase, campaignId);
+  // Get GLOBAL sent count for today
+  const { count: globalSentToday } = await supabase
+    .from('outreach_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'sent')
+    .gte('sent_at', today.toISOString());
 
-      let totalCount = 0;
-      if (contactIds.length > 0) {
-        const { count: contactCount } = await supabase
-          .from('outreach_emails')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'sent')
-          .gte('sent_at', today.toISOString())
-          .in('campaign_contact_id', contactIds);
-        totalCount += contactCount || 0;
-      }
-      if (prospectIds.length > 0) {
-        const { count: prospectCount } = await supabase
-          .from('outreach_emails')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'sent')
-          .gte('sent_at', today.toISOString())
-          .in('campaign_prospect_id', prospectIds);
-        totalCount += prospectCount || 0;
-      }
-
-      campaignCounts[campaignId] = totalCount;
-    }
-  }
+  let sentCount = globalSentToday || 0;
 
   const results: Array<{ email_id: string; status: string; reason?: string; error?: string; message_id?: string }> = [];
   const fromEmail = settings.from_email || DEFAULT_FROM_EMAIL;
@@ -298,8 +277,8 @@ async function processScheduledEmails(supabase: any) {
     const campaign = email.campaign_contact?.campaign || email.campaign_prospect?.campaign;
     const recipient = isProspectBased ? email.prospect : email.contact;
 
-    // Check daily limit
-    if (campaignId && campaignCounts[campaignId] >= maxPerDay) {
+    // Check GLOBAL daily limit
+    if (sentCount >= maxPerDay) {
       results.push({
         email_id: email.id,
         status: 'skipped',
@@ -369,9 +348,8 @@ async function processScheduledEmails(supabase: any) {
           .eq('id', email.campaign_contact_id);
       }
 
-      if (campaignId) {
-        campaignCounts[campaignId]++;
-      }
+      // Increment global count for this session
+      sentCount++;
 
       results.push({
         email_id: email.id,
@@ -430,64 +408,31 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
   }
 
   const settings = await getSettings(supabase);
-  const maxPerDay = campaign.max_emails_per_day || parseInt(settings.max_emails_per_day) || 50;
+  const maxPerDay = parseInt(settings.max_emails_per_day) || 50;
 
-  // Get today's send count for this campaign (both contact and prospect emails)
+  // Get GLOBAL send count (across ALL campaigns - this is the real limit)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const contactIds = await getCampaignContactIds(supabase, campaignId);
-  const prospectIds = await getCampaignProspectIds(supabase, campaignId);
+  // Count ALL sent emails today (global)
+  const { count: sentToday } = await supabase
+    .from('outreach_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'sent')
+    .gte('sent_at', today.toISOString());
 
-  let sentToday = 0;
-  let scheduledToday = 0;
-
-  if (contactIds.length > 0) {
-    // Count sent today
-    const { count: contactSentCount } = await supabase
-      .from('outreach_emails')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'sent')
-      .gte('sent_at', today.toISOString())
-      .in('campaign_contact_id', contactIds);
-    sentToday += contactSentCount || 0;
-
-    // Count scheduled for today (follow-ups that will auto-send)
-    const { count: contactScheduledCount } = await supabase
-      .from('outreach_emails')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'scheduled')
-      .gte('scheduled_at', today.toISOString())
-      .lt('scheduled_at', tomorrow.toISOString())
-      .in('campaign_contact_id', contactIds);
-    scheduledToday += contactScheduledCount || 0;
-  }
-
-  if (prospectIds.length > 0) {
-    // Count sent today
-    const { count: prospectSentCount } = await supabase
-      .from('outreach_emails')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'sent')
-      .gte('sent_at', today.toISOString())
-      .in('campaign_prospect_id', prospectIds);
-    sentToday += prospectSentCount || 0;
-
-    // Count scheduled for today (follow-ups that will auto-send)
-    const { count: prospectScheduledCount } = await supabase
-      .from('outreach_emails')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'scheduled')
-      .gte('scheduled_at', today.toISOString())
-      .lt('scheduled_at', tomorrow.toISOString())
-      .in('campaign_prospect_id', prospectIds);
-    scheduledToday += prospectScheduledCount || 0;
-  }
+  // Count ALL scheduled emails for today (global)
+  const { count: scheduledToday } = await supabase
+    .from('outreach_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'scheduled')
+    .gte('scheduled_at', today.toISOString())
+    .lt('scheduled_at', tomorrow.toISOString());
 
   // Account for both sent AND scheduled emails in the daily limit
-  const usedToday = sentToday + scheduledToday;
+  const usedToday = (sentToday || 0) + (scheduledToday || 0);
   const remaining = maxPerDay - usedToday;
 
   if (remaining <= 0) {
@@ -961,6 +906,59 @@ async function activateCampaign(supabase: any, campaignId: string) {
       success: true,
       activated: true,
       ...batchData,
+    }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+  );
+}
+
+// Get GLOBAL capacity - across ALL campaigns (this is the real limit)
+async function getGlobalCapacity(supabase: any) {
+  const settings = await getSettings(supabase);
+  const maxPerDay = parseInt(settings.max_emails_per_day) || 50;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // Count ALL sent emails today (across all campaigns)
+  const { count: sentToday } = await supabase
+    .from('outreach_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'sent')
+    .gte('sent_at', today.toISOString());
+
+  // Count ALL scheduled emails for today (across all campaigns)
+  const { count: scheduledToday } = await supabase
+    .from('outreach_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'scheduled')
+    .gte('scheduled_at', today.toISOString())
+    .lt('scheduled_at', tomorrow.toISOString());
+
+  // Count ALL approved emails ready to send (across all campaigns)
+  const { count: approvedReady } = await supabase
+    .from('outreach_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'approved');
+
+  const sent = sentToday || 0;
+  const scheduled = scheduledToday || 0;
+  const approved = approvedReady || 0;
+  const usedToday = sent + scheduled;
+  const availableSlots = Math.max(0, maxPerDay - usedToday);
+  const canSendNow = Math.min(approved, availableSlots);
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      max_per_day: maxPerDay,
+      sent_today: sent,
+      scheduled_today: scheduled,
+      used_today: usedToday,
+      available_slots: availableSlots,
+      approved_ready: approved,
+      can_send_now: canSendNow,
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   );
