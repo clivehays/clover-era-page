@@ -40,6 +40,14 @@ serve(async (req) => {
       return await sendCampaignBatch(supabase, campaign_id);
     }
 
+    if (type === 'get_capacity') {
+      return await getCampaignCapacity(supabase, campaign_id);
+    }
+
+    if (type === 'activate_campaign') {
+      return await activateCampaign(supabase, campaign_id);
+    }
+
     throw new Error(`Unknown type: ${type}`);
 
   } catch (error) {
@@ -427,39 +435,69 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
   // Get today's send count for this campaign (both contact and prospect emails)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
   const contactIds = await getCampaignContactIds(supabase, campaignId);
   const prospectIds = await getCampaignProspectIds(supabase, campaignId);
 
   let sentToday = 0;
+  let scheduledToday = 0;
+
   if (contactIds.length > 0) {
-    const { count: contactCount } = await supabase
+    // Count sent today
+    const { count: contactSentCount } = await supabase
       .from('outreach_emails')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'sent')
       .gte('sent_at', today.toISOString())
       .in('campaign_contact_id', contactIds);
-    sentToday += contactCount || 0;
+    sentToday += contactSentCount || 0;
+
+    // Count scheduled for today (follow-ups that will auto-send)
+    const { count: contactScheduledCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'scheduled')
+      .gte('scheduled_at', today.toISOString())
+      .lt('scheduled_at', tomorrow.toISOString())
+      .in('campaign_contact_id', contactIds);
+    scheduledToday += contactScheduledCount || 0;
   }
+
   if (prospectIds.length > 0) {
-    const { count: prospectCount } = await supabase
+    // Count sent today
+    const { count: prospectSentCount } = await supabase
       .from('outreach_emails')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'sent')
       .gte('sent_at', today.toISOString())
       .in('campaign_prospect_id', prospectIds);
-    sentToday += prospectCount || 0;
+    sentToday += prospectSentCount || 0;
+
+    // Count scheduled for today (follow-ups that will auto-send)
+    const { count: prospectScheduledCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'scheduled')
+      .gte('scheduled_at', today.toISOString())
+      .lt('scheduled_at', tomorrow.toISOString())
+      .in('campaign_prospect_id', prospectIds);
+    scheduledToday += prospectScheduledCount || 0;
   }
 
-  const remaining = maxPerDay - sentToday;
+  // Account for both sent AND scheduled emails in the daily limit
+  const usedToday = sentToday + scheduledToday;
+  const remaining = maxPerDay - usedToday;
 
   if (remaining <= 0) {
     return new Response(
       JSON.stringify({
         success: true,
         sent: 0,
-        message: 'Daily limit reached',
+        message: 'Daily limit reached (including scheduled follow-ups)',
         sent_today: sentToday,
+        scheduled_today: scheduledToday,
         max_per_day: maxPerDay,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
@@ -792,4 +830,138 @@ async function scheduleFollowUpEmails(
   }
 
   console.log(`Scheduled ${followUpEmails.length} follow-up emails`);
+}
+
+// Get campaign capacity - how many new prospects can be emailed today
+async function getCampaignCapacity(supabase: any, campaignId: string) {
+  if (!campaignId) {
+    throw new Error('campaign_id is required');
+  }
+
+  const { data: campaign, error: campaignError } = await supabase
+    .from('outreach_campaigns')
+    .select('*')
+    .eq('id', campaignId)
+    .single();
+
+  if (campaignError || !campaign) {
+    throw new Error(`Campaign not found: ${campaignError?.message}`);
+  }
+
+  const settings = await getSettings(supabase);
+  const maxPerDay = campaign.max_emails_per_day || parseInt(settings.max_emails_per_day) || 50;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const contactIds = await getCampaignContactIds(supabase, campaignId);
+  const prospectIds = await getCampaignProspectIds(supabase, campaignId);
+
+  let sentToday = 0;
+  let scheduledToday = 0;
+  let approvedReady = 0;
+
+  if (contactIds.length > 0) {
+    const { count: contactSentCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'sent')
+      .gte('sent_at', today.toISOString())
+      .in('campaign_contact_id', contactIds);
+    sentToday += contactSentCount || 0;
+
+    const { count: contactScheduledCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'scheduled')
+      .gte('scheduled_at', today.toISOString())
+      .lt('scheduled_at', tomorrow.toISOString())
+      .in('campaign_contact_id', contactIds);
+    scheduledToday += contactScheduledCount || 0;
+
+    const { count: contactApprovedCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'approved')
+      .in('campaign_contact_id', contactIds);
+    approvedReady += contactApprovedCount || 0;
+  }
+
+  if (prospectIds.length > 0) {
+    const { count: prospectSentCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'sent')
+      .gte('sent_at', today.toISOString())
+      .in('campaign_prospect_id', prospectIds);
+    sentToday += prospectSentCount || 0;
+
+    const { count: prospectScheduledCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'scheduled')
+      .gte('scheduled_at', today.toISOString())
+      .lt('scheduled_at', tomorrow.toISOString())
+      .in('campaign_prospect_id', prospectIds);
+    scheduledToday += prospectScheduledCount || 0;
+
+    const { count: prospectApprovedCount } = await supabase
+      .from('outreach_emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'approved')
+      .in('campaign_prospect_id', prospectIds);
+    approvedReady += prospectApprovedCount || 0;
+  }
+
+  const usedToday = sentToday + scheduledToday;
+  const availableSlots = Math.max(0, maxPerDay - usedToday);
+  const canSendNow = Math.min(approvedReady, availableSlots);
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      max_per_day: maxPerDay,
+      sent_today: sentToday,
+      scheduled_today: scheduledToday,
+      used_today: usedToday,
+      available_slots: availableSlots,
+      approved_ready: approvedReady,
+      can_send_now: canSendNow,
+    }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+  );
+}
+
+// Activate campaign and send approved emails
+async function activateCampaign(supabase: any, campaignId: string) {
+  if (!campaignId) {
+    throw new Error('campaign_id is required');
+  }
+
+  // Update campaign status to active
+  const { error: updateError } = await supabase
+    .from('outreach_campaigns')
+    .update({ status: 'active' })
+    .eq('id', campaignId);
+
+  if (updateError) {
+    throw new Error(`Failed to activate campaign: ${updateError.message}`);
+  }
+
+  // Now send approved emails (reuse existing batch logic)
+  const batchResult = await sendCampaignBatch(supabase, campaignId);
+
+  // Parse the response to get the data
+  const batchData = await batchResult.json();
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      activated: true,
+      ...batchData,
+    }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+  );
 }

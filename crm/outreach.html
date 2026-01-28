@@ -955,22 +955,29 @@
                                 <div class="label">Replied</div>
                             </div>
                         </div>
-                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <div id="capacity-${campaign.id}" style="margin-top: 0.75rem; padding: 0.5rem; background: var(--light-gray); border-radius: 6px; font-size: 0.8rem; display: none;">
+                            <span style="color: var(--text-secondary);">Daily capacity: </span>
+                            <span class="capacity-info"></span>
+                        </div>
+                        <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             ${campaign.status === 'draft' ? `
                                 <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); activateCampaign('${campaign.id}')">Activate</button>
                             ` : ''}
                             ${campaign.status === 'active' ? `
-                                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); sendNow('${campaign.id}')">Send Now</button>
+                                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); sendApprovedEmails('${campaign.id}')" id="send-btn-${campaign.id}">Send Approved</button>
                                 <button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); pauseCampaign('${campaign.id}')">Pause</button>
                             ` : ''}
                             ${campaign.status === 'paused' ? `
                                 <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); resumeCampaign('${campaign.id}')">Resume</button>
                             ` : ''}
-                            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showAddProspectsModal('${campaign.id}')">+ Add Prospects</button>
+                            <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showAddProspectsModal('${campaign.id}')">+ Add</button>
                             <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteCampaign('${campaign.id}', '${campaign.name.replace(/'/g, "\\'")}')">Delete</button>
                         </div>
                     </div>
                 `).join('');
+
+                // Load capacity info for active campaigns
+                setTimeout(loadAllCampaignCapacities, 100);
 
             } catch (error) {
                 console.error('Error loading campaigns:', error);
@@ -1365,20 +1372,84 @@
             return result;
         }
 
-        async function sendNow(campaignId) {
+        async function sendApprovedEmails(campaignId) {
             try {
                 const result = await sendCampaignEmails(campaignId);
 
                 loadCampaigns();
                 loadStats();
+                loadCampaignCapacity(campaignId);
 
                 if (result.sent > 0) {
-                    alert(`Sent ${result.sent} email(s)!`);
+                    let message = `Sent ${result.sent} Email 1(s)!`;
+                    if (result.scheduled_today > 0) {
+                        message += `\n\n${result.scheduled_today} follow-up(s) scheduled for today will send automatically.`;
+                    }
+                    alert(message);
                 } else {
                     alert(result.message || 'No approved emails to send.');
                 }
             } catch (error) {
                 alert('Error sending emails: ' + error.message);
+            }
+        }
+
+        // Alias for backward compatibility
+        const sendNow = sendApprovedEmails;
+
+        async function loadCampaignCapacity(campaignId) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ type: 'get_capacity', campaign_id: campaignId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const capacityEl = document.getElementById(`capacity-${campaignId}`);
+                    if (capacityEl) {
+                        capacityEl.style.display = 'block';
+                        const infoEl = capacityEl.querySelector('.capacity-info');
+                        if (infoEl) {
+                            infoEl.innerHTML = `
+                                <strong>${data.sent_today}</strong> sent today,
+                                <strong>${data.scheduled_today}</strong> follow-ups scheduled,
+                                <strong style="color: var(--success-green);">${data.available_slots}</strong> slots available
+                                ${data.approved_ready > 0 ? ` (<strong>${data.approved_ready}</strong> approved)` : ''}
+                            `;
+                        }
+
+                        // Update send button text
+                        const sendBtn = document.getElementById(`send-btn-${campaignId}`);
+                        if (sendBtn && data.approved_ready > 0) {
+                            sendBtn.textContent = `Send ${Math.min(data.approved_ready, data.available_slots)} Approved`;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading capacity:', error);
+            }
+        }
+
+        // Load capacity for all active campaigns after loading campaigns
+        async function loadAllCampaignCapacities() {
+            const campaignCards = document.querySelectorAll('.campaign-card');
+            for (const card of campaignCards) {
+                const onclickAttr = card.getAttribute('onclick');
+                const match = onclickAttr?.match(/selectCampaign\('([^']+)'\)/);
+                if (match) {
+                    const campaignId = match[1];
+                    // Check if campaign is active
+                    const badge = card.querySelector('.badge-active');
+                    if (badge) {
+                        await loadCampaignCapacity(campaignId);
+                    }
+                }
             }
         }
 
