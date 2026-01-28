@@ -1458,20 +1458,23 @@
         async function loadCampaignCapacity(campaignId) {
             // Just update button with approved count for this campaign
             try {
-                const { data: approvedEmails, error } = await supabaseClient
-                    .from('outreach_emails')
-                    .select('id', { count: 'exact', head: true })
-                    .eq('status', 'approved')
-                    .or(`campaign_prospect_id.in.(select id from campaign_prospects where campaign_id = '${campaignId}'),campaign_contact_id.in.(select id from campaign_contacts where campaign_id = '${campaignId}')`);
+                // Get campaign prospect IDs first, then query emails
+                const { data: campaignProspects } = await supabaseClient
+                    .from('campaign_prospects')
+                    .select('id')
+                    .eq('campaign_id', campaignId);
 
-                // Fallback: query via campaign_prospects
-                const { count: prospectApprovedCount } = await supabaseClient
-                    .from('outreach_emails')
-                    .select('*, campaign_prospect:campaign_prospects!inner(campaign_id)', { count: 'exact', head: true })
-                    .eq('status', 'approved')
-                    .eq('campaign_prospect.campaign_id', campaignId);
+                const prospectIds = (campaignProspects || []).map(cp => cp.id);
 
-                const approvedCount = prospectApprovedCount || 0;
+                let approvedCount = 0;
+                if (prospectIds.length > 0) {
+                    const { count } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('status', 'approved')
+                        .in('campaign_prospect_id', prospectIds);
+                    approvedCount = count || 0;
+                }
 
                 const sendBtn = document.getElementById(`send-btn-${campaignId}`);
                 if (sendBtn && approvedCount > 0 && globalCapacityData) {
