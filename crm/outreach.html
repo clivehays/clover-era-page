@@ -1670,7 +1670,10 @@
                     status: 'pending'
                 }));
 
-                const { error } = await supabaseClient.from('campaign_prospects').insert(inserts);
+                const { data: insertedRows, error } = await supabaseClient
+                    .from('campaign_prospects')
+                    .insert(inserts)
+                    .select('id, prospect_id');
                 if (error) throw error;
 
                 // Update prospect status to 'pending'
@@ -1684,10 +1687,113 @@
 
                 closeModal('addProspectsModal');
                 loadCampaigns();
-                alert(`Added ${prospectIds.length} prospects to campaign.\n\nClick "Activate" to automatically research them and generate draft emails.`);
+
+                // Automatically start research and email generation
+                if (insertedRows && insertedRows.length > 0) {
+                    const confirmed = confirm(`Added ${prospectIds.length} prospects to campaign.\n\nStart research and email generation now?\n\n(This will use API credits for each prospect)`);
+
+                    if (confirmed) {
+                        // Process prospects in background
+                        processNewProspects(insertedRows);
+                    }
+                }
             } catch (error) {
                 alert('Error adding prospects: ' + error.message);
             }
+        }
+
+        // Process newly added prospects (research + email generation)
+        async function processNewProspects(campaignProspects) {
+            const total = campaignProspects.length;
+            let processed = 0;
+            let errors = 0;
+
+            // Show progress notification
+            const progressDiv = document.createElement('div');
+            progressDiv.id = 'processingProgress';
+            progressDiv.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; min-width: 280px;';
+            progressDiv.innerHTML = `
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">Processing Prospects</div>
+                <div id="progressText" style="color: var(--text-secondary); margin-bottom: 0.5rem;">Starting...</div>
+                <div style="background: var(--border-color); border-radius: 4px; height: 8px; overflow: hidden;">
+                    <div id="progressFill" style="background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                </div>
+            `;
+            document.body.appendChild(progressDiv);
+
+            for (const cp of campaignProspects) {
+                processed++;
+                const pct = Math.round((processed / total) * 100);
+                document.getElementById('progressText').textContent = `Processing ${processed}/${total}...`;
+                document.getElementById('progressFill').style.width = pct + '%';
+
+                try {
+                    // Step 1: Update status to researching
+                    await supabaseClient
+                        .from('campaign_prospects')
+                        .update({ status: 'researching' })
+                        .eq('id', cp.id);
+
+                    // Step 2: Call research function
+                    const researchResponse = await fetch(`${SUPABASE_URL}/functions/v1/research-prospect`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({ campaign_prospect_id: cp.id })
+                    });
+
+                    const researchResult = await researchResponse.json();
+                    if (!researchResult.success) {
+                        console.error('Research failed:', researchResult.error);
+                        errors++;
+                        continue;
+                    }
+
+                    // Step 3: Generate emails
+                    const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({ campaign_prospect_id: cp.id })
+                    });
+
+                    const emailResult = await emailResponse.json();
+                    if (!emailResult.success) {
+                        console.error('Email generation failed:', emailResult.error);
+                        errors++;
+                        continue;
+                    }
+
+                    // Step 4: Update status to ready
+                    await supabaseClient
+                        .from('campaign_prospects')
+                        .update({ status: 'ready' })
+                        .eq('id', cp.id);
+
+                } catch (err) {
+                    console.error('Error processing prospect:', err);
+                    errors++;
+                }
+            }
+
+            // Update progress to complete
+            document.getElementById('progressText').textContent = errors > 0
+                ? `Done! ${total - errors} ready, ${errors} errors`
+                : `Done! ${total} prospects ready for review`;
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressFill').style.background = errors > 0 ? 'var(--warning-color)' : 'var(--success-color)';
+
+            // Refresh campaigns list
+            loadCampaigns();
+
+            // Remove progress after delay
+            setTimeout(() => {
+                progressDiv.remove();
+            }, 5000);
         }
 
         // Prospects Queue
