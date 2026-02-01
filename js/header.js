@@ -409,10 +409,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <strong>Team Health Assessment</strong>
                             <div class="dropdown-description">5-minute diagnosis for managers</div>
                         </a>
-                        <a href="/business-case/">
-                            <strong>Turnover Cost Calculator</strong>
-                            <div class="dropdown-description">See your real turnover cost</div>
-                        </a>
                     </div>
                 </div>
                 <a href="/pricing/">PRICING</a>

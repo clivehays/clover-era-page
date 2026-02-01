@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h4>FREE TOOLS</h4>
                 <ul>
                     <li><a href="/team-health/">Team Health Assessment</a></li>
-                    <li><a href="/business-case/">Turnover Cost Calculator</a></li>
+
                     <li><a href="/calculator/">ROI Calculator</a></li>
                 </ul>
             </div>
