@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA | Team + Coaching</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/images/favicon-32x32.png">
+
+    <meta name="description" content="Team + Coaching from Clover ERA. $2,500/month for dedicated coaching alongside the Belonging Score platform. 6-month commitment. Limited to 30 clients.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cloverera.com/coaching/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Clover ERA | Team + Coaching">
+    <meta property="og:description" content="Team + Coaching from Clover ERA. $2,500/month for dedicated coaching alongside the Belonging Score platform. 6-month commitment. Limited to 30 clients.">
+    <meta property="og:url" content="https://cloverera.com/coaching/">
+    <meta property="og:type" content="website">
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://cloverera.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Team + Coaching",
+                "item": "https://cloverera.com/coaching/"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Service Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Clover ERA Team + Coaching",
+        "provider": {
+            "@type": "Organization",
+            "name": "Clover ERA"
+        },
+        "description": "Dedicated coaching alongside the Belonging Score platform. $2,500/month, 6-month commitment.",
+        "offers": {
+            "@type": "Offer",
+            "price": "2500",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --teal: #46AEB8;
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--white);
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 50%, #3d2b2b 100%);
+            color: var(--white);
+            padding: 7rem 2rem 5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(2.25rem, 5vw, 3.25rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--white);
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subheadline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-body {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-body p {
+            margin-bottom: 1.25rem;
+        }
+
+        .hero-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-coral {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.1rem 2.5rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 1;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-coral:hover {
+            background: var(--dark-coral);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        .btn-coral-full {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.1rem 2.5rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-coral-full:hover {
+            background: var(--dark-coral);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        .hero-note {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========================================
+           CONTENT SECTIONS
+           ======================================== */
+        .section-white {
+            background: var(--white);
+            padding: 5rem 2rem;
+        }
+
+        .section-gray {
+            background: var(--light-gray);
+            padding: 5rem 2rem;
+        }
+
+        .section-charcoal {
+            background: var(--charcoal);
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-charcoal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .section-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 2.5rem;
+            line-height: 1.2;
+        }
+
+        .section-body {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.85;
+        }
+
+        .section-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ========================================
+           WHAT YOU GET - 2x3 GRID
+           ======================================== */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-left: 4px solid var(--coral);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-card-title {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .feature-card-body {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           HOW IT WORKS - TIMELINE
+           ======================================== */
+        .timeline {
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            align-items: flex-start;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-number {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background: var(--coral);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 0.25rem;
+        }
+
+        .timeline-title {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .timeline-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--coral);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-body {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        /* ========================================
+           WHO THIS IS FOR - TWO COLUMNS
+           ======================================== */
+        .who-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .who-column {
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .who-column-for {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .who-column-not {
+            background: var(--light-gray);
+            border: 1px solid var(--medium-gray);
+        }
+
+        .who-column-title {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: 1.25rem;
+            line-height: 1.3;
+        }
+
+        .who-column-for .who-column-title {
+            color: #166534;
+        }
+
+        .who-column-not .who-column-title {
+            color: var(--text-secondary);
+        }
+
+        .who-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .who-list li {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            align-items: flex-start;
+        }
+
+        .who-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .check-icon {
+            flex-shrink: 0;
+            color: var(--primary-teal);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .x-icon {
+            flex-shrink: 0;
+            color: #9CA3AF;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           YOUR COACH SECTION
+           ======================================== */
+        .coach-body {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .coach-body p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.85;
+            margin-bottom: 1.5rem;
+        }
+
+        .coach-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .note-box {
+            background: var(--white);
+            border-left: 4px solid var(--coral);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin-top: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .note-box p {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* ========================================
+           INVESTMENT / PRICING CARD
+           ======================================== */
+        .pricing-card {
+            max-width: 550px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .pricing-amount {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 3.5rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .pricing-period {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .pricing-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            align-items: flex-start;
+        }
+
+        .pricing-features li:last-child {
+            margin-bottom: 0;
+        }
+
+        .pricing-features .check-icon {
+            color: var(--primary-teal);
+            font-size: 1.1rem;
+        }
+
+        .pricing-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 1.25rem;
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           FAQ SECTION
+           ======================================== */
+        .faq-item {
+            border-left: 4px solid var(--primary-teal);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--white);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .faq-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-question {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .faq-answer {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        /* ========================================
+           FINAL CTA SECTION
+           ======================================== */
+        .final-cta {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-cta h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .final-cta-body {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 650px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.8;
+        }
+
+        .final-cta-pricing {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .final-cta-note {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 1.25rem;
+        }
+
+        .final-cta-note a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: underline;
+        }
+
+        .final-cta-note a:hover {
+            color: var(--white);
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1.5rem 3.5rem;
+            }
+
+            .section-white,
+            .section-gray,
+            .section-charcoal {
+                padding: 3.5rem 1.5rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .who-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-item {
+                gap: 1rem;
+            }
+
+            .timeline-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .pricing-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .pricing-amount {
+                font-size: 2.75rem;
+            }
+
+            .faq-item {
+                padding: 1rem 1.25rem;
+            }
+
+            .note-box {
+                margin-top: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <!-- ========================================
+         SECTION 1: HERO
+         ======================================== -->
+    <section class="hero">
+        <h1>A Coach in Your Corner</h1>
+        <p class="hero-subheadline">The platform shows you what's happening on your team. A coach shows you what to do about it.</p>
+        <div class="hero-body">
+            <p>You see the Belonging Score dropping. You know Marcus is disengaged. You suspect the tension between Sarah and Dev is worse than either admits.</p>
+            <p>But knowing isn't the same as fixing.</p>
+            <p>Team + Coaching pairs Clover ERA with a dedicated coach who knows your team's data, joins you twice a month, and is available when something urgent comes up. You're not figuring this out alone.</p>
+        </div>
+        <a href="mailto:contact@cloverera.com?subject=Team%20%2B%20Coaching%20Inquiry" class="btn-coral">Apply Now</a>
+        <p class="hero-note">$2,500/month. 6-month commitment. Limited to 30 clients.</p>
+    </section>
+
+    <!-- ========================================
+         SECTION 2: WHAT YOU GET
+         ======================================== -->
+    <section class="section-white">
+        <div class="section-inner">
+            <h2 class="section-header">What You Get</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-card-title">Platform Access</div>
+                    <div class="feature-card-body">Everything in the Team tier: Belonging Score, weekly pulse data, Action Hub, trend analysis, coaching prompts, leadership reports. This is the foundation.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-title">Dedicated Coach</div>
+                    <div class="feature-card-body">One coach assigned to you for the full 6 months. They know your team's data. They know the history. You don't have to re-explain the situation every call.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-title">Twice-Monthly Sessions</div>
+                    <div class="feature-card-body">Two 60-minute coaching calls per month. Review your team's data together. Prepare for difficult conversations. Debrief after them. Work through specific situations with someone who gets it.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-title">Async Access</div>
+                    <div class="feature-card-body">Slack or email access to your coach between sessions. When something comes up Tuesday afternoon and your next call isn't until Friday, you can reach out. 24-hour response time.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-title">Custom Action Plans</div>
+                    <div class="feature-card-body">Your coach builds a monthly action plan based on your team's actual data. Not generic advice from a management book. Specific actions tied to what's happening with your people.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-title">Quarterly Strategy Review</div>
+                    <div class="feature-card-body">Every 90 days, a longer session to step back. What's working? What's not? Where should you focus for the next quarter? Recalibrate based on results.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 3: HOW IT WORKS
+         ======================================== -->
+    <section class="section-gray">
+        <div class="section-inner">
+            <h2 class="section-header">How It Works</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-number">1</div>
+                    <div class="timeline-content">
+                        <div class="timeline-label">Week 1</div>
+                        <div class="timeline-title">Kickoff</div>
+                        <div class="timeline-body">You sign up. We match you with a coach. You have a 90-minute kickoff session to review your team's situation, set goals, and build your first action plan.</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">2</div>
+                    <div class="timeline-content">
+                        <div class="timeline-label">Weeks 2-24</div>
+                        <div class="timeline-title">Ongoing Coaching</div>
+                        <div class="timeline-body">Twice-monthly calls. Async support. Monthly action plan updates. Your coach is in your corner as you navigate difficult conversations, address drifting team members, and build a healthier team.</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">3</div>
+                    <div class="timeline-content">
+                        <div class="timeline-label">Every 90 Days</div>
+                        <div class="timeline-title">Strategy Review</div>
+                        <div class="timeline-body">Step back and assess. Review what's changed. Adjust your approach. Set priorities for the next quarter.</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">4</div>
+                    <div class="timeline-content">
+                        <div class="timeline-label">After 6 Months</div>
+                        <div class="timeline-title">Your Call</div>
+                        <div class="timeline-body">You can continue month-to-month, transition to the Team tier on your own, or end the engagement. No pressure. If you've built the skills you need, you're ready to fly solo.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 4: WHO THIS IS FOR
+         ======================================== -->
+    <section class="section-white">
+        <div class="section-inner">
+            <h2 class="section-header">Who This Is For</h2>
+            <div class="who-grid">
+                <div class="who-column who-column-for">
+                    <div class="who-column-title">For Managers Who:</div>
+                    <ul class="who-list">
+                        <li><span class="check-icon">&#10003;</span><span>See the signals but don't know what to do about them</span></li>
+                        <li><span class="check-icon">&#10003;</span><span>Have tried addressing team issues alone and it hasn't worked</span></li>
+                        <li><span class="check-icon">&#10003;</span><span>Want a sounding board for difficult conversations before they happen</span></li>
+                        <li><span class="check-icon">&#10003;</span><span>Know their team's health matters but don't have time to figure it out alone</span></li>
+                        <li><span class="check-icon">&#10003;</span><span>Are tired of reading management books that don't apply to their specific situation</span></li>
+                    </ul>
+                </div>
+                <div class="who-column who-column-not">
+                    <div class="who-column-title">Not For:</div>
+                    <ul class="who-list">
+                        <li><span class="x-icon">&#10005;</span><span>Teams that need intensive intervention (see <a href="/team-coaching/" style="color: var(--primary-teal); text-decoration: underline;">Full Team Coaching</a> for that)</span></li>
+                        <li><span class="x-icon">&#10005;</span><span>Managers looking for someone to do the hard work for them</span></li>
+                        <li><span class="x-icon">&#10005;</span><span>Performance management documentation or termination support</span></li>
+                        <li><span class="x-icon">&#10005;</span><span>Leaders unwilling to examine their own contribution to team dynamics</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 5: YOUR COACH
+         ======================================== -->
+    <section class="section-gray">
+        <div class="section-inner">
+            <h2 class="section-header" style="text-align: center;">Your Coach</h2>
+            <div class="coach-body">
+                <p>Coaching is delivered by Clive Hays, Neil Hays, and Chad Williams, the Clover ERA founding team. Each has 20+ years of experience in organizational dynamics, team leadership, and the patterns that predict whether people stay or go.</p>
+                <p>You're not getting a junior coach reading from a playbook. You're getting direct access to the people who built this system.</p>
+                <p>As demand grows, we'll bring in additional certified Clover ERA coaches. But for now, it's us.</p>
+            </div>
+            <div class="note-box">
+                <p>Limited to 30 clients total. When we're full, we're full.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 6: INVESTMENT / PRICING
+         ======================================== -->
+    <section class="section-white">
+        <div class="section-inner">
+            <h2 class="section-header" style="text-align: center;">Investment</h2>
+            <div class="pricing-card">
+                <div class="pricing-amount">$2,500<span class="pricing-period">/month</span></div>
+                <div class="pricing-subtitle">6-month commitment ($15,000 total)</div>
+                <ul class="pricing-features">
+                    <li><span class="check-icon">&#10003;</span><span>Full Team tier platform access (up to 20 people)</span></li>
+                    <li><span class="check-icon">&#10003;</span><span>Dedicated coach for 6 months</span></li>
+                    <li><span class="check-icon">&#10003;</span><span>2x monthly coaching sessions (60 min each)</span></li>
+                    <li><span class="check-icon">&#10003;</span><span>Async access via Slack/email (24-hour response)</span></li>
+                    <li><span class="check-icon">&#10003;</span><span>Custom monthly action plans</span></li>
+                    <li><span class="check-icon">&#10003;</span><span>Quarterly strategy reviews (90 min)</span></li>
+                </ul>
+                <a href="mailto:contact@cloverera.com?subject=Team%20%2B%20Coaching%20Inquiry" class="btn-coral-full">Apply Now</a>
+                <p class="pricing-note">Applications are reviewed within 48 hours. If accepted, you'll schedule your kickoff session and start the following week.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 7: FAQ
+         ======================================== -->
+    <section class="section-gray">
+        <div class="section-inner">
+            <h2 class="section-header">Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">How is this different from the $495/month Team tier?</div>
+                <div class="faq-answer">Team tier gives you the platform. You see your Belonging Score and get recommendations, but you're on your own to act on them. Team + Coaching adds a dedicated coach who helps you interpret the data, prepare for difficult conversations, and stay accountable to your action plan.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How is this different from Full Team Coaching ($50-150K)?</div>
+                <div class="faq-answer">Full Team Coaching is an intensive 10-week program that includes individual coaching for every team member plus team workshops. It's a full transformation. Team + Coaching is ongoing support for you as the manager. Your team uses the platform; you get the coaching.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Why a 6-month commitment?</div>
+                <div class="faq-answer">Changing team dynamics takes time. One or two coaching sessions won't move the needle. Six months gives us enough runway to identify patterns, implement changes, and see results. After 6 months, you can continue month-to-month or transition to Team tier.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What if I need to cancel early?</div>
+                <div class="faq-answer">The 6-month commitment is firm. We structure our coaching capacity around it. If something truly unexpected happens (company closes, you leave your role), talk to us and we'll figure it out. But "I changed my mind" isn't a reason to cancel.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How are coaches matched?</div>
+                <div class="faq-answer">We consider your industry, team size, specific challenges, and timezone. Right now with three coaches, the match is straightforward. As we add coaches, we'll be more deliberate about fit.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I upgrade from Team tier to Team + Coaching?</div>
+                <div class="faq-answer">Yes. If you're already on Team tier and want to add coaching, we'll credit your current month toward the coaching subscription. Apply and mention you're an existing customer.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What happens in the coaching sessions?</div>
+                <div class="faq-answer">It depends on what you need. Typical sessions include: reviewing your team's Belonging Score data, preparing for a difficult conversation, debriefing after one, working through a specific team dynamic, or planning your approach for the coming weeks. Your coach follows your lead.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is this therapy?</div>
+                <div class="faq-answer">No. We're not therapists and this isn't mental health support. We focus on team dynamics and management skills. If something comes up that's beyond our scope, we'll tell you.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 8: FINAL CTA
+         ======================================== -->
+    <section class="section-charcoal">
+        <div class="section-inner">
+            <div class="final-cta">
+                <h2>You Don't Have to Figure This Out Alone</h2>
+                <p class="final-cta-body">Managing people is hard. Managing people while watching your team's health decline is harder. A coach who knows your situation, sees your data, and is available when things get difficult changes everything.</p>
+                <p class="final-cta-pricing">$2,500/month. 6-month commitment. 30 spots.</p>
+                <a href="mailto:contact@cloverera.com?subject=Team%20%2B%20Coaching%20Inquiry" class="btn-coral">Apply Now</a>
+                <p class="final-cta-note">Questions before applying? Email <a href="mailto:contact@cloverera.com">contact@cloverera.com</a></p>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/footer.js"></script>
+    <script src="/js/cookie-consent.js"></script>
+</body>
+</html>

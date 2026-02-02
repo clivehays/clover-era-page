@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA | See Your Team's Belonging Score</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/images/favicon-32x32.png">
+
+    <meta name="description" content="See your team's Belonging Score. Know who's drifting before they resign. $495/month for teams up to 20. No contracts. Cancel anytime.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cloverera.com/teams/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Clover ERA | See Your Team's Belonging Score">
+    <meta property="og:description" content="Know which team members are drifting before they resign. Get specific actions to bring them back. $495/month. Cancel anytime.">
+    <meta property="og:url" content="https://cloverera.com/teams/">
+    <meta property="og:type" content="website">
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://cloverera.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Teams",
+                "item": "https://cloverera.com/teams/"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Product Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Clover ERA Team",
+        "description": "Workplace Belonging Platform for individual teams. See your team's Belonging Score and get specific actions.",
+        "offers": {
+            "@type": "Offer",
+            "price": "495",
+            "priceCurrency": "USD",
+            "priceValidUntil": "2027-12-31",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --teal: #46AEB8;
+            --primary-teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --off-white: #FAFBFC;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--white);
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 8rem 2rem 6rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 1.25rem;
+            color: var(--white);
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-ctas {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-coral);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        .hero-secondary-link {
+            display: block;
+            margin-top: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-secondary-link:hover {
+            color: var(--white);
+        }
+
+        .hero-urgency {
+            font-size: 0.9rem;
+            color: var(--coral);
+            max-width: 550px;
+            margin: 1.5rem auto 0;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== SECTION BASICS ========== */
+        .section-white {
+            background: var(--white);
+            padding: 5rem 2rem;
+        }
+
+        .section-gray {
+            background: var(--light-gray);
+            padding: 5rem 2rem;
+        }
+
+        .section-inner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-inner-wide {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* ========== THE PROBLEM ========== */
+        .problem-body p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+        }
+
+        .problem-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .problem-body .short-line {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ========== WHAT YOU GET ========== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(70, 174, 184, 0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-teal);
+        }
+
+        .feature-card h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ========== HOW IT WORKS ========== */
+        .steps-container {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2.5rem;
+            align-items: flex-start;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-teal);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .step-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .step-time {
+            font-size: 0.85rem;
+            color: var(--primary-teal);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .step p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .steps-summary {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* ========== PRICING ========== */
+        .pricing-card {
+            max-width: 500px;
+            margin: 2rem auto 0;
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .pricing-amount {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .pricing-period {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .pricing-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-annual {
+            font-size: 0.9rem;
+            color: var(--primary-teal);
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .pricing-features li svg {
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .btn-primary-full {
+            background: var(--coral);
+            color: var(--white);
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary-full:hover {
+            background: var(--dark-coral);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        .pricing-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        .pricing-extra {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .pricing-extra a {
+            color: var(--primary-teal);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .pricing-extra a:hover {
+            color: var(--deep-teal);
+        }
+
+        /* ========== THE MATH ========== */
+        .math-body p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+        }
+
+        .math-body .big-number {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .math-body .bold-line {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* ========== FAQ ========== */
+        .faq-list {
+            margin-top: 2.5rem;
+        }
+
+        .faq-item {
+            border-left: 4px solid var(--primary-teal);
+            padding: 1.5rem 1.5rem 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            background: var(--white);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .faq-item h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .faq-item p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ========== SOCIAL PROOF ========== */
+        .testimonial-block {
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            text-align: center;
+        }
+
+        .testimonial-quote {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-attr {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            line-height: 1;
+            margin-bottom: 0.35rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ========== FINAL CTA ========== */
+        .final-cta {
+            background: linear-gradient(160deg, var(--deep-teal) 0%, var(--primary-teal) 100%);
+            color: var(--white);
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .final-cta-body {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .final-cta-pricing {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 2rem;
+        }
+
+        .btn-white {
+            background: var(--white);
+            color: var(--charcoal);
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .final-cta-email {
+            margin-top: 1.25rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .final-cta-email a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+
+        .final-cta-email a:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1.5rem 4rem;
+            }
+
+            .section-white,
+            .section-gray {
+                padding: 3.5rem 1.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .steps-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .step {
+                text-align: center;
+            }
+
+            .pricing-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .stats-bar {
+                gap: 2rem;
+            }
+
+            .final-cta {
+                padding: 3.5rem 1.5rem;
+            }
+
+            .faq-item {
+                padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <!-- SECTION 1: HERO -->
+    <section class="hero">
+        <h1>See Your Team's Belonging Score</h1>
+        <p class="hero-subtitle">Know which team members are drifting before they resign. Get specific actions to bring them back. $495/month. Cancel anytime.</p>
+        <div class="hero-ctas">
+            <a href="/talk.html" class="btn-primary">Start Now</a>
+            <a href="#how-it-works" class="hero-secondary-link">See how it works &#8595;</a>
+        </div>
+        <p class="hero-urgency">Someone on your team may have already decided to leave. The question is whether you'll see it in time.</p>
+    </section>
+
+    <!-- SECTION 2: THE PROBLEM -->
+    <section class="section-white">
+        <div class="section-inner">
+            <h2 class="section-header">The Silence Before the Resignation</h2>
+            <div class="problem-body">
+                <p>Your best engineer stopped pushing back last month. Your most reliable team member just got "easier to work with." Someone who used to say "we" now says "you guys."</p>
+                <p class="short-line">These aren't signs of progress.</p>
+                <p>By the time you get the resignation letter, the decision was made weeks ago. In a meeting where they raised something and got dismissed. In a 1:1 where they hinted at frustration and heard "let's revisit that next quarter."</p>
+                <p>You're not missing the signs because you don't care. You're missing them because they're invisible until someone maps them.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: WHAT YOU GET -->
+    <section class="section-gray">
+        <div class="section-inner-wide">
+            <h2 class="section-header">What You Get</h2>
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                        </svg>
+                    </div>
+                    <h3>Belonging Score</h3>
+                    <p>Your team's overall health, updated weekly. Not a survey. Not an annual review. A real-time read on whether people feel connected or are quietly checking out.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                    </div>
+                    <h3>Individual Signals</h3>
+                    <p>See which team members are engaged and which are drifting. Not surveillance. Patterns that help you have the right conversation at the right time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                        </svg>
+                    </div>
+                    <h3>Action Hub</h3>
+                    <p>Specific recommendations based on your team's data. Not generic advice. Actions tied to what's actually happening with your people.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+                        </svg>
+                    </div>
+                    <h3>Trend Analysis</h3>
+                    <p>See how your team's Belonging Score changes over time. Know whether your interventions are working. Catch downward trends before they become departures.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+                        </svg>
+                    </div>
+                    <h3>Coaching Prompts</h3>
+                    <p>Guidance for difficult conversations. How to ask about the frustration someone isn't voicing. How to respond when you see someone pulling away.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                    </div>
+                    <h3>Leadership Reports</h3>
+                    <p>When your boss asks how the team is doing, you'll have data. Clean reports that show team health and the actions you're taking.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: HOW IT WORKS -->
+    <section class="section-white" id="how-it-works">
+        <div class="section-inner-wide">
+            <h2 class="section-header">How It Works</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Sign Up</div>
+                    <div class="step-time">5 minutes</div>
+                    <p>Create your account. No sales call. No procurement. Just you and your credit card.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Invite Your Team</div>
+                    <div class="step-time">2 minutes</div>
+                    <p>Send a link to your team members. They'll get a brief, anonymous check-in each week. Takes them 90 seconds.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">See Your Score</div>
+                    <div class="step-time">Instant</div>
+                    <p>Within one week, you'll have your team's Belonging Score. You'll see who's engaged, who's drifting, and what to do about it.</p>
+                </div>
+            </div>
+            <p class="steps-summary">That's it. No implementation project. No training sessions. You're up and running in a week.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 5: PRICING -->
+    <section class="section-gray">
+        <div class="section-inner">
+            <h2 class="section-header">Simple Pricing</h2>
+            <div class="pricing-card">
+                <div>
+                    <span class="pricing-amount">$495</span><span class="pricing-period">/month</span>
+                </div>
+                <p class="pricing-subtitle">Up to 20 people on your team</p>
+                <p class="pricing-annual">Annual: $4,950/year (save $990)</p>
+                <ul class="pricing-features">
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Belonging Score for your team
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Weekly pulse data from team members
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Individual engagement signals
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Action Hub with specific recommendations
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Manager coaching prompts
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Trend analysis and historical data
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Leadership-ready reports
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Cross-team analytics (if you add more teams)
+                    </li>
+                    <li>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#46AEB8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Executive dashboard
+                    </li>
+                </ul>
+                <a href="/talk.html" class="btn-primary-full">Start Now</a>
+                <p class="pricing-note">No contracts. Cancel anytime.</p>
+                <p class="pricing-extra">Have more than 20 people? Add another team subscription or see our company pricing for volume discounts. <a href="/pricing/">See company pricing &rarr;</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: THE MATH -->
+    <section class="section-white">
+        <div class="section-inner">
+            <h2 class="section-header">The Math</h2>
+            <div class="math-body">
+                <p>What does it cost to replace someone on your team?</p>
+                <p>Recruiting fees. Interview hours across your team. Three to six months before the new person is fully productive. Knowledge that walked out the door and never came back. The subtle hit to morale when everyone else starts wondering if they should leave too.</p>
+                <p>Conservative estimates put the cost of replacing a single mid-level employee at <span class="big-number">$150,000</span>.</p>
+                <p>Clover ERA for your team costs <span class="big-number">$5,940/year</span>.</p>
+                <p class="bold-line">Prevent one departure and you've paid for the platform for 25 years.</p>
+                <p>This isn't about ROI projections. It's about seeing the warning signs you're currently missing.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: FAQ -->
+    <section class="section-gray">
+        <div class="section-inner">
+            <h2 class="section-header">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h3>How is this different from an engagement survey?</h3>
+                    <p>Surveys happen once or twice a year. By the time you get results, people have already left. Clover ERA gives you weekly data and specific actions. It's a continuous read, not a snapshot.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Will my team know their individual scores?</h3>
+                    <p>Team members see their own responses and personal insights. You see patterns at the team level and individual signals that suggest someone may be drifting. It's designed to start conversations, not to surveil.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What if I have a small team?</h3>
+                    <p>Works for teams of any size up to 20. Even a 4-person team benefits from understanding whether people feel connected to the work and each other.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I expense this?</h3>
+                    <p>$495/month is typically within manager discretionary spending limits. No procurement needed. If your company wants to roll it out more broadly, we have volume pricing at the company level.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>How long does setup take?</h3>
+                    <p>Sign up takes 5 minutes. Inviting your team takes 2 minutes. You'll have your first Belonging Score within one week of your team completing their first check-in.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What if my company already has an engagement tool?</h3>
+                    <p>Most engagement tools measure satisfaction annually. Clover ERA measures belonging weekly and gives you specific actions. They solve different problems. Many of our customers use both.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I try it before committing?</h3>
+                    <p>We don't offer free trials because the data needs a few weeks to become meaningful. But there's no contract. If you don't see value in the first month, cancel. You're out $495, not thousands.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: SOCIAL PROOF -->
+    <section class="section-white">
+        <div class="section-inner">
+            <div class="testimonial-block">
+                <p class="testimonial-quote">"I saw Marcus was drifting three weeks before he would have resigned. One conversation changed everything. He's still here."</p>
+                <p class="testimonial-attr">Engineering Manager, 180-person SaaS company</p>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number">2.3M+</div>
+                    <div class="stat-label">professionals reached</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">67+</div>
+                    <div class="stat-label">days average</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$5.4M</div>
+                    <div class="stat-label">annual cost</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: FINAL CTA -->
+    <section class="final-cta">
+        <h2>Someone on Your Team Is Already Thinking About Leaving</h2>
+        <p class="final-cta-body">The question is whether you'll see it in time.</p>
+        <p class="final-cta-pricing">$495/month. Cancel anytime. Know your team's Belonging Score by next week.</p>
+        <a href="/talk.html" class="btn-white">Start Now</a>
+        <p class="final-cta-email">Questions? Email <a href="mailto:contact@cloverera.com">contact@cloverera.com</a></p>
+    </section>
+
+    <script src="/js/footer.js"></script>
+    <script src="/js/cookie-consent.js"></script>
+</body>
+</html>
