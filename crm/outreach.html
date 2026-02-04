@@ -757,6 +757,10 @@
                 <button class="modal-close" onclick="closeModal('addProspectsModal')">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- Search -->
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" id="prospectSearch" oninput="filterProspectsList()" placeholder="Search by name, company, title, or email..." style="width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;">
+                </div>
                 <!-- Filters -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
@@ -1652,6 +1656,7 @@
             const batchFilter = document.getElementById('filterBatch').value;
             const industryFilter = document.getElementById('filterIndustry').value;
             const employeeFilter = document.getElementById('filterEmployees').value;
+            const searchTerm = (document.getElementById('prospectSearch').value || '').toLowerCase().trim();
 
             filteredProspects = allAvailableProspects.filter(prospect => {
                 if (batchFilter && prospect.import_batch !== batchFilter) return false;
@@ -1663,6 +1668,17 @@
                     if (employeeFilter === '500-1000' && (count < 500 || count > 1000)) return false;
                     if (employeeFilter === '1000-5000' && (count < 1000 || count > 5000)) return false;
                     if (employeeFilter === '5000+' && count < 5000) return false;
+                }
+
+                if (searchTerm) {
+                    const searchable = [
+                        prospect.first_name,
+                        prospect.last_name,
+                        prospect.company_name,
+                        prospect.title,
+                        prospect.email
+                    ].filter(Boolean).join(' ').toLowerCase();
+                    if (!searchable.includes(searchTerm)) return false;
                 }
 
                 return true;
