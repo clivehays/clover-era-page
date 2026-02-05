@@ -1,4 +1,24 @@
 // header.js - Updated navigation with pillar page structure
+
+// Google Analytics 4 - Load immediately (before DOM ready)
+(function() {
+    // Check if gtag is already loaded
+    if (window.gtag) return;
+
+    // Load gtag.js script
+    const gtagScript = document.createElement('script');
+    gtagScript.async = true;
+    gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-PL5KTHRGLW';
+    document.head.appendChild(gtagScript);
+
+    // Initialize dataLayer and gtag function
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-PL5KTHRGLW');
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
     // Declare ALL variables at the top - ONCE
     let breadcrumbNav = null;
