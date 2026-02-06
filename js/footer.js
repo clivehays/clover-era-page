@@ -221,6 +221,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .book-popup-close:hover {
                 color: #1F2937;
             }
+            .book-popup-image {
+                width: 120px;
+                height: auto;
+                margin: 0 auto 1rem;
+                display: block;
+                border-radius: 4px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
             .book-popup h3 {
                 font-size: 1.5rem;
                 color: #1F2937;
@@ -301,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="book-popup">
                 <button class="book-popup-close" aria-label="Close">&times;</button>
                 <div class="book-popup-content">
+                    <img src="/images/already-gone-cover.png" alt="Already Gone Book Cover" class="book-popup-image" />
                     <h3>Already Gone</h3>
                     <p class="subtitle">78 Ways to Miss Someone Leaving</p>
                     <p>The patterns that show up before someone resigns. The moments that look like progress but signal the opposite.</p>
