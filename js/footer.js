@@ -156,5 +156,223 @@ document.addEventListener('DOMContentLoaded', function() {
     // Insert footer at the end of the body
     document.body.appendChild(footer);
 
+    // =============================================
+    // BOOK LAUNCH POPUP - Already Gone (Feb 6-11)
+    // =============================================
+    (function() {
+        // Don't show after Feb 11, 2026
+        const expiryDate = new Date('2026-02-12T00:00:00');
+        if (new Date() > expiryDate) return;
+
+        // Don't show on the book page itself
+        if (window.location.pathname.includes('/alreadygone')) return;
+
+        // Don't show if already dismissed or signed up
+        if (localStorage.getItem('book_popup_dismissed')) return;
+
+        // Add popup styles
+        const popupStyles = document.createElement('style');
+        popupStyles.textContent = `
+            .book-popup-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s, visibility 0.3s;
+            }
+            .book-popup-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .book-popup {
+                background: #FFFFFF;
+                border-radius: 12px;
+                max-width: 420px;
+                width: 90%;
+                padding: 2.5rem;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            }
+            .book-popup-overlay.active .book-popup {
+                transform: translateY(0);
+            }
+            .book-popup-close {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: #9CA3AF;
+                line-height: 1;
+                padding: 0.25rem;
+            }
+            .book-popup-close:hover {
+                color: #1F2937;
+            }
+            .book-popup h3 {
+                font-size: 1.5rem;
+                color: #1F2937;
+                margin: 0 0 0.5rem 0;
+                font-weight: 700;
+            }
+            .book-popup .subtitle {
+                color: #46AEB8;
+                font-size: 1rem;
+                margin-bottom: 1rem;
+                font-weight: 500;
+            }
+            .book-popup p {
+                color: #6B7280;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                margin-bottom: 1.5rem;
+            }
+            .book-popup-form {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .book-popup-form input {
+                padding: 0.875rem 1rem;
+                border: 1px solid #E5E7EB;
+                border-radius: 8px;
+                font-size: 1rem;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+            .book-popup-form input:focus {
+                border-color: #46AEB8;
+            }
+            .book-popup-form button {
+                background: #46AEB8;
+                color: #FFFFFF;
+                border: none;
+                padding: 0.875rem 1.5rem;
+                border-radius: 8px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s, transform 0.2s;
+            }
+            .book-popup-form button:hover {
+                background: #3A9AA3;
+                transform: translateY(-1px);
+            }
+            .book-popup-form button:disabled {
+                background: #9CA3AF;
+                cursor: not-allowed;
+                transform: none;
+            }
+            .book-popup-success {
+                text-align: center;
+                padding: 1rem 0;
+            }
+            .book-popup-success svg {
+                width: 48px;
+                height: 48px;
+                color: #46AEB8;
+                margin-bottom: 1rem;
+            }
+            .book-popup-date {
+                font-size: 0.85rem;
+                color: #9CA3AF;
+                margin-top: 1rem;
+                text-align: center;
+            }
+        `;
+        document.head.appendChild(popupStyles);
+
+        // Create popup HTML
+        const popupOverlay = document.createElement('div');
+        popupOverlay.className = 'book-popup-overlay';
+        popupOverlay.innerHTML = `
+            <div class="book-popup">
+                <button class="book-popup-close" aria-label="Close">&times;</button>
+                <div class="book-popup-content">
+                    <h3>Already Gone</h3>
+                    <p class="subtitle">78 Ways to Miss Someone Leaving</p>
+                    <p>The patterns that show up before someone resigns. The moments that look like progress but signal the opposite.</p>
+                    <form class="book-popup-form">
+                        <input type="email" name="email" placeholder="Your email" required />
+                        <button type="submit">Notify Me at Launch</button>
+                    </form>
+                    <p class="book-popup-date">Launches February 11</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popupOverlay);
+
+        // Show popup after 5 seconds
+        setTimeout(function() {
+            popupOverlay.classList.add('active');
+        }, 5000);
+
+        // Close button
+        popupOverlay.querySelector('.book-popup-close').addEventListener('click', function() {
+            popupOverlay.classList.remove('active');
+            localStorage.setItem('book_popup_dismissed', 'true');
+        });
+
+        // Close on overlay click
+        popupOverlay.addEventListener('click', function(e) {
+            if (e.target === popupOverlay) {
+                popupOverlay.classList.remove('active');
+                localStorage.setItem('book_popup_dismissed', 'true');
+            }
+        });
+
+        // Form submission
+        popupOverlay.querySelector('form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const button = form.querySelector('button');
+            const email = form.querySelector('input[name="email"]').value;
+
+            button.disabled = true;
+            button.textContent = 'Submitting...';
+
+            try {
+                const response = await fetch('/api/book-waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, source: 'popup' })
+                });
+
+                if (response.ok) {
+                    popupOverlay.querySelector('.book-popup-content').innerHTML = `
+                        <div class="book-popup-success">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <h3>You're on the list</h3>
+                            <p>We'll email you when the book launches on February 11.</p>
+                        </div>
+                    `;
+                    localStorage.setItem('book_popup_dismissed', 'true');
+                    setTimeout(function() {
+                        popupOverlay.classList.remove('active');
+                    }, 3000);
+                } else {
+                    throw new Error('Failed');
+                }
+            } catch (err) {
+                button.disabled = false;
+                button.textContent = 'Try Again';
+            }
+        });
+    })();
+
     console.log('Footer loaded successfully');
 });
