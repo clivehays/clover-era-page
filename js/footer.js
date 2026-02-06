@@ -312,10 +312,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="/images/already-gone-cover.png" alt="Already Gone Book Cover" class="book-popup-image" />
                     <h3>Already Gone</h3>
                     <p class="subtitle">78 Ways to Miss Someone Leaving</p>
-                    <p>The patterns that show up before someone resigns. The moments that look like progress but signal the opposite.</p>
+                    <p>Join the waitlist and get the free PDF: <strong>12 Early Warning Signals Your Employee Is About to Leave</strong></p>
                     <form class="book-popup-form">
-                        <input type="email" name="email" placeholder="Your email" required />
-                        <button type="submit">Notify Me at Launch</button>
+                        <input type="text" name="firstName" placeholder="First name" required />
+                        <input type="email" name="email" placeholder="Email address" required />
+                        <button type="submit">Get the Free PDF</button>
                     </form>
                     <p class="book-popup-date">Launches February 11</p>
                 </div>
@@ -347,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const form = e.target;
             const button = form.querySelector('button');
+            const firstName = form.querySelector('input[name="firstName"]').value;
             const email = form.querySelector('input[name="email"]').value;
 
             button.disabled = true;
@@ -356,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch('/api/book-waitlist', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, source: 'popup' })
+                    body: JSON.stringify({ firstName: firstName, email: email, source: 'popup' })
                 });
 
                 if (response.ok) {
@@ -365,14 +367,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <h3>You're on the list</h3>
-                            <p>We'll email you when the book launches on February 11.</p>
+                            <h3>Check your inbox</h3>
+                            <p>Your free PDF "12 Early Warning Signals" is on its way.</p>
                         </div>
                     `;
                     localStorage.setItem('book_popup_dismissed', 'true');
                     setTimeout(function() {
                         popupOverlay.classList.remove('active');
-                    }, 3000);
+                    }, 4000);
                 } else {
                     throw new Error('Failed');
                 }
