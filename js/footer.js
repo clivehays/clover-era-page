@@ -222,12 +222,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 color: #1F2937;
             }
             .book-popup-image {
-                width: 120px;
+                width: 140px;
                 height: auto;
                 margin: 0 auto 1rem;
                 display: block;
-                border-radius: 4px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             }
             .book-popup h3 {
                 font-size: 1.5rem;
