@@ -725,10 +725,29 @@
                         <input type="text" id="campaignName" required placeholder="e.g., Q1 CEO Outreach">
                     </div>
                     <div class="form-group">
-                        <label for="campaignSequence">Email Sequence *</label>
-                        <select id="campaignSequence" required>
-                            <option value="">Select a sequence...</option>
+                        <label for="campaignType">Campaign Type *</label>
+                        <select id="campaignType" required onchange="toggleCampaignTypeFields()">
+                            <option value="personalized">Personalized (AI-generated)</option>
+                            <option value="broadcast">Broadcast (Fixed template)</option>
                         </select>
+                    </div>
+                    <div id="personalizedFields">
+                        <div class="form-group">
+                            <label for="campaignSequence">Email Sequence *</label>
+                            <select id="campaignSequence">
+                                <option value="">Select a sequence...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="broadcastFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="broadcastSubject">Email Subject *</label>
+                            <input type="text" id="broadcastSubject" placeholder="e.g., 78 ways to miss it">
+                        </div>
+                        <div class="form-group">
+                            <label for="broadcastBody">Email Body *</label>
+                            <textarea id="broadcastBody" rows="10" placeholder="Enter your email content here..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95rem; resize: vertical;"></textarea>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -762,11 +781,20 @@
                     <input type="text" id="prospectSearch" oninput="filterProspectsList()" placeholder="Search by name, company, title, or email..." style="width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;">
                 </div>
                 <!-- Filters -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
                         <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Import Batch</label>
                         <select id="filterBatch" onchange="filterProspectsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
                             <option value="">All batches</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.875rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Segment</label>
+                        <select id="filterSegment" onchange="filterProspectsList()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                            <option value="">All segments</option>
+                            <option value="buyer">Buyers</option>
+                            <option value="manager">Managers</option>
+                            <option value="other">Others</option>
                         </select>
                     </div>
                     <div>
@@ -938,13 +966,17 @@
                     return;
                 }
 
-                document.getElementById('campaignsList').innerHTML = campaigns.map(campaign => `
+                document.getElementById('campaignsList').innerHTML = campaigns.map(campaign => {
+                    const isBroadcast = campaign.campaign_type === 'broadcast';
+                    const typeLabel = isBroadcast ? 'Broadcast' : (campaign.sequence?.name || 'No sequence');
+
+                    return `
                     <div class="campaign-card" onclick="selectCampaign('${campaign.id}')">
                         <div class="campaign-header">
                             <div>
                                 <div class="campaign-title">${campaign.name}</div>
                                 <div style="font-size: 0.875rem; color: var(--text-secondary);">
-                                    ${campaign.sequence?.name || 'No sequence'}
+                                    ${isBroadcast ? '<span style="color: var(--info-blue);">📢 Broadcast</span>' : typeLabel}
                                 </div>
                             </div>
                             <span class="badge badge-${campaign.status}">${campaign.status}</span>
@@ -971,7 +1003,11 @@
                             ${campaign.status === 'draft' ? `
                                 <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); activateCampaign('${campaign.id}')">Activate</button>
                             ` : ''}
-                            ${campaign.status === 'active' ? `
+                            ${campaign.status === 'active' && isBroadcast ? `
+                                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); sendBroadcastEmails('${campaign.id}')" id="send-btn-${campaign.id}">Send Broadcast</button>
+                                <button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); pauseCampaign('${campaign.id}')">Pause</button>
+                            ` : ''}
+                            ${campaign.status === 'active' && !isBroadcast ? `
                                 <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); sendApprovedEmails('${campaign.id}')" id="send-btn-${campaign.id}">Send Approved</button>
                                 <button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); pauseCampaign('${campaign.id}')">Pause</button>
                             ` : ''}
@@ -982,7 +1018,7 @@
                             <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteCampaign('${campaign.id}', '${campaign.name.replace(/'/g, "\\'")}')">Delete</button>
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
 
                 // Load capacity info for active campaigns
                 setTimeout(loadAllCampaignCapacities, 100);
@@ -997,6 +1033,34 @@
         async function activateCampaign(id) {
             console.log('[Activate] Starting activation for campaign:', id);
 
+            // First check if this is a broadcast campaign
+            const { data: campaign } = await supabaseClient
+                .from('outreach_campaigns')
+                .select('campaign_type, total_prospects')
+                .eq('id', id)
+                .single();
+
+            const isBroadcast = campaign?.campaign_type === 'broadcast';
+
+            // For broadcast campaigns, just activate and let user click Send Broadcast
+            if (isBroadcast) {
+                const prospectCount = campaign?.total_prospects || 0;
+                if (!confirm(`Activate this broadcast campaign?\n\n${prospectCount} prospect(s) ready to receive the broadcast.\n\nAfter activation, click "Send Broadcast" to start sending.`)) {
+                    return;
+                }
+
+                try {
+                    await supabaseClient.from('outreach_campaigns').update({ status: 'active' }).eq('id', id);
+                    alert(`Broadcast campaign activated!\n\nClick "Send Broadcast" to start sending emails.`);
+                    loadCampaigns();
+                    loadStats();
+                } catch (error) {
+                    alert('Error activating campaign: ' + error.message);
+                }
+                return;
+            }
+
+            // For personalized campaigns, continue with existing logic
             // Check how many pending prospects need research
             const { data: pendingProspects, error: queryError } = await supabaseClient
                 .from('campaign_prospects')
@@ -1402,6 +1466,49 @@
             }
         }
 
+        async function sendBroadcastEmails(campaignId) {
+            // Prompt for send limit
+            const limitInput = prompt('How many emails to send? (Enter number or leave blank for daily max)', '');
+            const limit = limitInput ? parseInt(limitInput) : null;
+
+            if (limitInput && isNaN(limit)) {
+                alert('Please enter a valid number');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({
+                        type: 'send_broadcast_batch',
+                        campaign_id: campaignId,
+                        limit: limit
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!result.success && result.error) {
+                    throw new Error(result.error);
+                }
+
+                loadCampaigns();
+                loadStats();
+
+                if (result.sent > 0) {
+                    alert(`Broadcast sent! ${result.sent} email(s) delivered.`);
+                } else {
+                    alert(result.message || 'No emails to send. Add prospects to the campaign first.');
+                }
+            } catch (error) {
+                alert('Error sending broadcast: ' + error.message);
+            }
+        }
+
         // Alias for backward compatibility
         const sendNow = sendApprovedEmails;
 
@@ -1579,27 +1686,67 @@
             showModal('newCampaignModal');
         }
 
+        function toggleCampaignTypeFields() {
+            const campaignType = document.getElementById('campaignType').value;
+            const personalizedFields = document.getElementById('personalizedFields');
+            const broadcastFields = document.getElementById('broadcastFields');
+            const sequenceSelect = document.getElementById('campaignSequence');
+
+            if (campaignType === 'broadcast') {
+                personalizedFields.style.display = 'none';
+                broadcastFields.style.display = 'block';
+                sequenceSelect.removeAttribute('required');
+            } else {
+                personalizedFields.style.display = 'block';
+                broadcastFields.style.display = 'none';
+                sequenceSelect.setAttribute('required', 'required');
+            }
+        }
+
         async function createCampaign(event) {
             event.preventDefault();
 
             const name = document.getElementById('campaignName').value;
+            const campaignType = document.getElementById('campaignType').value;
             const sequenceId = document.getElementById('campaignSequence').value;
             const sendTime = document.getElementById('campaignSendTime').value;
             const maxPerDay = document.getElementById('campaignMaxPerDay').value;
 
+            // Broadcast-specific fields
+            const broadcastSubject = document.getElementById('broadcastSubject').value;
+            const broadcastBody = document.getElementById('broadcastBody').value;
+
+            // Validate broadcast fields
+            if (campaignType === 'broadcast') {
+                if (!broadcastSubject || !broadcastBody) {
+                    alert('Please enter both subject and body for broadcast campaigns.');
+                    return;
+                }
+            }
+
             try {
-                const { error } = await supabaseClient.from('outreach_campaigns').insert({
+                const insertData = {
                     name,
-                    sequence_id: sequenceId,
+                    campaign_type: campaignType,
                     send_time: sendTime,
                     max_emails_per_day: parseInt(maxPerDay),
                     created_by: currentUserId
-                });
+                };
+
+                if (campaignType === 'personalized') {
+                    insertData.sequence_id = sequenceId;
+                } else {
+                    insertData.broadcast_subject = broadcastSubject;
+                    insertData.broadcast_body = broadcastBody;
+                }
+
+                const { error } = await supabaseClient.from('outreach_campaigns').insert(insertData);
 
                 if (error) throw error;
 
                 closeModal('newCampaignModal');
                 document.getElementById('newCampaignForm').reset();
+                toggleCampaignTypeFields(); // Reset to default view
                 loadCampaigns();
                 loadStats();
             } catch (error) {
@@ -1617,6 +1764,7 @@
 
             // Reset filters
             document.getElementById('filterBatch').value = '';
+            document.getElementById('filterSegment').value = '';
             document.getElementById('filterIndustry').value = '';
             document.getElementById('filterEmployees').value = '';
             document.getElementById('selectAllProspects').checked = false;
@@ -1633,7 +1781,7 @@
             // Show all prospects except converted ones (those are now CRM contacts)
             const { data: prospects } = await supabaseClient
                 .from('outreach_prospects')
-                .select('id, first_name, last_name, email, title, status, import_batch, imported_at, company_name, company_industry, company_employee_count')
+                .select('id, first_name, last_name, email, title, status, import_batch, segment, imported_at, company_name, company_industry, company_employee_count')
                 .neq('status', 'converted')  // Exclude converted prospects (they're in CRM now)
                 .order('imported_at', { ascending: false });
 
@@ -1654,12 +1802,14 @@
 
         function filterProspectsList() {
             const batchFilter = document.getElementById('filterBatch').value;
+            const segmentFilter = document.getElementById('filterSegment').value;
             const industryFilter = document.getElementById('filterIndustry').value;
             const employeeFilter = document.getElementById('filterEmployees').value;
             const searchTerm = (document.getElementById('prospectSearch').value || '').toLowerCase().trim();
 
             filteredProspects = allAvailableProspects.filter(prospect => {
                 if (batchFilter && prospect.import_batch !== batchFilter) return false;
+                if (segmentFilter && prospect.segment !== segmentFilter) return false;
                 if (industryFilter && prospect.company_industry !== industryFilter) return false;
 
                 if (employeeFilter) {

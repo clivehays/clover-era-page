@@ -52,6 +52,11 @@ serve(async (req) => {
       return await activateCampaign(supabase, campaign_id);
     }
 
+    if (type === 'send_broadcast_batch') {
+      const { limit } = body;
+      return await sendBroadcastBatch(supabase, campaign_id, limit);
+    }
+
     throw new Error(`Unknown type: ${type}`);
 
   } catch (error) {
@@ -584,6 +589,189 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
     JSON.stringify({
       success: true,
       sent: sentCount,
+      results,
+    }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+  );
+}
+
+// Send broadcast emails - fixed template to all prospects in campaign
+async function sendBroadcastBatch(supabase: any, campaignId: string, limit?: number) {
+  if (!campaignId) {
+    throw new Error('campaign_id is required');
+  }
+
+  // Get campaign with broadcast fields
+  const { data: campaign, error: campaignError } = await supabase
+    .from('outreach_campaigns')
+    .select('*')
+    .eq('id', campaignId)
+    .single();
+
+  if (campaignError || !campaign) {
+    throw new Error(`Campaign not found: ${campaignError?.message}`);
+  }
+
+  if (campaign.campaign_type !== 'broadcast') {
+    return new Response(
+      JSON.stringify({ success: false, error: 'Campaign is not a broadcast campaign' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+    );
+  }
+
+  if (!campaign.broadcast_subject || !campaign.broadcast_body) {
+    return new Response(
+      JSON.stringify({ success: false, error: 'Broadcast campaign missing subject or body' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+    );
+  }
+
+  const settings = await getSettings(supabase);
+  const maxPerDay = parseInt(settings.max_emails_per_day) || 50;
+
+  // Get GLOBAL send count
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const { count: sentToday } = await supabase
+    .from('outreach_emails')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'sent')
+    .gte('sent_at', today.toISOString());
+
+  const remaining = Math.min(maxPerDay - (sentToday || 0), limit || maxPerDay);
+
+  if (remaining <= 0) {
+    return new Response(
+      JSON.stringify({
+        success: true,
+        sent: 0,
+        message: 'Daily limit reached',
+        sent_today: sentToday,
+        max_per_day: maxPerDay,
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+    );
+  }
+
+  // Get prospects in this campaign that haven't been emailed yet
+  // Check campaign_prospects for prospects not yet sent to
+  const { data: campaignProspects, error: prospectsError } = await supabase
+    .from('campaign_prospects')
+    .select(`
+      id,
+      prospect_id,
+      status,
+      prospect:outreach_prospects(*)
+    `)
+    .eq('campaign_id', campaignId)
+    .in('status', ['pending', 'ready']) // Not yet sent
+    .limit(remaining);
+
+  if (prospectsError) {
+    throw new Error(`Failed to get prospects: ${prospectsError.message}`);
+  }
+
+  if (!campaignProspects || campaignProspects.length === 0) {
+    return new Response(
+      JSON.stringify({ success: true, sent: 0, message: 'No prospects pending to send' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+    );
+  }
+
+  const fromEmail = settings.from_email || DEFAULT_FROM_EMAIL;
+  const fromName = settings.from_name || DEFAULT_FROM_NAME;
+  const replyTo = settings.reply_to || DEFAULT_REPLY_TO;
+
+  const results: Array<{ prospect_id: string; status: string; error?: string; email_id?: string }> = [];
+
+  for (const cp of campaignProspects) {
+    const prospect = cp.prospect;
+
+    if (!prospect || !prospect.email) {
+      results.push({ prospect_id: cp.prospect_id, status: 'failed', error: 'No email address' });
+      continue;
+    }
+
+    // Create email record for tracking
+    const { data: emailRecord, error: insertError } = await supabase
+      .from('outreach_emails')
+      .insert({
+        campaign_prospect_id: cp.id,
+        prospect_id: cp.prospect_id,
+        subject: campaign.broadcast_subject,
+        body: campaign.broadcast_body,
+        position: 1,
+        status: 'sending',
+      })
+      .select()
+      .single();
+
+    if (insertError || !emailRecord) {
+      results.push({ prospect_id: cp.prospect_id, status: 'failed', error: 'Failed to create email record' });
+      continue;
+    }
+
+    // Send via SendGrid
+    const result = await sendViaSendGrid({
+      to: prospect.email,
+      toName: `${prospect.first_name || ''} ${prospect.last_name || ''}`.trim() || prospect.email,
+      from: fromEmail,
+      fromName: fromName,
+      replyTo: replyTo,
+      subject: campaign.broadcast_subject,
+      body: campaign.broadcast_body,
+      emailId: emailRecord.id,
+    });
+
+    if (result.success) {
+      // Update email record
+      await supabase
+        .from('outreach_emails')
+        .update({
+          status: 'sent',
+          sent_at: new Date().toISOString(),
+          sendgrid_message_id: result.messageId,
+        })
+        .eq('id', emailRecord.id);
+
+      // Update campaign prospect status
+      await supabase
+        .from('campaign_prospects')
+        .update({
+          status: 'active',
+          current_step: 1,
+        })
+        .eq('id', cp.id);
+
+      results.push({ prospect_id: cp.prospect_id, status: 'sent', email_id: emailRecord.id });
+    } else {
+      // Mark email as failed
+      await supabase
+        .from('outreach_emails')
+        .update({ status: 'failed' })
+        .eq('id', emailRecord.id);
+
+      results.push({ prospect_id: cp.prospect_id, status: 'failed', error: result.error });
+    }
+  }
+
+  // Update campaign stats
+  const sentCount = results.filter(r => r.status === 'sent').length;
+  await supabase
+    .from('outreach_campaigns')
+    .update({
+      emails_sent: campaign.emails_sent + sentCount,
+    })
+    .eq('id', campaignId);
+
+  console.log(`Broadcast campaign ${campaignId}: sent ${sentCount} emails`);
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      sent: sentCount,
+      total_attempted: results.length,
       results,
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
