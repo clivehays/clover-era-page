@@ -271,7 +271,10 @@
     <div class="container">
         <div class="header">
             <h1>💬 DM Tracker</h1>
-            <button class="btn btn-primary" onclick="showAddModal()">+ New Contact</button>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-secondary" onclick="showImportModal()">Import Commenters</button>
+                <button class="btn btn-primary" onclick="showAddModal()">+ New Contact</button>
+            </div>
         </div>
 
         <!-- Action Needed Banner -->
@@ -499,6 +502,59 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
                 <button class="btn btn-primary" id="saveBtn" onclick="saveContact()">Save Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Commenters Modal -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Import Commenters</h2>
+                <button class="modal-close" onclick="closeImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Upload Phantombuster CSV</label>
+                    <input type="file" id="csvFileInput" accept=".csv" onchange="parseCSV(this.files[0])" style="padding: 0.5rem;">
+                    <div class="form-hint">Supports Phantombuster Post Commenters / All Leads exports</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Source Post (applied to all)</label>
+                    <input type="text" id="importSourcePost" placeholder="e.g., Post 30 - Book Launch, Feb 11">
+                </div>
+
+                <div id="importPreview" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <label style="font-weight: 700;">Preview</label>
+                        <div style="font-size: 0.85rem;">
+                            <span id="importTotal" style="font-weight: 600;"></span> contacts found,
+                            <span id="importNew" style="color: var(--primary-green); font-weight: 600;"></span> new,
+                            <span id="importDupes" style="color: var(--text-secondary);"></span> already in tracker
+                        </div>
+                    </div>
+                    <div style="max-height: 300px; overflow-y: auto; border: 2px solid var(--medium-gray); border-radius: 8px;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="position: sticky; top: 0; background: var(--background); padding: 0.5rem 0.75rem; font-size: 0.75rem;">
+                                        <input type="checkbox" id="selectAll" checked onchange="toggleSelectAll()">
+                                    </th>
+                                    <th style="position: sticky; top: 0; background: var(--background); padding: 0.5rem 0.75rem; font-size: 0.75rem;">Name</th>
+                                    <th style="position: sticky; top: 0; background: var(--background); padding: 0.5rem 0.75rem; font-size: 0.75rem;">Company</th>
+                                    <th style="position: sticky; top: 0; background: var(--background); padding: 0.5rem 0.75rem; font-size: 0.75rem;">Title</th>
+                                    <th style="position: sticky; top: 0; background: var(--background); padding: 0.5rem 0.75rem; font-size: 0.75rem;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="importPreviewBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
+                <button class="btn btn-primary" id="importBtn" onclick="importSelected()" disabled>Import Selected</button>
             </div>
         </div>
     </div>
@@ -1038,6 +1094,217 @@
             }
         }
 
+        // ===== IMPORT =====
+        let parsedImportRows = [];
+
+        function showImportModal() {
+            document.getElementById('importModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('csvFileInput').value = '';
+            document.getElementById('importPreview').style.display = 'none';
+            document.getElementById('importBtn').disabled = true;
+            parsedImportRows = [];
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function parseCSV(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                if (lines.length < 2) { alert('CSV appears empty.'); return; }
+
+                // Parse headers
+                const headers = parseCSVLine(lines[0]);
+                const headerMap = {};
+                headers.forEach((h, i) => headerMap[h.trim()] = i);
+
+                // Map Phantombuster columns
+                const colUrl = headerMap['linkedinProfileUrl'] ?? headerMap['profileUrl'] ?? -1;
+                const colFirst = headerMap['firstName'] ?? headerMap['first_name'] ?? -1;
+                const colLast = headerMap['lastName'] ?? headerMap['last_name'] ?? -1;
+                const colCompany = headerMap['companyName'] ?? headerMap['company'] ?? -1;
+                const colTitle = headerMap['linkedinJobTitle'] ?? headerMap['headline'] ?? headerMap['title'] ?? -1;
+                const colComment = headerMap['commentText'] ?? headerMap['comment'] ?? -1;
+
+                if (colFirst === -1) {
+                    alert('Could not find firstName column in CSV. Check the file format.');
+                    return;
+                }
+
+                // Parse rows
+                const rows = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    const cols = parseCSVLine(line);
+                    const linkedinUrl = colUrl >= 0 ? (cols[colUrl] || '').trim() : '';
+                    const firstName = colFirst >= 0 ? (cols[colFirst] || '').trim() : '';
+                    if (!firstName) continue;
+
+                    rows.push({
+                        first_name: firstName,
+                        last_name: colLast >= 0 ? (cols[colLast] || '').trim() : '',
+                        company: colCompany >= 0 ? (cols[colCompany] || '').trim() : '',
+                        title: colTitle >= 0 ? (cols[colTitle] || '').trim() : '',
+                        linkedin_url: linkedinUrl,
+                        their_message: colComment >= 0 ? (cols[colComment] || '').trim() : '',
+                        selected: true,
+                        isDupe: false
+                    });
+                }
+
+                // Check for duplicates against existing contacts by LinkedIn URL
+                const existingUrls = new Set(
+                    allContacts.filter(c => c.linkedin_url).map(c => normalizeLinkedInUrl(c.linkedin_url))
+                );
+
+                let newCount = 0;
+                let dupeCount = 0;
+                rows.forEach(r => {
+                    if (r.linkedin_url && existingUrls.has(normalizeLinkedInUrl(r.linkedin_url))) {
+                        r.isDupe = true;
+                        r.selected = false;
+                        dupeCount++;
+                    } else {
+                        newCount++;
+                    }
+                });
+
+                parsedImportRows = rows;
+
+                // Render preview
+                document.getElementById('importTotal').textContent = rows.length;
+                document.getElementById('importNew').textContent = newCount;
+                document.getElementById('importDupes').textContent = dupeCount;
+
+                const tbody = document.getElementById('importPreviewBody');
+                tbody.innerHTML = rows.map((r, i) => `
+                    <tr style="${r.isDupe ? 'opacity: 0.5;' : ''}">
+                        <td style="padding: 0.4rem 0.75rem;">
+                            <input type="checkbox" ${r.selected ? 'checked' : ''} ${r.isDupe ? 'disabled' : ''} onchange="parsedImportRows[${i}].selected = this.checked; updateImportBtn()">
+                        </td>
+                        <td style="padding: 0.4rem 0.75rem; font-size: 0.85rem;">${r.first_name} ${r.last_name}</td>
+                        <td style="padding: 0.4rem 0.75rem; font-size: 0.85rem;">${r.company || '--'}</td>
+                        <td style="padding: 0.4rem 0.75rem; font-size: 0.85rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.title || '--'}</td>
+                        <td style="padding: 0.4rem 0.75rem; font-size: 0.8rem;">
+                            ${r.isDupe ? '<span style="color: var(--text-secondary);">Already exists</span>' : '<span style="color: var(--primary-green); font-weight: 600;">New</span>'}
+                        </td>
+                    </tr>
+                `).join('');
+
+                document.getElementById('importPreview').style.display = 'block';
+                document.getElementById('importBtn').disabled = newCount === 0;
+                updateImportBtn();
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (inQuotes) {
+                    if (ch === '"' && line[i + 1] === '"') { current += '"'; i++; }
+                    else if (ch === '"') { inQuotes = false; }
+                    else { current += ch; }
+                } else {
+                    if (ch === '"') { inQuotes = true; }
+                    else if (ch === ',') { result.push(current); current = ''; }
+                    else { current += ch; }
+                }
+            }
+            result.push(current);
+            return result;
+        }
+
+        function normalizeLinkedInUrl(url) {
+            if (!url) return '';
+            return url.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+        }
+
+        function toggleSelectAll() {
+            const checked = document.getElementById('selectAll').checked;
+            parsedImportRows.forEach(r => { if (!r.isDupe) r.selected = checked; });
+            const checkboxes = document.querySelectorAll('#importPreviewBody input[type="checkbox"]:not(:disabled)');
+            checkboxes.forEach(cb => cb.checked = checked);
+            updateImportBtn();
+        }
+
+        function updateImportBtn() {
+            const count = parsedImportRows.filter(r => r.selected && !r.isDupe).length;
+            document.getElementById('importBtn').disabled = count === 0;
+            document.getElementById('importBtn').textContent = count > 0 ? `Import ${count} Contacts` : 'Import Selected';
+        }
+
+        async function importSelected() {
+            const sourcePost = document.getElementById('importSourcePost').value.trim();
+            const toImport = parsedImportRows.filter(r => r.selected && !r.isDupe);
+            if (toImport.length === 0) return;
+
+            document.getElementById('importBtn').disabled = true;
+            document.getElementById('importBtn').textContent = 'Importing...';
+
+            const now = new Date().toISOString();
+            const today = now.split('T')[0];
+            let imported = 0;
+            let failed = 0;
+
+            // Batch insert via Supabase
+            const records = toImport.map(r => ({
+                user_id: currentUserId,
+                first_name: r.first_name,
+                last_name: r.last_name || null,
+                company: r.company || null,
+                title: r.title || null,
+                linkedin_url: r.linkedin_url || null,
+                stage: 'new',
+                source: 'post-comment',
+                source_post: sourcePost || null,
+                their_message: r.their_message || null,
+                next_action: 'Send DM#1',
+                due_date: today,
+                notes: null,
+                activity_log: [{ date: now, text: 'Imported from Phantombuster CSV' }],
+                last_contact_date: now,
+                created_at: now,
+                updated_at: now
+            }));
+
+            if (useLocalStorage) {
+                records.forEach(rec => {
+                    rec.id = 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    allContacts.unshift(rec);
+                });
+                saveToLocalStorage();
+                imported = records.length;
+            } else {
+                // Insert in batches of 50
+                for (let i = 0; i < records.length; i += 50) {
+                    const batch = records.slice(i, i + 50);
+                    try {
+                        const { data, error } = await supabaseClient.from('dm_contacts').insert(batch).select();
+                        if (error) { console.error('Batch error:', error); failed += batch.length; }
+                        else { imported += data.length; }
+                    } catch (e) {
+                        console.error('Import error:', e);
+                        failed += batch.length;
+                    }
+                }
+            }
+
+            alert(`Imported ${imported} contacts.${failed > 0 ? ` ${failed} failed.` : ''}`);
+            closeImportModal();
+            await loadContacts();
+        }
+
         // ===== INIT =====
         async function initPage() {
             const isAuth = await checkAuth();
@@ -1047,9 +1314,9 @@
 
         document.addEventListener('DOMContentLoaded', initPage);
 
-        // Keyboard shortcut: Escape to close modal
+        // Keyboard shortcut: Escape to close modals
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') { closeModal(); closeImportModal(); }
         });
     </script>
 </body>
