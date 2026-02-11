@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA CRM - Daily Sales Tracker</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background: #f9fafb;
+            --medium-gray: #e5e7eb;
+            --border-color: #d1d5db;
+            --danger-red: #EF4444;
+            --warning-orange: #F59E0B;
+            --charcoal: #1f2937;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+        }
+
+        /* ========== NAV (matches CRM) ========== */
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-green); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-green); }
+        .btn-logout {
+            padding: 0.5rem 1rem; background: var(--medium-gray); color: var(--text-primary);
+            border: none; border-radius: 6px; cursor: pointer; font-weight: 500;
+        }
+        .btn-logout:hover { background: var(--border-color); }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        .header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+        }
+        .header h1 { font-size: 2rem; color: var(--text-primary); }
+
+        /* ========== DATE NAV ========== */
+        .date-nav {
+            display: flex; align-items: center; gap: 1rem;
+            background: white; padding: 1rem 1.5rem; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 2rem;
+        }
+        .date-nav button {
+            background: var(--medium-gray); border: none; border-radius: 8px;
+            padding: 0.5rem 1rem; cursor: pointer; font-weight: 600; font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .date-nav button:hover { background: var(--primary-green); color: white; }
+        .date-nav .current-date { font-size: 1.25rem; font-weight: 700; color: var(--charcoal); }
+        .date-nav .streak {
+            margin-left: auto; background: var(--light-green); color: var(--dark-green);
+            padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.95rem;
+        }
+
+        /* ========== DAILY SCORECARD ========== */
+        .scorecard {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .score-card {
+            background: white; border-radius: 12px; padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative;
+            border-left: 4px solid var(--medium-gray); transition: all 0.2s;
+        }
+        .score-card.on-track { border-left-color: var(--primary-green); }
+        .score-card.behind { border-left-color: var(--warning-orange); }
+        .score-card.missed { border-left-color: var(--danger-red); }
+        .score-card.exceeded { border-left-color: #6366F1; }
+
+        .score-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500; }
+        .score-numbers { display: flex; align-items: baseline; gap: 0.5rem; }
+        .score-actual { font-size: 2rem; font-weight: 800; color: var(--charcoal); }
+        .score-target { font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
+        .score-bar {
+            height: 4px; background: var(--medium-gray); border-radius: 2px;
+            margin-top: 0.75rem; overflow: hidden;
+        }
+        .score-bar-fill {
+            height: 100%; border-radius: 2px; transition: width 0.5s ease;
+        }
+        .score-bar-fill.green { background: var(--primary-green); }
+        .score-bar-fill.orange { background: var(--warning-orange); }
+        .score-bar-fill.red { background: var(--danger-red); }
+        .score-bar-fill.purple { background: #6366F1; }
+
+        /* ========== QUICK LOG ========== */
+        .quick-log {
+            background: white; border-radius: 12px; padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 2rem;
+        }
+        .quick-log h2 {
+            font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem; border-bottom: 2px solid var(--medium-gray);
+        }
+        .log-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .log-item {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1rem; background: var(--background); border-radius: 8px;
+            border: 2px solid var(--medium-gray); transition: all 0.2s;
+        }
+        .log-item:hover { border-color: var(--primary-green); }
+        .log-icon { font-size: 1.5rem; flex-shrink: 0; }
+        .log-info { flex: 1; }
+        .log-info .log-title { font-weight: 600; font-size: 0.95rem; color: var(--charcoal); }
+        .log-info .log-desc { font-size: 0.8rem; color: var(--text-secondary); }
+        .log-controls { display: flex; align-items: center; gap: 0.5rem; }
+        .log-btn {
+            width: 36px; height: 36px; border-radius: 8px; border: 2px solid var(--medium-gray);
+            background: white; cursor: pointer; font-size: 1.2rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+        }
+        .log-btn:hover { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+        .log-btn.minus:hover { background: var(--danger-red); border-color: var(--danger-red); }
+        .log-count {
+            width: 48px; text-align: center; font-size: 1.25rem; font-weight: 700;
+            color: var(--charcoal); background: transparent; border: none;
+        }
+
+        /* ========== NOTES ========== */
+        .notes-section {
+            background: white; border-radius: 12px; padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 2rem;
+        }
+        .notes-section h2 {
+            font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem;
+            padding-bottom: 0.75rem; border-bottom: 2px solid var(--medium-gray);
+        }
+        .notes-textarea {
+            width: 100%; min-height: 100px; padding: 1rem; border: 2px solid var(--medium-gray);
+            border-radius: 8px; font-family: inherit; font-size: 0.95rem; resize: vertical;
+            transition: border-color 0.2s;
+        }
+        .notes-textarea:focus { outline: none; border-color: var(--primary-green); }
+
+        /* ========== SAVE BAR ========== */
+        .save-bar {
+            position: sticky; bottom: 0; background: white; padding: 1rem 2rem;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1); display: flex;
+            justify-content: space-between; align-items: center; z-index: 100;
+            border-top: 2px solid var(--medium-gray);
+        }
+        .save-status { font-size: 0.95rem; color: var(--text-secondary); }
+        .save-status.saved { color: var(--primary-green); font-weight: 600; }
+        .save-status.unsaved { color: var(--warning-orange); font-weight: 600; }
+        .btn-save {
+            background: var(--primary-green); color: white; border: none;
+            padding: 0.75rem 2rem; border-radius: 8px; font-weight: 700;
+            font-size: 1rem; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-save:hover { background: var(--dark-green); }
+        .btn-save:disabled { background: var(--medium-gray); cursor: not-allowed; }
+
+        /* ========== WEEKLY TREND ========== */
+        .weekly-section {
+            background: white; border-radius: 12px; padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 2rem;
+        }
+        .weekly-section h2 {
+            font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem; border-bottom: 2px solid var(--medium-gray);
+        }
+        .weekly-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .week-day {
+            text-align: center; padding: 0.75rem 0.5rem; border-radius: 8px;
+            background: var(--background); font-size: 0.8rem;
+        }
+        .week-day.today { background: var(--light-green); border: 2px solid var(--primary-green); }
+        .week-day.has-data { background: #DBEAFE; }
+        .week-day .day-label { font-weight: 600; color: var(--charcoal); margin-bottom: 0.25rem; }
+        .week-day .day-score { font-size: 1.25rem; font-weight: 800; color: var(--primary-green); }
+        .week-day .day-score.zero { color: var(--border-color); }
+
+        .weekly-totals {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem; padding-top: 1rem; border-top: 2px solid var(--medium-gray);
+        }
+        .weekly-total {
+            text-align: center; padding: 1rem; background: var(--background); border-radius: 8px;
+        }
+        .weekly-total .wt-value { font-size: 1.5rem; font-weight: 800; color: var(--charcoal); }
+        .weekly-total .wt-target { font-size: 0.85rem; color: var(--text-secondary); }
+        .weekly-total .wt-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        .weekly-total.hit .wt-value { color: var(--primary-green); }
+        .weekly-total.miss .wt-value { color: var(--danger-red); }
+
+        /* ========== PIPELINE SNAPSHOT ========== */
+        .pipeline-snapshot {
+            background: white; border-radius: 12px; padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 6rem;
+        }
+        .pipeline-snapshot h2 {
+            font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem; border-bottom: 2px solid var(--medium-gray);
+        }
+        .snapshot-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;
+        }
+        .snapshot-card {
+            text-align: center; padding: 1.25rem; background: var(--background);
+            border-radius: 8px;
+        }
+        .snapshot-card .snap-value { font-size: 2rem; font-weight: 800; color: var(--primary-green); }
+        .snapshot-card .snap-label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        .snapshot-card .snap-change {
+            font-size: 0.8rem; margin-top: 0.5rem; font-weight: 600;
+        }
+        .snap-change.up { color: var(--primary-green); }
+        .snap-change.down { color: var(--danger-red); }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .scorecard { grid-template-columns: repeat(2, 1fr); }
+            .log-grid { grid-template-columns: 1fr; }
+            .weekly-grid { grid-template-columns: repeat(7, 1fr); gap: 0.25rem; }
+            .week-day { padding: 0.5rem 0.25rem; font-size: 0.7rem; }
+            .header { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="kanban.html">Kanban</a>
+            <a href="outreach.html">Outreach</a>
+            <a href="daily-tracker.html" class="active">Daily Tracker</a>
+            <a href="import.html">Import</a>
+            <a href="blog-articles.html">Blog</a>
+            <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+            <span id="userInfo" style="color: var(--text-secondary);"></span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>📊 Daily Sales Tracker</h1>
+        </div>
+
+        <!-- Date Navigation -->
+        <div class="date-nav">
+            <button onclick="changeDate(-1)">← Prev</button>
+            <span class="current-date" id="currentDate"></span>
+            <button onclick="changeDate(1)" id="nextDayBtn">Next →</button>
+            <button onclick="goToToday()" style="background: var(--primary-green); color: white;">Today</button>
+            <div class="streak" id="streakDisplay">🔥 0 day streak</div>
+        </div>
+
+        <!-- Daily Scorecard -->
+        <div class="scorecard" id="scorecard">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Quick Log -->
+        <div class="quick-log">
+            <h2>Log Today's Activity</h2>
+            <div class="log-grid" id="logGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Daily Notes -->
+        <div class="notes-section">
+            <h2>Daily Notes</h2>
+            <textarea class="notes-textarea" id="dailyNotes" placeholder="Key observations, hot prospects, lessons learned, conversations worth following up on..."></textarea>
+        </div>
+
+        <!-- Weekly View -->
+        <div class="weekly-section">
+            <h2>This Week</h2>
+            <div class="weekly-grid" id="weeklyGrid">
+                <!-- Populated by JS -->
+            </div>
+            <div class="weekly-totals" id="weeklyTotals">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Rolling Pipeline Snapshot -->
+        <div class="pipeline-snapshot">
+            <h2>Rolling Pipeline (from CRM)</h2>
+            <div class="snapshot-grid" id="snapshotGrid">
+                <div class="snapshot-card">
+                    <div class="snap-value" id="snapActiveThreads">--</div>
+                    <div class="snap-label">Active DM Threads</div>
+                </div>
+                <div class="snapshot-card">
+                    <div class="snap-value" id="snapOpenOpps">--</div>
+                    <div class="snap-label">Open Opportunities</div>
+                </div>
+                <div class="snapshot-card">
+                    <div class="snap-value" id="snapPipelineValue">--</div>
+                    <div class="snap-label">Pipeline Value</div>
+                </div>
+                <div class="snapshot-card">
+                    <div class="snap-value" id="snapMRR">--</div>
+                    <div class="snap-label">Monthly Recurring</div>
+                </div>
+                <div class="snapshot-card">
+                    <div class="snap-value" id="snapSelfServe">--</div>
+                    <div class="snap-label">Self-Serve Signups (This Week)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Bar -->
+    <div class="save-bar">
+        <div class="save-status" id="saveStatus">No changes</div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <span id="lastSaved" style="font-size: 0.85rem; color: var(--text-secondary);"></span>
+            <button class="btn-save" id="saveBtn" onclick="saveDay()" disabled>Save</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== SUPABASE CONFIG (same as CRM) =====
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUserId = null;
+        let currentUserEmail = null;
+        let selectedDate = new Date();
+        let hasUnsavedChanges = false;
+        let dailyData = {};
+
+        // ===== METRIC DEFINITIONS =====
+        // These are the daily activities to track, with weekly targets
+        const METRICS = [
+            {
+                key: 'dms_started',
+                label: 'DMs Started',
+                desc: 'New DM conversations with engaged managers',
+                icon: '💬',
+                dailyTarget: 5,
+                weeklyTarget: 25
+            },
+            {
+                key: 'dm_replies_received',
+                label: 'DM Replies',
+                desc: 'Replies received on DM threads',
+                icon: '↩️',
+                dailyTarget: 3,
+                weeklyTarget: 15
+            },
+            {
+                key: 'product_requests',
+                label: 'Product Requests',
+                desc: '"Show me the product" or demo requests',
+                icon: '🎯',
+                dailyTarget: 1,
+                weeklyTarget: 5
+            },
+            {
+                key: 'comments_replied',
+                label: 'Comments Replied',
+                desc: 'Post comments you replied to',
+                icon: '💬',
+                dailyTarget: 10,
+                weeklyTarget: 50
+            },
+            {
+                key: 'prospect_comments',
+                label: 'Prospect Posts Commented',
+                desc: 'Comments left on prospect/target posts',
+                icon: '📝',
+                dailyTarget: 5,
+                weeklyTarget: 25
+            },
+            {
+                key: 'cold_emails_sent',
+                label: 'Cold Emails Sent',
+                desc: 'Apollo outreach emails',
+                icon: '📧',
+                dailyTarget: 15,
+                weeklyTarget: 75
+            },
+            {
+                key: 'book_outreach',
+                label: 'Book Outreach',
+                desc: 'Book gifting or launch touchpoints',
+                icon: '📚',
+                dailyTarget: 5,
+                weeklyTarget: 25
+            },
+            {
+                key: 'calls_booked',
+                label: 'Calls Booked',
+                desc: 'Turnover Analysis calls scheduled',
+                icon: '📞',
+                dailyTarget: 1,
+                weeklyTarget: 3
+            }
+        ];
+
+        // ===== DATE HELPERS =====
+        function formatDateKey(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDisplayDate(date) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const compare = new Date(date);
+            compare.setHours(0,0,0,0);
+
+            const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+            let prefix = '';
+            if (compare.getTime() === today.getTime()) prefix = 'Today, ';
+            else if (compare.getTime() === today.getTime() - 86400000) prefix = 'Yesterday, ';
+
+            return `${prefix}${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        function getWeekDates(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const monday = new Date(d);
+            monday.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+            monday.setHours(0,0,0,0);
+
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const wd = new Date(monday);
+                wd.setDate(monday.getDate() + i);
+                dates.push(wd);
+            }
+            return dates;
+        }
+
+        function changeDate(delta) {
+            if (hasUnsavedChanges) {
+                if (!confirm('You have unsaved changes. Discard them?')) return;
+            }
+            selectedDate.setDate(selectedDate.getDate() + delta);
+
+            // Don't go past today
+            const today = new Date();
+            today.setHours(23,59,59,999);
+            if (selectedDate > today) {
+                selectedDate = new Date();
+            }
+
+            loadDay();
+        }
+
+        function goToToday() {
+            if (hasUnsavedChanges) {
+                if (!confirm('You have unsaved changes. Discard them?')) return;
+            }
+            selectedDate = new Date();
+            loadDay();
+        }
+
+        // ===== AUTH =====
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = '/crm/login.html';
+                return false;
+            }
+            currentUserId = session.user.id;
+            currentUserEmail = session.user.email;
+            document.getElementById('userInfo').textContent = session.user.email;
+
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+            if (profile && profile.role === 'admin') {
+                document.getElementById('adminLink').style.display = 'inline-block';
+            }
+            return true;
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = '/crm/login.html';
+        }
+
+        // ===== RENDER FUNCTIONS =====
+
+        function renderScorecard() {
+            const container = document.getElementById('scorecard');
+            container.innerHTML = METRICS.map(m => {
+                const actual = dailyData[m.key] || 0;
+                const target = m.dailyTarget;
+                const pct = target > 0 ? Math.min((actual / target) * 100, 100) : 0;
+
+                let status = 'behind';
+                let barClass = 'orange';
+                if (actual >= target) { status = 'on-track'; barClass = 'green'; }
+                if (actual > target * 1.5) { status = 'exceeded'; barClass = 'purple'; }
+                if (actual === 0 && target > 0) { status = 'missed'; barClass = 'red'; }
+
+                return `
+                    <div class="score-card ${status}">
+                        <div class="score-label">${m.icon} ${m.label}</div>
+                        <div class="score-numbers">
+                            <span class="score-actual">${actual}</span>
+                            <span class="score-target">/ ${target}</span>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-bar-fill ${barClass}" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLogGrid() {
+            const container = document.getElementById('logGrid');
+            container.innerHTML = METRICS.map(m => {
+                const val = dailyData[m.key] || 0;
+                return `
+                    <div class="log-item">
+                        <div class="log-icon">${m.icon}</div>
+                        <div class="log-info">
+                            <div class="log-title">${m.label}</div>
+                            <div class="log-desc">${m.desc}</div>
+                        </div>
+                        <div class="log-controls">
+                            <button class="log-btn minus" onclick="adjustMetric('${m.key}', -1)">−</button>
+                            <span class="log-count" id="count-${m.key}">${val}</span>
+                            <button class="log-btn" onclick="adjustMetric('${m.key}', 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function adjustMetric(key, delta) {
+            if (!dailyData[key]) dailyData[key] = 0;
+            dailyData[key] = Math.max(0, dailyData[key] + delta);
+
+            document.getElementById(`count-${key}`).textContent = dailyData[key];
+            markUnsaved();
+            renderScorecard();
+        }
+
+        function markUnsaved() {
+            hasUnsavedChanges = true;
+            document.getElementById('saveStatus').textContent = '● Unsaved changes';
+            document.getElementById('saveStatus').className = 'save-status unsaved';
+            document.getElementById('saveBtn').disabled = false;
+        }
+
+        function markSaved() {
+            hasUnsavedChanges = false;
+            document.getElementById('saveStatus').textContent = '✓ Saved';
+            document.getElementById('saveStatus').className = 'save-status saved';
+            document.getElementById('saveBtn').disabled = true;
+            document.getElementById('lastSaved').textContent = `Last saved: ${new Date().toLocaleTimeString()}`;
+        }
+
+        // ===== DATA PERSISTENCE =====
+        // Uses the daily_tracker table in Supabase
+        // If the table doesn't exist yet, falls back to localStorage
+
+        async function saveDay() {
+            const dateKey = formatDateKey(selectedDate);
+            const notes = document.getElementById('dailyNotes').value;
+
+            const record = {
+                user_id: currentUserId,
+                date: dateKey,
+                metrics: JSON.stringify(dailyData),
+                notes: notes,
+                updated_at: new Date().toISOString()
+            };
+
+            try {
+                // Try Supabase first
+                const { data, error } = await supabaseClient
+                    .from('daily_tracker')
+                    .upsert(record, { onConflict: 'user_id,date' })
+                    .select();
+
+                if (error) {
+                    // If table doesn't exist, fall back to localStorage
+                    console.warn('Supabase save failed, using localStorage:', error.message);
+                    saveToLocalStorage(dateKey, dailyData, notes);
+                }
+
+                markSaved();
+            } catch (e) {
+                console.warn('Save error, falling back to localStorage:', e);
+                saveToLocalStorage(dateKey, dailyData, notes);
+                markSaved();
+            }
+        }
+
+        function saveToLocalStorage(dateKey, metrics, notes) {
+            const storageKey = `clover_tracker_${dateKey}`;
+            localStorage.setItem(storageKey, JSON.stringify({ metrics, notes, updated_at: new Date().toISOString() }));
+        }
+
+        async function loadDay() {
+            const dateKey = formatDateKey(selectedDate);
+
+            // Update UI
+            document.getElementById('currentDate').textContent = formatDisplayDate(selectedDate);
+
+            // Disable next button if on today
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const sel = new Date(selectedDate);
+            sel.setHours(0,0,0,0);
+            document.getElementById('nextDayBtn').disabled = sel.getTime() >= today.getTime();
+
+            // Reset data
+            dailyData = {};
+
+            try {
+                // Try Supabase
+                const { data, error } = await supabaseClient
+                    .from('daily_tracker')
+                    .select('*')
+                    .eq('user_id', currentUserId)
+                    .eq('date', dateKey)
+                    .single();
+
+                if (data && !error) {
+                    dailyData = typeof data.metrics === 'string' ? JSON.parse(data.metrics) : (data.metrics || {});
+                    document.getElementById('dailyNotes').value = data.notes || '';
+                } else {
+                    // Fall back to localStorage
+                    loadFromLocalStorage(dateKey);
+                }
+            } catch (e) {
+                loadFromLocalStorage(dateKey);
+            }
+
+            // Render everything
+            renderScorecard();
+            renderLogGrid();
+            loadWeeklyView();
+            loadPipelineSnapshot();
+            loadStreak();
+
+            hasUnsavedChanges = false;
+            document.getElementById('saveStatus').textContent = 'No changes';
+            document.getElementById('saveStatus').className = 'save-status';
+            document.getElementById('saveBtn').disabled = true;
+        }
+
+        function loadFromLocalStorage(dateKey) {
+            const storageKey = `clover_tracker_${dateKey}`;
+            const stored = localStorage.getItem(storageKey);
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                dailyData = parsed.metrics || {};
+                document.getElementById('dailyNotes').value = parsed.notes || '';
+            } else {
+                dailyData = {};
+                document.getElementById('dailyNotes').value = '';
+            }
+        }
+
+        // ===== WEEKLY VIEW =====
+        async function loadWeeklyView() {
+            const weekDates = getWeekDates(selectedDate);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+            // Load week data
+            const weekData = {};
+            for (const wd of weekDates) {
+                const dk = formatDateKey(wd);
+                try {
+                    const { data } = await supabaseClient
+                        .from('daily_tracker')
+                        .select('metrics')
+                        .eq('user_id', currentUserId)
+                        .eq('date', dk)
+                        .single();
+
+                    if (data) {
+                        weekData[dk] = typeof data.metrics === 'string' ? JSON.parse(data.metrics) : data.metrics;
+                    }
+                } catch (e) {
+                    // Try localStorage
+                    const stored = localStorage.getItem(`clover_tracker_${dk}`);
+                    if (stored) weekData[dk] = JSON.parse(stored).metrics || {};
+                }
+            }
+
+            // Also include current unsaved data for selected date
+            const selectedKey = formatDateKey(selectedDate);
+            if (Object.keys(dailyData).length > 0) {
+                weekData[selectedKey] = dailyData;
+            }
+
+            // Render weekly grid
+            const grid = document.getElementById('weeklyGrid');
+            grid.innerHTML = weekDates.map((wd, i) => {
+                const dk = formatDateKey(wd);
+                const data = weekData[dk] || {};
+                const isToday = wd.getTime() === today.getTime();
+                const hasData = Object.values(data).some(v => v > 0);
+
+                // Calculate a simple "completion score" (% of daily targets hit)
+                let totalPct = 0;
+                let metricCount = 0;
+                METRICS.forEach(m => {
+                    const actual = data[m.key] || 0;
+                    totalPct += Math.min(actual / m.dailyTarget, 1);
+                    metricCount++;
+                });
+                const score = metricCount > 0 ? Math.round((totalPct / metricCount) * 100) : 0;
+
+                return `
+                    <div class="week-day ${isToday ? 'today' : ''} ${hasData ? 'has-data' : ''}">
+                        <div class="day-label">${dayNames[i]}</div>
+                        <div class="day-score ${score === 0 ? 'zero' : ''}">${score}%</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Calculate weekly totals
+            const weeklyTotalsEl = document.getElementById('weeklyTotals');
+            weeklyTotalsEl.innerHTML = METRICS.slice(0, 5).map(m => {
+                let total = 0;
+                Object.values(weekData).forEach(dayData => {
+                    total += (dayData[m.key] || 0);
+                });
+                const isHit = total >= m.weeklyTarget;
+
+                return `
+                    <div class="weekly-total ${isHit ? 'hit' : (total > 0 ? '' : 'miss')}">
+                        <div class="wt-value">${total}</div>
+                        <div class="wt-target">/ ${m.weeklyTarget} target</div>
+                        <div class="wt-label">${m.label}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== STREAK =====
+        async function loadStreak() {
+            let streak = 0;
+            const checkDate = new Date();
+            checkDate.setDate(checkDate.getDate() - 1); // Start from yesterday
+
+            for (let i = 0; i < 60; i++) {
+                const dk = formatDateKey(checkDate);
+                let hasData = false;
+
+                try {
+                    const { data } = await supabaseClient
+                        .from('daily_tracker')
+                        .select('metrics')
+                        .eq('user_id', currentUserId)
+                        .eq('date', dk)
+                        .single();
+
+                    if (data) {
+                        const metrics = typeof data.metrics === 'string' ? JSON.parse(data.metrics) : data.metrics;
+                        hasData = Object.values(metrics || {}).some(v => v > 0);
+                    }
+                } catch (e) {
+                    const stored = localStorage.getItem(`clover_tracker_${dk}`);
+                    if (stored) {
+                        const metrics = JSON.parse(stored).metrics || {};
+                        hasData = Object.values(metrics).some(v => v > 0);
+                    }
+                }
+
+                if (hasData) {
+                    streak++;
+                    checkDate.setDate(checkDate.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+
+            // Check if today has data too
+            const todayKey = formatDateKey(new Date());
+            const todayHasData = Object.values(dailyData || {}).some(v => v > 0);
+            if (todayHasData) streak++;
+
+            document.getElementById('streakDisplay').textContent = `🔥 ${streak} day streak`;
+        }
+
+        // ===== PIPELINE SNAPSHOT (from CRM data) =====
+        async function loadPipelineSnapshot() {
+            try {
+                // Open opportunities
+                const { data: opps } = await supabaseClient
+                    .from('opportunities')
+                    .select('value, stage')
+                    .not('stage', 'in', '("closed-won","closed-lost")');
+
+                if (opps) {
+                    document.getElementById('snapOpenOpps').textContent = opps.length;
+                    const totalValue = opps.reduce((s, o) => s + (o.value || 0), 0);
+                    document.getElementById('snapPipelineValue').textContent =
+                        '$' + Math.round(totalValue / 1000) + 'K';
+                }
+
+                // Self-serve signups (placeholder since this would come from Stripe/product)
+                document.getElementById('snapSelfServe').textContent = '--';
+                document.getElementById('snapMRR').textContent = '--';
+                document.getElementById('snapActiveThreads').textContent = '--';
+
+            } catch (e) {
+                console.error('Pipeline snapshot error:', e);
+            }
+        }
+
+        // ===== NOTES AUTO-SAVE HINT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const notes = document.getElementById('dailyNotes');
+            notes.addEventListener('input', markUnsaved);
+        });
+
+        // ===== KEYBOARD SHORTCUT =====
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                if (hasUnsavedChanges) saveDay();
+            }
+        });
+
+        // ===== WARN ON LEAVE =====
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // ===== INIT =====
+        async function initPage() {
+            const isAuthenticated = await checkAuth();
+            if (!isAuthenticated) return;
+            await loadDay();
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
