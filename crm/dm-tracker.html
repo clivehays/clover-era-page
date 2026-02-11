@@ -597,7 +597,8 @@
             currentUserId = session.user.id;
             document.getElementById('userInfo').textContent = session.user.email;
             const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
-            if (profile && profile.role === 'admin') document.getElementById('adminLink').style.display = 'inline-block';
+            const adminLink = document.getElementById('adminLink');
+            if (profile && profile.role === 'admin' && adminLink) adminLink.style.display = 'inline-block';
             return true;
         }
 
