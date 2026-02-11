@@ -109,7 +109,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="footer-section">
                 <h4>LEARN</h4>
                 <ul>
-                    <li><a href="/book/">The Trillion Dollar Problem</a></li>
+                    <li><a href="/book/">Already Gone</a></li>
+                    <li><a href="/book/trillion-dollar-problem.html">The Trillion Dollar Problem</a></li>
                     <li><a href="/neuroscience-of-employee-engagement/">Neuroscience of Engagement</a></li>
                     <li><a href="/case-studies/">Early Results</a></li>
                     <li><a href="/Blog/">Blog</a></li>
@@ -119,14 +120,15 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="footer-section">
                 <h4>FREE TOOLS</h4>
                 <ul>
+                    <li><a href="/assessment/">Blind Spot Assessment</a></li>
                     <li><a href="/team-health/">Team Health Assessment</a></li>
-
                     <li><a href="/calculator/">ROI Calculator</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>GET STARTED</h4>
                 <ul>
+                    <li><a href="/start/">Try It Free</a></li>
                     <li><a href="/pricing/">Pricing</a></li>
                     <li><a href="/talk.html">Schedule Analysis</a></li>
                     <li><a href="/roundtable/">Manager Roundtable</a></li>

@@ -427,12 +427,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                     <div class="nav-dropdown-menu">
                         <a href="/book/">
+                            <strong>Already Gone</strong>
+                            <div class="dropdown-description">78 signals managers miss</div>
+                        </a>
+                        <a href="/book/trillion-dollar-problem.html">
                             <strong>The Trillion Dollar Problem</strong>
                             <div class="dropdown-description">Our first book on Amazon</div>
-                        </a>
-                        <a href="/alreadygone/">
-                            <strong>Already Gone</strong>
-                            <div class="dropdown-description">New book - February 11, 2026</div>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="/Blog/">
@@ -446,10 +446,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
                 <div class="nav-dropdown">
-                    <a href="/team-health/" class="nav-dropdown-toggle">
+                    <a href="/assessment/" class="nav-dropdown-toggle">
                         TOOLS <span style="font-size: 0.7rem;">▼</span>
                     </a>
                     <div class="nav-dropdown-menu">
+                        <a href="/assessment/">
+                            <strong>Blind Spot Assessment</strong>
+                            <div class="dropdown-description">2-minute manager visibility test</div>
+                        </a>
                         <a href="/team-health/">
                             <strong>Team Health Assessment</strong>
                             <div class="dropdown-description">5-minute diagnosis for managers</div>
