@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Already Gone | Why Your Best People Leave Before You See It Coming</title>
-    <meta name="description" content="A book by Clive and Neil Hays. 78 short entries on the patterns behind unexpected resignations. Join the waitlist for a free PDF: 12 Early Warning Signals Your Employee Is About to Leave.">
+    <meta name="description" content="A book by Clive and Neil Hays. 78 short entries on the patterns behind unexpected resignations. Available now on Amazon.">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
@@ -17,7 +17,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="Already Gone | Why Your Best People Leave Before You See It Coming">
-    <meta property="og:description" content="A book by Clive and Neil Hays. 78 short entries on the patterns behind unexpected resignations. Join the waitlist for early access.">
+    <meta property="og:description" content="A book by Clive and Neil Hays. 78 short entries on the patterns behind unexpected resignations. Available now on Amazon.">
     <meta property="og:type" content="book">
     <meta property="og:url" content="https://cloverera.com/alreadygone/">
     <meta property="og:image" content="https://cloverera.com/images/already-gone-book-cover.png">
@@ -26,7 +26,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Already Gone | Why Your Best People Leave Before You See It Coming">
-    <meta name="twitter:description" content="78 short entries on the patterns behind unexpected resignations. Join the waitlist for early access.">
+    <meta name="twitter:description" content="78 short entries on the patterns behind unexpected resignations. Available now on Amazon.">
     <meta name="twitter:image" content="https://cloverera.com/images/already-gone-book-cover.png">
 
     <!-- Breadcrumb Schema -->
@@ -541,51 +541,31 @@
         </div>
     </section>
 
-    <!-- Waitlist Section -->
+    <!-- Available Now Section -->
     <section class="waitlist-section">
         <div class="waitlist-content">
-            <h2>Join the Waitlist</h2>
-            <p class="launch-date">The book launches February 11, 2026.</p>
+            <h2>Available Now on Amazon</h2>
+            <p class="launch-date">78 patterns. Each one a moment where someone was already gone and nobody saw it coming.</p>
 
             <ul class="benefits-list">
                 <li>
                     <div>
-                        <strong>Instant download</strong>
-                        <span>12 Early Warning Signals Your Employee Is About to Leave (PDF)</span>
+                        <strong>Paperback $9.99</strong>
+                        <span>Keep it on your desk. Share it with your leadership team.</span>
                     </div>
                 </li>
                 <li>
                     <div>
-                        <strong>Launch week pricing</strong>
-                        <span>Kindle $4.99 (then $9.99). Hardcover $9.99 (then $15.99).</span>
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <strong>First to know</strong>
-                        <span>Get notified February 11 so you don't miss the launch price.</span>
+                        <strong>Ebook $4.99</strong>
+                        <span>Read it in an hour. The patterns will stay with you longer than that.</span>
                     </div>
                 </li>
             </ul>
 
-            <form class="waitlist-form" id="waitlistForm">
-                <!-- Honeypot field -->
-                <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off">
-
-                <div class="form-row">
-                    <input type="text" class="form-input" id="firstName" placeholder="First Name" required>
-                    <input type="email" class="form-input" id="email" placeholder="Email" required>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">Join the Waitlist</button>
-
-                <label class="human-check">
-                    <input type="checkbox" id="humanCheck" required>
-                    I'm not a robot
-                </label>
-
-                <p class="form-message" id="formMessage"></p>
-            </form>
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem;">
+                <a href="https://www.amazon.com/dp/B0GMSVWLYB/" target="_blank" rel="noopener" class="submit-btn" style="display: block; text-align: center; text-decoration: none;">Get the Paperback</a>
+                <a href="https://www.amazon.com/dp/B0GMKPB87P" target="_blank" rel="noopener" class="submit-btn" style="display: block; text-align: center; text-decoration: none; background: var(--deep-teal);">Get the Ebook</a>
+            </div>
         </div>
     </section>
 
@@ -643,102 +623,6 @@
         </p>
     </footer>
 
-    <!-- Form Handler -->
-    <script>
-        // Track when form was loaded
-        const formLoadTime = Date.now();
-
-        // Get UTM parameters from URL
-        function getUtmParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                utmSource: params.get('utm_source'),
-                utmMedium: params.get('utm_medium'),
-                utmCampaign: params.get('utm_campaign')
-            };
-        }
-
-        document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const firstName = document.getElementById('firstName').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const honeypot = document.querySelector('[name="website"]').value;
-            const humanCheck = document.getElementById('humanCheck').checked;
-            const btn = document.getElementById('submitBtn');
-            const message = document.getElementById('formMessage');
-            const originalBtnText = btn.textContent;
-
-            // Clear previous messages
-            message.textContent = '';
-            message.className = 'form-message';
-
-            // Bot Detection
-
-            // 1. Honeypot check
-            if (honeypot) {
-                console.log('Bot detected: honeypot filled');
-                message.textContent = 'Submission failed. Please try again.';
-                message.className = 'form-message error';
-                return;
-            }
-
-            // 2. Time check - form must be visible for at least 3 seconds
-            const timeSinceLoad = (Date.now() - formLoadTime) / 1000;
-            if (timeSinceLoad < 3) {
-                console.log('Bot detected: too fast');
-                message.textContent = 'Please take a moment to review the form.';
-                message.className = 'form-message error';
-                return;
-            }
-
-            // 3. Checkbox check
-            if (!humanCheck) {
-                message.textContent = "Please confirm you're not a robot.";
-                message.className = 'form-message error';
-                return;
-            }
-
-            // Disable button and show loading state
-            btn.disabled = true;
-            btn.textContent = 'Joining...';
-
-            try {
-                const utmParams = getUtmParams();
-
-                const response = await fetch('/api/book-waitlist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        firstName: firstName,
-                        email: email,
-                        bookSlug: 'already-gone',
-                        source: 'alreadygone-waitlist',
-                        ...utmParams
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    message.textContent = data.message || "You're on the list. Check your inbox for confirmation.";
-                    message.className = 'form-message success';
-                    document.getElementById('waitlistForm').reset();
-                } else {
-                    throw new Error(data.error || 'Submission failed');
-                }
-            } catch (error) {
-                console.error('Submission error:', error);
-                message.textContent = error.message || 'Something went wrong. Please try again.';
-                message.className = 'form-message error';
-            } finally {
-                btn.disabled = false;
-                btn.textContent = originalBtnText;
-            }
-        });
-    </script>
 
 </body>
 </html>
