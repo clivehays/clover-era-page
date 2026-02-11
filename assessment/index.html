@@ -1109,23 +1109,40 @@
 
         // ===== SEND RESULTS =====
         function sendResults() {
-            // In production, POST to your API endpoint
-            // This sends the lead data + assessment results
+            const totalScore = Object.values(responses).reduce((s, v) => s + v, 0);
+
+            // Calculate per-section scores
+            const sectionScores = {};
+            CLOVER_SECTIONS.forEach(s => {
+                const qs = QUESTIONS.filter(q => q.letter === s.letter);
+                sectionScores[s.letter] = qs.reduce((sum, q) => sum + (responses[q.id] || 0), 0);
+            });
+
+            // Verdict
+            let verdict = 'Strong Visibility';
+            if (totalScore <= 20) verdict = 'Critical Blind Spots';
+            else if (totalScore <= 30) verdict = 'Significant Gaps';
+            else if (totalScore <= 40) verdict = 'Some Visibility, Some Gaps';
+            else if (totalScore <= 50) verdict = 'Good Awareness, Watch the Edges';
+
             const payload = {
-                ...userData,
+                name: userData.name,
+                email: userData.email,
+                company: userData.company || null,
+                teamSize: userData.teamSize || null,
                 responses,
-                total_score: Object.values(responses).reduce((s, v) => s + v, 0),
+                total_score: totalScore,
+                section_scores: sectionScores,
+                verdict,
                 completed_at: new Date().toISOString()
             };
 
-            console.log('Assessment completed:', payload);
-
-            // Send to your backend
-            // fetch('/api/blind-spot-assessment', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(payload)
-            // });
+            // POST to API - creates DM Tracker contact for follow-up
+            fetch('/api/blind-spot-assessment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.error('Failed to save assessment:', err));
 
             // Clean up localStorage
             localStorage.removeItem('clover_assessment_user');
