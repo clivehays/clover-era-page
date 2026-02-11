@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA CRM - DM Tracker</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --background: #f9fafb;
+            --medium-gray: #e5e7eb;
+            --border-color: #d1d5db;
+            --danger-red: #EF4444;
+            --warning-orange: #F59E0B;
+            --charcoal: #1f2937;
+            --white: #ffffff;
+            --purple: #7C3AED;
+            --blue: #2563EB;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6; color: var(--text-primary); background: var(--background);
+        }
+
+        /* NAV */
+        .nav {
+            background: white; padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-green); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-green); }
+        .btn-logout {
+            padding: 0.5rem 1rem; background: var(--medium-gray); color: var(--text-primary);
+            border: none; border-radius: 6px; cursor: pointer; font-weight: 500;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        /* HEADER */
+        .header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+        }
+        .header h1 { font-size: 2rem; }
+
+        .btn {
+            padding: 0.75rem 1.5rem; border: none; border-radius: 8px;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background: var(--primary-green); color: white; }
+        .btn-primary:hover { background: var(--dark-green); }
+        .btn-secondary { background: white; color: var(--text-primary); border: 2px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--background); }
+        .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.85rem; }
+        .btn-danger { background: #FEE2E2; color: var(--danger-red); border: 2px solid #FECACA; }
+        .btn-danger:hover { background: #FCA5A5; color: white; }
+
+        /* STATS BAR */
+        .stats-bar {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white; padding: 1rem 1.25rem; border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .stat-value { font-size: 1.75rem; font-weight: 800; color: var(--charcoal); }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+        .stat-card.highlight .stat-value { color: var(--primary-green); }
+        .stat-card.warning .stat-value { color: var(--warning-orange); }
+        .stat-card.danger .stat-value { color: var(--danger-red); }
+
+        /* ACTION NEEDED BAR */
+        .action-bar {
+            background: #FEF3C7; border-left: 4px solid var(--warning-orange);
+            border-radius: 0 10px 10px 0; padding: 1rem 1.5rem;
+            margin-bottom: 2rem; display: flex; align-items: center;
+            justify-content: space-between;
+        }
+        .action-bar.urgent {
+            background: #FEE2E2; border-color: var(--danger-red);
+        }
+        .action-bar.clear {
+            background: var(--light-green); border-color: var(--primary-green);
+        }
+        .action-text { font-weight: 600; font-size: 1rem; }
+        .action-count {
+            font-size: 1.5rem; font-weight: 800; margin-right: 0.75rem;
+        }
+
+        /* FILTERS */
+        .filters {
+            background: white; padding: 1rem 1.5rem; border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 1.5rem;
+            display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 0.25rem; }
+        .filter-group label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+        .filter-group input, .filter-group select {
+            padding: 0.5rem 0.75rem; border: 2px solid var(--medium-gray);
+            border-radius: 6px; font-size: 0.9rem; font-family: inherit;
+        }
+        .filter-group input:focus, .filter-group select:focus {
+            outline: none; border-color: var(--primary-green);
+        }
+
+        /* STAGE PILLS */
+        .stage-pill {
+            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 10px;
+            font-size: 0.75rem; font-weight: 700; white-space: nowrap;
+        }
+        .stage-new { background: #E0F2FE; color: #0369A1; }
+        .stage-opened { background: #DBEAFE; color: #1E40AF; }
+        .stage-engaged { background: #E0E7FF; color: #4338CA; }
+        .stage-qualified { background: #F3E8FF; color: #7C3AED; }
+        .stage-product-interest { background: #FEF3C7; color: #D97706; }
+        .stage-call-booked { background: #D1FAE5; color: #047857; }
+        .stage-nurture { background: #F3F4F6; color: #6B7280; }
+        .stage-dead { background: #FEE2E2; color: #DC2626; }
+
+        /* TABLE */
+        .section {
+            background: white; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 2rem;
+        }
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.25rem 1.5rem; border-bottom: 2px solid var(--medium-gray);
+        }
+        .section-header h2 { font-size: 1.2rem; color: var(--charcoal); }
+
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left; padding: 0.75rem 1rem; background: var(--background);
+            font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--medium-gray); font-size: 0.9rem; }
+        tr { transition: background 0.1s; }
+        tr:hover { background: #F0FDF4; }
+        tr.needs-action { background: #FFFBEB; }
+        tr.needs-action:hover { background: #FEF3C7; }
+        tr.overdue { background: #FEF2F2; }
+        tr.overdue:hover { background: #FEE2E2; }
+
+        .contact-name {
+            font-weight: 600; color: var(--charcoal); cursor: pointer;
+        }
+        .contact-name:hover { color: var(--primary-green); text-decoration: underline; }
+        .contact-company { font-size: 0.8rem; color: var(--text-secondary); }
+        .source-tag {
+            font-size: 0.75rem; color: var(--text-secondary);
+            background: var(--background); padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+        }
+        .last-action { font-size: 0.8rem; color: var(--text-secondary); }
+        .days-ago { font-weight: 600; }
+        .days-ago.fresh { color: var(--primary-green); }
+        .days-ago.stale { color: var(--warning-orange); }
+        .days-ago.cold { color: var(--danger-red); }
+
+        .next-action-text { font-size: 0.85rem; max-width: 200px; }
+
+        .action-btns { display: flex; gap: 0.35rem; flex-wrap: nowrap; }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; overflow-y: auto; padding: 2rem;
+        }
+        .modal-overlay.active {
+            display: flex; align-items: flex-start; justify-content: center;
+        }
+        .modal {
+            background: white; border-radius: 12px; max-width: 640px; width: 100%;
+            max-height: 90vh; overflow-y: auto; margin-top: 2rem;
+        }
+        .modal-header {
+            padding: 1.5rem; border-bottom: 2px solid var(--medium-gray);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; background: white; z-index: 10;
+        }
+        .modal-header h2 { font-size: 1.3rem; }
+        .modal-close {
+            background: none; border: none; font-size: 1.5rem; cursor: pointer;
+            color: var(--text-secondary); padding: 0.25rem;
+        }
+        .modal-body { padding: 1.5rem; }
+        .modal-footer {
+            padding: 1rem 1.5rem; border-top: 2px solid var(--medium-gray);
+            display: flex; justify-content: flex-end; gap: 0.75rem;
+            position: sticky; bottom: 0; background: white;
+        }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block; font-weight: 600; margin-bottom: 0.35rem;
+            font-size: 0.9rem; color: var(--charcoal);
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.65rem; border: 2px solid var(--medium-gray);
+            border-radius: 8px; font-size: 0.95rem; font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--primary-green);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-hint { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+        /* TIMELINE in modal */
+        .timeline { padding: 0; list-style: none; margin-top: 1rem; }
+        .timeline-item {
+            padding: 0.75rem 0 0.75rem 1.5rem; border-left: 2px solid var(--medium-gray);
+            position: relative; font-size: 0.9rem;
+        }
+        .timeline-item:before {
+            content: ''; position: absolute; left: -5px; top: 1rem;
+            width: 8px; height: 8px; border-radius: 50%; background: var(--primary-green);
+        }
+        .timeline-date { font-size: 0.75rem; color: var(--text-secondary); }
+        .timeline-text { margin-top: 0.25rem; }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center; padding: 4rem 2rem; color: var(--text-secondary);
+        }
+        .empty-state h3 { color: var(--charcoal); margin-bottom: 0.5rem; font-size: 1.25rem; }
+        .empty-state p { margin-bottom: 1.5rem; }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .filters { flex-direction: column; }
+            .form-row { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="companies.html">Companies</a>
+            <a href="activities.html">Activities</a>
+            <a href="kanban.html">Kanban</a>
+            <a href="outreach.html">Outreach</a>
+            <a href="daily-tracker.html">Daily Tracker</a>
+            <a href="dm-tracker.html" class="active">DM Tracker</a>
+            <a href="import.html">Import</a>
+            <a href="blog-articles.html">Blog</a>
+            <span id="userInfo" style="color: var(--text-secondary);"></span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>💬 DM Tracker</h1>
+            <button class="btn btn-primary" onclick="showAddModal()">+ New Contact</button>
+        </div>
+
+        <!-- Action Needed Banner -->
+        <div class="action-bar" id="actionBar">
+            <div style="display: flex; align-items: center;">
+                <span class="action-count" id="actionCount">0</span>
+                <span class="action-text" id="actionText">contacts need action today</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="filterNeedsAction()">Show Them</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-card highlight">
+                <div class="stat-value" id="statActive">0</div>
+                <div class="stat-label">Active Threads</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statNew">0</div>
+                <div class="stat-label">New (Send DM#1)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statEngaged">0</div>
+                <div class="stat-label">Engaged</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statQualified">0</div>
+                <div class="stat-label">Qualified</div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-value" id="statProductInterest">0</div>
+                <div class="stat-label">Product Interest</div>
+            </div>
+            <div class="stat-card highlight">
+                <div class="stat-value" id="statCallBooked">0</div>
+                <div class="stat-label">Calls Booked</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-value" id="statStale">0</div>
+                <div class="stat-label">Going Stale (3+ days)</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group" style="flex: 1;">
+                <label>Search</label>
+                <input type="text" id="filterSearch" placeholder="Name, company, notes..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label>Stage</label>
+                <select id="filterStage" onchange="applyFilters()">
+                    <option value="">All Stages</option>
+                    <option value="new">New</option>
+                    <option value="opened">Opened</option>
+                    <option value="engaged">Engaged</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="product-interest">Product Interest</option>
+                    <option value="call-booked">Call Booked</option>
+                    <option value="nurture">Nurture</option>
+                    <option value="dead">Dead</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Source</label>
+                <select id="filterSource" onchange="applyFilters()">
+                    <option value="">All Sources</option>
+                    <option value="post-comment">Post Comment</option>
+                    <option value="connection">New Connection</option>
+                    <option value="book-engagement">Book Engagement</option>
+                    <option value="inbound-dm">Inbound DM</option>
+                    <option value="manual">Manual Add</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Sort</label>
+                <select id="filterSort" onchange="applyFilters()">
+                    <option value="needs-action">Needs Action First</option>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest-contact">Oldest Contact First</option>
+                    <option value="stage">By Stage</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Clear</button>
+            </div>
+        </div>
+
+        <!-- Contacts Table -->
+        <div class="section">
+            <div class="section-header">
+                <h2 id="tableTitle">All DM Contacts</h2>
+                <span id="tableCount" style="font-size: 0.9rem; color: var(--text-secondary);"></span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Contact</th>
+                            <th>Stage</th>
+                            <th>Source</th>
+                            <th>Last Contact</th>
+                            <th>Next Action</th>
+                            <th style="width: 160px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <h3>No DM contacts yet</h3>
+                <p>Start by adding contacts from your LinkedIn post comments.</p>
+                <button class="btn btn-primary" onclick="showAddModal()">+ Add First Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Contact Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add DM Contact</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" id="fieldFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="fieldLastName">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company</label>
+                        <input type="text" id="fieldCompany">
+                    </div>
+                    <div class="form-group">
+                        <label>Title / Role</label>
+                        <input type="text" id="fieldTitle">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>LinkedIn Profile URL</label>
+                    <input type="url" id="fieldLinkedin" placeholder="https://linkedin.com/in/...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Source</label>
+                        <select id="fieldSource">
+                            <option value="post-comment">Post Comment</option>
+                            <option value="connection">New Connection</option>
+                            <option value="book-engagement">Book Engagement</option>
+                            <option value="inbound-dm">Inbound DM</option>
+                            <option value="manual">Manual Add</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Stage</label>
+                        <select id="fieldStage">
+                            <option value="new">New (Send DM#1)</option>
+                            <option value="opened">Opened (DM#1 Sent)</option>
+                            <option value="engaged">Engaged (Replied)</option>
+                            <option value="qualified">Qualified (Real Problem)</option>
+                            <option value="product-interest">Product Interest</option>
+                            <option value="call-booked">Call Booked</option>
+                            <option value="nurture">Nurture (Not Now)</option>
+                            <option value="dead">Dead (No Reply/Declined)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Source Post / Trigger</label>
+                    <input type="text" id="fieldSourcePost" placeholder="e.g., Post 22 - The $290K resignation, Feb 11">
+                    <div class="form-hint">Which post did they comment on, or what triggered the DM?</div>
+                </div>
+
+                <div class="form-group">
+                    <label>What They Said (their comment or message)</label>
+                    <textarea id="fieldTheirMessage" rows="3" placeholder="Copy their exact comment or summarize what they said..."></textarea>
+                    <div class="form-hint">This helps you personalize your DM. Reference their specific words.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Next Action</label>
+                    <input type="text" id="fieldNextAction" placeholder="e.g., Send DM#1 referencing their comment about losing 3 engineers">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Next Action Due</label>
+                        <input type="date" id="fieldDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Team Size (if known)</label>
+                        <input type="number" id="fieldTeamSize" placeholder="e.g., 12">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="fieldNotes" rows="3" placeholder="Internal notes, context, observations..."></textarea>
+                </div>
+
+                <!-- Activity Log (visible in edit mode) -->
+                <div id="activityLogSection" style="display: none;">
+                    <label style="font-weight: 700; font-size: 1rem; display: block; margin-bottom: 0.75rem; padding-top: 1rem; border-top: 2px solid var(--medium-gray);">Activity Log</label>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input type="text" id="newLogEntry" placeholder="Log a touchpoint: DM#2 sent, they replied about..." style="flex: 1; padding: 0.5rem; border: 2px solid var(--medium-gray); border-radius: 6px;">
+                        <button class="btn btn-primary btn-sm" onclick="addLogEntry()">Add</button>
+                    </div>
+                    <div class="timeline" id="activityTimeline"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="saveBtn" onclick="saveContact()">Save Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SUPABASE =====
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUserId = null;
+        let allContacts = [];
+        let filteredContacts = [];
+        let useLocalStorage = false;
+
+        // Stage definitions
+        const STAGES = {
+            'new': { label: 'New', class: 'stage-new', order: 1 },
+            'opened': { label: 'Opened', class: 'stage-opened', order: 2 },
+            'engaged': { label: 'Engaged', class: 'stage-engaged', order: 3 },
+            'qualified': { label: 'Qualified', class: 'stage-qualified', order: 4 },
+            'product-interest': { label: 'Product Interest', class: 'stage-product-interest', order: 5 },
+            'call-booked': { label: 'Call Booked', class: 'stage-call-booked', order: 6 },
+            'nurture': { label: 'Nurture', class: 'stage-nurture', order: 7 },
+            'dead': { label: 'Dead', class: 'stage-dead', order: 8 }
+        };
+
+        const SOURCE_LABELS = {
+            'post-comment': 'Post Comment',
+            'connection': 'Connection',
+            'book-engagement': 'Book',
+            'inbound-dm': 'Inbound DM',
+            'manual': 'Manual'
+        };
+
+        // ===== AUTH =====
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) { window.location.href = '/crm/login.html'; return false; }
+            currentUserId = session.user.id;
+            document.getElementById('userInfo').textContent = session.user.email;
+            const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
+            if (profile && profile.role === 'admin') document.getElementById('adminLink').style.display = 'inline-block';
+            return true;
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = '/crm/login.html';
+        }
+
+        // ===== DATA =====
+        async function loadContacts() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('dm_contacts')
+                    .select('*')
+                    .eq('user_id', currentUserId)
+                    .order('updated_at', { ascending: false });
+
+                if (error) {
+                    console.warn('Supabase load failed, using localStorage:', error.message);
+                    useLocalStorage = true;
+                    loadFromLocalStorage();
+                    return;
+                }
+
+                allContacts = data || [];
+            } catch (e) {
+                console.warn('Load error, using localStorage:', e);
+                useLocalStorage = true;
+                loadFromLocalStorage();
+                return;
+            }
+
+            applyFilters();
+            updateStats();
+        }
+
+        function loadFromLocalStorage() {
+            const stored = localStorage.getItem('clover_dm_contacts');
+            allContacts = stored ? JSON.parse(stored) : [];
+            applyFilters();
+            updateStats();
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('clover_dm_contacts', JSON.stringify(allContacts));
+        }
+
+        async function saveContactToDb(contact) {
+            if (useLocalStorage) {
+                if (contact.id) {
+                    const idx = allContacts.findIndex(c => c.id === contact.id);
+                    if (idx >= 0) allContacts[idx] = contact;
+                } else {
+                    contact.id = 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    contact.created_at = new Date().toISOString();
+                    allContacts.unshift(contact);
+                }
+                contact.updated_at = new Date().toISOString();
+                saveToLocalStorage();
+                return contact;
+            }
+
+            try {
+                if (contact.id) {
+                    contact.updated_at = new Date().toISOString();
+                    const { data, error } = await supabaseClient
+                        .from('dm_contacts')
+                        .update(contact)
+                        .eq('id', contact.id)
+                        .select()
+                        .single();
+                    if (error) throw error;
+                    return data;
+                } else {
+                    contact.user_id = currentUserId;
+                    contact.created_at = new Date().toISOString();
+                    contact.updated_at = new Date().toISOString();
+                    const { data, error } = await supabaseClient
+                        .from('dm_contacts')
+                        .insert([contact])
+                        .select()
+                        .single();
+                    if (error) throw error;
+                    return data;
+                }
+            } catch (e) {
+                console.error('Save error:', e);
+                alert('Save failed: ' + e.message);
+                return null;
+            }
+        }
+
+        async function deleteContactFromDb(id) {
+            if (useLocalStorage) {
+                allContacts = allContacts.filter(c => c.id !== id);
+                saveToLocalStorage();
+                return true;
+            }
+            try {
+                const { error } = await supabaseClient.from('dm_contacts').delete().eq('id', id);
+                if (error) throw error;
+                return true;
+            } catch (e) {
+                alert('Delete failed: ' + e.message);
+                return false;
+            }
+        }
+
+        // ===== STATS =====
+        function updateStats() {
+            const active = allContacts.filter(c => !['dead', 'nurture', 'call-booked'].includes(c.stage));
+            const now = new Date();
+
+            document.getElementById('statActive').textContent = active.length;
+            document.getElementById('statNew').textContent = allContacts.filter(c => c.stage === 'new').length;
+            document.getElementById('statEngaged').textContent = allContacts.filter(c => c.stage === 'engaged').length;
+            document.getElementById('statQualified').textContent = allContacts.filter(c => c.stage === 'qualified').length;
+            document.getElementById('statProductInterest').textContent = allContacts.filter(c => c.stage === 'product-interest').length;
+            document.getElementById('statCallBooked').textContent = allContacts.filter(c => c.stage === 'call-booked').length;
+
+            // Stale = active contacts with no activity for 3+ days
+            const stale = active.filter(c => {
+                const lastContact = c.last_contact_date ? new Date(c.last_contact_date) : new Date(c.created_at);
+                const days = Math.floor((now - lastContact) / (1000 * 60 * 60 * 24));
+                return days >= 3;
+            });
+            document.getElementById('statStale').textContent = stale.length;
+
+            // Action needed = contacts with due dates today or earlier, plus "new" contacts
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            const needsAction = allContacts.filter(c => {
+                if (c.stage === 'dead') return false;
+                if (c.stage === 'new') return true;
+                if (c.due_date && new Date(c.due_date) <= today) return true;
+                return false;
+            });
+
+            const actionBar = document.getElementById('actionBar');
+            document.getElementById('actionCount').textContent = needsAction.length;
+
+            if (needsAction.length === 0) {
+                actionBar.className = 'action-bar clear';
+                document.getElementById('actionText').textContent = 'All caught up. No DMs need action right now.';
+            } else if (needsAction.length >= 10) {
+                actionBar.className = 'action-bar urgent';
+                document.getElementById('actionText').textContent = 'contacts need action today. Get to work.';
+            } else {
+                actionBar.className = 'action-bar';
+                document.getElementById('actionText').textContent = 'contacts need action today';
+            }
+        }
+
+        // ===== FILTERS =====
+        function applyFilters() {
+            const search = (document.getElementById('filterSearch').value || '').toLowerCase();
+            const stage = document.getElementById('filterStage').value;
+            const source = document.getElementById('filterSource').value;
+            const sort = document.getElementById('filterSort').value;
+
+            filteredContacts = allContacts.filter(c => {
+                if (search) {
+                    const haystack = [c.first_name, c.last_name, c.company, c.notes, c.their_message, c.next_action]
+                        .filter(Boolean).join(' ').toLowerCase();
+                    if (!haystack.includes(search)) return false;
+                }
+                if (stage && c.stage !== stage) return false;
+                if (source && c.source !== source) return false;
+                return true;
+            });
+
+            // Sort
+            const now = new Date();
+            filteredContacts.sort((a, b) => {
+                switch (sort) {
+                    case 'needs-action': {
+                        const aNew = a.stage === 'new' ? 1 : 0;
+                        const bNew = b.stage === 'new' ? 1 : 0;
+                        if (aNew !== bNew) return bNew - aNew;
+
+                        const aDue = a.due_date ? new Date(a.due_date) : new Date('2099-01-01');
+                        const bDue = b.due_date ? new Date(b.due_date) : new Date('2099-01-01');
+                        return aDue - bDue;
+                    }
+                    case 'newest':
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    case 'oldest-contact': {
+                        const aLast = a.last_contact_date ? new Date(a.last_contact_date) : new Date(a.created_at);
+                        const bLast = b.last_contact_date ? new Date(b.last_contact_date) : new Date(b.created_at);
+                        return aLast - bLast;
+                    }
+                    case 'stage':
+                        return (STAGES[a.stage]?.order || 99) - (STAGES[b.stage]?.order || 99);
+                    default:
+                        return 0;
+                }
+            });
+
+            renderTable();
+            document.getElementById('tableCount').textContent = `${filteredContacts.length} of ${allContacts.length}`;
+        }
+
+        function clearFilters() {
+            document.getElementById('filterSearch').value = '';
+            document.getElementById('filterStage').value = '';
+            document.getElementById('filterSource').value = '';
+            document.getElementById('filterSort').value = 'needs-action';
+            applyFilters();
+        }
+
+        function filterNeedsAction() {
+            document.getElementById('filterStage').value = '';
+            document.getElementById('filterSort').value = 'needs-action';
+            // Custom filter for needs-action
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            filteredContacts = allContacts.filter(c => {
+                if (c.stage === 'dead') return false;
+                if (c.stage === 'new') return true;
+                if (c.due_date && new Date(c.due_date) <= today) return true;
+                return false;
+            });
+            renderTable();
+            document.getElementById('tableTitle').textContent = 'Needs Action Today';
+            document.getElementById('tableCount').textContent = `${filteredContacts.length} contacts`;
+        }
+
+        // ===== RENDER =====
+        function renderTable() {
+            const tbody = document.getElementById('contactsBody');
+            const empty = document.getElementById('emptyState');
+
+            if (filteredContacts.length === 0) {
+                tbody.innerHTML = '';
+                if (allContacts.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    empty.style.display = 'none';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No contacts match your filters.</td></tr>';
+                }
+                return;
+            }
+
+            empty.style.display = 'none';
+            const now = new Date();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            tbody.innerHTML = filteredContacts.map(c => {
+                const stageDef = STAGES[c.stage] || STAGES['new'];
+                const lastContact = c.last_contact_date ? new Date(c.last_contact_date) : new Date(c.created_at);
+                const daysSince = Math.floor((now - lastContact) / (1000 * 60 * 60 * 24));
+                const daysClass = daysSince <= 1 ? 'fresh' : daysSince <= 3 ? 'stale' : 'cold';
+
+                const isOverdue = c.due_date && new Date(c.due_date) < today && c.stage !== 'dead';
+                const isNew = c.stage === 'new';
+                const rowClass = isOverdue ? 'overdue' : isNew ? 'needs-action' : '';
+
+                const name = [c.first_name, c.last_name].filter(Boolean).join(' ') || 'Unknown';
+
+                return `
+                    <tr class="${rowClass}">
+                        <td>
+                            <div class="contact-name" onclick="editContact('${c.id}')">${name}</div>
+                            ${c.company ? `<div class="contact-company">${c.company}${c.title ? ' · ' + c.title : ''}</div>` : ''}
+                            ${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="font-size: 0.75rem; color: var(--blue);">LinkedIn ↗</a>` : ''}
+                        </td>
+                        <td><span class="stage-pill ${stageDef.class}">${stageDef.label}</span></td>
+                        <td><span class="source-tag">${SOURCE_LABELS[c.source] || c.source || '--'}</span></td>
+                        <td>
+                            <span class="days-ago ${daysClass}">${daysSince}d ago</span>
+                            <div class="last-action">${lastContact.toLocaleDateString()}</div>
+                        </td>
+                        <td>
+                            <div class="next-action-text">${c.next_action || '--'}</div>
+                            ${c.due_date ? `<div style="font-size: 0.75rem; color: ${isOverdue ? 'var(--danger-red)' : 'var(--text-secondary)'}; font-weight: ${isOverdue ? '700' : '400'};">${isOverdue ? '⚠ OVERDUE' : 'Due'}: ${new Date(c.due_date).toLocaleDateString()}</div>` : ''}
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                ${c.stage === 'new' ? `<button class="btn btn-primary btn-sm" onclick="advanceStage('${c.id}', 'opened')" title="Mark DM#1 sent">DM Sent</button>` : ''}
+                                ${c.stage === 'opened' ? `<button class="btn btn-primary btn-sm" onclick="advanceStage('${c.id}', 'engaged')" title="They replied">Replied</button>` : ''}
+                                ${['engaged', 'qualified'].includes(c.stage) ? `<button class="btn btn-primary btn-sm" onclick="advanceStage('${c.id}', getNextStage('${c.stage}'))" title="Advance stage">Advance</button>` : ''}
+                                <button class="btn btn-secondary btn-sm" onclick="editContact('${c.id}')" title="Edit">✏️</button>
+                                <button class="btn btn-secondary btn-sm" onclick="quickLog('${c.id}')" title="Quick log">📝</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getNextStage(current) {
+            const order = ['new', 'opened', 'engaged', 'qualified', 'product-interest', 'call-booked'];
+            const idx = order.indexOf(current);
+            return idx >= 0 && idx < order.length - 1 ? order[idx + 1] : current;
+        }
+
+        // ===== ACTIONS =====
+        async function advanceStage(id, newStage) {
+            const contact = allContacts.find(c => c.id === id);
+            if (!contact) return;
+
+            contact.stage = newStage;
+            contact.last_contact_date = new Date().toISOString();
+
+            // Set smart next actions based on stage
+            const nextActions = {
+                'opened': 'Wait for reply (48hrs). If no reply, mark as Dead.',
+                'engaged': 'Send deepener DM within 24-48 hours.',
+                'qualified': 'Bridge to product (DM#3). Share $495/month offer.',
+                'product-interest': 'Send dashboard walkthrough or book 10-min call.',
+                'call-booked': 'Prep for Turnover Analysis call.'
+            };
+            contact.next_action = nextActions[newStage] || contact.next_action;
+
+            // Set due date
+            const due = new Date();
+            if (newStage === 'opened') due.setDate(due.getDate() + 2);
+            else if (newStage === 'engaged') due.setDate(due.getDate() + 2);
+            else if (newStage === 'qualified') due.setDate(due.getDate() + 1);
+            else due.setDate(due.getDate() + 1);
+            contact.due_date = due.toISOString().split('T')[0];
+
+            // Add to activity log
+            if (!contact.activity_log) contact.activity_log = [];
+            contact.activity_log.unshift({
+                date: new Date().toISOString(),
+                text: `Stage changed to ${STAGES[newStage]?.label || newStage}`
+            });
+
+            const saved = await saveContactToDb(contact);
+            if (saved) {
+                await loadContacts();
+            }
+        }
+
+        async function quickLog(id) {
+            const note = prompt('Quick log entry:');
+            if (!note) return;
+
+            const contact = allContacts.find(c => c.id === id);
+            if (!contact) return;
+
+            if (!contact.activity_log) contact.activity_log = [];
+            contact.activity_log.unshift({
+                date: new Date().toISOString(),
+                text: note
+            });
+            contact.last_contact_date = new Date().toISOString();
+
+            await saveContactToDb(contact);
+            await loadContacts();
+        }
+
+        // ===== MODAL =====
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add DM Contact';
+            document.getElementById('editId').value = '';
+            document.getElementById('fieldFirstName').value = '';
+            document.getElementById('fieldLastName').value = '';
+            document.getElementById('fieldCompany').value = '';
+            document.getElementById('fieldTitle').value = '';
+            document.getElementById('fieldLinkedin').value = '';
+            document.getElementById('fieldSource').value = 'post-comment';
+            document.getElementById('fieldStage').value = 'new';
+            document.getElementById('fieldSourcePost').value = '';
+            document.getElementById('fieldTheirMessage').value = '';
+            document.getElementById('fieldNextAction').value = 'Send DM#1';
+            document.getElementById('fieldNotes').value = '';
+            document.getElementById('fieldTeamSize').value = '';
+            document.getElementById('activityLogSection').style.display = 'none';
+            document.getElementById('activityTimeline').innerHTML = '';
+
+            // Default due date to today
+            document.getElementById('fieldDueDate').value = new Date().toISOString().split('T')[0];
+
+            document.getElementById('contactModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('fieldFirstName').focus();
+        }
+
+        function editContact(id) {
+            const c = allContacts.find(ct => ct.id === id);
+            if (!c) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit Contact';
+            document.getElementById('editId').value = c.id;
+            document.getElementById('fieldFirstName').value = c.first_name || '';
+            document.getElementById('fieldLastName').value = c.last_name || '';
+            document.getElementById('fieldCompany').value = c.company || '';
+            document.getElementById('fieldTitle').value = c.title || '';
+            document.getElementById('fieldLinkedin').value = c.linkedin_url || '';
+            document.getElementById('fieldSource').value = c.source || 'manual';
+            document.getElementById('fieldStage').value = c.stage || 'new';
+            document.getElementById('fieldSourcePost').value = c.source_post || '';
+            document.getElementById('fieldTheirMessage').value = c.their_message || '';
+            document.getElementById('fieldNextAction').value = c.next_action || '';
+            document.getElementById('fieldDueDate').value = c.due_date || '';
+            document.getElementById('fieldTeamSize').value = c.team_size || '';
+            document.getElementById('fieldNotes').value = c.notes || '';
+
+            // Show activity log
+            document.getElementById('activityLogSection').style.display = 'block';
+            renderTimeline(c.activity_log || []);
+
+            document.getElementById('contactModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('contactModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function renderTimeline(log) {
+            const el = document.getElementById('activityTimeline');
+            if (!log || log.length === 0) {
+                el.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">No activity logged yet.</p>';
+                return;
+            }
+            el.innerHTML = log.map(entry => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${new Date(entry.date).toLocaleDateString()} ${new Date(entry.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    <div class="timeline-text">${entry.text}</div>
+                </div>
+            `).join('');
+        }
+
+        async function addLogEntry() {
+            const text = document.getElementById('newLogEntry').value.trim();
+            if (!text) return;
+            const id = document.getElementById('editId').value;
+            if (!id) return;
+
+            const contact = allContacts.find(c => c.id === id);
+            if (!contact) return;
+
+            if (!contact.activity_log) contact.activity_log = [];
+            contact.activity_log.unshift({ date: new Date().toISOString(), text });
+            contact.last_contact_date = new Date().toISOString();
+
+            await saveContactToDb(contact);
+            renderTimeline(contact.activity_log);
+            document.getElementById('newLogEntry').value = '';
+        }
+
+        async function saveContact() {
+            const id = document.getElementById('editId').value;
+            const existing = id ? allContacts.find(c => c.id === id) : null;
+
+            const contact = {
+                ...(existing || {}),
+                first_name: document.getElementById('fieldFirstName').value.trim(),
+                last_name: document.getElementById('fieldLastName').value.trim(),
+                company: document.getElementById('fieldCompany').value.trim(),
+                title: document.getElementById('fieldTitle').value.trim(),
+                linkedin_url: document.getElementById('fieldLinkedin').value.trim(),
+                source: document.getElementById('fieldSource').value,
+                stage: document.getElementById('fieldStage').value,
+                source_post: document.getElementById('fieldSourcePost').value.trim(),
+                their_message: document.getElementById('fieldTheirMessage').value.trim(),
+                next_action: document.getElementById('fieldNextAction').value.trim(),
+                due_date: document.getElementById('fieldDueDate').value || null,
+                team_size: document.getElementById('fieldTeamSize').value ? parseInt(document.getElementById('fieldTeamSize').value) : null,
+                notes: document.getElementById('fieldNotes').value.trim()
+            };
+
+            if (!contact.first_name) {
+                alert('First name is required.');
+                return;
+            }
+
+            // If stage changed, log it
+            if (existing && existing.stage !== contact.stage) {
+                if (!contact.activity_log) contact.activity_log = [];
+                contact.activity_log.unshift({
+                    date: new Date().toISOString(),
+                    text: `Stage: ${STAGES[existing.stage]?.label} → ${STAGES[contact.stage]?.label}`
+                });
+                contact.last_contact_date = new Date().toISOString();
+            }
+
+            if (!existing) {
+                contact.last_contact_date = new Date().toISOString();
+                contact.activity_log = [{ date: new Date().toISOString(), text: 'Contact created' }];
+            }
+
+            if (id) contact.id = id;
+
+            const saved = await saveContactToDb(contact);
+            if (saved) {
+                closeModal();
+                await loadContacts();
+            }
+        }
+
+        // ===== INIT =====
+        async function initPage() {
+            const isAuth = await checkAuth();
+            if (!isAuth) return;
+            await loadContacts();
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
+
+        // Keyboard shortcut: Escape to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
