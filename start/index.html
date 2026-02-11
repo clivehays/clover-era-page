@@ -522,7 +522,7 @@
             <div class="hero-eyebrow">14-Day Free Trial</div>
             <h1>See what your team won't tell you in person.</h1>
             <p class="hero-sub">Daily anonymous check-ins. Bi-weekly manager reports. Across all six CLOVER dimensions. No credit card. Cancel anytime.</p>
-            <a href="#signup" class="btn-hero">Start Your Free Trial</a>
+            <a href="https://app.cloverera.com/register" class="btn-hero">Start Your Free Trial</a>
         </div>
     </section>
 
@@ -624,22 +624,12 @@
         </div>
     </section>
 
-    <!-- Signup Form -->
+    <!-- Signup CTA -->
     <section class="signup-section" id="signup">
         <div class="signup-content">
             <h2>Start Your Free Trial</h2>
-            <p class="signup-sub">14 days free. No credit card required.</p>
-            <form class="signup-form" id="trialForm" onsubmit="handleTrialSubmit(event)">
-                <div class="form-row">
-                    <input type="text" class="form-input" id="trialName" placeholder="Your name" required>
-                    <input type="email" class="form-input" id="trialEmail" placeholder="Work email" required>
-                </div>
-                <div class="form-row">
-                    <input type="text" class="form-input" id="trialCompany" placeholder="Company">
-                    <input type="number" class="form-input" id="trialTeamSize" placeholder="Team size" min="1">
-                </div>
-                <button type="submit" class="btn-submit">Start Your Free Trial</button>
-            </form>
+            <p class="signup-sub">14 days free. No credit card required. Set up in under 5 minutes.</p>
+            <a href="https://app.cloverera.com/register" class="btn-submit" style="display: inline-block; text-decoration: none; text-align: center; padding: 1.1rem 2.5rem;">Create Your Free Account</a>
             <p class="form-contact">Questions? Email <a href="mailto:contact@cloverera.com">contact@cloverera.com</a></p>
             <p class="form-privacy">Your team's responses are 100% anonymous. We never share your data.</p>
         </div>
@@ -654,41 +644,5 @@
 
     <script src="/js/footer.js"></script>
 
-    <script>
-        function handleTrialSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('trialName').value.trim();
-            const email = document.getElementById('trialEmail').value.trim();
-            const company = document.getElementById('trialCompany').value.trim();
-            const teamSize = document.getElementById('trialTeamSize').value;
-
-            const payload = {
-                name,
-                email,
-                company: company || null,
-                team_size: teamSize ? parseInt(teamSize) : null,
-                plan_interest: 'monthly',
-                source: 'start-page',
-                created_at: new Date().toISOString()
-            };
-
-            console.log('Trial signup:', payload);
-
-            // POST to Supabase when backend is ready
-            // fetch('/api/trial-signup', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(payload)
-            // });
-
-            // Show confirmation
-            document.getElementById('trialForm').innerHTML = `
-                <div style="text-align: center; padding: 2rem 0;">
-                    <h3 style="color: var(--charcoal); margin-bottom: 0.5rem;">You're in.</h3>
-                    <p style="color: var(--text-secondary);">Check your email for next steps. We'll have you set up in under 5 minutes.</p>
-                </div>
-            `;
-        }
-    </script>
 </body>
 </html>
