@@ -882,6 +882,7 @@
                                 ${['engaged', 'qualified'].includes(c.stage) ? `<button class="btn btn-primary btn-sm" onclick="advanceStage('${c.id}', getNextStage('${c.stage}'))" title="Advance stage">Advance</button>` : ''}
                                 <button class="btn btn-secondary btn-sm" onclick="editContact('${c.id}')" title="Edit">✏️</button>
                                 <button class="btn btn-secondary btn-sm" onclick="quickLog('${c.id}')" title="Quick log">📝</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteContact('${c.id}')" title="Delete">✕</button>
                             </div>
                         </td>
                     </tr>
@@ -950,6 +951,19 @@
 
             await saveContactToDb(contact);
             await loadContacts();
+        }
+
+        async function deleteContact(id) {
+            const contact = allContacts.find(c => c.id === id);
+            if (!contact) return;
+            const name = [contact.first_name, contact.last_name].filter(Boolean).join(' ');
+            if (!confirm(`Delete ${name}?`)) return;
+            const ok = await deleteContactFromDb(id);
+            if (ok) {
+                allContacts = allContacts.filter(c => c.id !== id);
+                applyFilters();
+                updateStats();
+            }
         }
 
         // ===== MODAL =====
