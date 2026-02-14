@@ -223,6 +223,17 @@ document.addEventListener('DOMContentLoaded', function() {
             font-size: 0.8rem !important;
         }
 
+        .nav-cta-get {
+            background: #FFFFFF !important;
+            color: #46AEB8 !important;
+            border: 2px solid #46AEB8;
+        }
+
+        .nav-cta-get:hover {
+            background: #46AEB8 !important;
+            color: #FFFFFF !important;
+        }
+
         .nav-cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(70, 174, 184, 0.25);
@@ -454,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <strong>Blind Spot Assessment</strong>
                             <div class="dropdown-description">2-minute manager visibility test</div>
                         </a>
-                        <a href="/team-health/">
+                        <a href="/assessment/">
                             <strong>Team Health Assessment</strong>
                             <div class="dropdown-description">5-minute diagnosis for managers</div>
                         </a>
@@ -463,6 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <a href="/pricing/">PRICING</a>
                 <a href="https://app.cloverera.com/login" class="nav-signin">SIGN IN</a>
                 <a href="/talk.html" class="nav-cta">FREE ANALYSIS</a>
+                <a href="/get/" class="nav-cta nav-cta-get">GET CLOVER ERA</a>
             </div>
         </div>
     `;

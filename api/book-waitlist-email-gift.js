@@ -36,7 +36,7 @@ function generateGiftEmailHtml(firstName) {
 
     <p>It shows you what's really happening on your team - the patterns most managers miss until someone resigns.</p>
 
-    <a href="https://cloverera.com/team-health/" class="button">Take the Assessment</a>
+    <a href="https://cloverera.com/assessment/" class="button">Take the Assessment</a>
 
     <p>Think of it as a companion to the book. The assessment shows you where to look. The book explains what you're seeing.</p>
 
@@ -62,7 +62,7 @@ Free access to our Team Health Assessment
 
 It shows you what's really happening on your team - the patterns most managers miss until someone resigns.
 
-Take it here: https://cloverera.com/team-health/
+Take it here: https://cloverera.com/assessment/
 
 Think of it as a companion to the book. The assessment shows you where to look. The book explains what you're seeing.
 

@@ -101,7 +101,7 @@ export default async function handler(req, res) {
 
     <p>It shows you what's really happening on your team - the patterns most managers miss until someone resigns.</p>
 
-    <a href="https://cloverera.com/team-health/" class="button">Take the Assessment</a>
+    <a href="https://cloverera.com/assessment/" class="button">Take the Assessment</a>
 
     <p>Think of it as a companion to the book. The assessment shows you where to look. The book explains what you're seeing.</p>
 

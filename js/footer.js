@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h4>FREE TOOLS</h4>
                 <ul>
                     <li><a href="/assessment/">Blind Spot Assessment</a></li>
-                    <li><a href="/team-health/">Team Health Assessment</a></li>
+                    <li><a href="/assessment/">Team Health Assessment</a></li>
                     <li><a href="/calculator/">ROI Calculator</a></li>
                 </ul>
             </div>

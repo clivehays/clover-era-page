@@ -532,7 +532,7 @@ const getDefaultTemplate = () => {
                 <div class="nav-links">
                     <a href="/blog">Blog</a>
                     <a href="/#features">Features</a>
-                    <a href="/start-trial">Start Trial</a>
+                    <a href="/start/">Start Trial</a>
                 </div>
             </nav>
         </div>
@@ -565,14 +565,14 @@ const getDefaultTemplate = () => {
             <div class="cta-section">
                 <h2>Ready to Transform Your Workplace?</h2>
                 <p>Join leading organizations using Clover ERA to build engaged, thriving teams.</p>
-                <a href="/start-trial" class="cta-button">Start Your Free Trial</a>
+                <a href="/start/" class="cta-button">Start Your Free Trial</a>
             </div>
         </article>
     </main>
 
     <footer>
         <p>&copy; {{YEAR}} Clover ERA. All rights reserved.</p>
-        <p><a href="/privacy" style="color: var(--text-secondary);">Privacy Policy</a> | <a href="/terms" style="color: var(--text-secondary);">Terms of Service</a></p>
+        <p><a href="/privacy-policy.html" style="color: var(--text-secondary);">Privacy Policy</a> | <a href="/terms" style="color: var(--text-secondary);">Terms of Service</a></p>
     </footer>
 
     <!-- Analytics tracking code would go here -->
