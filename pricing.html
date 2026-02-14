@@ -3,391 +3,568 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing - Clover ERA | See Which Teams Are About to Break</title>
+    <title>Pricing - Clover ERA | The Cost of Fixing Turnover vs. Ignoring It</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
-    <meta name="description" content="Clover ERA pricing from $12K to $180K. Start with a pilot, prove ROI, then expand. We show you which teams are about to break before the resignations start.">
+    <meta name="description" content="Clover ERA for your team: $295/month. 14-day free trial. Daily anonymous check-ins show managers what their team isn't telling them. Enterprise pricing from $12K/year.">
+    <link rel="canonical" href="https://cloverera.com/pricing/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Pricing - Clover ERA | The Cost of Fixing Turnover vs. Ignoring It">
+    <meta property="og:description" content="Clover ERA for your team: $295/month. 14-day free trial, no credit card required. Enterprise pricing for organizations 21-500+.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/pricing/">
+    <meta property="og:site_name" content="Clover ERA">
 
     <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-teal: #46AEB8;
-            --deep-teal: #0D7C88;
-            --charcoal: #1F2937;
-            --white: #FFFFFF;
-            --off-white: #FAFBFC;
-            --light-gray: #F8F9FA;
-            --medium-gray: #E5E7EB;
-            --text-primary: #111827;
-            --text-secondary: #4B5563;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.75;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
             color: var(--text-primary);
-            background: var(--white);
+            background: var(--warm-white);
         }
 
-        /* Hero Section */
+        /* Hero */
         .hero {
-            padding: 6rem 2rem 6rem !important;
-            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem 5rem;
+            position: relative;
+            overflow: hidden;
             text-align: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
+            font-size: clamp(2.2rem, 5vw, 3.25rem);
+            font-weight: 700;
             margin-bottom: 1rem;
-            color: var(--text-primary);
-            line-height: 1.2;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
         }
 
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
+        .hero h1 .hero-price {
+            color: var(--teal);
         }
 
-        .hero-badge {
-            display: inline-block;
-            background: rgba(70, 174, 184, 0.1);
-            border: 2px solid var(--primary-teal);
-            color: var(--primary-teal);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-top: 1rem;
+        .hero h1 .hero-cost {
+            color: var(--coral);
         }
 
-        /* Pricing Cards */
-        .pricing-section {
-            padding: 4rem 2rem 6rem;
-            max-width: 1300px;
+        .hero .hero-sub {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            opacity: 0.88;
+            max-width: 650px;
             margin: 0 auto;
         }
 
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+        /* Manager Hero Card */
+        .manager-hero {
+            padding: 5rem 2rem;
+            background: var(--warm-white);
         }
 
-        .pricing-card {
+        .manager-hero-inner {
+            max-width: 780px;
+            margin: 0 auto;
             background: var(--white);
-            border: 2px solid var(--medium-gray);
-            border-radius: 12px;
-            padding: 2.5rem;
+            border: 3px solid var(--teal);
+            border-radius: 16px;
+            padding: 3rem 3rem 2.5rem;
             position: relative;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 8px 40px rgba(70, 174, 184, 0.15);
         }
 
-        .pricing-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .pricing-card.popular {
-            border: 3px solid var(--primary-teal);
-            box-shadow: 0 5px 20px rgba(70, 174, 184, 0.2);
-        }
-
-        .popular-badge {
+        .manager-badge {
             position: absolute;
-            top: -15px;
+            top: -16px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary-teal);
+            background: var(--teal);
             color: var(--white);
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
+            padding: 0.5rem 1.75rem;
+            border-radius: 24px;
             font-weight: 700;
             font-size: 0.85rem;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-        .card-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 2px solid var(--light-gray);
-        }
-
-        .card-title {
-            font-size: 1.5rem;
+        .manager-hero-label {
+            font-size: 0.85rem;
             font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--deep-teal);
+            margin-bottom: 0.75rem;
         }
 
-        .card-subtitle {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .card-price {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary-teal);
-            margin-bottom: 0.5rem;
-        }
-
-        .card-price-period {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .card-roi {
-            background: rgba(70, 174, 184, 0.1);
-            color: var(--primary-teal);
-            padding: 0.75rem;
-            border-radius: 8px;
+        .manager-hero-title {
+            font-size: 2.25rem;
             font-weight: 700;
-            font-size: 1.1rem;
-            margin-top: 1rem;
-        }
-
-        .card-features {
-            list-style: none;
-            padding: 0;
-            margin: 2rem 0;
-        }
-
-        .card-features li {
-            padding: 0.75rem 0;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            line-height: 1.6;
-        }
-
-        .card-features li::before {
-            content: "✓";
-            color: var(--primary-teal);
-            font-weight: bold;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .card-features strong {
-            color: var(--text-primary);
-        }
-
-        .card-content-wrapper {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .card-cta-wrapper {
-            margin-top: auto;
-            padding-top: 3rem;
-        }
-
-        .card-cta {
-            width: 100%;
-            padding: 1.2rem;
-            background: var(--charcoal);
-            color: var(--white);
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-        }
-
-        .card-cta:hover {
-            background: var(--primary-teal);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(70, 174, 184, 0.3);
-        }
-
-        .card-cta.secondary {
-            background: var(--white);
             color: var(--charcoal);
-            border: 2px solid var(--charcoal);
+            margin-bottom: 0.25rem;
+            line-height: 1.15;
         }
 
-        .card-cta.secondary:hover {
-            background: var(--charcoal);
-            color: var(--white);
+        .manager-hero-price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--teal);
+            line-height: 1.1;
         }
 
-        /* Expansion Path */
-        .expansion-section {
-            background: var(--light-gray);
-            padding: 4rem 2rem;
-            margin: 4rem 0;
+        .manager-hero-price span {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--text-secondary);
         }
 
-        .expansion-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .expansion-content h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .expansion-path {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            margin: 3rem 0;
-            flex-wrap: wrap;
-        }
-
-        .expansion-step {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            flex: 1;
-            min-width: 250px;
-            max-width: 300px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .expansion-step-number {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background: var(--primary-teal);
-            color: var(--white);
-            border-radius: 50%;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-        }
-
-        .expansion-arrow {
-            font-size: 2rem;
-            color: var(--primary-teal);
-            font-weight: bold;
-        }
-
-        /* FAQ Section */
-        .faq-section {
-            padding: 4rem 2rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .faq-section h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--text-primary);
-        }
-
-        .faq-item {
-            background: var(--light-gray);
-            padding: 2rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--primary-teal);
-        }
-
-        .faq-question {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .faq-answer {
+        .manager-hero-details {
+            margin-top: 0.5rem;
+            font-size: 1.05rem;
             color: var(--text-secondary);
             line-height: 1.7;
         }
 
-        /* CTA Section */
-        .final-cta {
-            background: var(--primary-teal);
-            padding: 5rem 2rem;
-            text-align: center;
-            color: var(--white);
+        .manager-hero-annual {
+            display: inline-block;
+            margin-top: 0.75rem;
+            background: rgba(70, 174, 184, 0.08);
+            border: 1px solid rgba(70, 174, 184, 0.25);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--deep-teal);
+            font-weight: 600;
         }
 
-        .final-cta h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
+        .manager-hero-trial {
+            margin-top: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .manager-features {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .manager-features-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem 2rem;
+        }
+
+        .feature-list li {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            padding: 0.4rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .feature-list li::before {
+            content: "\2713";
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        .manager-cta-wrapper {
+            margin-top: 2.5rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--teal);
             color: var(--white);
+            padding: 1.1rem 2.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.2s;
         }
 
-        .final-cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: rgba(255, 255, 255, 0.95);
+        .btn-primary:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(70, 174, 184, 0.35);
         }
 
-        .final-cta .btn-primary {
+        .btn-coral {
+            background: var(--coral);
+        }
+
+        .btn-coral:hover {
+            background: var(--dark-coral);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        /* Enterprise Section */
+        .enterprise-section {
+            padding: 5rem 2rem;
+            background: var(--light-gray);
+        }
+
+        .enterprise-inner {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .enterprise-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .enterprise-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--deep-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .enterprise-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .enterprise-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Pricing Table */
+        .pricing-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .pricing-table thead th {
             background: var(--charcoal);
             color: var(--white);
-            padding: 1.2rem 3rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            padding: 1.1rem 1.5rem;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
         }
 
-        .final-cta .btn-primary:hover {
+        .pricing-table tbody tr {
+            border-bottom: 1px solid var(--medium-gray);
+            transition: background 0.15s;
+        }
+
+        .pricing-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-table tbody tr:hover {
+            background: rgba(70, 174, 184, 0.04);
+        }
+
+        .pricing-table td {
+            padding: 1.1rem 1.5rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .pricing-table .tier-name {
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .pricing-table .tier-headcount {
+            color: var(--text-secondary);
+        }
+
+        .pricing-table .tier-price {
+            font-weight: 700;
+            color: var(--deep-teal);
+            font-size: 1.05rem;
+        }
+
+        .pricing-table .tier-cta {
+            text-align: right;
+        }
+
+        .pricing-table .tier-cta a {
+            color: var(--coral);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .pricing-table .tier-cta a:hover {
+            color: var(--dark-coral);
+            text-decoration: underline;
+        }
+
+        /* Enterprise Includes */
+        .enterprise-includes {
+            margin-top: 2.5rem;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .enterprise-includes-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .enterprise-includes-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem 2rem;
+        }
+
+        .enterprise-includes-list li {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            padding: 0.35rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .enterprise-includes-list li::before {
+            content: "\2713";
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        /* Bottom CTA */
+        .bottom-cta {
+            padding: 4rem 2rem;
+            background: var(--warm-white);
+            text-align: center;
+        }
+
+        .bottom-cta-inner {
+            max-width: 650px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            border-left: 4px solid var(--teal);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            text-align: left;
+        }
+
+        .bottom-cta-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .bottom-cta-sub {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .bottom-cta a.btn-coral {
+            display: inline-block;
+            background: var(--coral);
+            color: var(--white);
+            padding: 0.9rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .bottom-cta a.btn-coral:hover {
+            background: var(--dark-coral);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        .bottom-contact {
+            margin-top: 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .bottom-contact a {
+            color: var(--deep-teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .bottom-contact a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
+            .hero {
+                padding: 4rem 1.5rem 3.5rem;
             }
 
-            .pricing-grid {
+            .hero h1 {
+                font-size: 1.85rem;
+            }
+
+            .hero .hero-sub {
+                font-size: 1.05rem;
+            }
+
+            .manager-hero {
+                padding: 3rem 1rem;
+            }
+
+            .manager-hero-inner {
+                padding: 2.5rem 1.5rem 2rem;
+            }
+
+            .manager-hero-title {
+                font-size: 1.75rem;
+            }
+
+            .manager-hero-price {
+                font-size: 2.75rem;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+                gap: 0.4rem;
+            }
+
+            .enterprise-section {
+                padding: 3rem 1rem;
+            }
+
+            .enterprise-title {
+                font-size: 1.6rem;
+            }
+
+            .pricing-table thead th {
+                padding: 0.9rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .pricing-table td {
+                padding: 0.9rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .enterprise-includes-list {
                 grid-template-columns: 1fr;
             }
 
-            .card-price {
-                font-size: 2.5rem;
+            .enterprise-includes {
+                padding: 1.5rem;
             }
 
-            .expansion-path {
-                flex-direction: column;
-            }
-
-            .expansion-arrow {
-                transform: rotate(90deg);
+            .bottom-cta-inner {
+                padding: 2rem 1.5rem;
             }
         }
     </style>
@@ -395,295 +572,123 @@
 <body>
     <script src="/js/header.js"></script>
 
-    <!-- HERO SECTION -->
+    <!-- Hero -->
     <section class="hero">
-        <h1>Clover ERA shows you which teams are about to break.<br><span style="color: var(--primary-teal);">Before the resignations start.</span></h1>
-        <p class="hero-subtitle">
-            Most companies start with a 90-day pilot in their highest-risk department. Prove ROI. Then expand. Simple.
-        </p>
-        <div class="hero-badge">
-            70% of pilots expand to full company implementation
+        <div class="hero-content">
+            <h1>The cost of fixing turnover is <span class="hero-price">$295/month.</span><br>The cost of ignoring it is <span class="hero-cost">$75,000 per departure.</span></h1>
+            <p class="hero-sub">One of those numbers you control. The other one controls you.</p>
         </div>
     </section>
 
-    <!-- PRICING CARDS -->
-    <section class="pricing-section">
-        <div class="pricing-grid">
+    <!-- Manager Tier (THE HERO) -->
+    <section class="manager-hero">
+        <div class="manager-hero-inner">
+            <div class="manager-badge">Start Here</div>
 
-            <!-- CARD 0: STARTER -->
-            <div class="pricing-card">
-                <div class="card-header">
-                    <div class="card-title">Starter</div>
-                    <div class="card-subtitle">For smaller teams ready to see the signals</div>
-                    <div class="card-price">$12,000</div>
-                    <div class="card-price-period">per year</div>
-                    <div class="card-roi">Expected ROI: 10-15x</div>
-                </div>
+            <div class="manager-hero-label">Clover ERA for Your Team</div>
+            <div class="manager-hero-price">$295<span>/month per team</span></div>
+            <div class="manager-hero-details">Up to 20 people</div>
 
-                <ul class="card-features">
-                    <li><strong>Scope:</strong> 1 team (5-20 people)</li>
-                    <li><strong>Goal:</strong> Prevent 1-2 departures annually</li>
-                    <li><strong>Expected Savings:</strong> $120K-$240K</li>
-                    <li>Full Clover ERA implementation</li>
-                    <li>Manager training & onboarding</li>
-                    <li>Weekly team health reports</li>
-                    <li>Monthly check-in calls</li>
-                    <li>Email support</li>
+            <div class="manager-hero-annual">Or $2,950/year (save ~17%)</div>
+
+            <div class="manager-hero-trial">14-day free trial. No credit card required.</div>
+
+            <div class="manager-features">
+                <div class="manager-features-title">What's included</div>
+                <ul class="feature-list">
+                    <li>Daily anonymous check-ins for your team</li>
+                    <li>Bi-weekly reports showing where your team is strong and where confidence is dropping</li>
+                    <li>CLOVER dimension scoring across six retention drivers</li>
+                    <li>Action Hub with specific weekly actions</li>
+                    <li>Manager dashboard</li>
+                    <li>Full data history</li>
                 </ul>
-
-                <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--medium-gray);">
-                    Ideal for: Growing companies with one critical team to protect
-                </p>
-
-                <div class="card-cta-wrapper">
-                    <a href="/talk.html" class="card-cta secondary">Schedule Your Free Turnover Analysis</a>
-                </div>
             </div>
 
-            <!-- CARD 1: PILOT -->
-            <div class="pricing-card popular">
-                <div class="popular-badge">MOST START HERE</div>
-                <div class="card-header">
-                    <div class="card-title">Proof of Concept</div>
-                    <div class="card-subtitle">Prove it works before you expand</div>
-                    <div class="card-price">$24,000</div>
-                    <div class="card-price-period">90-day pilot</div>
-                    <div class="card-roi">Expected ROI: 15-22x</div>
-                </div>
+            <div class="manager-cta-wrapper">
+                <a href="/get/" class="btn-primary">Get Clover ERA</a>
+            </div>
+        </div>
+    </section>
 
-                <ul class="card-features">
-                    <li><strong>Scope:</strong> 1 department (21-50 people)</li>
-                    <li><strong>Goal:</strong> Prevent 2-3 departures in 90 days</li>
-                    <li><strong>Expected Savings:</strong> $240K-$540K</li>
-                    <li>Full Clover ERA implementation</li>
-                    <li>Manager training & onboarding</li>
-                    <li>Weekly team health reports</li>
-                    <li>Monthly executive briefings</li>
-                    <li>Dedicated success manager</li>
-                    <li>Expansion roadmap at Day 75</li>
+    <!-- Enterprise Tiers -->
+    <section class="enterprise-section">
+        <div class="enterprise-inner">
+            <div class="enterprise-header">
+                <div class="enterprise-label">Multiple Teams / Organization-Wide</div>
+                <h2 class="enterprise-title">Pricing for your organization</h2>
+                <p class="enterprise-subtitle">When one team isn't enough. Roll Clover ERA across departments with centralized leadership reporting and dedicated support.</p>
+            </div>
+
+            <div class="pricing-table-wrapper">
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Tier</th>
+                            <th>Headcount</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tier-name">Starter</td>
+                            <td class="tier-headcount">21 - 50</td>
+                            <td class="tier-price">$12,000/year</td>
+                            <td class="tier-cta"><a href="/talk/">Schedule Turnover Analysis &rarr;</a></td>
+                        </tr>
+                        <tr>
+                            <td class="tier-name">Growth</td>
+                            <td class="tier-headcount">51 - 100</td>
+                            <td class="tier-price">$18,000/year</td>
+                            <td class="tier-cta"><a href="/talk/">Schedule Turnover Analysis &rarr;</a></td>
+                        </tr>
+                        <tr>
+                            <td class="tier-name">Scale</td>
+                            <td class="tier-headcount">101 - 200</td>
+                            <td class="tier-price">$36,000/year</td>
+                            <td class="tier-cta"><a href="/talk/">Schedule Turnover Analysis &rarr;</a></td>
+                        </tr>
+                        <tr>
+                            <td class="tier-name">Enterprise</td>
+                            <td class="tier-headcount">201 - 500</td>
+                            <td class="tier-price">$60,000/year</td>
+                            <td class="tier-cta"><a href="/talk/">Schedule Turnover Analysis &rarr;</a></td>
+                        </tr>
+                        <tr>
+                            <td class="tier-name">Enterprise+</td>
+                            <td class="tier-headcount">500+</td>
+                            <td class="tier-price">Custom (from $96K)</td>
+                            <td class="tier-cta"><a href="/talk/">Schedule Turnover Analysis &rarr;</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="enterprise-includes">
+                <div class="enterprise-includes-title">Every enterprise tier includes</div>
+                <ul class="enterprise-includes-list">
+                    <li>Everything in the team plan</li>
+                    <li>Multi-team dashboards</li>
+                    <li>Leadership reporting</li>
+                    <li>Dedicated support</li>
+                    <li>Onboarding for all teams</li>
+                    <li>CLOVER dimension scoring across your organization</li>
                 </ul>
-
-                <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--medium-gray);">
-                    "We prevented 3 engineering departures in 67 days. That's $540K saved on a $24K pilot. Expanded to full company immediately."
-                    <br><span style="font-weight: 600;">— VP Engineering, 450-person tech company</span>
-                </p>
-
-                <div class="card-cta-wrapper">
-                    <a href="/talk.html" class="card-cta">Schedule Your Free Turnover Analysis</a>
-                </div>
-            </div>
-
-            <!-- CARD 2: DEPARTMENTAL -->
-            <div class="pricing-card">
-                <div class="card-header">
-                    <div class="card-title">Departmental</div>
-                    <div class="card-subtitle">Expand to multiple high-risk teams</div>
-                    <div class="card-price">$48,000</div>
-                    <div class="card-price-period">per year</div>
-                    <div class="card-roi">Expected ROI: 20-45x</div>
-                </div>
-
-                <ul class="card-features">
-                    <li><strong>Scope:</strong> 2-4 departments (51-100 people)</li>
-                    <li><strong>Goal:</strong> Prevent 8-12 departures annually</li>
-                    <li><strong>Expected Savings:</strong> $960K-$2.16M</li>
-                    <li>Everything in Pilot, plus:</li>
-                    <li>Multi-department dashboards</li>
-                    <li>Quarterly executive business reviews</li>
-                    <li>Cross-functional trend analysis</li>
-                    <li>Priority support (4-hour response)</li>
-                    <li>Custom reporting for leadership</li>
-                </ul>
-
-                <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--medium-gray);">
-                    Typical path: Expand here after successful 90-day pilot in 1 department
-                </p>
-
-                <div class="card-cta-wrapper">
-                    <a href="/talk.html" class="card-cta secondary">Schedule Your Free Turnover Analysis</a>
-                </div>
-            </div>
-
-            <!-- CARD 3: ENTERPRISE -->
-            <div class="pricing-card">
-                <div class="card-header">
-                    <div class="card-title">Enterprise</div>
-                    <div class="card-subtitle">Company-wide turnover prevention</div>
-                    <div class="card-price">$72K-$180K</div>
-                    <div class="card-price-period">per year</div>
-                    <div class="card-roi">Expected ROI: 13-56x</div>
-                </div>
-
-                <ul class="card-features">
-                    <li><strong>Scope:</strong> Full company (101-1000 people)</li>
-                    <li><strong>Pricing:</strong> $72K (101-200) | $96K (201-500) | $180K (501-1000)</li>
-                    <li><strong>Goal:</strong> Prevent 20-30 departures annually</li>
-                    <li><strong>Expected Savings:</strong> $2.4M-$5.4M</li>
-                    <li>Everything in Departmental, plus:</li>
-                    <li>Company-wide implementation</li>
-                    <li>Custom HRIS integrations (Workday, BambooHR)</li>
-                    <li>Executive dashboard + board reporting</li>
-                    <li>Dedicated customer success team</li>
-                    <li>Strategic planning sessions (quarterly)</li>
-                    <li>Priority support (1-hour response)</li>
-                </ul>
-
-                <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--medium-gray);">
-                    For companies ready to implement turnover prevention across all departments
-                </p>
-
-                <div class="card-cta-wrapper">
-                    <a href="/talk.html" class="card-cta secondary">Schedule Your Free Turnover Analysis</a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- NOT SURE SECTION -->
-        <div style="max-width: 800px; margin: 4rem auto 0; text-align: center; padding: 0 2rem;">
-            <h3 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1rem;">Not sure which tier fits?</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.7;">
-                Use our free tools to understand your situation before you talk to us.
-            </p>
-            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
-                <a href="/assessment/" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.5rem; background: var(--light-gray); border-radius: 8px; text-decoration: none; color: var(--text-primary); font-weight: 600; transition: all 0.2s;">
-                    <span>Take the Team Health Assessment</span>
-                    <span style="color: var(--primary-teal);">→</span>
-                </a>
-                <a href="/business-case/" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 1.5rem; background: var(--light-gray); border-radius: 8px; text-decoration: none; color: var(--text-primary); font-weight: 600; transition: all 0.2s;">
-                    <span>Calculate Your Turnover Cost</span>
-                    <span style="color: var(--primary-teal);">→</span>
-                </a>
             </div>
         </div>
     </section>
 
-    <!-- EXPANSION PATH -->
-    <section class="expansion-section">
-        <div class="expansion-content">
-            <h2>How Most Companies Start</h2>
-            <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 800px; margin: 1rem auto 3rem;">
-                Most companies follow this proven path from pilot to full implementation
-            </p>
-
-            <div class="expansion-path">
-                <div class="expansion-step">
-                    <div class="expansion-step-number">1</div>
-                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Day 1-30</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
-                        Start $24K pilot in highest-turnover department. Implement system, train managers.
-                    </p>
-                </div>
-
-                <div class="expansion-arrow">→</div>
-
-                <div class="expansion-step">
-                    <div class="expansion-step-number">2</div>
-                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Day 30-90</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
-                        Identify at-risk employees, prevent 2-3 departures. Document $240K-$540K savings.
-                    </p>
-                </div>
-
-                <div class="expansion-arrow">→</div>
-
-                <div class="expansion-step">
-                    <div class="expansion-step-number">3</div>
-                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Day 90-120</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
-                        Present ROI report. Expand to $96K company-wide implementation. Scale to all departments.
-                    </p>
-                </div>
-            </div>
-
-            <div style="background: var(--white); padding: 2rem; border-radius: 12px; max-width: 700px; margin: 3rem auto 0; border-left: 4px solid var(--primary-teal);">
-                <p style="color: var(--text-primary); font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;">
-                    Why Start With a Pilot?
-                </p>
-                <p style="color: var(--text-secondary); line-height: 1.7;">
-                    You prove ROI in your most critical area before committing to full company implementation. If we don't prevent at least 2 departures (saving $240K+) in 90 days, you don't expand. Simple.
-                </p>
-            </div>
+    <!-- Bottom CTA -->
+    <section class="bottom-cta">
+        <div class="bottom-cta-inner">
+            <div class="bottom-cta-text">Not sure which tier?</div>
+            <p class="bottom-cta-sub">Schedule a 15-minute Turnover Analysis call. No pitch. Just math.</p>
+            <a href="/talk/" class="btn-coral">Schedule Your Free Turnover Analysis</a>
+            <p class="bottom-contact">Or email <a href="mailto:contact@cloverera.com">contact@cloverera.com</a></p>
         </div>
     </section>
 
-    <!-- FAQ SECTION -->
-    <section class="faq-section">
-        <h2>Pricing Questions</h2>
-
-        <div class="faq-item">
-            <div class="faq-question">What if the pilot doesn't work?</div>
-            <div class="faq-answer">
-                If we don't prevent at least 2 departures in your pilot department within 90 days, you simply don't expand. Most pilots prevent 2-3 departures (saving $240K-$540K), which makes the expansion decision obvious. We've never had a pilot fail to show positive ROI.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">Can we skip the pilot and go straight to enterprise?</div>
-            <div class="faq-answer">
-                Yes. Some companies with clear turnover crises across multiple departments choose to implement company-wide immediately. However, 70% of our clients start with a pilot to prove ROI in their highest-risk area first, then expand with internal buy-in and documented success.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">What's included in the $24K pilot?</div>
-            <div class="faq-answer">
-                Full implementation (not a trial): complete system setup, manager training, daily anonymous check-ins for 20-50 people, weekly reports, monthly executive briefings, and a dedicated success manager. At Day 75, we provide an ROI report and expansion roadmap based on your results.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">How do you calculate ROI?</div>
-            <div class="faq-answer">
-                We track prevented departures. Each prevented departure saves $120K-$180K (1.5-2x salary in recruiting, ramp time, and lost productivity). Most companies track only 20-30% of this cost. For example: $24K pilot prevents 3 departures = $360K-$540K saved = 15-22x ROI. Want to see your specific numbers? <a href="/business-case/" style="color: var(--primary-teal); font-weight: 600;">Try our free Turnover Cost Calculator</a>.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">Do you offer monthly pricing?</div>
-            <div class="faq-answer">
-                No. Preventing turnover requires at least 90 days to implement, identify patterns, and enable interventions. Monthly pricing creates the wrong incentives and doesn't allow enough time to demonstrate ROI. Our shortest engagement is a 90-day pilot at $24K.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">What if we need more than 500 people?</div>
-            <div class="faq-answer">
-                Enterprise pricing scales based on company size. For 500-1000 employees, pricing ranges from $180K-$300K annually. We'll provide a custom quote based on your specific needs during the analysis call. The ROI math still works: preventing 40-60 departures = $4.8M-$10.8M saved.
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">What if we're not sure we have a turnover problem?</div>
-            <div class="faq-answer">
-                That's often the most dangerous situation. The teams that "seem fine" are frequently the ones about to break. Take our free <a href="/assessment/" style="color: var(--primary-teal); font-weight: 600;">Team Health Assessment</a> to see what might be hiding beneath the surface. It takes 5 minutes and you'll get a specific diagnosis.
-            </div>
-        </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section class="final-cta">
-        <h2>See Which Teams Are About to Break</h2>
-        <p>
-            Schedule a 15-minute Turnover Analysis. We'll show you which teams are at risk,<br>
-            what it's actually costing you, and whether a pilot makes sense.
-        </p>
-        <p style="font-size: 1rem; margin-bottom: 2rem; color: rgba(255, 255, 255, 0.9);">
-            No pitch. Just math.
-        </p>
-        <a href="/talk.html" class="btn-primary">Schedule Your Free Turnover Analysis</a>
-        <p style="margin-top: 2rem; font-size: 0.9rem; color: rgba(255, 255, 255, 0.8);">
-            Most conversations lead to pilot implementations within 2 weeks
-        </p>
-    </section>
-
-    <!-- FOOTER -->
-    <footer style="background: var(--charcoal); padding: 3rem 2rem; text-align: center; color: rgba(255, 255, 255, 0.7);">
-        <p style="margin-bottom: 1rem;">Questions about pricing? Call <a href="tel:+12129184448" style="color: var(--white); text-decoration: underline; font-weight: 600;">(212) 918-4448</a></p>
-        <p style="font-size: 0.9rem;">© 2025 Clover ERA | We show you which teams are about to break</p>
-        <p style="margin-top: 1rem;"><a href="/privacy-policy.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Privacy</a> | <a href="/terms.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Terms</a></p>
-    </footer>
-
-    <script src="/js/cookie-consent.js"></script>
+    <script src="/js/footer.js"></script>
 </body>
 </html>

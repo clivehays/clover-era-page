@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Clover ERA Works | Daily Team Signals for Managers</title>
+    <meta name="description" content="One question per day. 30 seconds. Completely anonymous. Clover ERA gives managers visibility into what their team isn't saying, before it becomes a resignation.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cloverera.com/how-it-works/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="How Clover ERA Works | Daily Team Signals for Managers">
+    <meta property="og:description" content="One question per day. 30 seconds. Completely anonymous. See what your team isn't saying before it becomes a resignation.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/how-it-works/">
+    <meta property="og:site_name" content="Clover ERA">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="How Clover ERA Works | Daily Team Signals for Managers">
+    <meta name="twitter:description" content="One question per day. 30 seconds. Completely anonymous. See what your team isn't saying.">
+
+    <!-- Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://cloverera.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "How It Works",
+                "item": "https://cloverera.com/how-it-works/"
+            }
+        ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .hero-sub {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 2rem;
+        }
+
+        .section-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+        }
+
+        .section-light {
+            background: var(--warm-white);
+        }
+
+        .section-gray {
+            background: var(--light-gray);
+        }
+
+        /* Step Blocks */
+        .step-block {
+            margin-bottom: 3.5rem;
+        }
+
+        .step-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--deep-teal);
+            background: rgba(70, 174, 184, 0.1);
+            padding: 0.3rem 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .step-block h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 1.25rem;
+            line-height: 1.3;
+        }
+
+        .step-block p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .step-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* CLOVER Grid */
+        .clover-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .clover-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.75rem;
+            border: 1px solid var(--medium-gray);
+            transition: border-color 0.2s;
+        }
+
+        .clover-card:hover {
+            border-color: var(--teal);
+        }
+
+        .clover-letter {
+            width: 44px;
+            height: 44px;
+            background: var(--deep-teal);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .clover-card h4 {
+            font-size: 1.15rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .clover-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .clover-intro {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Dark Section */
+        .dark-section {
+            background: var(--charcoal);
+            color: var(--white);
+            position: relative;
+        }
+
+        .dark-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .dark-section .section-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .dark-section h2 {
+            color: var(--white);
+        }
+
+        .dark-section p {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .dark-section .step-label {
+            background: rgba(70, 174, 184, 0.2);
+            color: var(--teal);
+        }
+
+        .dark-section .step-block h3 {
+            color: var(--white);
+        }
+
+        .dark-section .step-block p {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Visibility Box */
+        .visibility-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .visibility-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .visibility-card h4 {
+            font-size: 1.1rem;
+            color: var(--teal);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .visibility-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .privacy-note {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(70, 174, 184, 0.1);
+            border-left: 3px solid var(--teal);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .privacy-note p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Enterprise Callout */
+        .enterprise-callout {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--light-gray);
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .enterprise-callout p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .enterprise-callout a {
+            color: var(--deep-teal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .enterprise-callout a:hover {
+            text-decoration: underline;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.25;
+        }
+
+        .cta-section .cta-text {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--teal);
+            color: var(--white);
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(70, 174, 184, 0.35);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: var(--white);
+            padding: 1.1rem 2.25rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-coral {
+            background: var(--coral);
+        }
+
+        .btn-coral:hover {
+            background: var(--dark-coral);
+            box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
+        }
+
+        .cta-alt {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .cta-alt a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .cta-alt a:hover {
+            text-decoration: underline;
+        }
+
+        .pricing-note {
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 1.5rem 3.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.85rem;
+            }
+
+            .hero-sub {
+                font-size: 1.05rem;
+            }
+
+            section {
+                padding: 3.5rem 1.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.65rem;
+            }
+
+            .step-block h3 {
+                font-size: 1.3rem;
+            }
+
+            .clover-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .visibility-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section h2 {
+                font-size: 1.75rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                max-width: 320px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Here's what happens when you bring Clover ERA to your team.</h1>
+            <p class="hero-sub">You start seeing what your team isn't saying. Before it turns into a resignation you never saw coming.</p>
+        </div>
+    </section>
+
+    <!-- Section 1: The Daily Check-in -->
+    <section class="section-light">
+        <div class="section-content">
+            <div class="step-block">
+                <span class="step-label">The Daily Check-in</span>
+                <h3>One question. 30 seconds. Completely anonymous.</h3>
+                <p>Each person on your team gets one question per day through the app. It takes less than 30 seconds. No names attached. No way to trace who said what.</p>
+                <p>That's the point. People are honest when there's no risk. The problems they'd never bring up in a 1-on-1 surface immediately when there's no consequence attached.</p>
+                <p>Within a week, you start seeing patterns. Within two weeks, you know exactly where your team feels strong and where confidence is dropping.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: CLOVER Dimensions -->
+    <section class="section-gray">
+        <div class="section-content" style="max-width: 1100px;">
+            <div class="section-header" style="text-align: center;">
+                <h2>The six things that determine whether someone stays or starts looking.</h2>
+                <p class="clover-intro">Every check-in maps to one of six CLOVER dimensions. Each one is a proven driver of retention.</p>
+            </div>
+
+            <div class="clover-grid">
+                <div class="clover-card">
+                    <div class="clover-letter">C</div>
+                    <h4>Communication</h4>
+                    <p>Is information flowing both directions? Do people feel heard, or are they talking into a void?</p>
+                </div>
+                <div class="clover-card">
+                    <div class="clover-letter">L</div>
+                    <h4>Learning</h4>
+                    <p>Are people growing? Do they feel like they're developing new skills, or have they plateaued?</p>
+                </div>
+                <div class="clover-card">
+                    <div class="clover-letter">O</div>
+                    <h4>Opportunity</h4>
+                    <p>Can people see a future here? Is there somewhere to go, or does the path forward feel invisible?</p>
+                </div>
+                <div class="clover-card">
+                    <div class="clover-letter">V</div>
+                    <h4>Vulnerability</h4>
+                    <p>Can people be honest without risk? Is psychological safety real, or is it a poster on the wall?</p>
+                </div>
+                <div class="clover-card">
+                    <div class="clover-letter">E</div>
+                    <h4>Enablement</h4>
+                    <p>Do people have what they need to do their job? Are blockers being removed, or piling up?</p>
+                </div>
+                <div class="clover-card">
+                    <div class="clover-letter">R</div>
+                    <h4>Reflection</h4>
+                    <p>Do people feel recognized? Is their contribution visible, or does the work disappear into the machine?</p>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 1rem;">
+                Want the full science? <a href="/clover-framework/" style="color: var(--deep-teal); font-weight: 600;">Read about the CLOVER Framework</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 3: Your Report -->
+    <section class="section-light">
+        <div class="section-content">
+            <div class="step-block">
+                <span class="step-label">Your Report</span>
+                <h3>Every two weeks, you get a clear picture.</h3>
+                <p>Not a 40-page deck. A clear summary of where your team feels strong and where confidence is dropping. With specific actions you can take that week.</p>
+                <p>Small things. Practical things. The kind of thing you can do between meetings without adding another system to manage.</p>
+                <p>A two-point drop in how someone rates communication isn't a crisis. It's a signal. The report tells you what to do about it before it becomes one.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: The Action Hub -->
+    <section class="section-gray">
+        <div class="section-content">
+            <div class="step-block">
+                <span class="step-label">The Action Hub</span>
+                <h3>The dashboard shows you patterns. The Action Hub shows you what to do about them.</h3>
+                <p>Micro-actions and mini-actions that fit into your working day. A five-minute conversation. A quick message to the team. A project reassignment that takes ten minutes but prevents three months of frustration.</p>
+                <p>You don't need to become a different manager. You just need visibility into what's actually happening, and a clear next step to take.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: What Each Role Sees -->
+    <section class="dark-section">
+        <div class="section-content" style="max-width: 900px;">
+            <div class="section-header" style="text-align: center;">
+                <h2>What you see depends on your role.</h2>
+            </div>
+
+            <div class="visibility-grid">
+                <div class="visibility-card">
+                    <h4>Team Leads and Managers</h4>
+                    <p>You see your team's data and your actions. Six CLOVER dimension scores. Trends over time. Specific micro-actions tailored to what your team is telling you this week.</p>
+                </div>
+                <div class="visibility-card">
+                    <h4>Senior Leaders</h4>
+                    <p>You see team-level patterns across departments. Which teams are healthy. Which are showing early warning signals. Where intervention could prevent the next unexpected departure.</p>
+                </div>
+            </div>
+
+            <div class="privacy-note">
+                <p>Never individual names. Never individual scores. Team-level only. Retention is an outcome, not surveillance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enterprise Callout + CTAs -->
+    <section class="section-light">
+        <div class="section-content" style="max-width: 900px;">
+            <div class="enterprise-callout">
+                <p>Deploying across multiple teams? Talk to us about enterprise pricing.</p>
+                <a href="/talk/">Schedule Your Free Turnover Analysis</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>See what your team isn't telling you.</h2>
+            <p class="cta-text">Most teams see actionable data within two weeks. Setup takes less than five minutes. Your team's responses are completely anonymous.</p>
+            <div class="cta-buttons">
+                <a href="/get/" class="btn-primary">Get Clover ERA</a>
+                <a href="/assessment/" class="btn-secondary">Take the Blind Spot Assessment</a>
+            </div>
+            <p class="cta-alt">Not sure yet? The assessment is free, takes 2 minutes, and shows you where your blind spots are.</p>
+            <p class="pricing-note">$295/month per team. 14-day free trial. No credit card required.</p>
+        </div>
+    </section>
+
+    <script src="/js/footer.js"></script>
+</body>
+</html>

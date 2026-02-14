@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Turnover Analysis | Clover ERA</title>
+    <meta name="description" content="15-minute turnover analysis with Clive Hays. Find the gap between what you're tracking in turnover costs and what it's actually costing you. No pitch.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cloverera.com/talk/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Free Turnover Analysis | Clover ERA">
+    <meta property="og:description" content="15-minute turnover analysis with Clive Hays. Find the gap between what you're tracking in turnover costs and what it's actually costing you. No pitch.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/talk/">
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            opacity: 0.92;
+        }
+
+        .hero p.closing-line {
+            color: var(--coral);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+
+        .calendar-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .calendly-embed {
+            min-width: 320px;
+            min-height: 700px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .calendly-embed iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+        }
+
+        /* Alternatives Section */
+        .alternatives-section {
+            padding: 4rem 2rem;
+            background: var(--light-gray);
+        }
+
+        .alternatives-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .alternatives-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+        }
+
+        .alt-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .alt-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .alt-link:hover {
+            border-color: var(--teal);
+            box-shadow: 0 4px 20px rgba(70, 174, 184, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .alt-link .alt-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .alt-link .alt-action {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--deep-teal);
+        }
+
+        .alt-link .alt-arrow {
+            color: var(--teal);
+            font-size: 1.25rem;
+            margin-top: 0.75rem;
+            transition: transform 0.2s;
+        }
+
+        .alt-link:hover .alt-arrow {
+            transform: translateX(4px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .calendar-container {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero p {
+                font-size: 1.05rem;
+            }
+
+            .calendar-section {
+                padding: 2rem 1rem;
+            }
+
+            .calendly-embed {
+                min-height: 600px;
+            }
+
+            .calendly-embed iframe {
+                height: 600px;
+            }
+
+            .alternatives-section {
+                padding: 3rem 1.5rem;
+            }
+
+            .alt-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Free Turnover Analysis. 15 minutes. No pitch.</h1>
+            <p>Clive will show you the gap between what you're tracking in turnover costs and what it's actually costing you. Most companies track replacement costs. They miss the productivity loss, the knowledge drain, the team disruption. This call covers all of it.</p>
+            <p class="closing-line">You'll leave with a number. What you do with it is up to you.</p>
+        </div>
+    </section>
+
+    <!-- Calendar Section -->
+    <section class="calendar-section">
+        <div class="calendar-container">
+            <div class="calendly-embed">
+                <iframe src="https://calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era" loading="lazy" title="Schedule a Turnover Analysis with Clive Hays"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alternatives Section -->
+    <section class="alternatives-section">
+        <div class="alternatives-content">
+            <h2>Other ways to start.</h2>
+            <div class="alt-links">
+                <a href="/assessment/" class="alt-link">
+                    <span class="alt-label">Not ready to talk?</span>
+                    <span class="alt-action">Take the Blind Spot Assessment instead.</span>
+                    <span class="alt-arrow">&rarr;</span>
+                </a>
+                <a href="/get/" class="alt-link">
+                    <span class="alt-label">Just want to try it?</span>
+                    <span class="alt-action">Get Clover ERA.</span>
+                    <span class="alt-arrow">&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/footer.js"></script>
+</body>
+</html>
