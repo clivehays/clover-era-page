@@ -744,7 +744,7 @@
 
             <div id="insightsContainer"></div>
 
-            <div class="insight-box" style="background: #EFF6FF; border-left-color: #3B82F6; margin-top: 2rem;">
+            <div id="confidenceGap" class="insight-box" style="background: #EFF6FF; border-left-color: #3B82F6; margin-top: 2rem;">
                 <h3>The Confidence Gap</h3>
                 <p>This assessment measured your confidence in what you know about your team. Here's what it can't measure: whether your confidence is accurate.</p>
                 <p style="margin-top: 0.5rem;">Research shows managers overestimate their awareness of team concerns by 40-60%. The areas where you feel most confident are often the areas with the biggest gap between perception and reality. That's the blind spot.</p>
@@ -1125,6 +1125,22 @@
                     <p>${insights[s.letter].text}</p>
                 </div>
             `).join('');
+
+            // Dynamic Confidence Gap based on score
+            const gapEl = document.getElementById('confidenceGap');
+            if (gapEl) {
+                let gapText = '';
+                if (total <= 20) {
+                    gapText = `<h3>The Confidence Gap</h3><p>You scored ${total} out of 60. That puts you in the bottom third of managers who take this assessment. The gap between what you're seeing and what's actually happening on your team is significant. There are signals being missed right now. The question is whether you'll see them before someone resigns.</p>`;
+                } else if (total <= 35) {
+                    gapText = `<h3>The Confidence Gap</h3><p>You scored ${total} out of 60. Most managers land in this range. You're seeing some of what's happening on your team, but research shows you're missing roughly half of it. The problems that lead to resignations don't show up in meetings or 1-on-1s. They live in the gap between what you scored and 60.</p>`;
+                } else if (total <= 50) {
+                    gapText = `<h3>The Confidence Gap</h3><p>You scored ${total} out of 60. That's above average. You're more tuned in than most managers. But here's the thing: the departures that blindside managers almost never come from the areas where they're paying attention. They come from the areas they assumed were fine. Your blind spots aren't where you scored low. They're where you scored high and might be wrong.</p>`;
+                } else {
+                    gapText = `<h3>The Confidence Gap</h3><p>You scored ${total} out of 60. That's one of the highest scores we see. You're either exceptionally in tune with your team, or exceptionally confident. Research shows that high-confidence managers often have the widest gap between perception and reality. The only way to know which category you fall into is to compare your perception against your team's actual data.</p>`;
+                }
+                gapEl.innerHTML = gapText;
+            }
         }
 
         // ===== SEND RESULTS =====

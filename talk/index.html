@@ -98,35 +98,186 @@
             margin-top: 0.5rem;
         }
 
+        /* What to Expect Section */
+        .expect-section {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+
+        .expect-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .expect-content h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .expect-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .expect-card {
+            background: var(--warm-white);
+            border: 1px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+        }
+
+        .expect-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+        }
+
+        .expect-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
         /* Calendar Section */
         .calendar-section {
             padding: 4rem 2rem;
-            background: var(--white);
+            background: var(--light-gray);
         }
 
         .calendar-container {
             max-width: 1000px;
             margin: 0 auto;
+            text-align: center;
         }
 
-        .calendly-embed {
+        .calendar-container h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+        }
+
+        .calendar-embed {
             min-width: 320px;
             min-height: 700px;
             border: 1px solid var(--medium-gray);
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            background: var(--white);
         }
 
-        .calendly-embed iframe {
+        .calendar-embed iframe {
             width: 100%;
             height: 700px;
             border: none;
         }
 
+        .calendar-fallback {
+            display: none;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .calendar-fallback .book-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--teal);
+            color: var(--white);
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .calendar-fallback .book-btn:hover {
+            background: var(--deep-teal);
+        }
+
+        .calendar-fallback p {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Trust Section */
+        .trust-section {
+            padding: 3.5rem 2rem;
+            background: var(--white);
+        }
+
+        .trust-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .trust-intro {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .trust-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--teal);
+        }
+
+        .trust-bio {
+            text-align: left;
+        }
+
+        .trust-bio .name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .trust-bio .credential {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .trust-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .trust-stat {
+            padding: 1.25rem 1rem;
+            background: var(--warm-white);
+            border-radius: 10px;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .trust-stat .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--deep-teal);
+        }
+
+        .trust-stat .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
         /* Alternatives Section */
         .alternatives-section {
-            padding: 4rem 2rem;
+            padding: 3.5rem 2rem;
             background: var(--light-gray);
         }
 
@@ -190,6 +341,25 @@
             transform: translateX(4px);
         }
 
+        /* Contact Line */
+        .contact-line {
+            text-align: center;
+            padding: 2rem 2rem 0;
+            background: var(--light-gray);
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-line a {
+            color: var(--deep-teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-line a:hover {
+            text-decoration: underline;
+        }
+
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -224,16 +394,37 @@
                 font-size: 1.05rem;
             }
 
+            .expect-section {
+                padding: 3rem 1.5rem;
+            }
+
+            .expect-cards {
+                grid-template-columns: 1fr;
+            }
+
             .calendar-section {
                 padding: 2rem 1rem;
             }
 
-            .calendly-embed {
+            .calendar-embed {
                 min-height: 600px;
             }
 
-            .calendly-embed iframe {
+            .calendar-embed iframe {
                 height: 600px;
+            }
+
+            .trust-intro {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .trust-bio {
+                text-align: center;
+            }
+
+            .trust-stats {
+                grid-template-columns: 1fr;
             }
 
             .alternatives-section {
@@ -258,11 +449,66 @@
         </div>
     </section>
 
+    <!-- What to Expect Section -->
+    <section class="expect-section">
+        <div class="expect-content">
+            <h2>What happens in 15 minutes.</h2>
+            <div class="expect-cards">
+                <div class="expect-card">
+                    <h3>We look at your numbers.</h3>
+                    <p>Your team size, average salary, turnover rate. We calculate what turnover is actually costing you, not just what you're tracking.</p>
+                </div>
+                <div class="expect-card">
+                    <h3>We show you where signals are hiding.</h3>
+                    <p>Based on patterns across hundreds of companies, we'll identify which teams are most likely showing early warning signs right now.</p>
+                </div>
+                <div class="expect-card">
+                    <h3>You decide what to do next.</h3>
+                    <p>No pitch. No pressure. If Clover ERA makes sense, we'll tell you. If it doesn't, we'll tell you that too.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Calendar Section -->
     <section class="calendar-section">
         <div class="calendar-container">
-            <div class="calendly-embed">
-                <iframe src="https://calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era" loading="lazy" title="Schedule a Turnover Analysis with Clive Hays"></iframe>
+            <h2>Book Your 15-Minute Call</h2>
+            <div class="calendar-embed">
+                <iframe src="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/" loading="lazy" title="Schedule a Turnover Analysis with Clive Hays"></iframe>
+            </div>
+            <noscript>
+                <div class="calendar-fallback" style="display: block;">
+                    <a href="https://outlook.office.com/book/TurnoverAnalysis@cloverera.com/" class="book-btn" target="_blank" rel="noopener">Book Your 15-Minute Call</a>
+                    <p>Opens Outlook Booking in a new tab.</p>
+                </div>
+            </noscript>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="trust-content">
+            <div class="trust-intro">
+                <img src="/images/Clive-Hays-Employee-Engagement-Expert.png" alt="Clive Hays" class="trust-photo">
+                <div class="trust-bio">
+                    <div class="name">Your analysis will be with Clive Hays, Co-Founder of Clover ERA.</div>
+                    <div class="credential">Co-author of The Trillion Dollar Problem. 20+ years Fortune 500 transformation experience.</div>
+                </div>
+            </div>
+            <div class="trust-stats">
+                <div class="trust-stat">
+                    <div class="stat-number">31%</div>
+                    <div class="stat-label">Turnover reduction. Health tech company.</div>
+                </div>
+                <div class="trust-stat">
+                    <div class="stat-number">$1.1M</div>
+                    <div class="stat-label">Saved. Cybersecurity firm.</div>
+                </div>
+                <div class="trust-stat">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Departures prevented. Fintech.</div>
+                </div>
             </div>
         </div>
     </section>
@@ -284,6 +530,7 @@
                 </a>
             </div>
         </div>
+        <p class="contact-line">Questions first? Email <a href="mailto:contact@cloverera.com">contact@cloverera.com</a></p>
     </section>
 
     <script src="/js/footer.js"></script>

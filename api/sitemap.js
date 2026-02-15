@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 // Static pages that don't change
 const staticPages = [
   { loc: 'https://cloverera.com/', changefreq: 'weekly', priority: '1.0' },
-  { loc: 'https://cloverera.com/platform/', changefreq: 'monthly', priority: '0.9' },
+  { loc: 'https://cloverera.com/how-it-works/', changefreq: 'monthly', priority: '0.9' },
   { loc: 'https://cloverera.com/pricing/', changefreq: 'monthly', priority: '0.9' },
   { loc: 'https://cloverera.com/how-it-works.html', changefreq: 'monthly', priority: '0.9' },
   { loc: 'https://cloverera.com/why-employees-leave/', changefreq: 'monthly', priority: '0.9' },
@@ -12,7 +12,7 @@ const staticPages = [
   { loc: 'https://cloverera.com/reduce-employee-turnover/', changefreq: 'monthly', priority: '0.9' },
   { loc: 'https://cloverera.com/calculator/', changefreq: 'monthly', priority: '0.8' },
   { loc: 'https://cloverera.com/clover-framework.html', changefreq: 'monthly', priority: '0.8' },
-  { loc: 'https://cloverera.com/about.html', changefreq: 'monthly', priority: '0.7' },
+  { loc: 'https://cloverera.com/about/', changefreq: 'monthly', priority: '0.7' },
   { loc: 'https://cloverera.com/research/', changefreq: 'monthly', priority: '0.7' },
   { loc: 'https://cloverera.com/our-science.html', changefreq: 'monthly', priority: '0.7' },
   { loc: 'https://cloverera.com/case-studies/', changefreq: 'monthly', priority: '0.7' },
