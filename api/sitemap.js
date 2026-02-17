@@ -14,6 +14,7 @@ const staticPages = [
   { loc: 'https://cloverera.com/clover-framework/', changefreq: 'monthly', priority: '0.8' },
   { loc: 'https://cloverera.com/book/', changefreq: 'monthly', priority: '0.7' },
   { loc: 'https://cloverera.com/alreadygone/', changefreq: 'monthly', priority: '0.7' },
+  { loc: 'https://cloverera.com/reflect/', changefreq: 'monthly', priority: '0.8' },
 
   // Blog index
   { loc: 'https://cloverera.com/Blog/', changefreq: 'weekly', priority: '0.7' },
@@ -23,6 +24,9 @@ const staticPages = [
   { loc: 'https://cloverera.com/turnover-after-restructure/', changefreq: 'monthly', priority: '0.7' },
   { loc: 'https://cloverera.com/manager-turnover-problem/', changefreq: 'monthly', priority: '0.7' },
   { loc: 'https://cloverera.com/reduce-employee-turnover/', changefreq: 'monthly', priority: '0.7' },
+  { loc: 'https://cloverera.com/change-fatigue/', changefreq: 'monthly', priority: '0.7' },
+  { loc: 'https://cloverera.com/toxic-management/', changefreq: 'monthly', priority: '0.7' },
+  { loc: 'https://cloverera.com/how-to-measure-employee-engagement/', changefreq: 'monthly', priority: '0.7' },
 
   // Legal
   { loc: 'https://cloverera.com/privacy-policy.html', changefreq: 'yearly', priority: '0.3' },
