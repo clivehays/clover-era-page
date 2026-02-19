@@ -318,22 +318,19 @@
             background: var(--light-gray);
         }
 
-        /* Standalone view (without phone frame) */
-        @media screen and (max-width: 400px) {
+        /* Scale down phone frame when embedded in small iframes */
+        @media screen and (max-width: 360px) {
             .mobile-frame {
-                width: 100%;
-                height: 100vh;
-                margin: 0;
-                border: none;
-                border-radius: 0;
+                width: 300px;
+                height: 650px;
+                border-width: 10px;
+                border-radius: 32px;
             }
 
             .mobile-frame::before {
-                display: none;
-            }
-
-            .scroll-content {
-                padding-top: 0;
+                width: 120px;
+                height: 20px;
+                border-radius: 0 0 16px 16px;
             }
         }
     </style>
