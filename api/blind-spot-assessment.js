@@ -146,7 +146,7 @@ export default async function handler(req, res) {
                     company: company || null,
                     title: null,
                     linkedin_url: null,
-                    source: 'website',
+                    source: 'post-comment',
                     stage: 'new',
                     source_post: 'Blind Spot Assessment',
                     their_message: `Scored ${total_score}/60 - ${scoreVerdict}`,
