@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="footer-links">
                     <ul>
                         <li><a href="/how-it-works/">How It Works</a></li>
-                        <li><a href="/reflect/">Reflect</a></li>
+                        <li><a href="/reflect/">Personal</a></li>
                         <li><a href="/pricing/">Pricing</a></li>
                         <li><a href="/about/">About</a></li>
                     </ul>

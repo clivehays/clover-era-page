@@ -114,8 +114,13 @@ document.addEventListener('DOMContentLoaded', function() {
             transition: color 0.2s;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links a.nav-active {
             color: #46AEB8;
+        }
+
+        .nav-links a.nav-active {
+            font-weight: 700;
         }
 
         .nav-cta-get {
@@ -230,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </button>
             <div class="nav-links" id="navLinks">
                 <a href="/how-it-works/">How It Works</a>
-                <a href="/reflect/">Reflect</a>
+                <a href="/reflect/">Personal</a>
                 <a href="/pricing/">Pricing</a>
                 <a href="/about/">About</a>
                 <a href="/book/">Already Gone</a>
@@ -240,6 +245,15 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
 
     document.body.insertBefore(nav, document.body.firstChild);
+
+    // Active nav state
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-links a').forEach(function(link) {
+        const href = link.getAttribute('href');
+        if (href && href !== '/' && currentPath.startsWith(href)) {
+            link.classList.add('nav-active');
+        }
+    });
 
     // Mobile menu toggle
     const mobileToggle = document.getElementById('mobileToggle');
