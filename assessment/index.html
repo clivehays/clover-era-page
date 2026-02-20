@@ -971,6 +971,25 @@
             // Store in localStorage for recovery
             localStorage.setItem('clover_assessment_user', JSON.stringify(userData));
 
+            // Capture contact immediately on start
+            fetch('/api/blind-spot-assessment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    company: company || null,
+                    teamSize: teamSize || null,
+                    responses: {},
+                    total_score: 0,
+                    section_scores: {},
+                    verdict: 'Started - Not Yet Completed',
+                    completed_at: new Date().toISOString()
+                })
+            })
+            .then(function(r) { if (!r.ok) r.json().then(function(d) { console.error('Contact capture failed:', d); }); })
+            .catch(function(err) { console.error('Contact capture error:', err); });
+
             // Switch pages
             document.getElementById('pageLanding').classList.remove('active');
             document.getElementById('pageAssessment').classList.add('active');
@@ -1179,12 +1198,14 @@
                 completed_at: new Date().toISOString()
             };
 
-            // POST to API - creates DM Tracker contact for follow-up
+            // POST to API - updates DM Tracker contact with scores
             fetch('/api/blind-spot-assessment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            }).catch(err => console.error('Failed to save assessment:', err));
+            })
+            .then(function(r) { if (!r.ok) r.json().then(function(d) { console.error('Assessment save failed:', d); }); })
+            .catch(function(err) { console.error('Assessment save error:', err); });
 
             // Clean up localStorage
             localStorage.removeItem('clover_assessment_user');
