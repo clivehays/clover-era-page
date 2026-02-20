@@ -88,7 +88,7 @@ export default async function handler(req, res) {
         const ownerId = await getOwnerUserId(supabase);
         if (!ownerId) {
             console.error('No DM Tracker owner found');
-            return res.status(500).json({ error: 'Configuration error' });
+            return res.status(500).json({ error: 'Configuration error', detail: 'No DM Tracker owner user_id found. Check DM_TRACKER_USER_ID env var.' });
         }
 
         // Build score summary for notes
@@ -164,7 +164,7 @@ export default async function handler(req, res) {
 
             if (insertError) {
                 console.error('Error creating DM contact:', insertError);
-                return res.status(500).json({ error: 'Failed to save assessment' });
+                return res.status(500).json({ error: 'Failed to save assessment', detail: insertError.message, code: insertError.code, hint: insertError.hint || null });
             }
 
             console.log('Created DM contact:', newContact.id, 'for', cleanEmail);
@@ -177,6 +177,6 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Assessment API error:', error.message || error);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error', detail: error.message });
     }
 }
