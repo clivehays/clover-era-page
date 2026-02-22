@@ -873,11 +873,60 @@
         function handleEmailSubmit(e) {
             e.preventDefault();
             var email = document.getElementById('reportEmail').value;
-            if (email) {
-                document.getElementById('reportForm').style.display = 'none';
-                document.getElementById('emailSuccess').style.display = 'block';
-                // Future: POST to backend with email + calculator values
-            }
+            if (!email) return;
+
+            var btn = document.querySelector('#reportForm button');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+
+            var employees = parseInt(document.getElementById('employees').value) || 250;
+            var avgSalary = parseInt(document.getElementById('avgSalary').value) || 75000;
+            var turnoverRate = parseInt(document.getElementById('turnoverRate').value) || 15;
+            var annualDepartures = Math.round(employees * (turnoverRate / 100));
+            var costPer = avgSalary * 1.5;
+            var total = annualDepartures * costPer;
+            var tracked = Math.round(total * 0.25);
+            var gap = Math.round(total - tracked);
+
+            fetch('/api/calculator-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    employees: employees,
+                    avgSalary: avgSalary,
+                    turnoverRate: turnoverRate,
+                    totalCost: Math.round(total),
+                    trackedCost: tracked,
+                    gapCost: gap,
+                    departures: annualDepartures,
+                    costPerDeparture: Math.round(costPer),
+                    bdReplace: Math.round(total * 0.30),
+                    bdProductivity: Math.round(total * 0.25),
+                    bdKnowledge: Math.round(total * 0.20),
+                    bdDisruption: Math.round(total * 0.15),
+                    bdRipple: Math.round(total * 0.10)
+                })
+            })
+            .then(function(r) {
+                if (r.ok) {
+                    document.getElementById('reportForm').style.display = 'none';
+                    document.getElementById('emailSuccess').style.display = 'block';
+                } else {
+                    r.json().then(function(d) {
+                        btn.textContent = 'Send My Report';
+                        btn.disabled = false;
+                        alert('Something went wrong. Please try again.');
+                        console.error('Calculator report error:', d);
+                    });
+                }
+            })
+            .catch(function(err) {
+                btn.textContent = 'Send My Report';
+                btn.disabled = false;
+                alert('Something went wrong. Please try again.');
+                console.error('Calculator report error:', err);
+            });
         }
 
         // Initialize on load
