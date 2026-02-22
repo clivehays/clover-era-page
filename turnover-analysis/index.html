@@ -1307,16 +1307,16 @@
                 doc.setFont('helvetica', 'normal');
                 const peerText = `Companies in ${reportData.industryName} with similar headcount typically uncover hidden turnover costs between ${peerLow} and ${peerHigh}`;
                 const peerLines = doc.splitTextToSize(peerText, contentWidth - 10);
-                const peerBoxHeight = 8 + (peerLines.length * 4) + 4;
+                const peerBoxHeight = 6 + (peerLines.length * 5) + 6;
                 doc.setFillColor('#F0FDFA');
                 doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'F');
                 doc.setDrawColor('#46AEB8');
                 doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'S');
                 doc.setTextColor('#0D7C88');
                 peerLines.forEach((line, i) => {
-                    doc.text(line, pageWidth / 2, y + 7 + (i * 4), { align: 'center' });
+                    doc.text(line, pageWidth / 2, y + 8 + (i * 5), { align: 'center' });
                 });
-                y += peerBoxHeight + 6;
+                y += peerBoxHeight + 8;
 
                 // Savings Scenarios
                 doc.setFontSize(14);
