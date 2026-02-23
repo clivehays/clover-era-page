@@ -579,6 +579,7 @@
     <!-- Pricing Cards -->
     <section class="pricing-section">
         <div class="pricing-grid" id="pricingGrid"></div>
+        <p style="text-align: center; font-size: 0.85rem; color: #9CA3AF; margin-top: 1.5rem;">Teams are 20 people or less</p>
     </section>
 
     <!-- The Math -->
@@ -778,8 +779,8 @@
                 ctaStyle: 'teal'
             },
             {
-                name: '50+ Teams',
-                teams: 50,
+                name: '26+ Teams',
+                teams: 26,
                 maxPeople: '500+',
                 monthly: null,
                 annual: null,
@@ -839,7 +840,7 @@
                     '<div class="card-name">' + tier.name + '</div>' +
                     priceHtml +
                     perTeamHtml +
-                    '<div class="card-description">Up to ' + tier.maxPeople + ' people</div>' +
+                    '<div class="card-description">' + (tier.maxPeople.toString().indexOf('+') !== -1 ? tier.maxPeople + ' people' : 'Up to ' + tier.maxPeople + ' people') + '</div>' +
                     '<div class="card-features">' + featuresHtml + '</div>' +
                     '<div class="card-cta"><a href="' + tier.ctaLink + '" class="' + btnClass + '">' + tier.cta + '</a><div class="card-cta-sub">' + tier.ctaSub + '</div></div>';
 
