@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing - Clover ERA | The Cost of Fixing Turnover vs. Ignoring It</title>
+    <title>Pricing - Clover ERA</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
-    <meta name="description" content="Clover ERA for your team: $295/month. Up to 20 people. 14-day free trial, no credit card required. Daily anonymous check-ins show managers what their team isn't telling them.">
+    <meta name="description" content="Clover ERA pricing starts at $295/month per team. Volume discounts available for organizations with multiple teams. Every plan includes daily check-ins, bi-weekly manager reports, and monthly team insights.">
     <link rel="canonical" href="https://cloverera.com/pricing/">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Pricing - Clover ERA | The Cost of Fixing Turnover vs. Ignoring It">
-    <meta property="og:description" content="Clover ERA for your team: $295/month. Up to 20 people. 14-day free trial, no credit card required.">
+    <meta property="og:title" content="Pricing - Clover ERA">
+    <meta property="og:description" content="Clover ERA pricing starts at $295/month per team. Volume discounts available for organizations with multiple teams.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://cloverera.com/pricing/">
     <meta property="og:site_name" content="Clover ERA">
@@ -87,111 +87,420 @@
             letter-spacing: -0.02em;
         }
 
-        .hero h1 .hero-price {
-            color: var(--teal);
-        }
-
-        .hero h1 .hero-cost {
-            color: var(--coral);
-        }
-
         .hero .hero-sub {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             line-height: 1.7;
             opacity: 0.88;
-            max-width: 650px;
+            max-width: 680px;
             margin: 0 auto;
         }
 
-        /* Section 1: Manager Hero Card */
-        .manager-hero {
-            padding: 5rem 2rem;
-            background: var(--warm-white);
-        }
-
-        .manager-hero-inner {
-            max-width: 580px;
-            margin: 0 auto;
-            background: var(--white);
-            border: 3px solid var(--teal);
-            border-radius: 16px;
-            padding: 3rem 3rem 2.5rem;
-            position: relative;
-            box-shadow: 0 8px 40px rgba(70, 174, 184, 0.15);
+        /* Billing Toggle */
+        .toggle-section {
+            padding: 3rem 2rem 0;
             text-align: center;
         }
 
-        .manager-badge {
-            position: absolute;
-            top: -16px;
-            left: 50%;
-            transform: translateX(-50%);
+        .billing-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-radius: 50px;
+            padding: 0.35rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .toggle-option {
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .toggle-option.active {
             background: var(--teal);
             color: var(--white);
-            padding: 0.5rem 1.75rem;
-            border-radius: 24px;
+        }
+
+        .toggle-save {
+            font-size: 0.8rem;
+            color: var(--coral);
             font-weight: 700;
-            font-size: 0.85rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+
+        /* Pricing Cards */
+        .pricing-section {
+            padding: 2rem 2rem 5rem;
+        }
+
+        .pricing-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .pricing-card {
+            background: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+
+        .pricing-card.featured {
+            border: 3px solid var(--coral);
+            box-shadow: 0 8px 30px rgba(224, 122, 95, 0.15);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--coral);
+            color: var(--white);
+            padding: 0.35rem 1.25rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
             white-space: nowrap;
         }
 
-        .manager-hero-label {
-            font-size: 1.5rem;
+        .card-name {
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--charcoal);
-            margin-bottom: 0.75rem;
-            line-height: 1.2;
+            margin-bottom: 0.5rem;
         }
 
-        .manager-hero-price {
-            font-size: 3.5rem;
+        .card-price {
+            font-size: 2.25rem;
             font-weight: 800;
             color: var(--teal);
             line-height: 1.1;
         }
 
-        .manager-hero-price span {
-            font-size: 1.15rem;
+        .card-price .period {
+            font-size: 0.9rem;
             font-weight: 500;
             color: var(--text-secondary);
         }
 
-        .manager-hero-details {
-            margin-top: 0.5rem;
-            font-size: 1.05rem;
+        .card-price-sub {
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            line-height: 1.7;
+            margin-top: 0.25rem;
+            min-height: 1.4rem;
         }
 
-        .manager-hero-annual {
+        .card-per-team {
             display: inline-block;
-            margin-top: 0.75rem;
+            margin-top: 0.5rem;
             background: rgba(70, 174, 184, 0.08);
-            border: 1px solid rgba(70, 174, 184, 0.25);
-            padding: 0.5rem 1.25rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border: 1px solid rgba(70, 174, 184, 0.2);
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
             color: var(--deep-teal);
             font-weight: 600;
         }
 
-        .manager-hero-trial {
-            margin-top: 1rem;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
+        .card-description {
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--medium-gray);
         }
 
-        .manager-cta-wrapper {
-            margin-top: 2rem;
+        .card-features {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-height: 140px;
+        }
+
+        .card-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .card-feature .check {
+            color: var(--teal);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 0.05rem;
+        }
+
+        .card-cta {
+            margin-top: 1.5rem;
             text-align: center;
         }
 
-        .btn-primary {
-            display: inline-block;
+        .btn-teal {
+            display: block;
+            width: 100%;
             background: var(--teal);
+            color: var(--white);
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-teal:hover {
+            background: var(--deep-teal);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(70, 174, 184, 0.3);
+        }
+
+        .btn-coral {
+            display: block;
+            width: 100%;
+            background: var(--coral);
+            color: var(--white);
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-coral:hover {
+            background: var(--dark-coral);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(224, 122, 95, 0.3);
+        }
+
+        .card-cta-sub {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* The Math */
+        .math-section {
+            padding: 5rem 2rem;
+            background: var(--light-gray);
+        }
+
+        .math-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .math-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 3rem;
+        }
+
+        .math-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .math-item {
+            padding: 2rem 1.5rem;
+            background: var(--white);
+            border-radius: 12px;
+        }
+
+        .math-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+
+        .math-number.coral { color: var(--coral); }
+        .math-number.teal { color: var(--teal); }
+        .math-number.dark { color: var(--charcoal); }
+
+        .math-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* CLOVER Section */
+        .clover-section {
+            padding: 5rem 2rem;
+            background: var(--warm-white);
+        }
+
+        .clover-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .clover-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 3rem;
+        }
+
+        .clover-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            text-align: left;
+        }
+
+        .clover-item {
+            padding: 1.5rem;
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .clover-letter {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--teal);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .clover-label {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.25rem;
+        }
+
+        .clover-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* FAQ */
+        .faq-section {
+            padding: 5rem 2rem;
+            background: var(--light-gray);
+        }
+
+        .faq-inner {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .faq-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .faq-item {
+            background: var(--white);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .faq-question {
+            padding: 1.25rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .faq-question:hover {
+            color: var(--deep-teal);
+        }
+
+        .faq-arrow {
+            flex-shrink: 0;
+            transition: transform 0.2s;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .faq-item.open .faq-arrow {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer-inner {
+            padding: 0 1.5rem 1.25rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Bottom CTA */
+        .bottom-cta {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: var(--warm-white);
+        }
+
+        .bottom-cta-inner {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .bottom-cta h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .bottom-cta p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .btn-coral-large {
+            display: inline-block;
+            background: var(--coral);
             color: var(--white);
             padding: 1.1rem 2.5rem;
             border-radius: 10px;
@@ -201,167 +510,48 @@
             transition: all 0.2s;
         }
 
-        .btn-primary:hover {
-            background: var(--deep-teal);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(70, 174, 184, 0.35);
-        }
-
-        .manager-features {
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--medium-gray);
-        }
-
-        .manager-features-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            text-align: center;
-        }
-
-        .feature-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.6rem;
-            font-size: 1rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            padding: 0.25rem 0;
-            text-align: left;
-        }
-
-        .feature-item .check {
-            color: var(--teal);
-            font-weight: 700;
-            flex-shrink: 0;
-            margin-top: 0.1rem;
-        }
-
-        /* Section 2: Enterprise */
-        .enterprise-section {
-            padding: 5rem 2rem;
-            background: var(--light-gray);
-        }
-
-        .enterprise-inner {
-            max-width: 650px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .enterprise-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .enterprise-body {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 2rem;
-        }
-
-        .btn-coral {
-            display: inline-block;
-            background: var(--coral);
-            color: var(--white);
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.05rem;
-            transition: all 0.2s;
-        }
-
-        .btn-coral:hover {
+        .btn-coral-large:hover {
             background: var(--dark-coral);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(224, 122, 95, 0.35);
         }
 
-        .enterprise-contact {
-            margin-top: 1.25rem;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .enterprise-contact a {
-            color: var(--deep-teal);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .enterprise-contact a:hover {
-            text-decoration: underline;
-        }
-
         /* Animations */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Responsive */
+        @media (max-width: 1100px) {
+            .pricing-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
-            .hero {
-                padding: 4rem 1.5rem 3.5rem;
-            }
+            .hero { padding: 4rem 1.5rem 3.5rem; }
+            .hero h1 { font-size: 1.85rem; }
+            .hero .hero-sub { font-size: 1.05rem; }
 
-            .hero h1 {
-                font-size: 1.85rem;
-            }
-
-            .hero .hero-sub {
-                font-size: 1.05rem;
-            }
-
-            .manager-hero {
-                padding: 3rem 1rem;
-            }
-
-            .manager-hero-inner {
-                padding: 2.5rem 1.5rem 2rem;
-            }
-
-            .manager-hero-label {
-                font-size: 1.25rem;
-            }
-
-            .manager-hero-price {
-                font-size: 2.75rem;
-            }
-
-            .feature-grid {
+            .pricing-grid {
                 grid-template-columns: 1fr;
-                gap: 0.5rem;
+                max-width: 420px;
             }
 
-            .enterprise-section {
-                padding: 3rem 1.5rem;
+            .card-features { min-height: auto; }
+
+            .math-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .enterprise-title {
+            .clover-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .math-title, .clover-title, .faq-title, .bottom-cta h2 {
                 font-size: 1.6rem;
             }
         }
@@ -373,52 +563,322 @@
     <!-- Hero -->
     <section class="hero">
         <div class="hero-content">
-            <h1>The cost of knowing what your team needs. <span class="hero-price">$295/month.</span><br>The cost of finding out too late. <span class="hero-cost">Immeasurable.</span></h1>
-            <p class="hero-sub">One of those numbers you control. The other one controls you.</p>
+            <h1>One platform. Every team. Scale as you grow.</h1>
+            <p class="hero-sub">Start with one team at $295/month. Add more teams and the per-team cost drops. Every plan includes everything your managers need to see what's really happening.</p>
         </div>
     </section>
 
-    <!-- Section 1: The Team Plan -->
-    <section class="manager-hero">
-        <div class="manager-hero-inner">
-            <div class="manager-badge">Start Here</div>
+    <!-- Billing Toggle -->
+    <div class="toggle-section">
+        <div class="billing-toggle">
+            <div class="toggle-option" data-billing="monthly">Monthly</div>
+            <div class="toggle-option active" data-billing="annual">Annual<span class="toggle-save">Save up to 17%</span></div>
+        </div>
+    </div>
 
-            <div class="manager-hero-label">Clover ERA for Your Team</div>
-            <div class="manager-hero-price">$295<span>/month per team</span></div>
-            <div class="manager-hero-details">Up to 20 people</div>
+    <!-- Pricing Cards -->
+    <section class="pricing-section">
+        <div class="pricing-grid" id="pricingGrid"></div>
+    </section>
 
-            <div class="manager-hero-annual">Or $2,950/year (save ~17%)</div>
-
-            <div class="manager-hero-trial">14-day free trial. No credit card required.</div>
-
-            <div class="manager-cta-wrapper">
-                <a href="/get/" class="btn-primary">Get Clover ERA</a>
-            </div>
-
-            <div class="manager-features">
-                <div class="manager-features-title">What's included</div>
-                <div class="feature-grid">
-                    <div class="feature-item"><span class="check">&#10003;</span> Daily anonymous check-ins for your team</div>
-                    <div class="feature-item"><span class="check">&#10003;</span> Bi-weekly reports</div>
-                    <div class="feature-item"><span class="check">&#10003;</span> CLOVER dimension scoring across all six areas</div>
-                    <div class="feature-item"><span class="check">&#10003;</span> Action Hub with specific weekly actions for you as a manager</div>
-                    <div class="feature-item"><span class="check">&#10003;</span> Manager dashboard with full team visibility</div>
-                    <div class="feature-item"><span class="check">&#10003;</span> Complete data history from day one</div>
+    <!-- The Math -->
+    <section class="math-section">
+        <div class="math-inner">
+            <h2 class="math-title">The math is simple</h2>
+            <div class="math-grid">
+                <div class="math-item">
+                    <div class="math-number coral">$91,582</div>
+                    <div class="math-label">Average cost of one departure (SHRM)</div>
+                </div>
+                <div class="math-item">
+                    <div class="math-number teal">$210</div>
+                    <div class="math-label">Per team, per month at 10 teams</div>
+                </div>
+                <div class="math-item">
+                    <div class="math-number dark">1 departure</div>
+                    <div class="math-label">That's your break-even. Everything after is savings.</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 2: Enterprise -->
-    <section class="enterprise-section">
-        <div class="enterprise-inner">
-            <h2 class="enterprise-title">Rolling Out Across Your Company?</h2>
-            <p class="enterprise-body">For organizations with multiple teams or more than 20 people, we build pricing around your specific situation. Every deployment starts with a 15-minute Turnover Analysis where we show you what turnover is actually costing your company. No pitch. Just math.</p>
-            <a href="/talk/" class="btn-coral">Schedule Your Free Turnover Analysis</a>
-            <p class="enterprise-contact">Questions? Email <a href="mailto:contact@cloverera.com">contact@cloverera.com</a></p>
+    <!-- What Every Plan Includes -->
+    <section class="clover-section">
+        <div class="clover-inner">
+            <h2 class="clover-title">What every plan includes</h2>
+            <div class="clover-grid">
+                <div class="clover-item">
+                    <div class="clover-letter">C</div>
+                    <div class="clover-label">Communication</div>
+                    <div class="clover-desc">Are managers checking in regularly?</div>
+                </div>
+                <div class="clover-item">
+                    <div class="clover-letter">L</div>
+                    <div class="clover-label">Learning</div>
+                    <div class="clover-desc">Are growth conversations happening?</div>
+                </div>
+                <div class="clover-item">
+                    <div class="clover-letter">O</div>
+                    <div class="clover-label">Opportunity</div>
+                    <div class="clover-desc">Do people see a future here?</div>
+                </div>
+                <div class="clover-item">
+                    <div class="clover-letter">V</div>
+                    <div class="clover-label">Vulnerability</div>
+                    <div class="clover-desc">Can people speak honestly?</div>
+                </div>
+                <div class="clover-item">
+                    <div class="clover-letter">E</div>
+                    <div class="clover-label">Enablement</div>
+                    <div class="clover-desc">Do managers have the right tools?</div>
+                </div>
+                <div class="clover-item">
+                    <div class="clover-letter">R</div>
+                    <div class="clover-label">Reflection</div>
+                    <div class="clover-desc">Is the team learning from patterns?</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="faq-inner">
+            <h2 class="faq-title">Common questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">What counts as a team?<span class="faq-arrow">&#9660;</span></div>
+                <div class="faq-answer"><div class="faq-answer-inner">A team is any group of up to 20 people reporting to or working with one manager. If you have a manager with 15 direct reports, that's one team.</div></div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What happens after the 14-day free trial?<span class="faq-arrow">&#9660;</span></div>
+                <div class="faq-answer"><div class="faq-answer-inner">You choose to continue or you don't. No contracts. No cancellation fees. Monthly billing unless you choose annual.</div></div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I start with one team and add more later?<span class="faq-arrow">&#9660;</span></div>
+                <div class="faq-answer"><div class="faq-answer-inner">Yes. Most organizations start with one or two teams, see the patterns in the bi-weekly reports, and expand from there. Your per-team rate adjusts automatically as you add teams.</div></div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How is this different from an annual engagement survey?<span class="faq-arrow">&#9660;</span></div>
+                <div class="faq-answer"><div class="faq-answer-inner">Annual surveys tell you what people thought months ago. Clover ERA shows you what's happening this week. Daily check-ins take employees under 30 seconds. Managers get bi-weekly reports showing real-time team patterns. The average employee has already decided to leave 67 days before they resign. Annual surveys miss that entire window.</div></div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What does the Free Turnover Analysis include?<span class="faq-arrow">&#9660;</span></div>
+                <div class="faq-answer"><div class="faq-answer-inner">15 minutes with our founder Clive Hays. He'll run your company's numbers through our turnover cost model and show you the gap between what you're tracking and the real financial impact. No pitch. If the numbers don't surprise you, you'll know in the first five minutes.</div></div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Do employees know their responses are tracked?<span class="faq-arrow">&#9660;</span></div>
+                <div class="faq-answer"><div class="faq-answer-inner">Responses are anonymous. Managers see team-level patterns, never individual responses. This is what creates the psychological safety for honest input.</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="bottom-cta">
+        <div class="bottom-cta-inner">
+            <h2>Not sure which plan fits?</h2>
+            <p>Schedule a free 15-minute Turnover Analysis. We'll run your numbers and show you exactly what you're not tracking.</p>
+            <a href="/talk/" class="btn-coral-large">Schedule Your Free Turnover Analysis</a>
         </div>
     </section>
 
     <script src="/js/footer.js"></script>
+
+    <script>
+        // Pricing tier data - single source of truth
+        var pricingTiers = [
+            {
+                name: 'Single Team',
+                teams: 1,
+                maxPeople: '20',
+                monthly: 295,
+                annual: 2950,
+                perTeamMonthly: 295,
+                savings: null,
+                badge: null,
+                featured: false,
+                features: [
+                    'Daily anonymous check-ins',
+                    'Bi-weekly manager reports',
+                    'Monthly team insights',
+                    'Micro-actions delivered to employees daily',
+                    'CLOVER framework scoring'
+                ],
+                cta: 'Start 14-Day Free Trial',
+                ctaSub: 'No credit card required',
+                ctaLink: '/get/',
+                ctaStyle: 'teal'
+            },
+            {
+                name: '5 Teams',
+                teams: 5,
+                maxPeople: '100',
+                monthly: 1250,
+                annual: 12500,
+                perTeamMonthly: 250,
+                savings: '15%',
+                badge: null,
+                featured: false,
+                features: [
+                    'Everything in Single Team',
+                    'Organization-level dashboard',
+                    'Cross-team pattern visibility',
+                    'Priority support'
+                ],
+                cta: 'Get Started',
+                ctaSub: '14-day free trial included',
+                ctaLink: '/get/',
+                ctaStyle: 'teal'
+            },
+            {
+                name: '10 Teams',
+                teams: 10,
+                maxPeople: '200',
+                monthly: 2100,
+                annual: 21000,
+                perTeamMonthly: 210,
+                savings: '29%',
+                badge: 'Most Popular',
+                featured: true,
+                features: [
+                    'Everything in 5 Teams',
+                    'Dedicated onboarding',
+                    'Executive reporting',
+                    'Quarterly business reviews'
+                ],
+                cta: 'Get Started',
+                ctaSub: '14-day free trial included',
+                ctaLink: '/get/',
+                ctaStyle: 'coral'
+            },
+            {
+                name: '25 Teams',
+                teams: 25,
+                maxPeople: '500',
+                monthly: 4500,
+                annual: 45000,
+                perTeamMonthly: 180,
+                savings: '39%',
+                badge: null,
+                featured: false,
+                features: [
+                    'Everything in 10 Teams',
+                    'Custom integrations',
+                    'Dedicated account manager',
+                    'API access'
+                ],
+                cta: 'Get Started',
+                ctaSub: '14-day free trial included',
+                ctaLink: '/get/',
+                ctaStyle: 'teal'
+            },
+            {
+                name: '50+ Teams',
+                teams: 50,
+                maxPeople: '500+',
+                monthly: null,
+                annual: null,
+                perTeamMonthly: null,
+                savings: null,
+                badge: null,
+                featured: false,
+                features: [
+                    'Everything in 25 Teams',
+                    'Enterprise SLA',
+                    'Custom deployment',
+                    'Multi-region support'
+                ],
+                cta: 'Schedule Your Free Turnover Analysis',
+                ctaSub: '15 minutes with our founder',
+                ctaLink: '/talk/',
+                ctaStyle: 'teal'
+            }
+        ];
+
+        var currentBilling = 'annual';
+
+        function renderCards() {
+            var grid = document.getElementById('pricingGrid');
+            grid.innerHTML = '';
+
+            pricingTiers.forEach(function(tier) {
+                var card = document.createElement('div');
+                card.className = 'pricing-card' + (tier.featured ? ' featured' : '');
+
+                var badgeHtml = tier.badge ? '<div class="card-badge">' + tier.badge + '</div>' : '';
+
+                var priceHtml;
+                if (tier.monthly === null) {
+                    priceHtml = '<div class="card-price">Custom</div><div class="card-price-sub">Best per-team rate</div>';
+                } else if (currentBilling === 'annual') {
+                    var monthlyEquiv = Math.round(tier.annual / 12);
+                    priceHtml = '<div class="card-price">$' + monthlyEquiv.toLocaleString() + '<span class="period">/mo</span></div>';
+                    priceHtml += '<div class="card-price-sub">$' + tier.annual.toLocaleString() + '/year</div>';
+                } else {
+                    priceHtml = '<div class="card-price">$' + tier.monthly.toLocaleString() + '<span class="period">/mo</span></div>';
+                    priceHtml += '<div class="card-price-sub">Billed monthly</div>';
+                }
+
+                var perTeamHtml = '';
+                if (tier.perTeamMonthly && tier.savings) {
+                    perTeamHtml = '<div class="card-per-team">$' + tier.perTeamMonthly + '/team/month (' + tier.savings + ' savings)</div>';
+                }
+
+                var featuresHtml = tier.features.map(function(f) {
+                    return '<div class="card-feature"><span class="check">&#10003;</span> ' + f + '</div>';
+                }).join('');
+
+                var btnClass = tier.ctaStyle === 'coral' ? 'btn-coral' : 'btn-teal';
+
+                card.innerHTML = badgeHtml +
+                    '<div class="card-name">' + tier.name + '</div>' +
+                    priceHtml +
+                    perTeamHtml +
+                    '<div class="card-description">Up to ' + tier.maxPeople + ' people</div>' +
+                    '<div class="card-features">' + featuresHtml + '</div>' +
+                    '<div class="card-cta"><a href="' + tier.ctaLink + '" class="' + btnClass + '">' + tier.cta + '</a><div class="card-cta-sub">' + tier.ctaSub + '</div></div>';
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Toggle handling
+        document.querySelectorAll('.toggle-option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                document.querySelectorAll('.toggle-option').forEach(function(o) { o.classList.remove('active'); });
+                this.classList.add('active');
+                currentBilling = this.getAttribute('data-billing');
+                renderCards();
+            });
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(function(q) {
+            q.addEventListener('click', function() {
+                var item = this.parentElement;
+                var answer = item.querySelector('.faq-answer');
+                var isOpen = item.classList.contains('open');
+
+                // Close all
+                document.querySelectorAll('.faq-item').forEach(function(fi) {
+                    fi.classList.remove('open');
+                    fi.querySelector('.faq-answer').style.maxHeight = null;
+                });
+
+                if (!isOpen) {
+                    item.classList.add('open');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                }
+            });
+        });
+
+        // Initial render
+        renderCards();
+    </script>
 </body>
 </html>

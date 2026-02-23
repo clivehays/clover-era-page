@@ -1355,7 +1355,7 @@
                     y += 10;
                 });
 
-                // Investment Context
+                // Investment Context - Volume-based pricing
                 y += 12;
                 doc.setFontSize(14);
                 doc.setTextColor('#2C3E50');
@@ -1368,6 +1368,28 @@
                 doc.text(`Based on your cost per departure of ${formatCurrency(reportData.costPerDeparture)}:`, margin, y);
                 y += 8;
 
+                // Pricing tiers
+                const pricingTiers = [
+                    { name: 'Single Team', teams: 1, maxPeople: 20, annual: 2950, custom: false },
+                    { name: '5 Teams', teams: 5, maxPeople: 100, annual: 12500, custom: false },
+                    { name: '10 Teams', teams: 10, maxPeople: 200, annual: 21000, custom: false },
+                    { name: '25 Teams', teams: 25, maxPeople: 500, annual: 45000, custom: false },
+                    { name: '50+ Teams', teams: 50, maxPeople: null, annual: null, custom: true }
+                ];
+
+                // Select relevant tiers based on estimated team count
+                const estimatedTeams = Math.ceil(reportData.totalEmployees / (reportData.managerRatio + 1));
+                let selectedTiers;
+                if (estimatedTeams <= 3) {
+                    selectedTiers = [pricingTiers[0], pricingTiers[1], pricingTiers[2]];
+                } else if (estimatedTeams <= 20) {
+                    selectedTiers = [pricingTiers[1], pricingTiers[2], pricingTiers[3]];
+                } else if (estimatedTeams <= 40) {
+                    selectedTiers = [pricingTiers[2], pricingTiers[3], pricingTiers[4]];
+                } else {
+                    selectedTiers = [pricingTiers[3], pricingTiers[4]];
+                }
+
                 // Table header
                 doc.setFillColor('#F9F6F1');
                 doc.rect(margin, y, contentWidth, 10, 'F');
@@ -1375,29 +1397,37 @@
                 doc.setFont('helvetica', 'bold');
                 doc.setTextColor('#2C3E50');
                 doc.text('Option', margin + 4, y + 7);
-                doc.text('Investment', margin + 55, y + 7);
-                doc.text('Break-even', margin + 115, y + 7);
+                doc.text('People covered', margin + 45, y + 7);
+                doc.text('Annual investment', margin + 95, y + 7);
+                doc.text('Break-even', margin + 148, y + 7);
                 y += 10;
 
-                const investmentData = [
-                    { option: '90-Day Pilot', investment: '$24,000', scope: 'Up to 150', breakeven: `${reportData.pilotBreakeven} departure${reportData.pilotBreakeven !== 1 ? 's' : ''}` },
-                    { option: 'Department', investment: '$48,000/yr', scope: 'Up to 200', breakeven: `${reportData.deptBreakeven} departure${reportData.deptBreakeven !== 1 ? 's' : ''}` },
-                    { option: 'Enterprise', investment: '$96K-$180K/yr', scope: '200 - 1,000', breakeven: `${reportData.enterpriseBreakeven} departure${reportData.enterpriseBreakeven !== 1 ? 's' : ''}` }
-                ];
-
-                investmentData.forEach(row => {
+                selectedTiers.forEach(tier => {
                     doc.setDrawColor('#E5E7EB');
                     doc.line(margin, y + 10, margin + contentWidth, y + 10);
                     doc.setFontSize(9);
                     doc.setTextColor('#4B5563');
                     doc.setFont('helvetica', 'normal');
-                    doc.text(row.option, margin + 4, y + 7);
-                    doc.text(row.investment, margin + 55, y + 7);
+                    doc.text(tier.name, margin + 4, y + 7);
+                    doc.text(tier.custom ? '500+ people' : `Up to ${tier.maxPeople} people`, margin + 45, y + 7);
+                    doc.text(tier.custom ? 'Custom' : `${formatCurrency(tier.annual)}/yr`, margin + 95, y + 7);
                     doc.setTextColor('#2C3E50');
                     doc.setFont('helvetica', 'bold');
-                    doc.text(row.breakeven, margin + 115, y + 7);
+                    if (tier.custom) {
+                        doc.text('Call with Clive', margin + 148, y + 7);
+                    } else {
+                        const be = reportData.costPerDeparture > 0 ? Math.ceil(tier.annual / reportData.costPerDeparture) : 0;
+                        doc.text(`${be} departure${be !== 1 ? 's' : ''}`, margin + 148, y + 7);
+                    }
                     y += 10;
                 });
+
+                // Volume pricing footnote
+                y += 4;
+                doc.setFontSize(7);
+                doc.setTextColor('#9CA3AF');
+                doc.setFont('helvetica', 'italic');
+                doc.text('Volume pricing based on team count. All tiers include daily check-ins, bi-weekly manager reports, and monthly team insights.', margin, y);
 
                 // Footer
                 addFooter();
