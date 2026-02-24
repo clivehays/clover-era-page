@@ -605,7 +605,7 @@
                     </div>
                     <div class="form-group">
                         <label for="numberOfManagers">Number of Managers *</label>
-                        <input type="number" id="numberOfManagers" value="25" min="1" required>
+                        <input type="number" id="numberOfManagers" value="15" min="1" required>
                         <span class="helper-text">For manager ratio insights</span>
                     </div>
                 </div>
@@ -617,11 +617,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="entrySalary">Entry-Level Avg Salary *</label>
-                        <input type="number" id="entrySalary" value="55000" min="20000" max="500000" required>
+                        <input type="number" id="entrySalary" value="35000" min="20000" max="500000" required>
                     </div>
                     <div class="form-group">
                         <label for="midSalary">Mid-Level Avg Salary *</label>
-                        <input type="number" id="midSalary" value="85000" min="20000" max="500000" required>
+                        <input type="number" id="midSalary" value="55000" min="20000" max="500000" required>
                     </div>
                 </div>
                 <div class="form-row single">
@@ -941,6 +941,22 @@
 
         [entryPercent, midPercent, seniorPercent].forEach(el => {
             el.addEventListener('input', validatePercentages);
+        });
+
+        // Auto-calculate Number of Managers when Total Employees changes
+        const totalEmployeesInput = document.getElementById('totalEmployees');
+        const numberOfManagersInput = document.getElementById('numberOfManagers');
+        let managerManuallyEdited = false;
+
+        totalEmployeesInput.addEventListener('input', function() {
+            if (!managerManuallyEdited) {
+                const emp = parseInt(this.value) || 0;
+                numberOfManagersInput.value = Math.max(1, Math.round(emp / 17));
+            }
+        });
+
+        numberOfManagersInput.addEventListener('input', function() {
+            managerManuallyEdited = true;
         });
 
         // Calculate Report
@@ -1609,6 +1625,9 @@
             if (toggle) toggle.classList.remove('active');
             if (label) label.textContent = 'No';
             restructureValue = false;
+
+            // Reset manager auto-calc flag
+            managerManuallyEdited = false;
 
             // Reset percentage display
             validatePercentages();
