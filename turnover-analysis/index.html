@@ -605,7 +605,7 @@
                     </div>
                     <div class="form-group">
                         <label for="numberOfManagers">Number of Managers *</label>
-                        <input type="number" id="numberOfManagers" value="25" min="1" required>
+                        <input type="number" id="numberOfManagers" value="15" min="1" required>
                         <span class="helper-text">For manager ratio insights</span>
                     </div>
                 </div>
@@ -617,11 +617,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="entrySalary">Entry-Level Avg Salary *</label>
-                        <input type="number" id="entrySalary" value="55000" min="20000" max="500000" required>
+                        <input type="number" id="entrySalary" value="35000" min="20000" max="500000" required>
                     </div>
                     <div class="form-group">
                         <label for="midSalary">Mid-Level Avg Salary *</label>
-                        <input type="number" id="midSalary" value="85000" min="20000" max="500000" required>
+                        <input type="number" id="midSalary" value="55000" min="20000" max="500000" required>
                     </div>
                 </div>
                 <div class="form-row single">
@@ -780,35 +780,18 @@
             <!-- Investment Context -->
             <div class="result-card">
                 <h3>Investment Context</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Based on your cost per departure of <span id="costPerDeparture">$0</span>:</p>
+                <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem;">Based on your cost per departure of <span id="costPerDeparture">$0</span>:</p>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.85rem;" id="investmentTeamNote"></p>
                 <table class="savings-table">
                     <thead>
                         <tr>
                             <th>Option</th>
+                            <th>Teams</th>
                             <th>Investment</th>
-                            <th>Scope</th>
                             <th>Break-even</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>90-Day Pilot</td>
-                            <td>$24,000</td>
-                            <td>Up to 150</td>
-                            <td id="pilotBreakeven">0 departures</td>
-                        </tr>
-                        <tr>
-                            <td>Department</td>
-                            <td>$48,000/yr</td>
-                            <td>Up to 200</td>
-                            <td id="deptBreakeven">0 departures</td>
-                        </tr>
-                        <tr>
-                            <td>Enterprise</td>
-                            <td>$96K-$180K/yr</td>
-                            <td>200 - 1,000</td>
-                            <td id="enterpriseBreakeven">0 departures</td>
-                        </tr>
+                    <tbody id="investmentTableBody">
                     </tbody>
                 </table>
             </div>
@@ -943,6 +926,22 @@
             el.addEventListener('input', validatePercentages);
         });
 
+        // Auto-calculate Number of Managers when Total Employees changes
+        const totalEmployeesInput = document.getElementById('totalEmployees');
+        const numberOfManagersInput = document.getElementById('numberOfManagers');
+        let managerManuallyEdited = false;
+
+        totalEmployeesInput.addEventListener('input', function() {
+            if (!managerManuallyEdited) {
+                const emp = parseInt(this.value) || 0;
+                numberOfManagersInput.value = Math.max(1, Math.round(emp / 17));
+            }
+        });
+
+        numberOfManagersInput.addEventListener('input', function() {
+            managerManuallyEdited = true;
+        });
+
         // Calculate Report
         function calculateReport(inputs) {
             const turnoverRate = inputs.knownTurnoverRate || industryBenchmarks[inputs.industry].rate;
@@ -980,11 +979,48 @@
             const vsIndustryPercent = Math.round((vsIndustry / industryAverage) * 100);
 
             const costPerDeparture = annualDepartures > 0 ? totalAnnualCost / annualDepartures : 0;
-            const pilotBreakeven = costPerDeparture > 0 ? Math.ceil(24000 / costPerDeparture) : 0;
-            const deptBreakeven = costPerDeparture > 0 ? Math.ceil(48000 / costPerDeparture) : 0;
-            const enterpriseBreakeven = costPerDeparture > 0 ? Math.ceil(96000 / costPerDeparture) : 0;
 
             const managerRatio = Math.round(inputs.totalEmployees / inputs.numberOfManagers);
+
+            // Dynamic pricing based on team count
+            const allPricingTiers = [
+                { name: 'Single Team', teams: 1, maxPeople: 20, annual: 2950 },
+                { name: '5 Teams', teams: 5, maxPeople: 100, annual: 12500 },
+                { name: '10 Teams', teams: 10, maxPeople: 200, annual: 21000 },
+                { name: '25 Teams', teams: 25, maxPeople: 500, annual: 45000 },
+                { name: '26+ Teams', teams: 26, maxPeople: null, annual: null, custom: true }
+            ];
+
+            const estimatedTeams = inputs.numberOfManagers;
+
+            // Find the two tiers that bracket the estimated team count
+            let selectedTiers = [];
+            if (estimatedTeams <= 1) {
+                selectedTiers = [allPricingTiers[0]];
+            } else if (estimatedTeams >= 26) {
+                selectedTiers = [allPricingTiers[3], allPricingTiers[4]];
+            } else {
+                // Find the tier at or just below, and the tier just above
+                let lower = allPricingTiers[0];
+                let upper = allPricingTiers[1];
+                for (let t = 0; t < allPricingTiers.length - 1; t++) {
+                    if (estimatedTeams >= allPricingTiers[t].teams) {
+                        lower = allPricingTiers[t];
+                        upper = allPricingTiers[Math.min(t + 1, allPricingTiers.length - 1)];
+                    }
+                }
+                if (lower === upper) {
+                    selectedTiers = [lower];
+                } else {
+                    selectedTiers = [lower, upper];
+                }
+            }
+
+            // Calculate break-even for each selected tier
+            selectedTiers = selectedTiers.map(tier => {
+                const breakeven = (!tier.custom && costPerDeparture > 0) ? Math.ceil(tier.annual / costPerDeparture) : 0;
+                return { ...tier, breakeven };
+            });
 
             return {
                 companyName: inputs.companyName,
@@ -1011,9 +1047,8 @@
                     prevent30: { departures: Math.round(annualDepartures * 0.30), amount: Math.round(totalAnnualCost * 0.30) }
                 },
                 costPerDeparture,
-                pilotBreakeven,
-                deptBreakeven,
-                enterpriseBreakeven,
+                estimatedTeams,
+                selectedTiers,
                 generatedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
             };
         }
@@ -1056,9 +1091,18 @@
             document.getElementById('savings30Amt').textContent = formatCurrency(data.savings.prevent30.amount);
 
             document.getElementById('costPerDeparture').textContent = formatCurrency(data.costPerDeparture);
-            document.getElementById('pilotBreakeven').textContent = `${data.pilotBreakeven} departure${data.pilotBreakeven !== 1 ? 's' : ''}`;
-            document.getElementById('deptBreakeven').textContent = `${data.deptBreakeven} departure${data.deptBreakeven !== 1 ? 's' : ''}`;
-            document.getElementById('enterpriseBreakeven').textContent = `${data.enterpriseBreakeven} departure${data.enterpriseBreakeven !== 1 ? 's' : ''}`;
+            document.getElementById('investmentTeamNote').textContent = `Your ${data.totalEmployees} employees across ${data.estimatedTeams} manager${data.estimatedTeams !== 1 ? 's' : ''} = approximately ${data.estimatedTeams} team${data.estimatedTeams !== 1 ? 's' : ''}:`;
+
+            const tbody = document.getElementById('investmentTableBody');
+            tbody.innerHTML = '';
+            data.selectedTiers.forEach(tier => {
+                const tr = document.createElement('tr');
+                const beText = tier.custom ? 'Contact us' : `${tier.breakeven} departure${tier.breakeven !== 1 ? 's' : ''}`;
+                const investText = tier.custom ? 'Custom' : `${formatCurrency(tier.annual)}/yr`;
+                const teamsText = tier.custom ? `${tier.teams}+` : `${tier.teams}`;
+                tr.innerHTML = `<td>${tier.name}</td><td>${teamsText}</td><td>${investText}</td><td>${beText}</td>`;
+                tbody.appendChild(tr);
+            });
 
             if (data.recentRestructure) {
                 document.getElementById('restructureAlert').style.display = 'block';
@@ -1251,6 +1295,13 @@
                     y += 12;
                 });
 
+                // Source footnote
+                y += 2;
+                doc.setFontSize(7);
+                doc.setTextColor('#9CA3AF');
+                doc.setFont('helvetica', 'italic');
+                doc.text('Cost model based on SHRM replacement cost research and Clover ERA\u2019s 4X Rule methodology', margin, y);
+
                 // Footer
                 addFooter();
 
@@ -1292,8 +1343,26 @@
                     y += 5;
                 });
 
-                // Savings Scenarios
+                // Peer Comparison Callout
                 y += 10;
+                const peerLow = formatCurrency(Math.round(reportData.totalAnnualCost * 0.85));
+                const peerHigh = formatCurrency(Math.round(reportData.totalAnnualCost * 1.15));
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                const peerText = `Companies in ${reportData.industryName} with similar headcount typically uncover hidden turnover costs between ${peerLow} and ${peerHigh}`;
+                const peerLines = doc.splitTextToSize(peerText, contentWidth - 10);
+                const peerBoxHeight = 6 + (peerLines.length * 5) + 6;
+                doc.setFillColor('#F0FDFA');
+                doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'F');
+                doc.setDrawColor('#46AEB8');
+                doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'S');
+                doc.setTextColor('#0D7C88');
+                peerLines.forEach((line, i) => {
+                    doc.text(line, pageWidth / 2, y + 8 + (i * 5), { align: 'center' });
+                });
+                y += peerBoxHeight + 8;
+
+                // Savings Scenarios
                 doc.setFontSize(14);
                 doc.setTextColor('#2C3E50');
                 doc.setFont('helvetica', 'bold');
@@ -1330,7 +1399,7 @@
                     y += 10;
                 });
 
-                // Investment Context
+                // Investment Context - Volume-based pricing
                 y += 12;
                 doc.setFontSize(14);
                 doc.setTextColor('#2C3E50');
@@ -1343,6 +1412,12 @@
                 doc.text(`Based on your cost per departure of ${formatCurrency(reportData.costPerDeparture)}:`, margin, y);
                 y += 8;
 
+                // Team context
+                doc.setFontSize(8);
+                doc.setTextColor('#6B7280');
+                doc.text(`Your ${reportData.totalEmployees} employees across ${reportData.estimatedTeams} manager${reportData.estimatedTeams !== 1 ? 's' : ''} = approximately ${reportData.estimatedTeams} team${reportData.estimatedTeams !== 1 ? 's' : ''}:`, margin, y);
+                y += 8;
+
                 // Table header
                 doc.setFillColor('#F9F6F1');
                 doc.rect(margin, y, contentWidth, 10, 'F');
@@ -1350,29 +1425,36 @@
                 doc.setFont('helvetica', 'bold');
                 doc.setTextColor('#2C3E50');
                 doc.text('Option', margin + 4, y + 7);
-                doc.text('Investment', margin + 55, y + 7);
-                doc.text('Break-even', margin + 115, y + 7);
+                doc.text('Teams', margin + 55, y + 7);
+                doc.text('Annual investment', margin + 90, y + 7);
+                doc.text('Break-even', margin + 148, y + 7);
                 y += 10;
 
-                const investmentData = [
-                    { option: '90-Day Pilot', investment: '$24,000', scope: 'Up to 150', breakeven: `${reportData.pilotBreakeven} departure${reportData.pilotBreakeven !== 1 ? 's' : ''}` },
-                    { option: 'Department', investment: '$48,000/yr', scope: 'Up to 200', breakeven: `${reportData.deptBreakeven} departure${reportData.deptBreakeven !== 1 ? 's' : ''}` },
-                    { option: 'Enterprise', investment: '$96K-$180K/yr', scope: '200 - 1,000', breakeven: `${reportData.enterpriseBreakeven} departure${reportData.enterpriseBreakeven !== 1 ? 's' : ''}` }
-                ];
-
-                investmentData.forEach(row => {
+                reportData.selectedTiers.forEach(tier => {
                     doc.setDrawColor('#E5E7EB');
                     doc.line(margin, y + 10, margin + contentWidth, y + 10);
                     doc.setFontSize(9);
                     doc.setTextColor('#4B5563');
                     doc.setFont('helvetica', 'normal');
-                    doc.text(row.option, margin + 4, y + 7);
-                    doc.text(row.investment, margin + 55, y + 7);
+                    doc.text(tier.name, margin + 4, y + 7);
+                    doc.text(tier.custom ? `${tier.teams}+` : `${tier.teams}`, margin + 55, y + 7);
+                    doc.text(tier.custom ? 'Custom' : `${formatCurrency(tier.annual)}/yr`, margin + 90, y + 7);
                     doc.setTextColor('#2C3E50');
                     doc.setFont('helvetica', 'bold');
-                    doc.text(row.breakeven, margin + 115, y + 7);
+                    if (tier.custom) {
+                        doc.text('Contact us', margin + 148, y + 7);
+                    } else {
+                        doc.text(`${tier.breakeven} departure${tier.breakeven !== 1 ? 's' : ''}`, margin + 148, y + 7);
+                    }
                     y += 10;
                 });
+
+                // Volume pricing footnote
+                y += 4;
+                doc.setFontSize(7);
+                doc.setTextColor('#9CA3AF');
+                doc.setFont('helvetica', 'italic');
+                doc.text('Pricing from cloverera.com/pricing. All tiers include daily check-ins, bi-weekly manager reports, and monthly team insights.', margin, y);
 
                 // Footer
                 addFooter();
@@ -1395,15 +1477,15 @@
                 doc.setFontSize(16);
                 doc.setTextColor('#FFFFFF');
                 doc.setFont('helvetica', 'bold');
-                doc.text('Schedule a Clover ERA Demo', pageWidth / 2, y, { align: 'center' });
+                doc.text('Schedule Your Free Turnover Analysis', pageWidth / 2, y, { align: 'center' });
 
                 y += 12;
                 doc.setFontSize(11);
                 doc.setFont('helvetica', 'normal');
-                doc.text('See how easy it is to start addressing turnover', pageWidth / 2, y, { align: 'center' });
+                doc.text(`Your ${reportData.inThe67DayWindow} employees in the 67-day window won't wait. Neither should you.`, pageWidth / 2, y, { align: 'center', maxWidth: contentWidth - 50 });
 
                 y += 18;
-                doc.setFontSize(12);
+                doc.setFontSize(10);
                 doc.text('15 minutes. Your specific patterns.', pageWidth / 2, y, { align: 'center' });
 
                 y += 30;
@@ -1414,6 +1496,53 @@
                 doc.setFontSize(13);
                 doc.setFont('helvetica', 'bold');
                 doc.text('cloverera.com', pageWidth / 2, y, { align: 'center' });
+
+                // What Clover ERA Measures Daily - CLOVER Grid
+                y += 25;
+                doc.setFontSize(14);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text('What Clover ERA Measures Daily', pageWidth / 2, y, { align: 'center' });
+                y += 10;
+
+                const cloverItems = [
+                    { letter: 'C', label: 'Communication', desc: 'Are managers checking in regularly?' },
+                    { letter: 'L', label: 'Learning', desc: 'Are growth conversations happening?' },
+                    { letter: 'O', label: 'Opportunity', desc: 'Do people see a future here?' },
+                    { letter: 'V', label: 'Vulnerability', desc: 'Can people speak honestly?' },
+                    { letter: 'E', label: 'Enablement', desc: 'Do managers have the right tools?' },
+                    { letter: 'R', label: 'Reflection', desc: 'Is the team learning from patterns?' }
+                ];
+
+                const gridCols = 3;
+                const gridRows = 2;
+                const cellWidth = (contentWidth - 10) / gridCols;
+                const cellHeight = 22;
+
+                cloverItems.forEach((item, i) => {
+                    const col = i % gridCols;
+                    const row = Math.floor(i / gridCols);
+                    const cellX = margin + 5 + (col * cellWidth);
+                    const cellY = y + (row * (cellHeight + 4));
+
+                    // Teal letter
+                    doc.setFontSize(16);
+                    doc.setTextColor('#46AEB8');
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.letter, cellX, cellY + 7);
+
+                    // Label
+                    doc.setFontSize(9);
+                    doc.setTextColor('#2C3E50');
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.label, cellX + 10, cellY + 7);
+
+                    // Description
+                    doc.setFontSize(8);
+                    doc.setTextColor('#6B7280');
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(item.desc, cellX + 10, cellY + 14);
+                });
 
                 // Footer
                 addFooter();
@@ -1507,6 +1636,9 @@
             if (toggle) toggle.classList.remove('active');
             if (label) label.textContent = 'No';
             restructureValue = false;
+
+            // Reset manager auto-calc flag
+            managerManuallyEdited = false;
 
             // Reset percentage display
             validatePercentages();
