@@ -229,8 +229,8 @@ function globalCSS() {
   /* Header bar */
   .header-bar {
     background: ${colors.charcoal};
-    padding: 0 72px;
-    height: 44px;
+    padding: 10px 72px;
+    min-height: 44px;
     display: flex;
     align-items: center;
   }
@@ -238,6 +238,7 @@ function globalCSS() {
     color: ${colors.white};
     font-size: 18pt;
     font-weight: 700;
+    line-height: 1.3;
   }
 
   /* Body area */
