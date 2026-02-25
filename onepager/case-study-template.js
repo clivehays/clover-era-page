@@ -52,18 +52,36 @@ function buildCaseStudyHTML(data, logoOpts) {
       </div>`
     : '';
 
-  // Metrics row
-  const metricsHtml = data.metrics.map(m => `
-    <div class="metric-card">
-      <div class="metric-label">${m.label}</div>
-      <div class="metric-numbers">
-        <span class="metric-before">${m.before}</span>
-        <span class="metric-arrow">&rarr;</span>
-        <span class="metric-after">${m.after}</span>
-      </div>
-      <div class="metric-context">${m.context}</div>
-    </div>
-  `).join('');
+  // Group metrics by row (default to 1 for backward compatibility)
+  const metricsByRow = {};
+  data.metrics.forEach(m => {
+    const row = m.row || 1;
+    if (!metricsByRow[row]) metricsByRow[row] = [];
+    metricsByRow[row].push(m);
+  });
+
+  const metricsHtml = Object.keys(metricsByRow)
+    .sort((a, b) => Number(a) - Number(b))
+    .map(rowKey => {
+      const rowMetrics = metricsByRow[rowKey];
+      const rowLabel = rowMetrics[0].row_label;
+      const labelHtml = rowLabel
+        ? `<div class="metrics-row-label">${rowLabel}</div>`
+        : '';
+      const cardsHtml = rowMetrics.map(m => {
+        const numbersContent = m.before
+          ? `<span class="metric-before">${m.before}</span>
+             <span class="metric-arrow">&rarr;</span>
+             <span class="metric-after">${m.after}</span>`
+          : `<span class="metric-after metric-single">${m.after}</span>`;
+        return `<div class="metric-card">
+          <div class="metric-label">${m.label}</div>
+          <div class="metric-numbers">${numbersContent}</div>
+          <div class="metric-context">${m.context}</div>
+        </div>`;
+      }).join('');
+      return `${labelHtml}<div class="metrics-row">${cardsHtml}</div>`;
+    }).join('');
 
   // Proves points
   const provesHtml = data.proves_points.map((p, i) => `
@@ -136,6 +154,9 @@ ${ds.globalCSS()}
   .metric-after {
     color: ${col.primary};
   }
+  .metric-after.metric-single {
+    font-size: 22pt;
+  }
   .metric-context {
     font-size: 9pt;
     color: ${col.textSecondary};
@@ -167,6 +188,16 @@ ${ds.globalCSS()}
     color: ${col.primary};
     display: inline-block;
     min-width: 20px;
+  }
+
+  .metrics-row-label {
+    font-size: 9pt;
+    font-weight: 600;
+    color: ${col.textSecondary};
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 8px;
+    margin-bottom: 4px;
   }
 
   .user-quote-heading {
@@ -212,9 +243,7 @@ ${ds.globalCSS()}
       <div class="headline-result">${data.headline_result}</div>
 
       <div class="subheading">The Numbers</div>
-      <div class="metrics-row">
-        ${metricsHtml}
-      </div>
+      ${metricsHtml}
       ${data.metrics_footnote ? `<div class="metrics-footnote">${data.metrics_footnote}</div>` : ''}
 
       ${data.user_quote ? `<div class="user-quote-heading">What Their People Said</div>` : ''}

@@ -258,6 +258,7 @@ function buildHTML(versionId, data, logoOpts) {
 // CASE STUDY SUPPORT
 // ============================================================
 const { buildCaseStudyHTML } = require('./case-study-template');
+const { buildComparisonHTML } = require('./comparison-template');
 
 async function generateCaseStudyPDF(caseData, outputFilename, logoOpts) {
   const html = buildCaseStudyHTML(caseData, logoOpts);
@@ -299,6 +300,43 @@ async function generateCaseStudyPDF(caseData, outputFilename, logoOpts) {
   const stats = fs.statSync(outputPath);
   console.log(`  Saved: ${outputPath} (${Math.round(stats.size / 1024)}KB)`);
   return { outputPath, p1Preview, p2Preview };
+}
+
+// ============================================================
+// COMPARISON PDF GENERATION (single page)
+// ============================================================
+async function generateComparisonPDF(comparisonData, outputFilename, logoOpts) {
+  const html = buildComparisonHTML(comparisonData, logoOpts);
+  const outputDir = path.resolve(__dirname, 'output');
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+
+  const outputPath = path.join(outputDir, outputFilename);
+  const preview = outputPath.replace('.pdf', '-preview.png');
+
+  console.log(`  Generating ${outputFilename}...`);
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 816, height: 1056, deviceScaleFactor: 2 });
+  await page.setContent(html, { waitUntil: 'networkidle0' });
+
+  await page.pdf({
+    path: outputPath,
+    width: '8.5in',
+    height: '11in',
+    printBackground: true,
+    margin: { top: 0, right: 0, bottom: 0, left: 0 },
+  });
+
+  await page.screenshot({ path: preview, clip: { x: 0, y: 0, width: 816, height: 1056 } });
+  await browser.close();
+
+  const stats = fs.statSync(outputPath);
+  console.log(`  Saved: ${outputPath} (${Math.round(stats.size / 1024)}KB)`);
+  return { outputPath, preview };
 }
 
 // ============================================================
@@ -402,6 +440,14 @@ async function main() {
     const caseData = require(caseFile);
     console.log(`\n=== CASE STUDY: ${caseData.org_description} ===`);
     await generateCaseStudyPDF(caseData, `clover-era-case-study-${caseData.case_id}.pdf`);
+  } else if (args[0] === '--comparison') {
+    // node generate.js --comparison
+    const comparisonFiles = fs.readdirSync(__dirname).filter(f => f.startsWith('comparison-data') && f.endsWith('.js'));
+    for (const cFile of comparisonFiles) {
+      const compData = require(path.resolve(__dirname, cFile));
+      console.log(`\n=== COMPARISON: ${compData.title} ===`);
+      await generateComparisonPDF(compData, `clover-era-comparison-${compData.comparison_id}.pdf`);
+    }
   } else {
     // Generate all versions + all case studies
     for (const vId of Object.keys(versions)) {
@@ -419,12 +465,20 @@ async function main() {
       console.log(`\n=== CASE STUDY: ${caseData.org_description} ===`);
       await generateCaseStudyPDF(caseData, `clover-era-case-study-${caseData.case_id}.pdf`);
     }
+
+    // Generate all comparison documents
+    const comparisonFiles = fs.readdirSync(__dirname).filter(f => f.startsWith('comparison-data') && f.endsWith('.js'));
+    for (const cFile of comparisonFiles) {
+      const compData = require(path.resolve(__dirname, cFile));
+      console.log(`\n=== COMPARISON: ${compData.title} ===`);
+      await generateComparisonPDF(compData, `clover-era-comparison-${compData.comparison_id}.pdf`);
+    }
   }
 
   console.log('\nDone.');
 }
 
-module.exports = { buildHTML, generatePDF, generateCaseStudyPDF, selectRecommendedTier, versions };
+module.exports = { buildHTML, generatePDF, generateCaseStudyPDF, generateComparisonPDF, selectRecommendedTier, versions };
 
 main().catch(err => {
   console.error('Error:', err);
