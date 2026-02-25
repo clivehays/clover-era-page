@@ -313,25 +313,32 @@ async function generateComparisonPDF(comparisonData, outputFilename, logoOpts) {
   const outputPath = path.join(outputDir, outputFilename);
   const preview = outputPath.replace('.pdf', '-preview.png');
 
-  console.log(`  Generating ${outputFilename}...`);
+  const isLandscape = comparisonData.landscape || false;
+  const vpW = isLandscape ? 1056 : 816;
+  const vpH = isLandscape ? 816 : 1056;
+  const pdfW = isLandscape ? '11in' : '8.5in';
+  const pdfH = isLandscape ? '8.5in' : '11in';
+
+  console.log(`  Generating ${outputFilename}${isLandscape ? ' (landscape)' : ''}...`);
   const browser = await puppeteer.launch({
     headless: 'new',
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
   const page = await browser.newPage();
-  await page.setViewport({ width: 816, height: 1056, deviceScaleFactor: 2 });
+  await page.setViewport({ width: vpW, height: vpH, deviceScaleFactor: 2 });
   await page.setContent(html, { waitUntil: 'networkidle0' });
 
   await page.pdf({
     path: outputPath,
-    width: '8.5in',
-    height: '11in',
+    width: pdfW,
+    height: pdfH,
     printBackground: true,
+    landscape: isLandscape,
     margin: { top: 0, right: 0, bottom: 0, left: 0 },
   });
 
-  await page.screenshot({ path: preview, clip: { x: 0, y: 0, width: 816, height: 1056 } });
+  await page.screenshot({ path: preview, clip: { x: 0, y: 0, width: vpW, height: vpH } });
   await browser.close();
 
   const stats = fs.statSync(outputPath);

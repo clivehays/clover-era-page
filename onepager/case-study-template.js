@@ -40,7 +40,7 @@ function buildCaseStudyHTML(data, logoOpts) {
   const leaderQuoteBlock = data.leader_quote
     ? `<div class="quote-block">
         <div class="quote-text">${data.leader_quote}</div>
-        <div class="quote-attribution">${data.leader_attribution}</div>
+        ${data.leader_attribution ? `<div class="quote-attribution">${data.leader_attribution}</div>` : ''}
       </div>`
     : '';
 
@@ -68,25 +68,35 @@ function buildCaseStudyHTML(data, logoOpts) {
       const labelHtml = rowLabel
         ? `<div class="metrics-row-label">${rowLabel}</div>`
         : '';
+      const rowClass = rowMetrics.length >= 4 ? ' metrics-row-4' : '';
       const cardsHtml = rowMetrics.map(m => {
+        const isText = m.after && !/^[\d$%.]/.test(m.after);
+        const singleClass = isText ? 'metric-text' : 'metric-single';
         const numbersContent = m.before
           ? `<span class="metric-before">${m.before}</span>
              <span class="metric-arrow">&rarr;</span>
-             <span class="metric-after">${m.after}</span>`
-          : `<span class="metric-after metric-single">${m.after}</span>`;
+             <span class="metric-after${isText ? ' metric-text' : ''}">${m.after}</span>`
+          : `<span class="metric-after ${singleClass}">${m.after}</span>`;
         return `<div class="metric-card">
           <div class="metric-label">${m.label}</div>
           <div class="metric-numbers">${numbersContent}</div>
           <div class="metric-context">${m.context}</div>
         </div>`;
       }).join('');
-      return `${labelHtml}<div class="metrics-row">${cardsHtml}</div>`;
+      return `${labelHtml}<div class="metrics-row${rowClass}">${cardsHtml}</div>`;
     }).join('');
 
   // Proves points
   const provesHtml = data.proves_points.map((p, i) => `
     <div class="proves-line"><span class="proves-num">${i + 1}.</span> ${p}</div>
   `).join('');
+
+  // Optional second proves section
+  const proves2Html = data.proves2_points
+    ? data.proves2_points.map((p, i) => `
+        <div class="proves-line"><span class="proves-num">${i + 1}.</span> ${p}</div>
+      `).join('')
+    : '';
 
   return `<!DOCTYPE html>
 <html>
@@ -118,14 +128,14 @@ ${ds.globalCSS()}
 
   .metrics-row {
     display: flex;
-    gap: 16px;
-    margin: 14px 0;
+    gap: 12px;
+    margin: 8px 0;
   }
   .metric-card {
     flex: 1;
     background: ${col.lightGrey};
     border-radius: 6px;
-    padding: 14px 12px;
+    padding: 10px 10px;
     text-align: center;
     border-top: 3px solid ${col.primary};
   }
@@ -138,7 +148,7 @@ ${ds.globalCSS()}
     margin-bottom: 6px;
   }
   .metric-numbers {
-    font-size: 20pt;
+    font-size: 18pt;
     font-weight: 700;
     color: ${col.primaryDark};
     line-height: 1.2;
@@ -155,7 +165,19 @@ ${ds.globalCSS()}
     color: ${col.primary};
   }
   .metric-after.metric-single {
-    font-size: 22pt;
+    font-size: 20pt;
+  }
+  .metric-after.metric-text {
+    font-size: 12pt;
+  }
+  .metrics-row-4 .metric-numbers {
+    font-size: 14pt;
+  }
+  .metrics-row-4 .metric-arrow {
+    font-size: 12pt;
+  }
+  .metrics-row-4 .metric-after.metric-text {
+    font-size: 10pt;
   }
   .metric-context {
     font-size: 9pt;
@@ -171,17 +193,17 @@ ${ds.globalCSS()}
   }
 
   .headline-result {
-    font-size: 11.5pt;
+    font-size: 11pt;
     font-weight: 700;
     color: ${col.textPrimary};
-    margin: 12px 0;
-    line-height: 1.5;
+    margin: 8px 0;
+    line-height: 1.4;
   }
 
   .proves-line {
-    font-size: 10.5pt;
-    line-height: 1.6;
-    margin-bottom: 6px;
+    font-size: 10pt;
+    line-height: 1.5;
+    margin-bottom: 4px;
   }
   .proves-num {
     font-weight: 700;
@@ -196,8 +218,8 @@ ${ds.globalCSS()}
     color: ${col.textSecondary};
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    margin-top: 8px;
-    margin-bottom: 4px;
+    margin-top: 4px;
+    margin-bottom: 2px;
   }
 
   .user-quote-heading {
@@ -237,7 +259,7 @@ ${ds.globalCSS()}
     ${ds.headerBar(data.page2_header || 'The Intervention and Results')}
     <div class="body-area">
 
-      <div class="subheading" style="margin-top:14px;">${data.intervention_heading || 'What Changed'}</div>
+      <div class="subheading" style="margin-top:10px;">${data.intervention_heading || 'What Changed'}</div>
       <div class="section-text">${data.intervention_text}</div>
 
       <div class="headline-result">${data.headline_result}</div>
@@ -251,6 +273,8 @@ ${ds.globalCSS()}
 
       <div class="subheading">${data.proves_heading || 'What This Proves'}</div>
       ${provesHtml}
+
+      ${data.proves2_heading ? `<div class="subheading">${data.proves2_heading}</div>${proves2Html}` : ''}
 
     </div>
     ${footerHtml}
