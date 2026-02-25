@@ -235,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </button>
             <div class="nav-links" id="navLinks">
                 <a href="/how-it-works/">How It Works</a>
+                <a href="/results/">Results</a>
                 <a href="/pricing/">Pricing</a>
                 <a href="/about/">About</a>
                 <a href="/book/">Already Gone</a>

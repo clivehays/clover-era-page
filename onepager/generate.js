@@ -447,6 +447,25 @@ async function main() {
     const caseData = require(caseFile);
     console.log(`\n=== CASE STUDY: ${caseData.org_description} ===`);
     await generateCaseStudyPDF(caseData, `clover-era-case-study-${caseData.case_id}.pdf`);
+  } else if (args[0] === '--cobranded') {
+    // node generate.js --cobranded <partner-logo-path> [partner-url]
+    // Generates co-branded CEO, People, Manager versions
+    const partnerLogoPath = args[1] ? path.resolve(args[1]) : path.resolve(__dirname, 'sample-partner-logo.svg');
+    const partnerUrl = args[2] || 'partnerdomain.com';
+
+    if (!fs.existsSync(partnerLogoPath)) {
+      console.error(`Partner logo not found: ${partnerLogoPath}`);
+      process.exit(1);
+    }
+
+    const logoOpts = { partnerLogoPath };
+    const slug = path.basename(partnerLogoPath, path.extname(partnerLogoPath)).replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    const cobrandedVersions = ['ceo', 'people', 'manager'];
+
+    for (const vId of cobrandedVersions) {
+      console.log(`\n=== CO-BRANDED ${vId.toUpperCase()} ===`);
+      await generatePDF(vId, `clover-era-${vId}-cobranded-${slug}.pdf`, { ...genericData, partner_url: partnerUrl }, logoOpts);
+    }
   } else if (args[0] === '--comparison') {
     // node generate.js --comparison
     const comparisonFiles = fs.readdirSync(__dirname).filter(f => f.startsWith('comparison-data') && f.endsWith('.js'));
@@ -479,6 +498,17 @@ async function main() {
       const compData = require(path.resolve(__dirname, cFile));
       console.log(`\n=== COMPARISON: ${compData.title} ===`);
       await generateComparisonPDF(compData, `clover-era-comparison-${compData.comparison_id}.pdf`);
+    }
+
+    // Generate co-branded samples (CEO, People, Manager only)
+    const samplePartnerLogo = path.resolve(__dirname, 'sample-partner-logo.svg');
+    if (fs.existsSync(samplePartnerLogo)) {
+      const coLogoOpts = { partnerLogoPath: samplePartnerLogo };
+      const cobrandedVersions = ['ceo', 'people', 'manager'];
+      for (const vId of cobrandedVersions) {
+        console.log(`\n=== CO-BRANDED ${vId.toUpperCase()} (sample) ===`);
+        await generatePDF(vId, `clover-era-${vId}-cobranded-sample.pdf`, { ...genericData, partner_url: 'partnerdomain.com' }, coLogoOpts);
+      }
     }
   }
 

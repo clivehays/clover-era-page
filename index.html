@@ -251,60 +251,104 @@
             text-decoration: underline;
         }
 
-        /* Social Proof */
-        .proof-section {
+        /* Results Strip */
+        .results-strip {
             padding: 5rem 2rem;
             background: var(--white);
             border-top: 1px solid var(--medium-gray);
             border-bottom: 1px solid var(--medium-gray);
         }
 
-        .proof-content {
+        .results-strip-content {
             max-width: 1000px;
             margin: 0 auto;
             text-align: center;
         }
 
-        .proof-intro {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            font-style: italic;
-            margin-bottom: 2.5rem;
+        .results-strip-headline {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
         }
 
-        .proof-grid {
+        .results-strip-sub {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .results-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
+            margin-bottom: 2rem;
         }
 
-        .proof-card {
+        .results-card {
             background: var(--light-gray);
             border-radius: 12px;
             padding: 2rem 1.5rem;
             text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-top: 3px solid var(--teal);
         }
 
-        .proof-industry {
+        .results-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(70, 174, 184, 0.15);
+        }
+
+        .results-card-label {
             font-size: 0.85rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--deep-teal);
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
-        .proof-result {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            line-height: 1.3;
+        .results-card-metric {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
             margin-bottom: 0.5rem;
         }
 
-        .proof-detail {
+        .results-card-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--teal);
+            line-height: 1.2;
+            margin-bottom: 0.25rem;
+        }
+
+        .results-card-number .arrow {
+            color: var(--text-secondary);
+            opacity: 0.4;
+            font-size: 1.5rem;
+            margin: 0 0.15em;
+        }
+
+        .results-card-number .before {
+            opacity: 0.5;
+            color: var(--charcoal);
+        }
+
+        .results-card-time {
             font-size: 0.95rem;
             color: var(--text-secondary);
+        }
+
+        .results-strip-anon {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
         }
 
         /* Cost Section */
@@ -643,9 +687,13 @@
                 font-size: 1.5rem;
             }
 
-            .proof-grid {
+            .results-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
+            }
+
+            .results-strip-headline {
+                font-size: 1.6rem;
             }
 
             .credibility-bar {
@@ -710,30 +758,36 @@
         </div>
     </section>
 
-    <!-- Social Proof -->
-    <section class="proof-section">
-        <div class="proof-content">
-            <p class="proof-intro">Our clients' names stay confidential. Their results don't.</p>
+    <!-- Results Strip -->
+    <section class="results-strip">
+        <div class="results-strip-content">
+            <h2 class="results-strip-headline">Two weeks to surface. Every time.</h2>
+            <p class="results-strip-sub">Due to the sensitivity of retention data, we never name our clients. Here's what happened.</p>
 
-            <div class="proof-grid">
-                <div class="proof-card">
-                    <div class="proof-industry">Health Tech Company</div>
-                    <div class="proof-result">31% turnover reduction</div>
-                    <div class="proof-detail">Within 6 months</div>
-                </div>
+            <div class="results-grid">
+                <a href="/results/#uk-school" class="results-card">
+                    <div class="results-card-label">Large UK School, 300 Staff</div>
+                    <div class="results-card-metric">Learning</div>
+                    <div class="results-card-number"><span class="before">29%</span> <span class="arrow">&rarr;</span> 55%</div>
+                    <div class="results-card-time">in 3 months</div>
+                </a>
 
-                <div class="proof-card">
-                    <div class="proof-industry">Cybersecurity Firm</div>
-                    <div class="proof-result">$1.1M saved</div>
-                    <div class="proof-detail">In preventable departures</div>
-                </div>
+                <a href="/results/#fortune500" class="results-card">
+                    <div class="results-card-label">Fortune 500 Tech Division, 350 People</div>
+                    <div class="results-card-metric">Turnover</div>
+                    <div class="results-card-number"><span class="before">25%</span> <span class="arrow">&rarr;</span> 15%</div>
+                    <div class="results-card-time">$1M+ saved in 6 months</div>
+                </a>
 
-                <div class="proof-card">
-                    <div class="proof-industry">Fintech</div>
-                    <div class="proof-result" style="font-size: 1.15rem; font-style: italic; font-weight: 600;">Prevented 3 confirmed departures in first quarter</div>
-                    <div class="proof-detail"></div>
-                </div>
+                <a href="/results/#healthcare" class="results-card">
+                    <div class="results-card-label">Healthcare Ops Team, 8 People</div>
+                    <div class="results-card-metric">Team Health</div>
+                    <div class="results-card-number"><span class="before">46%</span> <span class="arrow">&rarr;</span> 76%</div>
+                    <div class="results-card-time">in 10 weeks</div>
+                </a>
             </div>
+
+            <p class="results-strip-anon">Due to the sensitivity of retention data, we never name our clients. We'll extend you the same protection.</p>
         </div>
     </section>
 
