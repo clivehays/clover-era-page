@@ -1159,6 +1159,14 @@ function parseAttachments(personalizationNotes: string | null): Array<{ filename
 
   try {
     const notes = JSON.parse(personalizationNotes);
+    // New format: uploaded to Supabase Storage with full URL
+    if (notes.attachment_url) {
+      return [{
+        filename: notes.attachment_name || 'attachment.pdf',
+        path: notes.attachment_url,
+      }];
+    }
+    // Legacy format: filename in downloads folder
     if (notes.attachment) {
       return [{
         filename: notes.attachment,

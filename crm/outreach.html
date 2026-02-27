@@ -2516,6 +2516,27 @@
                 }
             } catch { /* not JSON, use raw */ }
 
+            // Check for existing attachment
+            let existingAttachment = null;
+            try {
+                const notes = JSON.parse(email.personalization_notes || '{}');
+                if (notes.attachment_url) existingAttachment = { name: notes.attachment_name, url: notes.attachment_url };
+                else if (notes.attachment) existingAttachment = { name: notes.attachment, url: `https://cloverera.com/downloads/${notes.attachment}` };
+            } catch {}
+
+            const attachmentSection = existingAttachment
+                ? `<div id="attachmentDisplay" style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between;">
+                    <span><strong>📎</strong> ${existingAttachment.name}</span>
+                    <button class="btn btn-danger btn-sm" onclick="removeAttachment('${emailId}')" style="font-size: 0.75rem; padding: 2px 8px;">Remove</button>
+                  </div>`
+                : `<div id="attachmentDisplay" style="margin-top: 0.75rem;">
+                    <label style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.75rem; background: var(--light-gray); border: 1px dashed var(--border-color); border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                        📎 Attach PDF
+                        <input type="file" id="emailAttachmentFile" accept=".pdf" onchange="uploadAttachment('${emailId}')" style="display: none;">
+                    </label>
+                    <span id="uploadStatus" style="margin-left: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);"></span>
+                  </div>`;
+
             document.getElementById('emailPreviewContent').innerHTML = `
                 <div style="margin-bottom: 1rem;">
                     <strong>To:</strong> ${recipientName} &lt;${recipientEmail}&gt;
@@ -2523,7 +2544,7 @@
                 <div class="email-preview">
                     <div class="subject">${email.subject}</div>
                     <div class="body">${email.body}</div>
-                    ${attachmentHtml}
+                    ${attachmentSection}
                     ${notesDisplay ? `
                         <div class="meta">
                             <strong>AI Notes:</strong> ${notesDisplay}
@@ -2540,6 +2561,88 @@
             `;
 
             showModal('emailPreviewModal');
+        }
+
+        async function uploadAttachment(emailId) {
+            const fileInput = document.getElementById('emailAttachmentFile');
+            const file = fileInput?.files?.[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('uploadStatus');
+            statusEl.textContent = 'Uploading...';
+
+            try {
+                // Upload to Supabase Storage
+                const fileName = `${emailId}_${file.name.replace(/\s+/g, '-')}`;
+                const { data, error } = await supabaseClient.storage
+                    .from('outreach-attachments')
+                    .upload(fileName, file, { upsert: true });
+
+                if (error) throw error;
+
+                // Get public URL
+                const { data: urlData } = supabaseClient.storage
+                    .from('outreach-attachments')
+                    .getPublicUrl(fileName);
+
+                const publicUrl = urlData.publicUrl;
+
+                // Update personalization_notes with attachment info
+                const { data: email } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('personalization_notes')
+                    .eq('id', emailId)
+                    .single();
+
+                let notes = {};
+                try { notes = JSON.parse(email.personalization_notes || '{}'); } catch {}
+                notes.attachment_url = publicUrl;
+                notes.attachment_name = file.name;
+
+                await supabaseClient
+                    .from('outreach_emails')
+                    .update({ personalization_notes: JSON.stringify(notes) })
+                    .eq('id', emailId);
+
+                // Refresh preview
+                previewEmail(emailId);
+            } catch (err) {
+                console.error('Upload error:', err);
+                statusEl.textContent = 'Upload failed: ' + (err.message || err);
+                statusEl.style.color = 'var(--danger-red)';
+            }
+        }
+
+        async function removeAttachment(emailId) {
+            try {
+                const { data: email } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('personalization_notes')
+                    .eq('id', emailId)
+                    .single();
+
+                let notes = {};
+                try { notes = JSON.parse(email.personalization_notes || '{}'); } catch {}
+
+                // Remove from storage if it was uploaded
+                if (notes.attachment_url && notes.attachment_url.includes('outreach-attachments')) {
+                    const fileName = notes.attachment_url.split('/').pop();
+                    await supabaseClient.storage.from('outreach-attachments').remove([fileName]);
+                }
+
+                delete notes.attachment_url;
+                delete notes.attachment_name;
+                delete notes.attachment;
+
+                await supabaseClient
+                    .from('outreach_emails')
+                    .update({ personalization_notes: Object.keys(notes).length ? JSON.stringify(notes) : null })
+                    .eq('id', emailId);
+
+                previewEmail(emailId);
+            } catch (err) {
+                alert('Error removing attachment: ' + (err.message || err));
+            }
         }
 
         async function approveEmail() {
