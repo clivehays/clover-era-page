@@ -1130,8 +1130,8 @@
                     </div>
                 `}).join('');
 
-                // Load capacity info for active campaigns
-                setTimeout(loadAllCampaignCapacities, 100);
+                // Load global capacity only (per-campaign loads on select)
+                loadGlobalCapacity();
 
             } catch (error) {
                 console.error('Error loading campaigns:', error);
@@ -1558,16 +1558,12 @@
             try {
                 const result = await sendCampaignEmails(campaignId);
 
-                loadCampaigns();
-                loadStats();
-                loadCampaignCapacity(campaignId);
-
+                // Show result immediately, then refresh UI sequentially to avoid connection flooding
                 if (result.sent > 0) {
                     let message = `Sent ${result.sent} Email 1(s)!`;
                     if (result.scheduled_today > 0) {
                         message += `\n\n${result.scheduled_today} follow-up(s) scheduled for today will send automatically.`;
                     }
-                    // Check if any failed in the batch
                     const failed = (result.results || []).filter(r => r.status === 'failed');
                     if (failed.length > 0) {
                         message += `\n\n${failed.length} email(s) failed:`;
@@ -1575,7 +1571,6 @@
                     }
                     alert(message);
                 } else {
-                    // Show detailed error info
                     let message = result.message || 'No approved emails to send.';
                     const failed = (result.results || []).filter(r => r.status === 'failed');
                     if (failed.length > 0) {
@@ -1584,6 +1579,11 @@
                     }
                     alert(message);
                 }
+
+                // Refresh UI sequentially to avoid flooding Supabase
+                await loadStats();
+                await loadCampaigns();
+                await loadCampaignCapacity(campaignId);
                 loadEmailQueue();
             } catch (error) {
                 alert('Error sending emails: ' + error.message);
@@ -1643,44 +1643,66 @@
             const capacityEl = document.getElementById('globalCapacity');
             const infoEl = document.getElementById('globalCapacityInfo');
 
-            // Show loading state immediately
             if (capacityEl && infoEl) {
                 capacityEl.style.display = 'block';
                 infoEl.innerHTML = '<span style="color: var(--text-secondary);">Loading capacity...</span>';
             }
 
             try {
-                const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                    },
-                    body: JSON.stringify({ type: 'get_global_capacity' })
-                });
+                // Direct DB queries instead of edge function to avoid connection competition
+                const { data: settingsData } = await supabaseClient
+                    .from('outreach_settings')
+                    .select('key, value')
+                    .in('key', ['max_emails_per_day']);
+                const maxPerDay = parseInt(settingsData?.find(s => s.key === 'max_emails_per_day')?.value) || 50;
 
-                const data = await response.json();
-                console.log('Global capacity response:', data);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
 
-                if (data.success) {
-                    globalCapacityData = data;
+                const { count: sentToday } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'sent')
+                    .gte('sent_at', today.toISOString());
 
-                    if (capacityEl && infoEl) {
-                        const availColor = data.available_slots > 0 ? 'var(--success-green)' : 'var(--danger-color)';
-                        const approvedInfo = data.approved_ready > 0
-                            ? ` | <strong>${data.approved_ready}</strong> approved ready`
-                            : '';
-                        infoEl.innerHTML = `
-                            <strong>${data.sent_today}</strong> sent |
-                            <strong>${data.scheduled_today}</strong> scheduled |
-                            <strong style="color: ${availColor};">${data.available_slots}</strong>/${data.max_per_day} available${approvedInfo}
-                        `;
-                    }
-                } else {
-                    console.error('Global capacity error:', data.error);
-                    if (infoEl) {
-                        infoEl.innerHTML = '<span style="color: var(--danger-color);">Error loading capacity</span>';
-                    }
+                const { count: scheduledToday } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'scheduled')
+                    .gte('scheduled_at', today.toISOString())
+                    .lt('scheduled_at', tomorrow.toISOString());
+
+                const { count: approvedReady } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'approved');
+
+                const sent = sentToday || 0;
+                const scheduled = scheduledToday || 0;
+                const approved = approvedReady || 0;
+                const usedToday = sent + scheduled;
+                const availableSlots = Math.max(0, maxPerDay - usedToday);
+
+                globalCapacityData = {
+                    max_per_day: maxPerDay,
+                    sent_today: sent,
+                    scheduled_today: scheduled,
+                    available_slots: availableSlots,
+                    approved_ready: approved,
+                };
+
+                if (capacityEl && infoEl) {
+                    const availColor = availableSlots > 0 ? 'var(--success-green)' : 'var(--danger-color)';
+                    const approvedInfo = approved > 0
+                        ? ` | <strong>${approved}</strong> approved ready`
+                        : '';
+                    infoEl.innerHTML = `
+                        <strong>${sent}</strong> sent |
+                        <strong>${scheduled}</strong> scheduled |
+                        <strong style="color: ${availColor};">${availableSlots}</strong>/${maxPerDay} available${approvedInfo}
+                    `;
                 }
             } catch (error) {
                 console.error('Error loading global capacity:', error);
@@ -1791,6 +1813,8 @@
             selectedCampaignId = id;
             document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
+            // Load capacity for selected campaign only
+            loadCampaignCapacity(id);
         }
 
         // New Campaign Modal
