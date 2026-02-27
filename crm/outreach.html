@@ -1986,25 +1986,71 @@
                     prospect.estimated_avg_salary = parseInt(document.getElementById('qaAvgSalary').value) || 85000;
                 }
 
-                // Insert prospect
-                const { data: newProspect, error: prospectError } = await supabaseClient
+                // Check if prospect already exists by email
+                const { data: existing } = await supabaseClient
                     .from('outreach_prospects')
-                    .insert(prospect)
                     .select('id')
-                    .single();
-                if (prospectError) throw prospectError;
+                    .eq('email', email)
+                    .maybeSingle();
 
-                // Add to campaign
-                const { data: cpRow, error: cpError } = await supabaseClient
+                let prospectId;
+                if (existing) {
+                    // Reuse existing prospect, update fields
+                    await supabaseClient
+                        .from('outreach_prospects')
+                        .update({
+                            first_name: firstName,
+                            last_name: lastName,
+                            company_name: prospect.company_name,
+                            title: prospect.title,
+                            company_industry: prospect.company_industry,
+                            company_employee_count: prospect.company_employee_count,
+                            ...(prospect.post_number && { post_number: prospect.post_number }),
+                            ...(prospect.post_topic && { post_topic: prospect.post_topic }),
+                            ...(prospect.comment_text && { comment_text: prospect.comment_text }),
+                            ...(prospect.estimated_avg_salary && { estimated_avg_salary: prospect.estimated_avg_salary }),
+                        })
+                        .eq('id', existing.id);
+                    prospectId = existing.id;
+                } else {
+                    const { data: newProspect, error: prospectError } = await supabaseClient
+                        .from('outreach_prospects')
+                        .insert(prospect)
+                        .select('id')
+                        .single();
+                    if (prospectError) throw prospectError;
+                    prospectId = newProspect.id;
+                }
+
+                // Check if already in this campaign
+                const { data: existingCp } = await supabaseClient
                     .from('campaign_prospects')
-                    .insert({
-                        campaign_id: selectedCampaignId,
-                        prospect_id: newProspect.id,
-                        status: 'pending'
-                    })
-                    .select('id, prospect_id')
-                    .single();
-                if (cpError) throw cpError;
+                    .select('id')
+                    .eq('campaign_id', selectedCampaignId)
+                    .eq('prospect_id', prospectId)
+                    .maybeSingle();
+
+                let cpId;
+                if (existingCp) {
+                    // Reset existing campaign membership
+                    await supabaseClient
+                        .from('campaign_prospects')
+                        .update({ status: 'pending', current_step: 0 })
+                        .eq('id', existingCp.id);
+                    cpId = existingCp.id;
+                } else {
+                    const { data: cpRow, error: cpError } = await supabaseClient
+                        .from('campaign_prospects')
+                        .insert({
+                            campaign_id: selectedCampaignId,
+                            prospect_id: prospectId,
+                            status: 'pending'
+                        })
+                        .select('id')
+                        .single();
+                    if (cpError) throw cpError;
+                    cpId = cpRow.id;
+                }
 
                 // Update campaign stats
                 await supabaseClient.rpc('update_campaign_stats', { p_campaign_id: selectedCampaignId });
