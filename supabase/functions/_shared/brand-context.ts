@@ -138,3 +138,55 @@ export function getCompanySizeContext(employeeCount: number): string {
 - Focus on: key person risk, institutional knowledge
 - Reference: "In a company your size, losing the wrong person can set you back months."`;
 }
+
+// Calendar link for Turnover Analysis scheduling
+export const CALENDAR_LINK = 'https://calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era-clone';
+
+// Self-serve funnel context for LinkedIn commenter sequence
+export const SELF_SERVE_CONTEXT = `
+SELF-SERVE FUNNEL CONTEXT:
+Target: Team managers who commented on Clive's LinkedIn posts.
+Goal: Get them to take the free assessment, then start a 14-day trial.
+Tone: Peer manager, not vendor. Reference their specific comment.
+Product: Clover ERA self-serve at $8/manager/month.
+Assessment URL: https://cloverera.com/assessment
+Trial URL: https://cloverera.com/trial
+Book: "Already Gone: 78 Ways to Miss Someone Leaving" by Clive & Neil Hays.
+
+WRITING RULES FOR SELF-SERVE:
+- Short, conversational, peer-to-peer
+- No corporate speak, no em dashes
+- Reference their specific LinkedIn comment
+- The trap question is the conversion moment
+- Total email body: 100-120 words max
+- No "I'd love to," "curious," "happy to help," "reaching out," "just wanted to"
+`.trim();
+
+// Turnover calculation helpers
+export function calculateTurnoverFields(employeeCount: number, avgSalary: number) {
+  const annualTurnoverCost = employeeCount * 0.12 * avgSalary * 4;
+  const dailyCost = Math.round(annualTurnoverCost / 365);
+  const costPerDeparture = avgSalary * 4;
+  const calculatedDepartures = Math.round(employeeCount * 0.12);
+  const sixty7DayNumber = Math.round(employeeCount * 0.12 / 5.5);
+  const sixty7DayTotal = sixty7DayNumber * costPerDeparture;
+
+  return {
+    annual_turnover_cost: annualTurnoverCost,
+    daily_cost: dailyCost,
+    cost_per_departure: costPerDeparture,
+    calculated_departures: calculatedDepartures,
+    sixty7_day_number: sixty7DayNumber,
+    sixty7_day_total: sixty7DayTotal,
+  };
+}
+
+export function formatDollar(amount: number): string {
+  if (amount >= 1000000) {
+    return `${(amount / 1000000).toFixed(1)}M`;
+  }
+  if (amount >= 1000) {
+    return amount.toLocaleString('en-US');
+  }
+  return String(amount);
+}

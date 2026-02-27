@@ -3,15 +3,15 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY');
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Default sender config
-const DEFAULT_FROM_EMAIL = 'clive.hays@go.cloverera.com';
+// Default sender config - using main domain for better deliverability
+const DEFAULT_FROM_EMAIL = 'clive.hays@cloverera.com';
 const DEFAULT_FROM_NAME = 'Clive Hays';
 const DEFAULT_REPLY_TO = 'clive.hays@cloverera.com';
 
@@ -109,8 +109,11 @@ async function sendSingleEmail(supabase: any, emailId: string) {
   const fromName = settings.from_name || DEFAULT_FROM_NAME;
   const replyTo = settings.reply_to || DEFAULT_REPLY_TO;
 
-  // Send via SendGrid
-  const result = await sendViaSendGrid({
+  // Check for attachments in personalization_notes
+  const attachments = parseAttachments(email.personalization_notes);
+
+  // Send via Resend
+  const result = await sendViaResend({
     to: recipient.email,
     toName: `${recipient.first_name || ''} ${recipient.last_name || ''}`.trim() || recipient.email,
     from: fromEmail,
@@ -119,6 +122,7 @@ async function sendSingleEmail(supabase: any, emailId: string) {
     subject: email.subject,
     body: email.body,
     emailId: email.id,
+    attachments: attachments.length > 0 ? attachments : undefined,
   });
 
   if (!result.success) {
@@ -140,7 +144,7 @@ async function sendSingleEmail(supabase: any, emailId: string) {
     .update({
       status: 'sent',
       sent_at: new Date().toISOString(),
-      sendgrid_message_id: result.messageId,
+      sendgrid_message_id: result.messageId, // Stores Resend ID in same column
       updated_at: new Date().toISOString(),
     })
     .eq('id', emailId);
@@ -210,7 +214,7 @@ async function sendSingleEmail(supabase: any, emailId: string) {
     }
   }
 
-  console.log('Email sent:', recipient.email);
+  console.log('Email sent via Resend:', recipient.email);
 
   return new Response(
     JSON.stringify({
@@ -312,8 +316,11 @@ async function processScheduledEmails(supabase: any) {
       continue;
     }
 
+    // Check for attachments
+    const emailAttachments = parseAttachments(email.personalization_notes);
+
     // Send the email
-    const result = await sendViaSendGrid({
+    const result = await sendViaResend({
       to: recipient.email,
       toName: `${recipient.first_name || ''} ${recipient.last_name || ''}`.trim() || recipient.email,
       from: fromEmail,
@@ -322,6 +329,7 @@ async function processScheduledEmails(supabase: any) {
       subject: email.subject,
       body: email.body,
       emailId: email.id,
+      attachments: emailAttachments.length > 0 ? emailAttachments : undefined,
     });
 
     if (result.success) {
@@ -504,7 +512,10 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
       continue;
     }
 
-    const result = await sendViaSendGrid({
+    // Check for attachments
+    const batchAttachments = parseAttachments(email.personalization_notes);
+
+    const result = await sendViaResend({
       to: recipient.email,
       toName: `${recipient.first_name || ''} ${recipient.last_name || ''}`.trim() || recipient.email,
       from: fromEmail,
@@ -513,6 +524,7 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
       subject: email.subject,
       body: email.body,
       emailId: email.id,
+      attachments: batchAttachments.length > 0 ? batchAttachments : undefined,
     });
 
     if (result.success) {
@@ -655,7 +667,6 @@ async function sendBroadcastBatch(supabase: any, campaignId: string, limit?: num
   }
 
   // Get prospects in this campaign that haven't been emailed yet
-  // Check campaign_prospects for prospects not yet sent to
   const { data: campaignProspects, error: prospectsError } = await supabase
     .from('campaign_prospects')
     .select(`
@@ -712,8 +723,8 @@ async function sendBroadcastBatch(supabase: any, campaignId: string, limit?: num
       continue;
     }
 
-    // Send via SendGrid
-    const result = await sendViaSendGrid({
+    // Send via Resend
+    const result = await sendViaResend({
       to: prospect.email,
       toName: `${prospect.first_name || ''} ${prospect.last_name || ''}`.trim() || prospect.email,
       from: fromEmail,
@@ -778,7 +789,7 @@ async function sendBroadcastBatch(supabase: any, campaignId: string, limit?: num
   );
 }
 
-async function sendViaSendGrid(params: {
+async function sendViaResend(params: {
   to: string;
   toName: string;
   from: string;
@@ -787,73 +798,62 @@ async function sendViaSendGrid(params: {
   subject: string;
   body: string;
   emailId: string;
+  attachments?: Array<{ filename: string; path: string }>;
 }): Promise<{ success: boolean; messageId?: string; error?: string }> {
-  if (!SENDGRID_API_KEY) {
-    return { success: false, error: 'SendGrid API key not configured' };
+  if (!RESEND_API_KEY) {
+    return { success: false, error: 'Resend API key not configured' };
   }
 
   try {
-    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+    const emailPayload: Record<string, any> = {
+      from: `${params.fromName} <${params.from}>`,
+      to: [params.to],
+      reply_to: params.replyTo,
+      subject: params.subject,
+      text: params.body,
+      tags: [
+        { name: 'outreach_email_id', value: params.emailId },
+        { name: 'type', value: 'outreach' },
+      ],
+    };
+
+    // Add attachments if present (Resend supports URL-based attachments via 'path')
+    if (params.attachments && params.attachments.length > 0) {
+      emailPayload.attachments = params.attachments;
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${SENDGRID_API_KEY}`,
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        personalizations: [
-          {
-            to: [{ email: params.to, name: params.toName }],
-            custom_args: {
-              outreach_email_id: params.emailId,
-            },
-          },
-        ],
-        from: {
-          email: params.from,
-          name: params.fromName,
-        },
-        reply_to: {
-          email: params.replyTo,
-        },
-        subject: params.subject,
-        content: [
-          {
-            type: 'text/plain',
-            value: params.body,
-          },
-        ],
-        tracking_settings: {
-          open_tracking: { enable: true },
-          click_tracking: { enable: false }, // No links in our emails
-        },
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('SendGrid error:', response.status, errorText);
-      // Parse SendGrid error for more detail
-      let errorDetail = `SendGrid error: ${response.status}`;
+      console.error('Resend error:', response.status, errorText);
+      let errorDetail = `Resend error: ${response.status}`;
       try {
         const errorJson = JSON.parse(errorText);
-        if (errorJson.errors && errorJson.errors.length > 0) {
-          errorDetail = `SendGrid: ${errorJson.errors.map((e: any) => e.message).join(', ')}`;
+        if (errorJson.message) {
+          errorDetail = `Resend: ${errorJson.message}`;
         }
       } catch {
-        // If not JSON, include raw text
         if (errorText) {
-          errorDetail = `SendGrid error ${response.status}: ${errorText.substring(0, 200)}`;
+          errorDetail = `Resend error ${response.status}: ${errorText.substring(0, 200)}`;
         }
       }
       return { success: false, error: errorDetail };
     }
 
-    // Get message ID from headers
-    const messageId = response.headers.get('x-message-id') || '';
+    const data = await response.json();
+    const messageId = data.id || '';
 
     return { success: true, messageId };
   } catch (error) {
-    console.error('SendGrid request failed:', error);
+    console.error('Resend request failed:', error);
     return { success: false, error: error.message };
   }
 }
@@ -1150,4 +1150,24 @@ async function getGlobalCapacity(supabase: any) {
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   );
+}
+
+// Parse personalization_notes for attachment info
+// Returns Resend-compatible attachment array (uses URL path for remote files)
+function parseAttachments(personalizationNotes: string | null): Array<{ filename: string; path: string }> {
+  if (!personalizationNotes) return [];
+
+  try {
+    const notes = JSON.parse(personalizationNotes);
+    if (notes.attachment) {
+      return [{
+        filename: notes.attachment,
+        path: `https://cloverera.com/downloads/${notes.attachment}`,
+      }];
+    }
+  } catch {
+    // Not JSON or no attachment field - that's fine
+  }
+
+  return [];
 }

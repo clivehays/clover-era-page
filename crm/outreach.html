@@ -826,6 +826,35 @@
                     <span id="prospectsCount" style="color: var(--text-secondary); font-size: 0.875rem;">0 prospects</span>
                 </div>
 
+                <!-- LinkedIn Context Fields (shown for self-serve campaigns) -->
+                <div id="linkedinFieldsSection" style="display: none; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                    <h4 style="margin: 0 0 0.75rem 0; color: #7c3aed; font-size: 0.95rem;">LinkedIn Comment Context</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem 0;">These fields will be applied to all selected prospects for this batch.</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Post Number</label>
+                            <input type="text" id="batchPostNumber" placeholder="e.g., Post 14" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Post Topic</label>
+                            <input type="text" id="batchPostTopic" placeholder="e.g., the quiet engineer" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Comment Text (per-prospect override available after adding)</label>
+                        <textarea id="batchCommentText" placeholder="Default comment text for this batch..." rows="2" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; resize: vertical; box-sizing: border-box;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Avg Salary Field (shown for operational campaigns) -->
+                <div id="avgSalarySection" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <label style="font-size: 0.875rem; font-weight: 500; white-space: nowrap;">Est. Avg Salary ($)</label>
+                        <input type="number" id="batchAvgSalary" value="85000" min="30000" max="500000" step="5000" style="width: 140px; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;">
+                        <span style="font-size: 0.8rem; color: var(--text-secondary);">Used for turnover cost calculations in email templates</span>
+                    </div>
+                </div>
+
                 <!-- Prospects List -->
                 <div id="prospectsCheckboxList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--medium-gray); border-radius: 8px;">
                     <p class="loading" style="padding: 1rem;">Loading prospects...</p>
@@ -949,7 +978,7 @@
                     .from('outreach_campaigns')
                     .select(`
                         *,
-                        sequence:outreach_sequences(name)
+                        sequence:outreach_sequences(name, sequence_type)
                     `)
                     .order('created_at', { ascending: false });
 
@@ -970,7 +999,10 @@
 
                 document.getElementById('campaignsList').innerHTML = campaigns.map(campaign => {
                     const isBroadcast = campaign.campaign_type === 'broadcast';
-                    const typeLabel = isBroadcast ? 'Broadcast' : (campaign.sequence?.name || 'No sequence');
+                    const seqType = campaign.sequence?.sequence_type || 'operational';
+                    const typeBadge = isBroadcast ? '<span style="color: var(--info-blue);">📢 Broadcast</span>' :
+                                      seqType === 'self_serve' ? `<span style="color: #7c3aed;">🔗 Self-Serve</span> ${campaign.sequence?.name || ''}` :
+                                      (campaign.sequence?.name || 'No sequence');
 
                     return `
                     <div class="campaign-card" onclick="selectCampaign('${campaign.id}')">
@@ -978,7 +1010,7 @@
                             <div>
                                 <div class="campaign-title">${campaign.name}</div>
                                 <div style="font-size: 0.875rem; color: var(--text-secondary);">
-                                    ${isBroadcast ? '<span style="color: var(--info-blue);">📢 Broadcast</span>' : typeLabel}
+                                    ${typeBadge}
                                 </div>
                             </div>
                             <span class="badge badge-${campaign.status}">${campaign.status}</span>
@@ -1673,16 +1705,18 @@
 
         // New Campaign Modal
         async function showNewCampaignModal() {
-            // Load sequences
+            // Load sequences with type
             const { data: sequences } = await supabaseClient
                 .from('outreach_sequences')
-                .select('id, name')
+                .select('id, name, sequence_type')
                 .eq('is_active', true);
 
             const select = document.getElementById('campaignSequence');
             select.innerHTML = '<option value="">Select a sequence...</option>';
             sequences?.forEach(seq => {
-                select.innerHTML += `<option value="${seq.id}">${seq.name}</option>`;
+                const typeLabel = seq.sequence_type === 'self_serve' ? ' [Self-Serve]' :
+                                  seq.sequence_type === 'broadcast' ? ' [Broadcast]' : ' [Operational]';
+                select.innerHTML += `<option value="${seq.id}" data-sequence-type="${seq.sequence_type || 'operational'}">${seq.name}${typeLabel}</option>`;
             });
 
             showModal('newCampaignModal');
@@ -1770,6 +1804,17 @@
             document.getElementById('filterIndustry').value = '';
             document.getElementById('filterEmployees').value = '';
             document.getElementById('selectAllProspects').checked = false;
+
+            // Show/hide sequence-specific fields based on campaign's sequence type
+            const { data: campaign } = await supabaseClient
+                .from('outreach_campaigns')
+                .select('sequence_id, sequence:outreach_sequences(sequence_type)')
+                .eq('id', campaignId)
+                .single();
+
+            const seqType = campaign?.sequence?.sequence_type || 'operational';
+            document.getElementById('linkedinFieldsSection').style.display = seqType === 'self_serve' ? 'block' : 'none';
+            document.getElementById('avgSalarySection').style.display = seqType === 'operational' ? 'block' : 'none';
 
             // Load prospects not in this campaign (from outreach_prospects table)
             const { data: existingProspects } = await supabaseClient
@@ -1888,6 +1933,38 @@
             }
 
             try {
+                // Save LinkedIn/salary context to prospects if provided
+                const linkedinSection = document.getElementById('linkedinFieldsSection');
+                const avgSalarySection = document.getElementById('avgSalarySection');
+
+                if (linkedinSection.style.display !== 'none') {
+                    // Self-serve: save LinkedIn context to each prospect
+                    const postNumber = document.getElementById('batchPostNumber').value.trim();
+                    const postTopic = document.getElementById('batchPostTopic').value.trim();
+                    const commentText = document.getElementById('batchCommentText').value.trim();
+
+                    if (postNumber || postTopic || commentText) {
+                        const updates = {};
+                        if (postNumber) updates.post_number = postNumber;
+                        if (postTopic) updates.post_topic = postTopic;
+                        if (commentText) updates.comment_text = commentText;
+
+                        await supabaseClient
+                            .from('outreach_prospects')
+                            .update(updates)
+                            .in('id', prospectIds);
+                    }
+                }
+
+                if (avgSalarySection.style.display !== 'none') {
+                    // Operational: save estimated avg salary
+                    const avgSalary = parseInt(document.getElementById('batchAvgSalary').value) || 85000;
+                    await supabaseClient
+                        .from('outreach_prospects')
+                        .update({ estimated_avg_salary: avgSalary })
+                        .in('id', prospectIds);
+                }
+
                 // Insert into campaign_prospects (NOT campaign_contacts)
                 const inserts = prospectIds.map(prospectId => ({
                     campaign_id: selectedCampaignId,
@@ -2146,13 +2223,13 @@
                         contact:contacts(first_name, last_name, email, company:companies(name)),
                         prospect:outreach_prospects(first_name, last_name, email, company_name)
                     `)
-                    .eq('status', 'draft')
+                    .in('status', ['draft', 'pending_followup'])
                     .order('created_at', { ascending: true });
 
                 document.getElementById('emailQueueLoading').style.display = 'none';
 
                 if (!emails || emails.length === 0) {
-                    document.getElementById('emailQueueList').innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No emails pending approval.</p>';
+                    document.getElementById('emailQueueList').innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No emails pending review.</p>';
                     return;
                 }
 
@@ -2171,6 +2248,9 @@
                                 // Use prospect data if available, otherwise contact
                                 const recipient = email.prospect || email.contact;
                                 const companyName = email.prospect?.company_name || email.contact?.company?.name || '';
+                                const statusBadge = email.status === 'pending_followup'
+                                    ? '<span style="background: #f59e0b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Follow-up</span>'
+                                    : '<span style="background: #3b82f6; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Draft</span>';
                                 return `
                                 <tr>
                                     <td>
@@ -2178,7 +2258,7 @@
                                         <span style="font-size: 0.85rem; color: var(--text-secondary);">${companyName}</span>
                                     </td>
                                     <td>${email.subject}</td>
-                                    <td>Email ${email.position}</td>
+                                    <td>Email ${email.position}${statusBadge}</td>
                                     <td class="actions-row">
                                         <button class="btn btn-secondary btn-sm" onclick="previewEmail('${email.id}')">Preview</button>
                                         <button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
@@ -2218,6 +2298,22 @@
             const recipientEmail = recipient?.email || 'N/A';
             const recipientName = `${recipient?.first_name || ''} ${recipient?.last_name || ''}`.trim() || 'Unknown';
 
+            // Check for attachment in personalization_notes
+            let attachmentHtml = '';
+            let notesDisplay = email.personalization_notes || '';
+            try {
+                const notes = JSON.parse(email.personalization_notes);
+                if (notes.attachment) {
+                    attachmentHtml = `<div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 6px; font-size: 0.85rem;">
+                        <strong>📎 Attachment:</strong> ${notes.attachment}
+                    </div>`;
+                }
+                // Format notes nicely if JSON
+                if (notes.trap_question) {
+                    notesDisplay = `Trap Q: "${notes.trap_question}"` + (notes.post_topic ? ` | Post: ${notes.post_topic}` : '');
+                }
+            } catch { /* not JSON, use raw */ }
+
             document.getElementById('emailPreviewContent').innerHTML = `
                 <div style="margin-bottom: 1rem;">
                     <strong>To:</strong> ${recipientName} &lt;${recipientEmail}&gt;
@@ -2225,9 +2321,10 @@
                 <div class="email-preview">
                     <div class="subject">${email.subject}</div>
                     <div class="body">${email.body}</div>
-                    ${email.personalization_notes ? `
+                    ${attachmentHtml}
+                    ${notesDisplay ? `
                         <div class="meta">
-                            <strong>AI Notes:</strong> ${email.personalization_notes}
+                            <strong>AI Notes:</strong> ${notesDisplay}
                         </div>
                     ` : ''}
                 </div>
@@ -2361,13 +2458,13 @@
         }
 
         async function approveAllEmails() {
-            if (!confirm('Approve all draft emails?')) return;
+            if (!confirm('Approve all draft and follow-up emails?')) return;
 
             try {
                 await supabaseClient
                     .from('outreach_emails')
                     .update({ status: 'approved' })
-                    .eq('status', 'draft');
+                    .in('status', ['draft', 'pending_followup']);
                 loadEmailQueue();
                 alert('All emails approved!');
             } catch (error) {

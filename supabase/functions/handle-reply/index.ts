@@ -9,8 +9,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// This function is called when an inbound email is received (via SendGrid Inbound Parse)
-// or manually triggered when a reply is detected
+// This function is called when a reply is detected (via outreach-reply-detection cron)
+// or manually triggered from the CRM
 
 serve(async (req) => {
   // Handle CORS preflight
