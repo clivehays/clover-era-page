@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clover ERA CRM - Command Center</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <style>
+        :root {
+            --green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --teal: #0D9488;
+            --charcoal: #1f2937;
+            --text: #1f2937;
+            --text2: #6b7280;
+            --text3: #9ca3af;
+            --bg: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --red: #EF4444;
+            --amber: #F59E0B;
+            --blue: #3B82F6;
+            --purple: #7C3AED;
+            --indigo: #6366F1;
+            --panel-w: 420px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: var(--text); background: var(--bg); }
+
+        /* ── NAV ── */
+        .nav { background: var(--white); padding: 0.75rem 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-size: 1.25rem; font-weight: 700; color: var(--green); }
+        .nav-links { display: flex; gap: 1.25rem; align-items: center; }
+        .nav-links a { color: var(--text2); text-decoration: none; font-weight: 500; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--green); }
+        .btn-logout { padding: 0.4rem 0.8rem; background: var(--border); color: var(--text); border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.8rem; }
+
+        /* ── TABS ── */
+        .tab-bar { display: flex; gap: 0; background: var(--white); border-bottom: 2px solid var(--border); padding: 0 1.5rem; overflow-x: auto; }
+        .tab-btn { padding: 0.75rem 1.25rem; font-size: 0.85rem; font-weight: 600; color: var(--text2); background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all 0.15s; }
+        .tab-btn:hover { color: var(--text); }
+        .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+        .tab-btn .badge { display: inline-block; background: var(--red); color: white; font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 10px; margin-left: 0.35rem; font-weight: 700; }
+
+        /* ── CONTAINER ── */
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem; transition: margin-right 0.25s; }
+        body.panel-open .container { margin-right: var(--panel-w); }
+
+        /* ── TAB CONTENT ── */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ── STATS BAR ── */
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
+        .stat-card { background: var(--white); padding: 0.85rem 1rem; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .stat-label { font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--charcoal); margin-top: 0.15rem; }
+        .stat-sub { font-size: 0.75rem; color: var(--text2); margin-top: 0.1rem; }
+
+        /* ── SECTION HEADERS ── */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 1.25rem 0 0.75rem; }
+        .section-title { font-size: 0.9rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+        .section-title .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .dot-red { background: var(--red); }
+        .dot-amber { background: var(--amber); }
+        .dot-green { background: var(--green); }
+        .dot-blue { background: var(--blue); }
+
+        /* ── TABLE ── */
+        .data-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .data-table th { padding: 0.6rem 0.85rem; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; background: var(--bg); border-bottom: 1px solid var(--border); }
+        .data-table td { padding: 0.65rem 0.85rem; font-size: 0.85rem; border-bottom: 1px solid #f3f4f6; color: var(--text); }
+        .data-table tr { cursor: pointer; transition: background 0.1s; }
+        .data-table tbody tr:hover { background: #f0fdf4; }
+        .data-table .company { font-weight: 600; }
+        .data-table .sub { font-size: 0.75rem; color: var(--text2); }
+
+        /* ── PILLS & BADGES ── */
+        .pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+        .pill-a { background: #EDE9FE; color: #6D28D9; }
+        .pill-b { background: #DBEAFE; color: #1D4ED8; }
+        .pill-red { background: #FEE2E2; color: #DC2626; }
+        .pill-amber { background: #FEF3C7; color: #D97706; }
+        .pill-green { background: #D1FAE5; color: #047857; }
+        .pill-gray { background: #F3F4F6; color: #6B7280; }
+
+        .stage-pill { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
+        .stage-cold-outbound { background: #E0E7FF; color: #4338CA; }
+        .stage-outbound-reply { background: #E0F2FE; color: #0369A1; }
+        .stage-call-booked { background: #DBEAFE; color: #1E40AF; }
+        .stage-call-completed { background: #E0E7FF; color: #4338CA; }
+        .stage-qualified-opportunity { background: #F3E8FF; color: #7C3AED; }
+        .stage-pilot-started { background: #D1FAE5; color: #047857; }
+        .stage-active-customer { background: #D1FAE5; color: #047857; }
+        .stage-churned-lost { background: #FEE2E2; color: #DC2626; }
+        .stage-linkedin-engagement { background: #DBEAFE; color: #1D4ED8; }
+        .stage-post-comment-email { background: #E0F2FE; color: #0369A1; }
+        .stage-assessment-taken { background: #FEF3C7; color: #D97706; }
+        .stage-trial-started { background: #D1FAE5; color: #047857; }
+        .stage-trial-day-7 { background: #FEF3C7; color: #D97706; }
+        .stage-trial-day-12 { background: #FEE2E2; color: #DC2626; }
+        .stage-converted-paid { background: #D1FAE5; color: #047857; }
+        .stage-trial-expired { background: #F3F4F6; color: #6B7280; }
+
+        /* ── KANBAN ── */
+        .kanban-controls { display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; }
+        .funnel-toggle { display: flex; background: var(--white); border-radius: 8px; overflow: hidden; border: 2px solid var(--border); }
+        .funnel-toggle button { padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 600; border: none; background: none; cursor: pointer; color: var(--text2); transition: all 0.15s; }
+        .funnel-toggle button.active { background: var(--green); color: white; }
+        .kanban-row { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 1rem; min-height: 300px; }
+        .kanban-col { min-width: 200px; flex: 1; background: #f3f4f6; border-radius: 10px; padding: 0.75rem; }
+        .kanban-col-header { font-size: 0.72rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.6rem; display: flex; justify-content: space-between; }
+        .kanban-col-header .count { background: var(--white); padding: 0.1rem 0.4rem; border-radius: 8px; font-size: 0.65rem; }
+        .kanban-card { background: var(--white); border-radius: 8px; padding: 0.7rem; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; border-left: 3px solid var(--green); }
+        .kanban-card:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+        .kanban-card.dragging { opacity: 0.5; }
+        .kanban-card .kc-company { font-weight: 700; font-size: 0.82rem; color: var(--text); }
+        .kanban-card .kc-contact { font-size: 0.72rem; color: var(--text2); }
+        .kanban-card .kc-value { font-size: 0.85rem; font-weight: 800; color: var(--green); margin-top: 0.3rem; }
+        .kanban-card .kc-meta { display: flex; justify-content: space-between; margin-top: 0.35rem; font-size: 0.68rem; color: var(--text3); }
+        .kanban-col.drag-over { background: #ecfdf5; outline: 2px dashed var(--green); }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar { background: var(--border); border-radius: 8px; height: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 8px; transition: width 0.3s; }
+        .progress-green { background: var(--green); }
+        .progress-amber { background: var(--amber); }
+        .progress-red { background: var(--red); }
+
+        /* ── OUTBOUND DAILY GRID ── */
+        .daily-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+        .daily-cell { background: var(--white); border-radius: 8px; padding: 0.6rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .daily-cell .day-label { font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; }
+        .daily-cell .day-count { font-size: 1.5rem; font-weight: 800; color: var(--charcoal); }
+        .daily-cell .day-target { font-size: 0.7rem; color: var(--text3); }
+
+        /* ── TRIAL CARDS ── */
+        .trial-card { background: var(--white); border-radius: 10px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .trial-card.day-green { border-left: 4px solid var(--green); }
+        .trial-card.day-amber { border-left: 4px solid var(--amber); }
+        .trial-card.day-red { border-left: 4px solid var(--red); }
+        .trial-info { flex: 1; }
+        .trial-info .ti-name { font-weight: 700; font-size: 0.9rem; }
+        .trial-info .ti-company { font-size: 0.8rem; color: var(--text2); }
+        .trial-info .ti-meta { font-size: 0.75rem; color: var(--text3); margin-top: 0.25rem; }
+        .trial-actions { display: flex; gap: 0.4rem; }
+
+        /* ── REPORT SECTIONS ── */
+        .report-section { background: var(--white); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .report-section h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--charcoal); }
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; }
+        .report-metric { text-align: center; }
+        .report-metric .rm-value { font-size: 1.4rem; font-weight: 800; color: var(--charcoal); }
+        .report-metric .rm-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; }
+
+        /* ── SLIDE-OUT PANEL ── */
+        .panel-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.15); z-index: 200; }
+        .panel-overlay.active { display: block; }
+        .detail-panel { position: fixed; top: 0; right: -460px; width: var(--panel-w); height: 100vh; background: var(--white); box-shadow: -4px 0 20px rgba(0,0,0,0.1); z-index: 300; transition: right 0.25s ease; overflow-y: auto; }
+        .detail-panel.open { right: 0; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--white); z-index: 1; }
+        .panel-header h2 { font-size: 1rem; font-weight: 700; }
+        .panel-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text3); padding: 0.25rem; line-height: 1; }
+        .panel-close:hover { color: var(--text); }
+        .panel-body { padding: 1.25rem; }
+        .panel-section { margin-bottom: 1.25rem; }
+        .panel-section label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 0.3rem; }
+        .panel-section .pv { font-size: 0.9rem; color: var(--text); }
+        .panel-section .pv a { color: var(--blue); text-decoration: none; }
+        .panel-section .pv a:hover { text-decoration: underline; }
+        .panel-field { margin-bottom: 0.75rem; }
+        .panel-field textarea { width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 0.5rem; font-size: 0.82rem; font-family: inherit; resize: vertical; min-height: 60px; }
+        .panel-field textarea:focus { border-color: var(--green); outline: none; }
+        .panel-field input[type="text"], .panel-field input[type="date"], .panel-field select {
+            width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 0.45rem 0.6rem; font-size: 0.82rem; font-family: inherit;
+        }
+        .panel-field input:focus, .panel-field select:focus { border-color: var(--green); outline: none; }
+        .panel-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+
+        /* ── ACTIVITY TIMELINE ── */
+        .timeline-item { display: flex; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }
+        .timeline-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 0.4rem; flex-shrink: 0; }
+        .timeline-dot.call { background: var(--green); }
+        .timeline-dot.email { background: var(--blue); }
+        .timeline-dot.meeting { background: var(--purple); }
+        .timeline-dot.note { background: var(--text3); }
+        .timeline-text { font-size: 0.8rem; color: var(--text); }
+        .timeline-date { font-size: 0.7rem; color: var(--text3); }
+
+        /* ── BUTTONS ── */
+        .btn { padding: 0.45rem 0.9rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.78rem; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.35rem; }
+        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.72rem; }
+        .btn-green { background: var(--green); color: white; }
+        .btn-green:hover { background: var(--dark-green); }
+        .btn-white { background: var(--white); color: var(--text); border: 2px solid var(--border); }
+        .btn-white:hover { background: var(--bg); }
+        .btn-red { background: #FEE2E2; color: var(--red); }
+        .btn-blue { background: #DBEAFE; color: #1D4ED8; }
+
+        /* ── EMPTY STATE ── */
+        .empty-state { text-align: center; padding: 3rem; color: var(--text3); font-size: 0.9rem; }
+
+        /* ── LOADING ── */
+        .loading { text-align: center; padding: 3rem; color: var(--text3); }
+
+        /* ── LOGIN WALL ── */
+        #loginWall { display: flex; align-items: center; justify-content: center; height: 100vh; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .container { padding: 0.75rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .daily-grid { grid-template-columns: repeat(3, 1fr); }
+            .nav-links a { font-size: 0.75rem; }
+            .nav-links { gap: 0.75rem; }
+            body.panel-open .container { margin-right: 0; }
+            .detail-panel { width: 100vw; right: -100vw; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginWall" style="display:none">
+        <p>Redirecting to login...</p>
+    </div>
+
+    <div id="app" style="display:none">
+        <!-- NAV -->
+        <nav class="nav">
+            <div class="nav-brand">Clover ERA CRM</div>
+            <div class="nav-links">
+                <a href="command-center.html" class="active">Command Center</a>
+                <a href="kanban.html">Kanban</a>
+                <a href="companies.html">Companies</a>
+                <a href="outreach.html">Outreach</a>
+                <a href="dm-tracker.html">DM Tracker</a>
+                <a href="admin.html">Admin</a>
+                <button class="btn-logout" id="btnLogout">Logout</button>
+            </div>
+        </nav>
+
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="today">Today <span class="badge" id="todayBadge" style="display:none">0</span></button>
+            <button class="tab-btn" data-tab="pipeline">Pipeline</button>
+            <button class="tab-btn" data-tab="outbound">Outbound</button>
+            <button class="tab-btn" data-tab="hot">Hot Leads</button>
+            <button class="tab-btn" data-tab="trials">Trials</button>
+            <button class="tab-btn" data-tab="report">Friday Report</button>
+        </div>
+
+        <!-- ═══════════════ TAB: TODAY ═══════════════ -->
+        <div class="container">
+            <div id="tab-today" class="tab-content active">
+                <div class="stats-bar" id="todayStats"></div>
+
+                <!-- Overdue -->
+                <div class="section-header">
+                    <div class="section-title"><span class="dot dot-red"></span> Overdue Actions</div>
+                </div>
+                <table class="data-table" id="tableOverdue"><thead><tr><th>Contact</th><th>Company</th><th>Stage</th><th>Funnel</th><th>Action Due</th><th>Days Late</th></tr></thead><tbody></tbody></table>
+
+                <!-- Due Today -->
+                <div class="section-header">
+                    <div class="section-title"><span class="dot dot-amber"></span> Due Today</div>
+                </div>
+                <table class="data-table" id="tableDueToday"><thead><tr><th>Contact</th><th>Company</th><th>Stage</th><th>Funnel</th><th>Next Action</th></tr></thead><tbody></tbody></table>
+
+                <!-- Stalled Deals -->
+                <div class="section-header">
+                    <div class="section-title"><span class="dot dot-amber"></span> Stalled Deals (7+ days no activity)</div>
+                </div>
+                <table class="data-table" id="tableStalled"><thead><tr><th>Contact</th><th>Company</th><th>Stage</th><th>Value</th><th>Days Stalled</th><th>Last Activity</th></tr></thead><tbody></tbody></table>
+
+                <!-- Renewals -->
+                <div class="section-header">
+                    <div class="section-title"><span class="dot dot-blue"></span> Renewals (next 60 days)</div>
+                </div>
+                <table class="data-table" id="tableRenewals"><thead><tr><th>Company</th><th>Value</th><th>Renewal Date</th><th>Days Until</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <!-- ═══════════════ TAB: PIPELINE ═══════════════ -->
+            <div id="tab-pipeline" class="tab-content">
+                <div class="stats-bar" id="pipelineStats"></div>
+                <div class="kanban-controls">
+                    <div class="funnel-toggle">
+                        <button class="active" data-funnel="operational">Funnel A: Operational</button>
+                        <button data-funnel="self_serve">Funnel B: Self-Serve</button>
+                        <button data-funnel="all">All</button>
+                    </div>
+                </div>
+                <div class="kanban-row" id="kanbanRow"></div>
+            </div>
+
+            <!-- ═══════════════ TAB: OUTBOUND ═══════════════ -->
+            <div id="tab-outbound" class="tab-content">
+                <div class="stats-bar" id="outboundStats"></div>
+                <div class="section-header">
+                    <div class="section-title">This Week's Target: <span id="outboundTarget">0/140</span></div>
+                    <a href="outreach.html" class="btn btn-green btn-sm">Open Outreach</a>
+                </div>
+                <div class="progress-bar" style="margin-bottom:1rem"><div class="progress-fill progress-green" id="outboundProgress" style="width:0%"></div></div>
+                <div class="daily-grid" id="dailyGrid"></div>
+                <div class="section-header">
+                    <div class="section-title">Recent Sends</div>
+                </div>
+                <table class="data-table" id="tableOutbound"><thead><tr><th>Contact</th><th>Company</th><th>Sent</th><th>Opened</th><th>Replied</th><th>Status</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <!-- ═══════════════ TAB: HOT LEADS ═══════════════ -->
+            <div id="tab-hot" class="tab-content">
+                <div class="section-header">
+                    <div class="section-title"><span class="dot dot-red"></span> Replied in Last 48 Hours</div>
+                </div>
+                <table class="data-table" id="tableReplied"><thead><tr><th>Contact</th><th>Company</th><th>Source</th><th>Replied</th><th>Sentiment</th></tr></thead><tbody></tbody></table>
+
+                <div class="section-header">
+                    <div class="section-title"><span class="dot dot-green"></span> Calls Booked This Week</div>
+                </div>
+                <table class="data-table" id="tableCallsBooked"><thead><tr><th>Contact</th><th>Company</th><th>Call Type</th><th>Date</th><th>Value</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <!-- ═══════════════ TAB: TRIALS ═══════════════ -->
+            <div id="tab-trials" class="tab-content">
+                <div class="stats-bar" id="trialStats"></div>
+                <div class="section-header">
+                    <div class="section-title"><span class="dot dot-green"></span> Active Trials</div>
+                </div>
+                <div id="activeTrials"></div>
+                <div class="section-header" style="margin-top:2rem">
+                    <div class="section-title"><span class="dot dot-amber"></span> Expired / Did Not Convert</div>
+                </div>
+                <table class="data-table" id="tableExpiredTrials"><thead><tr><th>Contact</th><th>Company</th><th>Expired</th><th>Reason</th><th>Re-engage</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <!-- ═══════════════ TAB: FRIDAY REPORT ═══════════════ -->
+            <div id="tab-report" class="tab-content">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h2 style="font-size:1.1rem;font-weight:700">Weekly Report</h2>
+                    <div style="display:flex;gap:0.5rem;align-items:center">
+                        <label style="font-size:0.8rem;color:var(--text2)">Week of:</label>
+                        <input type="date" id="reportWeekStart" style="padding:0.3rem 0.5rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem">
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h3>Funnel A: Operational Buyers</h3>
+                    <div class="report-grid" id="reportFunnelA"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3>Funnel B: Self-Serve</h3>
+                    <div class="report-grid" id="reportFunnelB"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3>Pipeline Summary</h3>
+                    <div class="report-grid" id="reportPipeline"></div>
+                </div>
+
+                <div class="report-section">
+                    <h3>Outbound Performance</h3>
+                    <div class="report-grid" id="reportOutbound"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════ SLIDE-OUT DETAIL PANEL ═══════════════ -->
+        <div class="panel-overlay" id="panelOverlay"></div>
+        <div class="detail-panel" id="detailPanel">
+            <div class="panel-header">
+                <h2 id="panelTitle">Contact Details</h2>
+                <button class="panel-close" id="panelClose">&times;</button>
+            </div>
+            <div class="panel-body" id="panelBody">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════════════
+    // CONFIG
+    // ═══════════════════════════════════════════════════════════════════════
+    const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const FUNNEL_A_STAGES = [
+        { id: 'cold-outbound', name: 'Cold Outbound', prob: 0.02 },
+        { id: 'outbound-reply', name: 'Outbound Reply', prob: 0.10 },
+        { id: 'call-booked', name: 'Call Booked', prob: 0.20 },
+        { id: 'call-completed', name: 'Call Completed', prob: 0.30 },
+        { id: 'qualified-opportunity', name: 'Qualified', prob: 0.50 },
+        { id: 'pilot-started', name: 'Pilot Started', prob: 0.90 },
+        { id: 'active-customer', name: 'Active Customer', prob: 1.00 },
+        { id: 'churned-lost', name: 'Churned/Lost', prob: 0.00 }
+    ];
+
+    const FUNNEL_B_STAGES = [
+        { id: 'linkedin-engagement', name: 'LinkedIn Engaged', prob: 0.01 },
+        { id: 'post-comment-email', name: 'Email Sent', prob: 0.05 },
+        { id: 'assessment-taken', name: 'Assessment Taken', prob: 0.15 },
+        { id: 'trial-started', name: 'Trial Started', prob: 0.40 },
+        { id: 'trial-day-7', name: 'Trial Day 7+', prob: 0.60 },
+        { id: 'trial-day-12', name: 'Trial Day 12', prob: 0.60 },
+        { id: 'converted-paid', name: 'Converted', prob: 1.00 },
+        { id: 'active-customer', name: 'Active Customer', prob: 1.00 },
+        { id: 'trial-expired', name: 'Expired', prob: 0.00 }
+    ];
+
+    const ALL_STAGES = [...FUNNEL_A_STAGES, ...FUNNEL_B_STAGES.filter(s => !FUNNEL_A_STAGES.find(a => a.id === s.id))];
+
+    function stageProb(stage) {
+        const s = ALL_STAGES.find(st => st.id === stage);
+        return s ? s.prob : 0;
+    }
+    function stageName(stage) {
+        const s = ALL_STAGES.find(st => st.id === stage);
+        return s ? s.name : stage;
+    }
+    function fmt$(n) {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n || 0);
+    }
+    function fmtDate(d) {
+        if (!d) return '-';
+        return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    function daysBetween(d1, d2) {
+        return Math.floor((new Date(d2) - new Date(d1)) / 86400000);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════════════
+    let allOpps = [];
+    let allActivities = [];
+    let allEmails = [];
+    let currentFunnel = 'operational';
+    let currentUser = null;
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // AUTH
+    // ═══════════════════════════════════════════════════════════════════════
+    async function init() {
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) {
+            document.getElementById('loginWall').style.display = 'flex';
+            window.location.href = 'login.html';
+            return;
+        }
+        currentUser = session.user;
+        document.getElementById('app').style.display = 'block';
+        await loadData();
+        renderToday();
+    }
+
+    document.getElementById('btnLogout').addEventListener('click', async () => {
+        await sb.auth.signOut();
+        window.location.href = 'login.html';
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // DATA LOADING
+    // ═══════════════════════════════════════════════════════════════════════
+    async function loadData() {
+        const [opps, acts, emails] = await Promise.all([
+            sb.from('opportunities').select('*, company:companies(name, industry, employee_count), contact:contacts(first_name, last_name, email, title, linkedin_url, phone, pain_points, objections, key_quotes, personal_notes, next_action, next_action_date)').order('created_at', { ascending: false }),
+            sb.from('activities').select('*').order('created_at', { ascending: false }).limit(500),
+            sb.from('outreach_emails').select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))').order('created_at', { ascending: false }).limit(200)
+        ]);
+        allOpps = opps.data || [];
+        allActivities = acts.data || [];
+        allEmails = emails.data || [];
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB SWITCHING
+    // ═══════════════════════════════════════════════════════════════════════
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            const tab = btn.dataset.tab;
+            document.getElementById('tab-' + tab).classList.add('active');
+            if (tab === 'today') renderToday();
+            else if (tab === 'pipeline') renderPipeline();
+            else if (tab === 'outbound') renderOutbound();
+            else if (tab === 'hot') renderHotLeads();
+            else if (tab === 'trials') renderTrials();
+            else if (tab === 'report') renderReport();
+        });
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB: TODAY
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderToday() {
+        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+
+        // Stats
+        const activeOpps = allOpps.filter(o => !['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage));
+        const totalValue = activeOpps.reduce((s, o) => s + (o.value || 0), 0);
+        const weightedValue = activeOpps.reduce((s, o) => s + (o.value || 0) * stageProb(o.stage), 0);
+        const stalledCount = allOpps.filter(o => {
+            if (['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage)) return false;
+            const days = o.stage_entered_at ? daysBetween(o.stage_entered_at, now) : 0;
+            return days >= 7;
+        }).length;
+
+        document.getElementById('todayStats').innerHTML = `
+            <div class="stat-card"><div class="stat-label">Active Deals</div><div class="stat-value">${activeOpps.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Pipeline Value</div><div class="stat-value">${fmt$(totalValue)}</div></div>
+            <div class="stat-card"><div class="stat-label">Weighted Forecast</div><div class="stat-value">${fmt$(weightedValue)}</div></div>
+            <div class="stat-card"><div class="stat-label">Stalled</div><div class="stat-value" style="color:${stalledCount > 0 ? 'var(--red)' : 'var(--green)'}">${stalledCount}</div></div>
+        `;
+
+        // Overdue: activities with due_date < today and not completed
+        const overdue = allActivities.filter(a => a.due_date && a.due_date < today && !a.completed);
+        renderActionTable('tableOverdue', overdue.map(a => {
+            const opp = allOpps.find(o => o.id === a.opportunity_id);
+            return {
+                contact: a.subject || 'Follow-up',
+                company: opp?.company?.name || '-',
+                stage: opp?.stage || '-',
+                funnel: opp?.funnel || '-',
+                action: a.subject || a.type,
+                daysLate: daysBetween(a.due_date, today),
+                oppId: opp?.id
+            };
+        }).sort((a, b) => b.daysLate - a.daysLate), ['contact', 'company', 'stage', 'funnel', 'action', 'daysLate']);
+
+        // Due today
+        const dueToday = allActivities.filter(a => a.due_date === today && !a.completed);
+        renderActionTable('tableDueToday', dueToday.map(a => {
+            const opp = allOpps.find(o => o.id === a.opportunity_id);
+            return {
+                contact: a.subject || 'Task',
+                company: opp?.company?.name || '-',
+                stage: opp?.stage || '-',
+                funnel: opp?.funnel || '-',
+                action: a.subject || a.type,
+                oppId: opp?.id
+            };
+        }), ['contact', 'company', 'stage', 'funnel', 'action']);
+
+        // Stalled
+        const stalled = allOpps.filter(o => {
+            if (['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage)) return false;
+            const days = o.stage_entered_at ? daysBetween(o.stage_entered_at, now) : 0;
+            return days >= 7;
+        }).sort((a, b) => {
+            const da = a.stage_entered_at ? daysBetween(a.stage_entered_at, now) : 0;
+            const db = b.stage_entered_at ? daysBetween(b.stage_entered_at, now) : 0;
+            return db - da;
+        });
+        const stalledTbody = document.querySelector('#tableStalled tbody');
+        stalledTbody.innerHTML = stalled.length === 0 ? '<tr><td colspan="6" class="empty-state">No stalled deals</td></tr>' : stalled.map(o => {
+            const days = o.stage_entered_at ? daysBetween(o.stage_entered_at, now) : 0;
+            const lastAct = allActivities.find(a => a.opportunity_id === o.id);
+            return `<tr data-opp="${o.id}">
+                <td class="company">${contactName(o)}</td>
+                <td>${o.company?.name || '-'}</td>
+                <td><span class="stage-pill stage-${o.stage}">${stageName(o.stage)}</span></td>
+                <td>${fmt$(o.value)}</td>
+                <td><span class="pill ${days >= 14 ? 'pill-red' : 'pill-amber'}">${days}d</span></td>
+                <td>${lastAct ? fmtDate(lastAct.created_at) : '-'}</td>
+            </tr>`;
+        }).join('');
+
+        // Renewals
+        const inSixtyDays = new Date(now.getTime() + 60 * 86400000).toISOString().split('T')[0];
+        const renewals = allOpps.filter(o => o.renewal_date && o.renewal_date <= inSixtyDays && o.renewal_date >= today);
+        const renewalTbody = document.querySelector('#tableRenewals tbody');
+        renewalTbody.innerHTML = renewals.length === 0 ? '<tr><td colspan="4" class="empty-state">No upcoming renewals</td></tr>' : renewals.map(o => {
+            const daysUntil = daysBetween(today, o.renewal_date);
+            return `<tr data-opp="${o.id}">
+                <td class="company">${o.company?.name || '-'}</td>
+                <td>${fmt$(o.value)}</td>
+                <td>${fmtDate(o.renewal_date)}</td>
+                <td><span class="pill ${daysUntil <= 14 ? 'pill-red' : daysUntil <= 30 ? 'pill-amber' : 'pill-green'}">${daysUntil}d</span></td>
+            </tr>`;
+        }).join('');
+
+        // Badge count
+        const urgentCount = overdue.length + stalledCount;
+        const badge = document.getElementById('todayBadge');
+        if (urgentCount > 0) { badge.textContent = urgentCount; badge.style.display = 'inline-block'; }
+        else { badge.style.display = 'none'; }
+    }
+
+    function renderActionTable(tableId, rows, cols) {
+        const tbody = document.querySelector('#' + tableId + ' tbody');
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="' + cols.length + '" class="empty-state">Nothing here</td></tr>';
+            return;
+        }
+        tbody.innerHTML = rows.map(r => {
+            return '<tr data-opp="' + (r.oppId || '') + '">' + cols.map(c => {
+                if (c === 'stage') return '<td><span class="stage-pill stage-' + r[c] + '">' + stageName(r[c]) + '</span></td>';
+                if (c === 'funnel') return '<td><span class="pill ' + (r[c] === 'operational' ? 'pill-a' : 'pill-b') + '">' + (r[c] === 'operational' ? 'A' : 'B') + '</span></td>';
+                if (c === 'daysLate') return '<td><span class="pill pill-red">' + r[c] + 'd late</span></td>';
+                return '<td>' + (r[c] || '-') + '</td>';
+            }).join('') + '</tr>';
+        }).join('');
+    }
+
+    function contactName(opp) {
+        if (opp.contact) return (opp.contact.first_name || '') + ' ' + (opp.contact.last_name || '');
+        return opp.title || '-';
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB: PIPELINE (Kanban)
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderPipeline() {
+        const stages = currentFunnel === 'operational' ? FUNNEL_A_STAGES :
+                       currentFunnel === 'self_serve' ? FUNNEL_B_STAGES : ALL_STAGES;
+        const opps = currentFunnel === 'all' ? allOpps : allOpps.filter(o => o.funnel === currentFunnel);
+
+        // Stats
+        const active = opps.filter(o => !['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage));
+        const tv = active.reduce((s, o) => s + (o.value || 0), 0);
+        const wv = active.reduce((s, o) => s + (o.value || 0) * stageProb(o.stage), 0);
+        document.getElementById('pipelineStats').innerHTML = `
+            <div class="stat-card"><div class="stat-label">Deals</div><div class="stat-value">${active.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Total Value</div><div class="stat-value">${fmt$(tv)}</div></div>
+            <div class="stat-card"><div class="stat-label">Weighted</div><div class="stat-value">${fmt$(wv)}</div></div>
+        `;
+
+        // Kanban
+        const row = document.getElementById('kanbanRow');
+        row.innerHTML = stages.map(stage => {
+            const stageOpps = opps.filter(o => o.stage === stage.id);
+            return `<div class="kanban-col" data-stage="${stage.id}"
+                        ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                        ondragleave="this.classList.remove('drag-over')"
+                        ondrop="handleDrop(event, '${stage.id}')">
+                <div class="kanban-col-header">${stage.name} <span class="count">${stageOpps.length}</span></div>
+                ${stageOpps.map(o => `
+                    <div class="kanban-card" draggable="true" data-opp="${o.id}"
+                         ondragstart="event.dataTransfer.setData('text/plain','${o.id}'); this.classList.add('dragging')"
+                         ondragend="this.classList.remove('dragging')">
+                        <div class="kc-company">${o.company?.name || 'Unknown'}</div>
+                        <div class="kc-contact">${contactName(o)}</div>
+                        ${o.value ? '<div class="kc-value">' + fmt$(o.value) + '</div>' : ''}
+                        <div class="kc-meta">
+                            <span>${o.stage_entered_at ? daysBetween(o.stage_entered_at, new Date()) + 'd' : '-'}</span>
+                            <span class="pill ${o.funnel === 'operational' ? 'pill-a' : 'pill-b'}" style="font-size:0.6rem">${o.funnel === 'operational' ? 'A' : 'B'}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>`;
+        }).join('');
+    }
+
+    // Funnel toggle
+    document.querySelectorAll('.funnel-toggle button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.funnel-toggle button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFunnel = btn.dataset.funnel;
+            renderPipeline();
+        });
+    });
+
+    async function handleDrop(e, newStage) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        const oppId = e.dataTransfer.getData('text/plain');
+        if (!oppId) return;
+        const { error } = await sb.from('opportunities').update({ stage: newStage, stage_entered_at: new Date().toISOString() }).eq('id', oppId);
+        if (!error) {
+            const opp = allOpps.find(o => o.id === oppId);
+            if (opp) { opp.stage = newStage; opp.stage_entered_at = new Date().toISOString(); }
+            renderPipeline();
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB: OUTBOUND
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderOutbound() {
+        const now = new Date();
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay() + 1); // Monday
+        weekStart.setHours(0, 0, 0, 0);
+        const weekStartISO = weekStart.toISOString();
+
+        const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= weekStartISO && e.status !== 'draft');
+        const sentCount = weekEmails.length;
+        const openedCount = weekEmails.filter(e => e.opened_at).length;
+        const repliedCount = weekEmails.filter(e => e.replied_at || e.status === 'replied').length;
+        const openRate = sentCount > 0 ? Math.round(openedCount / sentCount * 100) : 0;
+        const replyRate = sentCount > 0 ? Math.round(repliedCount / sentCount * 100) : 0;
+
+        document.getElementById('outboundStats').innerHTML = `
+            <div class="stat-card"><div class="stat-label">Sent This Week</div><div class="stat-value">${sentCount}</div></div>
+            <div class="stat-card"><div class="stat-label">Open Rate</div><div class="stat-value">${openRate}%</div></div>
+            <div class="stat-card"><div class="stat-label">Reply Rate</div><div class="stat-value">${replyRate}%</div></div>
+            <div class="stat-card"><div class="stat-label">Replies</div><div class="stat-value">${repliedCount}</div></div>
+        `;
+
+        // Target
+        document.getElementById('outboundTarget').textContent = sentCount + '/140';
+        const pct = Math.min(100, Math.round(sentCount / 140 * 100));
+        const bar = document.getElementById('outboundProgress');
+        bar.style.width = pct + '%';
+        bar.className = 'progress-fill ' + (pct >= 80 ? 'progress-green' : pct >= 50 ? 'progress-amber' : 'progress-red');
+
+        // Daily grid
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+        document.getElementById('dailyGrid').innerHTML = days.map((d, i) => {
+            const dayDate = new Date(weekStart);
+            dayDate.setDate(weekStart.getDate() + i);
+            const dayISO = dayDate.toISOString().split('T')[0];
+            const dayCount = weekEmails.filter(e => e.sent_at && e.sent_at.startsWith(dayISO)).length;
+            const isFuture = dayDate > now;
+            return `<div class="daily-cell">
+                <div class="day-label">${d}</div>
+                <div class="day-count" style="color:${isFuture ? 'var(--text3)' : dayCount >= 20 ? 'var(--green)' : dayCount >= 10 ? 'var(--amber)' : 'var(--red)'}">${isFuture ? '-' : dayCount}</div>
+                <div class="day-target">/20 target</div>
+            </div>`;
+        }).join('');
+
+        // Recent sends table
+        const recentSends = allEmails.filter(e => e.status !== 'draft').slice(0, 30);
+        const tbody = document.querySelector('#tableOutbound tbody');
+        tbody.innerHTML = recentSends.length === 0 ? '<tr><td colspan="6" class="empty-state">No emails sent yet</td></tr>' : recentSends.map(e => {
+            const p = e.prospect?.prospect;
+            return `<tr>
+                <td class="company">${p ? (p.first_name + ' ' + (p.last_name || '')) : '-'}</td>
+                <td>${p?.company_name || '-'}</td>
+                <td>${fmtDate(e.sent_at)}</td>
+                <td>${e.opened_at ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
+                <td>${e.replied_at || e.status === 'replied' ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
+                <td><span class="pill pill-${e.status === 'replied' ? 'green' : e.status === 'bounced' ? 'red' : 'gray'}">${e.status}</span></td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB: HOT LEADS
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderHotLeads() {
+        const now = new Date();
+        const ago48h = new Date(now.getTime() - 48 * 3600000).toISOString();
+
+        // Replied
+        const replied = allOpps.filter(o => o.reply_date && o.reply_date >= ago48h.split('T')[0])
+            .concat(allOpps.filter(o => o.stage === 'outbound-reply' && o.stage_entered_at && o.stage_entered_at >= ago48h));
+        // Deduplicate
+        const repliedUnique = [...new Map(replied.map(o => [o.id, o])).values()];
+        const repliedTbody = document.querySelector('#tableReplied tbody');
+        repliedTbody.innerHTML = repliedUnique.length === 0 ? '<tr><td colspan="5" class="empty-state">No replies in last 48 hours</td></tr>' : repliedUnique.map(o => `<tr data-opp="${o.id}">
+            <td class="company">${contactName(o)}</td>
+            <td>${o.company?.name || '-'}</td>
+            <td><span class="pill pill-${o.funnel === 'operational' ? 'a' : 'b'}">${o.source || '-'}</span></td>
+            <td>${fmtDate(o.reply_date || o.stage_entered_at)}</td>
+            <td>${o.reply_sentiment ? '<span class="pill pill-' + (o.reply_sentiment === 'positive' ? 'green' : o.reply_sentiment === 'negative' ? 'red' : 'amber') + '">' + o.reply_sentiment + '</span>' : '-'}</td>
+        </tr>`).join('');
+
+        // Calls booked
+        const thisWeekEnd = new Date(now);
+        thisWeekEnd.setDate(now.getDate() + (7 - now.getDay()));
+        const calls = allOpps.filter(o => o.stage === 'call-booked');
+        const callsTbody = document.querySelector('#tableCallsBooked tbody');
+        callsTbody.innerHTML = calls.length === 0 ? '<tr><td colspan="5" class="empty-state">No calls booked</td></tr>' : calls.map(o => `<tr data-opp="${o.id}">
+            <td class="company">${contactName(o)}</td>
+            <td>${o.company?.name || '-'}</td>
+            <td>${o.call_type || 'Discovery'}</td>
+            <td>${fmtDate(o.expected_close_date || o.stage_entered_at)}</td>
+            <td>${fmt$(o.value)}</td>
+        </tr>`).join('');
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB: TRIALS
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderTrials() {
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+
+        const activeTrialStages = ['trial-started', 'trial-day-7', 'trial-day-12'];
+        const trials = allOpps.filter(o => activeTrialStages.includes(o.stage));
+        const expired = allOpps.filter(o => o.stage === 'trial-expired');
+        const converted = allOpps.filter(o => o.stage === 'converted-paid');
+
+        document.getElementById('trialStats').innerHTML = `
+            <div class="stat-card"><div class="stat-label">Active Trials</div><div class="stat-value">${trials.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Converted</div><div class="stat-value" style="color:var(--green)">${converted.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Expired</div><div class="stat-value">${expired.length}</div></div>
+        `;
+
+        // Active trials
+        const container = document.getElementById('activeTrials');
+        container.innerHTML = trials.length === 0 ? '<div class="empty-state">No active trials</div>' : trials.map(o => {
+            const dayNum = o.trial_start_date ? daysBetween(o.trial_start_date, today) : 0;
+            const colorClass = dayNum <= 6 ? 'day-green' : dayNum <= 11 ? 'day-amber' : 'day-red';
+            return `<div class="trial-card ${colorClass}" data-opp="${o.id}">
+                <div class="trial-info">
+                    <div class="ti-name">${contactName(o)}</div>
+                    <div class="ti-company">${o.company?.name || '-'}</div>
+                    <div class="ti-meta">Day ${dayNum} | Team size: ${o.trial_team_size || '?'} | Usage: ${o.trial_usage || '?'}</div>
+                </div>
+                <div class="trial-actions">
+                    ${dayNum >= 7 && !o.trial_day7_sent ? '<button class="btn btn-sm btn-blue" onclick="sendTrialEmail(event,\'' + o.id + '\',7)">Day 7 Check</button>' : ''}
+                    ${dayNum >= 12 && !o.trial_day12_sent ? '<button class="btn btn-sm btn-red" onclick="sendTrialEmail(event,\'' + o.id + '\',12)">Day 12 Alert</button>' : ''}
+                    <button class="btn btn-sm btn-green" onclick="markConverted(event,'${o.id}')">Converted</button>
+                </div>
+            </div>`;
+        }).join('');
+
+        // Expired
+        const expTbody = document.querySelector('#tableExpiredTrials tbody');
+        expTbody.innerHTML = expired.length === 0 ? '<tr><td colspan="5" class="empty-state">No expired trials</td></tr>' : expired.map(o => `<tr data-opp="${o.id}">
+            <td class="company">${contactName(o)}</td>
+            <td>${o.company?.name || '-'}</td>
+            <td>${fmtDate(o.trial_end_date)}</td>
+            <td>${o.trial_expired_reason || '-'}</td>
+            <td>${o.nurture_enrolled ? '<span class="pill pill-green">In Nurture</span>' : '<button class="btn btn-sm btn-white" onclick="enrollNurture(event,\'' + o.id + '\')">Enroll</button>'}</td>
+        </tr>`).join('');
+    }
+
+    async function sendTrialEmail(e, oppId, day) {
+        e.stopPropagation();
+        const field = day === 7 ? 'trial_day7_sent' : 'trial_day12_sent';
+        const stage = day === 7 ? 'trial-day-7' : 'trial-day-12';
+        await sb.from('opportunities').update({ [field]: true, stage: stage, stage_entered_at: new Date().toISOString() }).eq('id', oppId);
+        const opp = allOpps.find(o => o.id === oppId);
+        if (opp) { opp[field] = true; opp.stage = stage; }
+        renderTrials();
+    }
+
+    async function markConverted(e, oppId) {
+        e.stopPropagation();
+        await sb.from('opportunities').update({ stage: 'converted-paid', conversion_date: new Date().toISOString().split('T')[0], stage_entered_at: new Date().toISOString() }).eq('id', oppId);
+        const opp = allOpps.find(o => o.id === oppId);
+        if (opp) { opp.stage = 'converted-paid'; }
+        renderTrials();
+    }
+
+    async function enrollNurture(e, oppId) {
+        e.stopPropagation();
+        await sb.from('opportunities').update({ nurture_enrolled: true }).eq('id', oppId);
+        const opp = allOpps.find(o => o.id === oppId);
+        if (opp) opp.nurture_enrolled = true;
+        renderTrials();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB: FRIDAY REPORT
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderReport() {
+        const now = new Date();
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay() + 1);
+        weekStart.setHours(0, 0, 0, 0);
+
+        // Set date picker default
+        const picker = document.getElementById('reportWeekStart');
+        if (!picker.value) picker.value = weekStart.toISOString().split('T')[0];
+
+        const ws = picker.value;
+        const weDate = new Date(ws);
+        weDate.setDate(weDate.getDate() + 6);
+        const we = weDate.toISOString().split('T')[0];
+
+        // Funnel A metrics
+        const funnelAOpps = allOpps.filter(o => o.funnel === 'operational');
+        const funnelANew = funnelAOpps.filter(o => o.created_at >= ws && o.created_at <= we + 'T23:59:59');
+        const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= ws && e.sent_at <= we + 'T23:59:59');
+        const sentCount = weekEmails.filter(e => e.status !== 'draft').length;
+        const openCount = weekEmails.filter(e => e.opened_at).length;
+        const replyCount = weekEmails.filter(e => e.replied_at || e.status === 'replied').length;
+        const callsBooked = funnelAOpps.filter(o => o.stage === 'call-booked' && o.stage_entered_at >= ws && o.stage_entered_at <= we + 'T23:59:59').length;
+        const qualified = funnelAOpps.filter(o => o.stage === 'qualified-opportunity' && o.stage_entered_at >= ws).length;
+
+        document.getElementById('reportFunnelA').innerHTML = metric('Emails Sent', sentCount) + metric('Open Rate', sentCount > 0 ? Math.round(openCount/sentCount*100) + '%' : '0%') + metric('Reply Rate', sentCount > 0 ? Math.round(replyCount/sentCount*100) + '%' : '0%') + metric('Replies', replyCount) + metric('Calls Booked', callsBooked) + metric('Qualified', qualified);
+
+        // Funnel B metrics
+        const funnelBOpps = allOpps.filter(o => o.funnel === 'self_serve');
+        const assessments = funnelBOpps.filter(o => o.stage === 'assessment-taken' && o.created_at >= ws).length;
+        const trialsStarted = funnelBOpps.filter(o => o.trial_start_date && o.trial_start_date >= ws && o.trial_start_date <= we).length;
+        const conversions = funnelBOpps.filter(o => o.conversion_date && o.conversion_date >= ws && o.conversion_date <= we).length;
+
+        document.getElementById('reportFunnelB').innerHTML = metric('Assessments', assessments) + metric('Trials Started', trialsStarted) + metric('Conversions', conversions);
+
+        // Pipeline summary
+        const activeA = funnelAOpps.filter(o => !['churned-lost', 'active-customer'].includes(o.stage));
+        const activeB = funnelBOpps.filter(o => !['trial-expired', 'converted-paid', 'active-customer'].includes(o.stage));
+        const totalActive = activeA.length + activeB.length;
+        const totalVal = activeA.reduce((s,o) => s + (o.value||0), 0) + activeB.reduce((s,o) => s + (o.value||0), 0);
+        const weightedVal = activeA.reduce((s,o) => s + (o.value||0) * stageProb(o.stage), 0) + activeB.reduce((s,o) => s + (o.value||0) * stageProb(o.stage), 0);
+
+        document.getElementById('reportPipeline').innerHTML = metric('Active Opportunities', totalActive) + metric('Total Pipeline', fmt$(totalVal)) + metric('Weighted Forecast', fmt$(weightedVal)) + metric('Funnel A Deals', activeA.length) + metric('Funnel B Deals', activeB.length);
+
+        // Outbound
+        document.getElementById('reportOutbound').innerHTML = metric('Sent This Week', sentCount) + metric('Target', '140') + metric('Hit Rate', Math.round(sentCount/140*100) + '%');
+    }
+
+    function metric(label, value) {
+        return `<div class="report-metric"><div class="rm-value">${value}</div><div class="rm-label">${label}</div></div>`;
+    }
+
+    document.getElementById('reportWeekStart').addEventListener('change', renderReport);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SLIDE-OUT DETAIL PANEL
+    // ═══════════════════════════════════════════════════════════════════════
+    function openPanel(oppId) {
+        const opp = allOpps.find(o => o.id === oppId);
+        if (!opp) return;
+        const c = opp.contact || {};
+        const panel = document.getElementById('detailPanel');
+        const overlay = document.getElementById('panelOverlay');
+
+        document.getElementById('panelTitle').textContent = (c.first_name || '') + ' ' + (c.last_name || opp.company?.name || 'Deal');
+
+        document.getElementById('panelBody').innerHTML = `
+            <div class="panel-section">
+                <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+                    <span class="pill ${opp.funnel === 'operational' ? 'pill-a' : 'pill-b'}">${opp.funnel === 'operational' ? 'Funnel A' : 'Funnel B'}</span>
+                    <span class="stage-pill stage-${opp.stage}">${stageName(opp.stage)}</span>
+                    ${opp.value ? '<span style="font-weight:700;color:var(--green);font-size:0.85rem">' + fmt$(opp.value) + '</span>' : ''}
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <label>Contact</label>
+                <div class="pv">${c.first_name || ''} ${c.last_name || ''} ${c.title ? '(' + c.title + ')' : ''}</div>
+                ${c.email ? '<div class="pv"><a href="mailto:' + c.email + '">' + c.email + '</a></div>' : ''}
+                ${c.phone ? '<div class="pv">' + c.phone + '</div>' : ''}
+                ${c.linkedin_url ? '<div class="pv"><a href="' + c.linkedin_url + '" target="_blank">LinkedIn Profile</a></div>' : ''}
+            </div>
+
+            <div class="panel-section">
+                <label>Company</label>
+                <div class="pv" style="font-weight:600">${opp.company?.name || '-'}</div>
+                <div class="pv sub">${opp.company?.industry || ''} ${opp.company?.employee_count ? '| ' + opp.company.employee_count + ' employees' : ''}</div>
+            </div>
+
+            <div class="panel-section">
+                <label>Stage</label>
+                <div class="panel-field">
+                    <select id="panelStage" onchange="updateOppField('${opp.id}', 'stage', this.value)">
+                        ${(opp.funnel === 'operational' ? FUNNEL_A_STAGES : FUNNEL_B_STAGES).map(s =>
+                            '<option value="' + s.id + '" ' + (s.id === opp.stage ? 'selected' : '') + '>' + s.name + '</option>'
+                        ).join('')}
+                    </select>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <label>Next Action</label>
+                <div class="panel-field">
+                    <input type="text" id="panelNextStep" value="${escHtml(opp.next_step || '')}" onchange="updateOppField('${opp.id}', 'next_step', this.value)" placeholder="What's the next step?">
+                </div>
+                <div class="panel-field">
+                    <label>Due Date</label>
+                    <input type="date" id="panelCloseDate" value="${opp.expected_close_date || ''}" onchange="updateOppField('${opp.id}', 'expected_close_date', this.value)">
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <label>Pain Points</label>
+                <div class="panel-field"><textarea id="panelPain" onchange="updateOppField('${opp.id}', 'key_pain_points', this.value)" placeholder="What problems did they mention?">${escHtml(opp.key_pain_points || '')}</textarea></div>
+            </div>
+            <div class="panel-section">
+                <label>Objections</label>
+                <div class="panel-field"><textarea id="panelObj" onchange="updateOppField('${opp.id}', 'objections', this.value)" placeholder="What pushback came up?">${escHtml(opp.objections || '')}</textarea></div>
+            </div>
+            <div class="panel-section">
+                <label>Key Quotes (their exact words)</label>
+                <div class="panel-field"><textarea id="panelQuotes" onchange="updateOppField('${opp.id}', 'key_quotes', this.value)" placeholder="Copy their memorable phrases...">${escHtml(opp.key_quotes || '')}</textarea></div>
+            </div>
+            <div class="panel-section">
+                <label>Personal Notes</label>
+                <div class="panel-field"><textarea id="panelNotes" onchange="updateOppField('${opp.id}', 'personal_notes', this.value)" placeholder="Context for future conversations...">${escHtml(opp.personal_notes || '')}</textarea></div>
+            </div>
+
+            <div class="panel-section">
+                <label>Recent Activity</label>
+                ${renderPanelTimeline(opp.id)}
+            </div>
+
+            <div class="panel-actions">
+                <a href="opportunity.html?id=${opp.id}" class="btn btn-white">Open Full Record</a>
+            </div>
+        `;
+
+        panel.classList.add('open');
+        overlay.classList.add('active');
+        document.body.classList.add('panel-open');
+    }
+
+    function renderPanelTimeline(oppId) {
+        const acts = allActivities.filter(a => a.opportunity_id === oppId).slice(0, 10);
+        if (acts.length === 0) return '<div class="empty-state" style="padding:0.5rem;font-size:0.8rem">No activities yet</div>';
+        return acts.map(a => `<div class="timeline-item">
+            <div class="timeline-dot ${a.type || 'note'}"></div>
+            <div>
+                <div class="timeline-text">${escHtml(a.subject || a.type || 'Activity')}</div>
+                <div class="timeline-date">${fmtDate(a.created_at)}</div>
+            </div>
+        </div>`).join('');
+    }
+
+    function closePanel() {
+        document.getElementById('detailPanel').classList.remove('open');
+        document.getElementById('panelOverlay').classList.remove('active');
+        document.body.classList.remove('panel-open');
+    }
+
+    document.getElementById('panelClose').addEventListener('click', closePanel);
+    document.getElementById('panelOverlay').addEventListener('click', closePanel);
+
+    async function updateOppField(oppId, field, value) {
+        const update = { [field]: value || null };
+        if (field === 'stage') update.stage_entered_at = new Date().toISOString();
+        await sb.from('opportunities').update(update).eq('id', oppId);
+        const opp = allOpps.find(o => o.id === oppId);
+        if (opp) Object.assign(opp, update);
+    }
+
+    function escHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    // Click delegation for all tables and kanban cards
+    document.addEventListener('click', function(e) {
+        const row = e.target.closest('tr[data-opp]');
+        const card = e.target.closest('.kanban-card[data-opp]');
+        const trial = e.target.closest('.trial-card[data-opp]');
+        const el = row || card || trial;
+        if (el && el.dataset.opp) {
+            openPanel(el.dataset.opp);
+        }
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════════════
+    init();
+    </script>
+</body>
+</html>
