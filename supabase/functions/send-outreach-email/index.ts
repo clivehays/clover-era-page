@@ -499,25 +499,27 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
     .eq('campaign_id', campaignId);
   const campProspectIds = (campProspects || []).map((p: any) => p.id);
 
-  // Step 3: Get approved contact-based emails
+  // Step 3: Get approved contact-based emails (position 1 only - follow-ups are scheduled)
   let contactEmails: any[] = [];
   if (campContactIds.length > 0) {
     const { data } = await supabase
       .from('outreach_emails')
       .select('*, contact:contacts(*)')
       .eq('status', 'approved')
+      .eq('position', 1)
       .in('campaign_contact_id', campContactIds)
       .limit(remaining);
     contactEmails = data || [];
   }
 
-  // Step 4: Get approved prospect-based emails
+  // Step 4: Get approved prospect-based emails (position 1 only - follow-ups are scheduled)
   let prospectEmails: any[] = [];
   if (campProspectIds.length > 0) {
     const { data } = await supabase
       .from('outreach_emails')
       .select('*, prospect:outreach_prospects(*)')
       .eq('status', 'approved')
+      .eq('position', 1)
       .in('campaign_prospect_id', campProspectIds)
       .limit(remaining - contactEmails.length);
     prospectEmails = data || [];
@@ -982,15 +984,10 @@ async function scheduleFollowUpEmails(
     return;
   }
 
-  // Create a map of position -> days_delay
-  const delayMap: Record<number, number> = {};
-  for (const template of templates) {
-    delayMap[template.position] = template.days_delay || 0;
-  }
-
-  // Schedule each follow-up email
+  // Schedule each follow-up email with 4-day intervals from Email 1 send date
+  // Position 2 = 4 days after Email 1, Position 3 = 8 days after Email 1
   for (const email of followUpEmails) {
-    const daysDelay = delayMap[email.position] || 3; // Default 3 days if not set
+    const daysDelay = (email.position - 1) * 4; // 4 days per step
     const scheduledAt = new Date(sent_at);
     scheduledAt.setDate(scheduledAt.getDate() + daysDelay);
 

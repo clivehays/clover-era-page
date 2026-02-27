@@ -2863,15 +2863,18 @@
         }
 
         async function approveAllEmails() {
-            if (!confirm('Approve all draft, follow-up, and failed emails?')) return;
+            if (!confirm('Approve all Email 1 drafts and failed emails?\n\nFollow-up emails (2, 3) will be scheduled automatically after Email 1 sends.')) return;
 
             try {
+                // Only approve Email 1s (drafts + failed). Follow-ups stay as pending_followup
+                // and get scheduled automatically when Email 1 is sent.
                 await supabaseClient
                     .from('outreach_emails')
                     .update({ status: 'approved' })
-                    .in('status', ['draft', 'pending_followup', 'failed']);
+                    .in('status', ['draft', 'failed'])
+                    .eq('position', 1);
                 loadEmailQueue();
-                alert('All emails approved!');
+                alert('Email 1s approved! Follow-ups will schedule automatically after sending.');
             } catch (error) {
                 alert('Error: ' + error.message);
             }

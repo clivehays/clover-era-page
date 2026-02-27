@@ -175,7 +175,7 @@ BEGIN
 
 We built a 2-minute assessment that flags where these patterns might be happening: cloverera.com/assessment. It''s designed to surface the person you''re not thinking about.
 
-If it flags someone, you can run daily check-ins for your team free for 14 days. No card, no pitch: cloverera.com/trial
+If it flags someone, you can run daily check-ins for your team free for 14 days. No card, no pitch: cloverera.com/get/
 
 {{closing_question}}
 
