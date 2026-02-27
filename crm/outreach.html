@@ -778,6 +778,81 @@
                 <button class="modal-close" onclick="closeModal('addProspectsModal')">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- Tab switcher -->
+                <div style="display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 2px solid var(--medium-gray);">
+                    <button id="tabExisting" onclick="switchProspectTab('existing')" style="padding: 0.6rem 1.2rem; border: none; background: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; border-bottom: 2px solid var(--primary-green); margin-bottom: -2px; color: var(--primary-green);">Select Existing</button>
+                    <button id="tabQuickAdd" onclick="switchProspectTab('quickadd')" style="padding: 0.6rem 1.2rem; border: none; background: none; font-size: 0.95rem; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: var(--text-secondary);">Quick Add</button>
+                </div>
+
+                <!-- Quick Add Form -->
+                <div id="quickAddSection" style="display: none;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">First Name *</label>
+                            <input type="text" id="qaFirstName" placeholder="e.g., Sarah" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Last Name *</label>
+                            <input type="text" id="qaLastName" placeholder="e.g., Mitchell" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Email *</label>
+                        <input type="email" id="qaEmail" placeholder="e.g., sarah@company.com" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Company</label>
+                            <input type="text" id="qaCompany" placeholder="e.g., Acme Corp" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Title</label>
+                            <input type="text" id="qaTitle" placeholder="e.g., Operations Manager" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Industry</label>
+                            <input type="text" id="qaIndustry" placeholder="e.g., Technology" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Employee Count</label>
+                            <input type="number" id="qaEmployeeCount" placeholder="e.g., 500" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn fields for quick add -->
+                    <div id="qaLinkedinFields" style="display: none; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem;">
+                        <h4 style="margin: 0 0 0.75rem 0; color: #7c3aed; font-size: 0.95rem;">LinkedIn Comment Context</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Post Number</label>
+                                <input type="text" id="qaPostNumber" placeholder="e.g., Post 14" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Post Topic</label>
+                                <input type="text" id="qaPostTopic" placeholder="e.g., the quiet engineer" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Their Comment</label>
+                            <textarea id="qaCommentText" placeholder="Paste their LinkedIn comment here..." rows="3" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; resize: vertical; box-sizing: border-box;"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Avg salary for quick add operational -->
+                    <div id="qaAvgSalaryField" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <label style="font-size: 0.875rem; font-weight: 500; white-space: nowrap;">Est. Avg Salary ($)</label>
+                            <input type="number" id="qaAvgSalary" value="85000" min="30000" max="500000" step="5000" style="width: 140px; padding: 0.4rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;">
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="quickAddProspect()" style="width: 100%;">Add to Campaign & Generate Email</button>
+                </div>
+
+                <!-- Existing Prospects Section -->
+                <div id="existingProspectsSection">
                 <!-- Search -->
                 <div style="margin-bottom: 1rem;">
                     <input type="text" id="prospectSearch" oninput="filterProspectsList()" placeholder="Search by name, company, title, or email..." style="width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; box-sizing: border-box;">
@@ -859,8 +934,9 @@
                 <div id="prospectsCheckboxList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--medium-gray); border-radius: 8px;">
                     <p class="loading" style="padding: 1rem;">Loading prospects...</p>
                 </div>
+                </div><!-- end existingProspectsSection -->
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" id="existingProspectsFooter">
                 <button type="button" class="btn btn-secondary" onclick="closeModal('addProspectsModal')">Cancel</button>
                 <button type="button" class="btn btn-primary" onclick="addSelectedProspects()">Add Selected (<span id="selectedCount">0</span>)</button>
             </div>
@@ -1793,10 +1869,135 @@
         // Add Prospects Modal
         let allAvailableProspects = [];
         let filteredProspects = [];
+        let currentCampaignSeqType = 'operational';
+
+        function switchProspectTab(tab) {
+            const existingBtn = document.getElementById('tabExisting');
+            const quickAddBtn = document.getElementById('tabQuickAdd');
+            const existingSection = document.getElementById('existingProspectsSection');
+            const quickAddSection = document.getElementById('quickAddSection');
+            const existingFooter = document.getElementById('existingProspectsFooter');
+
+            if (tab === 'quickadd') {
+                existingBtn.style.borderBottomColor = 'transparent';
+                existingBtn.style.fontWeight = '500';
+                existingBtn.style.color = 'var(--text-secondary)';
+                quickAddBtn.style.borderBottomColor = 'var(--primary-green)';
+                quickAddBtn.style.fontWeight = '600';
+                quickAddBtn.style.color = 'var(--primary-green)';
+                existingSection.style.display = 'none';
+                quickAddSection.style.display = 'block';
+                existingFooter.style.display = 'none';
+                // Show/hide LinkedIn and salary fields based on sequence type
+                document.getElementById('qaLinkedinFields').style.display = currentCampaignSeqType === 'self_serve' ? 'block' : 'none';
+                document.getElementById('qaAvgSalaryField').style.display = currentCampaignSeqType === 'operational' ? 'block' : 'none';
+            } else {
+                existingBtn.style.borderBottomColor = 'var(--primary-green)';
+                existingBtn.style.fontWeight = '600';
+                existingBtn.style.color = 'var(--primary-green)';
+                quickAddBtn.style.borderBottomColor = 'transparent';
+                quickAddBtn.style.fontWeight = '500';
+                quickAddBtn.style.color = 'var(--text-secondary)';
+                existingSection.style.display = 'block';
+                quickAddSection.style.display = 'none';
+                existingFooter.style.display = 'flex';
+            }
+        }
+
+        async function quickAddProspect() {
+            const firstName = document.getElementById('qaFirstName').value.trim();
+            const lastName = document.getElementById('qaLastName').value.trim();
+            const email = document.getElementById('qaEmail').value.trim();
+            const company = document.getElementById('qaCompany').value.trim();
+            const title = document.getElementById('qaTitle').value.trim();
+            const industry = document.getElementById('qaIndustry').value.trim();
+            const employeeCount = parseInt(document.getElementById('qaEmployeeCount').value) || null;
+
+            if (!firstName || !lastName || !email) {
+                alert('First name, last name, and email are required.');
+                return;
+            }
+
+            try {
+                // Build prospect record
+                const prospect = {
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    company_name: company || null,
+                    title: title || null,
+                    company_industry: industry || null,
+                    company_employee_count: employeeCount,
+                    status: 'pending',
+                    segment: currentCampaignSeqType === 'self_serve' ? 'manager' : 'buyer',
+                    import_batch: 'Quick Add'
+                };
+
+                // Add LinkedIn fields if self-serve
+                if (currentCampaignSeqType === 'self_serve') {
+                    const postNumber = document.getElementById('qaPostNumber').value.trim();
+                    const postTopic = document.getElementById('qaPostTopic').value.trim();
+                    const commentText = document.getElementById('qaCommentText').value.trim();
+                    if (postNumber) prospect.post_number = postNumber;
+                    if (postTopic) prospect.post_topic = postTopic;
+                    if (commentText) prospect.comment_text = commentText;
+                }
+
+                // Add avg salary if operational
+                if (currentCampaignSeqType === 'operational') {
+                    prospect.estimated_avg_salary = parseInt(document.getElementById('qaAvgSalary').value) || 85000;
+                }
+
+                // Insert prospect
+                const { data: newProspect, error: prospectError } = await supabaseClient
+                    .from('outreach_prospects')
+                    .insert(prospect)
+                    .select('id')
+                    .single();
+                if (prospectError) throw prospectError;
+
+                // Add to campaign
+                const { data: cpRow, error: cpError } = await supabaseClient
+                    .from('campaign_prospects')
+                    .insert({
+                        campaign_id: selectedCampaignId,
+                        prospect_id: newProspect.id,
+                        status: 'pending'
+                    })
+                    .select('id, prospect_id')
+                    .single();
+                if (cpError) throw cpError;
+
+                // Update campaign stats
+                await supabaseClient.rpc('update_campaign_stats', { p_campaign_id: selectedCampaignId });
+
+                // Clear form
+                ['qaFirstName','qaLastName','qaEmail','qaCompany','qaTitle','qaIndustry','qaEmployeeCount','qaPostNumber','qaPostTopic','qaCommentText'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+
+                closeModal('addProspectsModal');
+                loadCampaigns();
+                loadGlobalCapacity();
+
+                // Offer to generate emails
+                const confirmed = confirm(`Added ${firstName} ${lastName} to campaign.\n\nGenerate emails now?`);
+                if (confirmed) {
+                    processNewProspects([{ id: cpRow.id, prospect_id: newProspect.id }]);
+                }
+            } catch (err) {
+                console.error('Quick add error:', err);
+                alert('Error adding prospect: ' + (err.message || err));
+            }
+        }
 
         async function showAddProspectsModal(campaignId) {
             selectedCampaignId = campaignId;
             showModal('addProspectsModal');
+
+            // Reset to existing tab
+            switchProspectTab('existing');
 
             // Reset filters
             document.getElementById('filterBatch').value = '';
@@ -1813,6 +2014,7 @@
                 .single();
 
             const seqType = campaign?.sequence?.sequence_type || 'operational';
+            currentCampaignSeqType = seqType;
             document.getElementById('linkedinFieldsSection').style.display = seqType === 'self_serve' ? 'block' : 'none';
             document.getElementById('avgSalarySection').style.display = seqType === 'operational' ? 'block' : 'none';
 
