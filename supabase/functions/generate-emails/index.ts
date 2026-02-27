@@ -192,6 +192,15 @@ function formatDollar(amount: number): string {
   return String(amount);
 }
 
+function getCurrencySymbol(country: string): string {
+  const c = (country || '').toLowerCase().trim();
+  const gbpCountries = ['united kingdom', 'uk', 'england', 'scotland', 'wales', 'northern ireland', 'ireland'];
+  const eurCountries = ['germany', 'france', 'spain', 'italy', 'netherlands', 'belgium', 'austria', 'portugal', 'finland', 'greece'];
+  if (gbpCountries.some(gc => c.includes(gc))) return '\u00A3'; // £
+  if (eurCountries.some(ec => c.includes(ec))) return '\u20AC'; // €
+  return '$';
+}
+
 // =============================================
 // END INLINED SHARED CODE
 // =============================================
@@ -238,6 +247,7 @@ serve(async (req) => {
     let postNumber: string;
     let postTopic: string;
     let commentText: string;
+    let country: string;
 
     if (isProspectBased) {
       // PROSPECT-BASED EMAIL GENERATION
@@ -270,6 +280,7 @@ serve(async (req) => {
       postNumber = prospect.post_number || '';
       postTopic = prospect.post_topic || '';
       commentText = prospect.comment_text || '';
+      country = prospect.country || '';
 
       // Get research by prospect_id (optional for self-serve sequence)
       const { data: prospectResearch } = await supabase
@@ -316,6 +327,7 @@ serve(async (req) => {
       postNumber = '';
       postTopic = '';
       commentText = '';
+      country = '';
 
       // Get research by contact_id
       const { data: contactResearch } = await supabase
@@ -388,6 +400,7 @@ serve(async (req) => {
       post_number: postNumber,
       post_topic: postTopic,
       comment_text: commentText,
+      country: country,
     };
 
     // Route to appropriate generator based on sequence type
@@ -501,6 +514,8 @@ async function generateOperationalSequence(
 
   // Calculate turnover fields
   const turnover = calculateTurnoverFields(context.employee_count, context.estimated_avg_salary);
+  const currencySymbol = getCurrencySymbol(context.country);
+  const pdfFilename = `${context.company_name.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
 
   // Build replacement map
   const replacements: Record<string, string> = {
@@ -511,6 +526,7 @@ async function generateOperationalSequence(
     '{{company_name}}': context.company_name,
     '{{employee_count}}': context.employee_count.toLocaleString(),
     '{{industry}}': context.industry,
+    '{{currency_symbol}}': currencySymbol,
     '{{estimated_avg_salary_formatted}}': formatDollar(context.estimated_avg_salary),
     '{{annual_turnover_cost_formatted}}': formatDollar(turnover.annual_turnover_cost),
     '{{daily_cost_formatted}}': formatDollar(turnover.daily_cost),
@@ -529,43 +545,49 @@ async function generateOperationalSequence(
   }
 
   // Merge all templates
-  return templates.map(template => ({
-    subject: replaceAllVariables(template.subject_template, replacements),
-    body: replaceAllVariables(template.body_template, replacements),
-    notes: `Operational sequence. Turnover: $${formatDollar(turnover.annual_turnover_cost)}/yr, $${formatDollar(turnover.daily_cost)}/day. 67-day: ${turnover.sixty7_day_number} people.`,
-  }));
+  return templates.map((template, idx) => {
+    const subject = replaceAllVariables(template.subject_template, replacements);
+    const body = replaceAllVariables(template.body_template, replacements);
+
+    // For Email 1: store attachment info in personalization_notes for send function
+    const notesObj: Record<string, any> = {
+      turnover: `${currencySymbol}${formatDollar(turnover.annual_turnover_cost)}/yr`,
+      daily_cost: `${currencySymbol}${formatDollar(turnover.daily_cost)}/day`,
+      sixty7_day: `${turnover.sixty7_day_number} people`,
+    };
+    if (idx === 0) {
+      notesObj.attachment_name = pdfFilename;
+      // PDF will be attached manually via the UI before sending
+    }
+
+    return {
+      subject,
+      body,
+      notes: JSON.stringify(notesObj),
+    };
+  });
 }
 
 async function generateCustomCompanyReference(context: any): Promise<string> {
-  const prompt = `You are writing a cold outbound email on behalf of Clive Hays, Co-Founder of Clover ERA, to a CFO/CEO/COO.
+  const prompt = `Generate a 1-2 sentence custom_company_reference for ${context.company_name} in ${context.industry || 'their industry'}.
 
-CONTACT DATA:
-- First name: ${context.first_name}
+CONTEXT:
 - Title: ${context.title}
-- Company: ${context.company_name}
 - Employee count: ${context.employee_count}
-- Industry: ${context.industry}
+- Research: ${context.research_summary || 'No specific research available.'}
+- Angle: ${context.personalization_angle || 'Focus on turnover cost visibility gap.'}
 
-RESEARCH: ${context.research_summary || 'No specific research available.'}
-ANGLE: ${context.personalization_angle || 'Focus on turnover cost visibility gap.'}
-
-TASK:
-Generate a custom_company_reference (1-2 sentences max) using the research above:
-- Is the company PE-backed? (mention operational efficiency pressure)
-- Recent funding round? (mention growth/scaling pressure)
-- Industry-specific challenge? (regulatory, competitive, talent war)
-- Recent restructuring/layoffs? (mention hidden turnover risk)
+Use public information (PE-backed, funding, expansion, industry challenge) to explain why turnover cost matters for them right now. 25-40 words maximum.
 
 RULES:
 - Must be specific to THIS company, not generic
-- Must connect to why turnover cost matters NOW for them
-- No fluff, just context that proves you researched them
 - No em dashes
+- No fluff
 - Examples:
   "As a Blackstone portfolio company, you're reporting operational efficiency metrics quarterly. This is a line item that's invisible right now."
   "You just raised $40M Series B. If 15% of your engineering team walks in the next 12 months, that dilutes faster than you're planning for."
 
-OUTPUT: Just the 1-2 sentence custom_company_reference text, nothing else.`;
+OUTPUT: Just the 1-2 sentence text, nothing else.`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {

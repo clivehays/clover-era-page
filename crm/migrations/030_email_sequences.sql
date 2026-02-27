@@ -26,6 +26,9 @@ ALTER TABLE outreach_prospects ADD COLUMN IF NOT EXISTS comment_text TEXT;
 -- Add estimated avg salary for turnover calculations (Sequence 1)
 ALTER TABLE outreach_prospects ADD COLUMN IF NOT EXISTS estimated_avg_salary INTEGER DEFAULT 85000;
 
+-- Add country for currency symbol detection
+ALTER TABLE outreach_prospects ADD COLUMN IF NOT EXISTS country TEXT DEFAULT 'United States';
+
 -- =============================================
 -- Section 2: Sequence 1 - Operational Buyer - Turnover Cost
 -- =============================================
@@ -49,33 +52,22 @@ DECLARE
 BEGIN
   SELECT id INTO seq_id FROM outreach_sequences WHERE name = 'Operational Buyer - Turnover Cost';
 
-  -- Email 1: Cost Contradiction (Day 0 - Manual Send)
+  -- Email 1: Short intro + PDF attachment (Day 0 - Manual Send)
   INSERT INTO sequence_templates (sequence_id, position, subject_template, body_template, days_delay)
   VALUES (seq_id, 1,
-    '{{company_name}}: ${{daily_cost_formatted}} per day',
+    '{{company_name}}: {{currency_symbol}}{{annual_turnover_cost_formatted}}',
     '{{first_name}},
 
-Most companies track turnover rate. Almost none track turnover cost. You''re probably doing the same.
+Most CFOs track turnover rate. Almost none track turnover cost.
 
-Here''s the math for {{company_name}}:
--> ~{{employee_count}} employees
--> Industry avg turnover ~12%
--> ~{{calculated_departures}} departures annually
--> At ${{estimated_avg_salary_formatted}} average salary and 4x replacement cost: ${{annual_turnover_cost_formatted}} minimum
-
-That''s the number no one''s tracking.
-
-The bigger problem: {{67_day_number}} of those people have already decided to leave but haven''t told you yet. That''s ${{67_day_total_formatted}} walking out the door in the next 67 days.
+I ran the numbers for {{company_name}}. They''re in the attached report.
 
 {{custom_company_reference}}
 
-I run Turnover Intelligence Reports for {{industry}} companies. Shows you where the cost is actually hiding, which departments are bleeding, and what the next 90 days look like.
-
-Full breakdown here: {{calendar_link}}
+If you want to walk through what I found, I''m here: {{calendar_link}}
 
 Clive Hays
 Co-Founder, Clover ERA
-Already Gone: 78 Ways to Miss Someone Leaving
 cloverera.com | clive.hays@cloverera.com',
     0);
 

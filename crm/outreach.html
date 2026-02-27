@@ -820,6 +820,19 @@
                             <input type="number" id="qaEmployeeCount" placeholder="e.g., 500" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
                         </div>
                     </div>
+                    <div style="margin-bottom: 0.75rem;">
+                        <label style="font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.25rem;">Country</label>
+                        <select id="qaCountry" style="width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;">
+                            <option value="United States">United States ($)</option>
+                            <option value="United Kingdom">United Kingdom (&pound;)</option>
+                            <option value="Ireland">Ireland (&euro;)</option>
+                            <option value="Germany">Germany (&euro;)</option>
+                            <option value="France">France (&euro;)</option>
+                            <option value="Netherlands">Netherlands (&euro;)</option>
+                            <option value="Canada">Canada ($)</option>
+                            <option value="Australia">Australia ($)</option>
+                        </select>
+                    </div>
 
                     <!-- LinkedIn fields for quick add -->
                     <div id="qaLinkedinFields" style="display: none; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem;">
@@ -1958,6 +1971,8 @@
 
             try {
                 // Build prospect record
+                const country = document.getElementById('qaCountry').value;
+
                 const prospect = {
                     first_name: firstName,
                     last_name: lastName,
@@ -1966,6 +1981,7 @@
                     title: title || null,
                     company_industry: industry || null,
                     company_employee_count: employeeCount,
+                    country: country || null,
                     status: 'pending',
                     segment: currentCampaignSeqType === 'self_serve' ? 'manager' : 'buyer',
                     import_batch: 'Quick Add'
@@ -2005,6 +2021,7 @@
                             title: prospect.title,
                             company_industry: prospect.company_industry,
                             company_employee_count: prospect.company_employee_count,
+                            country: prospect.country,
                             ...(prospect.post_number && { post_number: prospect.post_number }),
                             ...(prospect.post_topic && { post_topic: prospect.post_topic }),
                             ...(prospect.comment_text && { comment_text: prospect.comment_text }),
@@ -2056,7 +2073,7 @@
                 await supabaseClient.rpc('update_campaign_stats', { p_campaign_id: selectedCampaignId });
 
                 // Clear form
-                ['qaFirstName','qaLastName','qaEmail','qaCompany','qaTitle','qaIndustry','qaEmployeeCount','qaPostNumber','qaPostTopic','qaCommentText'].forEach(id => {
+                ['qaFirstName','qaLastName','qaEmail','qaCompany','qaTitle','qaIndustry','qaEmployeeCount','qaPostNumber','qaPostTopic','qaCommentText','qaCountry'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.value = '';
                 });
