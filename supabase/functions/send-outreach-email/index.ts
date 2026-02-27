@@ -463,32 +463,46 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
   }
 
   // Get approved emails ready to send (both contact and prospect based)
-  // First, get contact-based emails
-  const { data: contactEmails } = await supabase
-    .from('outreach_emails')
-    .select(`
-      *,
-      contact:contacts(*),
-      campaign_contact:campaign_contacts!inner(campaign_id)
-    `)
-    .eq('status', 'approved')
-    .eq('campaign_contact.campaign_id', campaignId)
-    .limit(remaining);
+  // Step 1: Get campaign_contact IDs for this campaign
+  const { data: campContacts } = await supabase
+    .from('campaign_contacts')
+    .select('id')
+    .eq('campaign_id', campaignId);
+  const campContactIds = (campContacts || []).map((c: any) => c.id);
 
-  // Then, get prospect-based emails
-  const { data: prospectEmails } = await supabase
-    .from('outreach_emails')
-    .select(`
-      *,
-      prospect:outreach_prospects(*),
-      campaign_prospect:campaign_prospects!inner(campaign_id)
-    `)
-    .eq('status', 'approved')
-    .eq('campaign_prospect.campaign_id', campaignId)
-    .limit(remaining - (contactEmails?.length || 0));
+  // Step 2: Get campaign_prospect IDs for this campaign
+  const { data: campProspects } = await supabase
+    .from('campaign_prospects')
+    .select('id')
+    .eq('campaign_id', campaignId);
+  const campProspectIds = (campProspects || []).map((p: any) => p.id);
+
+  // Step 3: Get approved contact-based emails
+  let contactEmails: any[] = [];
+  if (campContactIds.length > 0) {
+    const { data } = await supabase
+      .from('outreach_emails')
+      .select('*, contact:contacts(*)')
+      .eq('status', 'approved')
+      .in('campaign_contact_id', campContactIds)
+      .limit(remaining);
+    contactEmails = data || [];
+  }
+
+  // Step 4: Get approved prospect-based emails
+  let prospectEmails: any[] = [];
+  if (campProspectIds.length > 0) {
+    const { data } = await supabase
+      .from('outreach_emails')
+      .select('*, prospect:outreach_prospects(*)')
+      .eq('status', 'approved')
+      .in('campaign_prospect_id', campProspectIds)
+      .limit(remaining - contactEmails.length);
+    prospectEmails = data || [];
+  }
 
   // Combine and limit
-  const emails = [...(contactEmails || []), ...(prospectEmails || [])].slice(0, remaining);
+  const emails = [...contactEmails, ...prospectEmails].slice(0, remaining);
 
   if (emails.length === 0) {
     return new Response(
