@@ -1567,10 +1567,24 @@
                     if (result.scheduled_today > 0) {
                         message += `\n\n${result.scheduled_today} follow-up(s) scheduled for today will send automatically.`;
                     }
+                    // Check if any failed in the batch
+                    const failed = (result.results || []).filter(r => r.status === 'failed');
+                    if (failed.length > 0) {
+                        message += `\n\n${failed.length} email(s) failed:`;
+                        failed.forEach(f => { message += `\n- ${f.error || 'Unknown error'}`; });
+                    }
                     alert(message);
                 } else {
-                    alert(result.message || 'No approved emails to send.');
+                    // Show detailed error info
+                    let message = result.message || 'No approved emails to send.';
+                    const failed = (result.results || []).filter(r => r.status === 'failed');
+                    if (failed.length > 0) {
+                        message = `All ${failed.length} email(s) failed to send:`;
+                        failed.forEach(f => { message += `\n- ${f.error || 'Unknown error'}`; });
+                    }
+                    alert(message);
                 }
+                loadEmailQueue();
             } catch (error) {
                 alert('Error sending emails: ' + error.message);
             }
@@ -2425,7 +2439,7 @@
                         contact:contacts(first_name, last_name, email, company:companies(name)),
                         prospect:outreach_prospects(first_name, last_name, email, company_name)
                     `)
-                    .in('status', ['draft', 'pending_followup'])
+                    .in('status', ['draft', 'pending_followup', 'failed', 'approved'])
                     .order('created_at', { ascending: true });
 
                 document.getElementById('emailQueueLoading').style.display = 'none';
@@ -2452,7 +2466,19 @@
                                 const companyName = email.prospect?.company_name || email.contact?.company?.name || '';
                                 const statusBadge = email.status === 'pending_followup'
                                     ? '<span style="background: #f59e0b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Follow-up</span>'
+                                    : email.status === 'failed'
+                                    ? '<span style="background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Failed</span>'
+                                    : email.status === 'approved'
+                                    ? '<span style="background: #22c55e; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Approved</span>'
                                     : '<span style="background: #3b82f6; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Draft</span>';
+                                // Extract error details for failed emails
+                                let failedError = '';
+                                if (email.status === 'failed') {
+                                    try {
+                                        const notes = JSON.parse(email.personalization_notes || '{}');
+                                        if (notes.last_send_error) failedError = notes.last_send_error;
+                                    } catch {}
+                                }
                                 return `
                                 <tr>
                                     <td>
@@ -2460,7 +2486,7 @@
                                         <span style="font-size: 0.85rem; color: var(--text-secondary);">${companyName}</span>
                                     </td>
                                     <td>${email.subject}</td>
-                                    <td>Email ${email.position}${statusBadge}</td>
+                                    <td>Email ${email.position}${statusBadge}${failedError ? `<br><span style="font-size: 0.75rem; color: #ef4444;">${failedError}</span>` : ''}</td>
                                     <td class="actions-row">
                                         <button class="btn btn-secondary btn-sm" onclick="previewEmail('${email.id}')">Preview</button>
                                         <button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
@@ -2513,6 +2539,10 @@
                 // Format notes nicely if JSON
                 if (notes.trap_question) {
                     notesDisplay = `Trap Q: "${notes.trap_question}"` + (notes.post_topic ? ` | Post: ${notes.post_topic}` : '');
+                }
+                // Show last send error if present
+                if (notes.last_send_error) {
+                    notesDisplay = `<span style="color: #ef4444; font-weight: 600;">Send Error: ${notes.last_send_error}</span>` + (notesDisplay ? '<br>' + notesDisplay : '');
                 }
             } catch { /* not JSON, use raw */ }
 
@@ -2763,13 +2793,13 @@
         }
 
         async function approveAllEmails() {
-            if (!confirm('Approve all draft and follow-up emails?')) return;
+            if (!confirm('Approve all draft, follow-up, and failed emails?')) return;
 
             try {
                 await supabaseClient
                     .from('outreach_emails')
                     .update({ status: 'approved' })
-                    .in('status', ['draft', 'pending_followup']);
+                    .in('status', ['draft', 'pending_followup', 'failed']);
                 loadEmailQueue();
                 alert('All emails approved!');
             } catch (error) {

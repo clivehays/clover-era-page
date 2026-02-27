@@ -126,11 +126,22 @@ async function sendSingleEmail(supabase: any, emailId: string) {
   });
 
   if (!result.success) {
-    // Update email status to failed
+    // Store error details in personalization_notes for debugging
+    let errorNotes = email.personalization_notes || '{}';
+    try {
+      const existing = JSON.parse(errorNotes);
+      existing.last_send_error = result.error;
+      existing.last_send_attempt = new Date().toISOString();
+      errorNotes = JSON.stringify(existing);
+    } catch {
+      errorNotes = JSON.stringify({ last_send_error: result.error, last_send_attempt: new Date().toISOString() });
+    }
+
     await supabase
       .from('outreach_emails')
       .update({
         status: 'failed',
+        personalization_notes: errorNotes,
         updated_at: new Date().toISOString(),
       })
       .eq('id', emailId);
@@ -370,9 +381,20 @@ async function processScheduledEmails(supabase: any) {
         message_id: result.messageId,
       });
     } else {
+      // Store error in personalization_notes for debugging
+      let errorNotes = email.personalization_notes || '{}';
+      try {
+        const existing = JSON.parse(errorNotes);
+        existing.last_send_error = result.error;
+        existing.last_send_attempt = new Date().toISOString();
+        errorNotes = JSON.stringify(existing);
+      } catch {
+        errorNotes = JSON.stringify({ last_send_error: result.error, last_send_attempt: new Date().toISOString() });
+      }
+
       await supabase
         .from('outreach_emails')
-        .update({ status: 'failed' })
+        .update({ status: 'failed', personalization_notes: errorNotes })
         .eq('id', email.id);
 
       results.push({
@@ -591,9 +613,20 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
 
       results.push({ email_id: email.id, status: 'sent' });
     } else {
+      // Store error in personalization_notes for debugging
+      let errorNotes = email.personalization_notes || '{}';
+      try {
+        const existing = JSON.parse(errorNotes);
+        existing.last_send_error = result.error;
+        existing.last_send_attempt = new Date().toISOString();
+        errorNotes = JSON.stringify(existing);
+      } catch {
+        errorNotes = JSON.stringify({ last_send_error: result.error, last_send_attempt: new Date().toISOString() });
+      }
+
       await supabase
         .from('outreach_emails')
-        .update({ status: 'failed' })
+        .update({ status: 'failed', personalization_notes: errorNotes })
         .eq('id', email.id);
 
       results.push({ email_id: email.id, status: 'failed', error: result.error });
