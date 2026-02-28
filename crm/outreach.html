@@ -2891,21 +2891,60 @@
             if (!confirm('Mark this email as replied? This will cancel any scheduled follow-up emails for this contact.')) return;
 
             try {
-                const response = await fetch(`${SUPABASE_URL}/functions/v1/handle-reply`, {
+                // Get the email to find related follow-ups
+                const { data: email, error: emailError } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('*, campaign_prospect_id, campaign_contact_id, position')
+                    .eq('id', emailId)
+                    .single();
+
+                if (emailError || !email) throw new Error('Email not found');
+
+                // 1. Mark this email as replied
+                await supabaseClient
+                    .from('outreach_emails')
+                    .update({ status: 'replied', replied_at: new Date().toISOString() })
+                    .eq('id', emailId);
+
+                // 2. Cancel scheduled/approved follow-ups for this prospect/contact
+                if (email.campaign_prospect_id) {
+                    await supabaseClient
+                        .from('outreach_emails')
+                        .update({ status: 'draft' })
+                        .eq('campaign_prospect_id', email.campaign_prospect_id)
+                        .in('status', ['scheduled', 'approved', 'pending_followup'])
+                        .gt('position', email.position);
+
+                    // Update campaign prospect status
+                    await supabaseClient
+                        .from('campaign_prospects')
+                        .update({ status: 'replied' })
+                        .eq('id', email.campaign_prospect_id);
+                } else if (email.campaign_contact_id) {
+                    await supabaseClient
+                        .from('outreach_emails')
+                        .update({ status: 'draft' })
+                        .eq('campaign_contact_id', email.campaign_contact_id)
+                        .in('status', ['scheduled', 'approved', 'pending_followup'])
+                        .gt('position', email.position);
+
+                    await supabaseClient
+                        .from('campaign_contacts')
+                        .update({ status: 'replied' })
+                        .eq('id', email.campaign_contact_id);
+                }
+
+                // 3. Try edge function for opportunity creation (non-blocking)
+                fetch(`${SUPABASE_URL}/functions/v1/handle-reply`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                     },
                     body: JSON.stringify({ type: 'mark_replied', email_id: emailId }),
-                });
-                const result = await response.json();
-                if (!result.success) throw new Error(result.error || 'Failed to mark as replied');
+                }).catch(() => {});
 
-                let msg = 'Email marked as replied. Follow-up emails cancelled.';
-                if (result.opportunity_created) msg += '\nOpportunity created in CRM pipeline.';
-                if (result.prospect_converted) msg += '\nProspect converted to CRM contact.';
-                alert(msg);
+                alert('Email marked as replied. Follow-up emails cancelled.');
                 closeModal('emailPreviewModal');
                 loadActiveEmails();
                 loadCampaigns();
