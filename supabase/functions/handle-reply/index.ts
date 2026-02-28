@@ -135,12 +135,10 @@ async function markEmailReplied(supabase: any, emailId: string) {
 
   // Update campaign stats
   if (campaignId) {
-    await supabase
-      .from('outreach_campaigns')
-      .update({
-        emails_replied: supabase.sql`emails_replied + 1`,
-      })
-      .eq('id', campaignId);
+    await supabase.rpc('increment_campaign_stat', {
+      p_campaign_id: campaignId,
+      p_field: 'emails_replied',
+    });
   }
 
   // Check settings for auto-opportunity creation

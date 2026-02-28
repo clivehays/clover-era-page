@@ -2526,7 +2526,7 @@
                         contact:contacts(first_name, last_name, email, company:companies(name)),
                         prospect:outreach_prospects(first_name, last_name, email, company_name)
                     `)
-                    .in('status', ['draft', 'pending_followup', 'failed', 'approved'])
+                    .in('status', ['draft', 'pending_followup', 'failed', 'approved', 'sent', 'delivered', 'opened', 'clicked', 'scheduled', 'replied'])
                     .order('created_at', { ascending: true });
 
                 document.getElementById('emailQueueLoading').style.display = 'none';
@@ -2551,13 +2551,20 @@
                                 // Use prospect data if available, otherwise contact
                                 const recipient = email.prospect || email.contact;
                                 const companyName = email.prospect?.company_name || email.contact?.company?.name || '';
-                                const statusBadge = email.status === 'pending_followup'
-                                    ? '<span style="background: #f59e0b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Follow-up</span>'
-                                    : email.status === 'failed'
-                                    ? '<span style="background: #ef4444; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Failed</span>'
-                                    : email.status === 'approved'
-                                    ? '<span style="background: #22c55e; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Approved</span>'
-                                    : '<span style="background: #3b82f6; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">Draft</span>';
+                                const statusColors = {
+                                    'pending_followup': { bg: '#f59e0b', color: '#000', label: 'Follow-up' },
+                                    'failed': { bg: '#ef4444', color: '#fff', label: 'Failed' },
+                                    'approved': { bg: '#22c55e', color: '#fff', label: 'Approved' },
+                                    'sent': { bg: '#8b5cf6', color: '#fff', label: 'Sent' },
+                                    'delivered': { bg: '#6366f1', color: '#fff', label: 'Delivered' },
+                                    'opened': { bg: '#0ea5e9', color: '#fff', label: 'Opened' },
+                                    'clicked': { bg: '#06b6d4', color: '#fff', label: 'Clicked' },
+                                    'scheduled': { bg: '#a855f7', color: '#fff', label: 'Scheduled' },
+                                    'replied': { bg: '#047857', color: '#fff', label: 'Replied' },
+                                    'draft': { bg: '#3b82f6', color: '#fff', label: 'Draft' },
+                                };
+                                const sc = statusColors[email.status] || statusColors['draft'];
+                                const statusBadge = `<span style="background: ${sc.bg}; color: ${sc.color}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px;">${sc.label}</span>`;
                                 // Extract error details for failed emails
                                 let failedError = '';
                                 if (email.status === 'failed') {
@@ -2576,8 +2583,12 @@
                                     <td>Email ${email.position}${statusBadge}${failedError ? `<br><span style="font-size: 0.75rem; color: #ef4444;">${failedError}</span>` : ''}</td>
                                     <td class="actions-row">
                                         <button class="btn btn-secondary btn-sm" onclick="previewEmail('${email.id}')">Preview</button>
-                                        <button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteEmail('${email.id}')">Delete</button>
+                                        ${['sent','delivered','opened','clicked','scheduled'].includes(email.status)
+                                            ? `<button class="btn btn-success btn-sm" onclick="markAsReplied('${email.id}')">Mark Replied</button>`
+                                            : email.status === 'replied'
+                                            ? ''
+                                            : `<button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
+                                               <button class="btn btn-danger btn-sm" onclick="deleteEmail('${email.id}')">Delete</button>`}
                                     </td>
                                 </tr>
                             `}).join('')}
@@ -2670,12 +2681,18 @@
                 </div>
             `;
 
-            // Restore footer buttons in case we're coming from edit mode
-            document.querySelector('#emailPreviewModal .modal-footer').innerHTML = `
-                <button type="button" class="btn btn-secondary" onclick="closeModal('emailPreviewModal')">Close</button>
-                <button type="button" class="btn btn-warning" onclick="editEmail()">Edit</button>
-                <button type="button" class="btn btn-success" onclick="approveEmail()">Approve</button>
-            `;
+            // Show different buttons based on email status
+            const isSentStatus = ['sent', 'delivered', 'opened', 'clicked', 'scheduled'].includes(email.status);
+            const isReplied = email.status === 'replied';
+            document.querySelector('#emailPreviewModal .modal-footer').innerHTML = isSentStatus
+                ? `<button type="button" class="btn btn-secondary" onclick="closeModal('emailPreviewModal')">Close</button>
+                   <button type="button" class="btn btn-success" onclick="markAsReplied('${email.id}')">Mark as Replied</button>`
+                : isReplied
+                ? `<button type="button" class="btn btn-secondary" onclick="closeModal('emailPreviewModal')">Close</button>
+                   <span style="color: #047857; font-weight: 600;">Replied</span>`
+                : `<button type="button" class="btn btn-secondary" onclick="closeModal('emailPreviewModal')">Close</button>
+                   <button type="button" class="btn btn-warning" onclick="editEmail()">Edit</button>
+                   <button type="button" class="btn btn-success" onclick="approveEmail()">Approve</button>`;
 
             showModal('emailPreviewModal');
         }
@@ -2777,6 +2794,30 @@
                 loadEmailQueue();
             } catch (error) {
                 alert('Error approving email: ' + error.message);
+            }
+        }
+
+        async function markAsReplied(emailId) {
+            if (!confirm('Mark this email as replied? This will cancel any scheduled follow-up emails for this contact.')) return;
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/handle-reply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    },
+                    body: JSON.stringify({ type: 'mark_replied', email_id: emailId }),
+                });
+                const result = await response.json();
+                if (!result.success) throw new Error(result.error || 'Failed to mark as replied');
+
+                alert('Email marked as replied. Follow-up emails have been cancelled.');
+                closeModal('emailPreviewModal');
+                loadEmailQueue();
+                loadCampaigns();
+            } catch (error) {
+                alert('Error: ' + error.message);
             }
         }
 

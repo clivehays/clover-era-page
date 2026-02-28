@@ -861,10 +861,11 @@ async function sendViaResend(params: {
       /(https?:\/\/[^\s<]+)/g,
       '<a href="$1" style="color:#2563eb;">$1</a>'
     );
-    const htmlBody = params.body
+    const bodyParagraphs = params.body
       .split('\n\n')
       .map((para: string) => `<p style="margin:0 0 1em 0;font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#333;">${linkify(para.replace(/\n/g, '<br>'))}</p>`)
       .join('');
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${bodyParagraphs}</body></html>`;
 
     const emailPayload: Record<string, any> = {
       from: `${params.fromName} <${params.from}>`,
@@ -975,11 +976,11 @@ async function scheduleFollowUpEmails(
     return;
   }
 
-  // Find pending follow-up emails for this prospect/contact
+  // Find follow-up emails (approved or pending_followup) for this prospect/contact
   let query = supabase
     .from('outreach_emails')
     .select('id, position')
-    .eq('status', 'pending_followup')
+    .in('status', ['pending_followup', 'approved'])
     .gt('position', 1);
 
   if (campaign_prospect_id) {
