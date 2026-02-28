@@ -145,6 +145,8 @@ async function processEvent(supabase: any, event: any) {
       if (emailRecord.status !== 'replied') {
         statusUpdates.status = 'clicked';
       }
+      // Update campaign click count
+      await updateCampaignClickCount(supabase, emailRecord);
       break;
 
     case 'email.bounced':
@@ -254,13 +256,47 @@ async function updateCampaignOpenCount(supabase: any, emailRecord: any) {
     .eq('outreach_email_id', emailRecord.id)
     .eq('event_type', 'open');
 
-  // Only increment on first open
+  // Only increment on first open - use rpc to do atomic increment
   if (count === 1) {
-    await supabase
-      .from('outreach_campaigns')
-      .update({
-        emails_opened: supabase.sql`emails_opened + 1`,
-      })
-      .eq('id', campaignId);
+    await supabase.rpc('increment_campaign_stat', {
+      p_campaign_id: campaignId,
+      p_field: 'emails_opened',
+    });
+  }
+}
+
+async function updateCampaignClickCount(supabase: any, emailRecord: any) {
+  let campaignId: string | null = null;
+
+  if (emailRecord.campaign_contact_id) {
+    const { data: cc } = await supabase
+      .from('campaign_contacts')
+      .select('campaign_id')
+      .eq('id', emailRecord.campaign_contact_id)
+      .single();
+    campaignId = cc?.campaign_id;
+  } else if (emailRecord.campaign_prospect_id) {
+    const { data: cp } = await supabase
+      .from('campaign_prospects')
+      .select('campaign_id')
+      .eq('id', emailRecord.campaign_prospect_id)
+      .single();
+    campaignId = cp?.campaign_id;
+  }
+
+  if (!campaignId) return;
+
+  // Only increment on first click for this email
+  const { count } = await supabase
+    .from('email_events')
+    .select('*', { count: 'exact', head: true })
+    .eq('outreach_email_id', emailRecord.id)
+    .eq('event_type', 'click');
+
+  if (count === 1) {
+    await supabase.rpc('increment_campaign_stat', {
+      p_campaign_id: campaignId,
+      p_field: 'emails_clicked',
+    });
   }
 }

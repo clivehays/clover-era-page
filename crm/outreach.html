@@ -638,8 +638,8 @@
                 <div class="value" id="openRate">0%</div>
             </div>
             <div class="stat-card">
-                <div class="label">Reply Rate</div>
-                <div class="value" id="replyRate">0%</div>
+                <div class="label">Click Rate</div>
+                <div class="value" id="clickRate">0%</div>
             </div>
         </div>
 
@@ -1038,21 +1038,21 @@
                 // Get all campaign stats
                 const { data: campaigns } = await supabaseClient
                     .from('outreach_campaigns')
-                    .select('emails_sent, emails_opened, emails_replied');
+                    .select('emails_sent, emails_opened, emails_clicked');
 
-                let totalSent = 0, totalOpened = 0, totalReplied = 0;
+                let totalSent = 0, totalOpened = 0, totalClicked = 0;
                 campaigns?.forEach(c => {
                     totalSent += c.emails_sent || 0;
                     totalOpened += c.emails_opened || 0;
-                    totalReplied += c.emails_replied || 0;
+                    totalClicked += c.emails_clicked || 0;
                 });
 
                 document.getElementById('emailsSent').textContent = totalSent;
                 document.getElementById('openRate').textContent = totalSent > 0
                     ? Math.round((totalOpened / totalSent) * 100) + '%'
                     : '0%';
-                document.getElementById('replyRate').textContent = totalSent > 0
-                    ? Math.round((totalReplied / totalSent) * 100) + '%'
+                document.getElementById('clickRate').textContent = totalSent > 0
+                    ? Math.round((totalClicked / totalSent) * 100) + '%'
                     : '0%';
 
             } catch (error) {
@@ -1118,8 +1118,8 @@
                                 <div class="label">Opened</div>
                             </div>
                             <div class="campaign-stat">
-                                <div class="number">${campaign.emails_replied || 0}</div>
-                                <div class="label">Replied</div>
+                                <div class="number">${campaign.emails_clicked || 0}</div>
+                                <div class="label">Clicked</div>
                             </div>
                         </div>
                         <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">

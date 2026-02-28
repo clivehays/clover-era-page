@@ -854,11 +854,24 @@ async function sendViaResend(params: {
   }
 
   try {
+    // Convert plain text to simple HTML for Resend open/click tracking
+    // 1. Convert URLs to <a> tags so Resend can track clicks
+    // 2. Wrap paragraphs in <p> tags
+    const linkify = (text: string) => text.replace(
+      /(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" style="color:#2563eb;">$1</a>'
+    );
+    const htmlBody = params.body
+      .split('\n\n')
+      .map((para: string) => `<p style="margin:0 0 1em 0;font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#333;">${linkify(para.replace(/\n/g, '<br>'))}</p>`)
+      .join('');
+
     const emailPayload: Record<string, any> = {
       from: `${params.fromName} <${params.from}>`,
       to: [params.to],
       reply_to: params.replyTo,
       subject: params.subject,
+      html: htmlBody,
       text: params.body,
       tags: [
         { name: 'outreach_email_id', value: params.emailId },
