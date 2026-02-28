@@ -648,6 +648,7 @@
             <button class="tab active" onclick="switchTab('campaigns')">Campaigns</button>
             <button class="tab" onclick="switchTab('prospects')">Prospects Queue</button>
             <button class="tab" onclick="switchTab('emails')">Email Queue</button>
+            <button class="tab" onclick="switchTab('active')">In Progress</button>
             <button class="tab" onclick="switchTab('sequences')">Sequences</button>
         </div>
 
@@ -696,6 +697,20 @@
                     <div class="spinner"></div>
                 </div>
                 <div id="emailQueueList"></div>
+            </div>
+        </div>
+
+        <!-- In Progress Tab -->
+        <div id="activeTab" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Emails In Progress</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="loadActiveEmails()">Refresh</button>
+                </div>
+                <div id="activeEmailsLoading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                <div id="activeEmailsList"></div>
             </div>
         </div>
 
@@ -1011,6 +1026,7 @@
 
             if (tabName === 'prospects') loadProspectsQueue();
             if (tabName === 'emails') loadEmailQueue();
+            if (tabName === 'active') loadActiveEmails();
             if (tabName === 'sequences') loadSequences();
         }
 
@@ -2526,7 +2542,7 @@
                         contact:contacts(first_name, last_name, email, company:companies(name)),
                         prospect:outreach_prospects(first_name, last_name, email, company_name)
                     `)
-                    .in('status', ['draft', 'pending_followup', 'failed', 'approved', 'sent', 'delivered', 'opened', 'clicked', 'scheduled', 'replied'])
+                    .in('status', ['draft', 'pending_followup', 'failed', 'approved'])
                     .order('created_at', { ascending: true });
 
                 document.getElementById('emailQueueLoading').style.display = 'none';
@@ -2583,12 +2599,8 @@
                                     <td>Email ${email.position}${statusBadge}${failedError ? `<br><span style="font-size: 0.75rem; color: #ef4444;">${failedError}</span>` : ''}</td>
                                     <td class="actions-row">
                                         <button class="btn btn-secondary btn-sm" onclick="previewEmail('${email.id}')">Preview</button>
-                                        ${['sent','delivered','opened','clicked','scheduled'].includes(email.status)
-                                            ? `<button class="btn btn-success btn-sm" onclick="markAsReplied('${email.id}')">Mark Replied</button>`
-                                            : email.status === 'replied'
-                                            ? ''
-                                            : `<button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
-                                               <button class="btn btn-danger btn-sm" onclick="deleteEmail('${email.id}')">Delete</button>`}
+                                        <button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteEmail('${email.id}')">Delete</button>
                                     </td>
                                 </tr>
                             `}).join('')}
@@ -2598,6 +2610,84 @@
             } catch (error) {
                 console.error('Error loading email queue:', error);
                 document.getElementById('emailQueueList').innerHTML = '<p style="color: var(--danger-red);">Error loading emails</p>';
+            }
+        }
+
+        // In Progress tab - shows sent, scheduled, delivered, opened, clicked, replied emails
+        async function loadActiveEmails() {
+            document.getElementById('activeEmailsLoading').style.display = 'block';
+            document.getElementById('activeEmailsList').innerHTML = '';
+
+            try {
+                const { data: emails } = await supabaseClient
+                    .from('outreach_emails')
+                    .select(`
+                        *,
+                        contact:contacts(first_name, last_name, email, company:companies(name)),
+                        prospect:outreach_prospects(first_name, last_name, email, company_name)
+                    `)
+                    .in('status', ['sent', 'delivered', 'opened', 'clicked', 'scheduled', 'replied'])
+                    .order('sent_at', { ascending: false, nullsFirst: false });
+
+                document.getElementById('activeEmailsLoading').style.display = 'none';
+
+                if (!emails || emails.length === 0) {
+                    document.getElementById('activeEmailsList').innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No emails in progress.</p>';
+                    return;
+                }
+
+                const statusColors = {
+                    'sent': { bg: '#8b5cf6', color: '#fff', label: 'Sent' },
+                    'delivered': { bg: '#6366f1', color: '#fff', label: 'Delivered' },
+                    'opened': { bg: '#0ea5e9', color: '#fff', label: 'Opened' },
+                    'clicked': { bg: '#06b6d4', color: '#fff', label: 'Clicked' },
+                    'scheduled': { bg: '#a855f7', color: '#fff', label: 'Scheduled' },
+                    'replied': { bg: '#047857', color: '#fff', label: 'Replied' },
+                };
+
+                document.getElementById('activeEmailsList').innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Recipient</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${emails.map(email => {
+                                const recipient = email.prospect || email.contact;
+                                const companyName = email.prospect?.company_name || email.contact?.company?.name || '';
+                                const sc = statusColors[email.status] || { bg: '#666', color: '#fff', label: email.status };
+                                const statusBadge = `<span style="background: ${sc.bg}; color: ${sc.color}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">${sc.label}</span>`;
+                                const dateStr = email.status === 'scheduled'
+                                    ? (email.scheduled_at ? new Date(email.scheduled_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '')
+                                    : (email.sent_at ? new Date(email.sent_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
+                                return `
+                                <tr>
+                                    <td>
+                                        <strong>${recipient?.first_name || ''} ${recipient?.last_name || ''}</strong><br>
+                                        <span style="font-size: 0.85rem; color: var(--text-secondary);">${companyName}</span>
+                                    </td>
+                                    <td>${email.subject}</td>
+                                    <td>Email ${email.position} ${statusBadge}</td>
+                                    <td style="font-size: 0.85rem;">${dateStr}</td>
+                                    <td class="actions-row">
+                                        <button class="btn btn-secondary btn-sm" onclick="previewEmail('${email.id}')">Preview</button>
+                                        ${['sent','delivered','opened','clicked','scheduled'].includes(email.status)
+                                            ? `<button class="btn btn-success btn-sm" onclick="markAsReplied('${email.id}')">Mark Replied</button>`
+                                            : ''}
+                                    </td>
+                                </tr>
+                            `}).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                console.error('Error loading active emails:', error);
+                document.getElementById('activeEmailsList').innerHTML = '<p style="color: var(--danger-red);">Error loading emails</p>';
             }
         }
 
