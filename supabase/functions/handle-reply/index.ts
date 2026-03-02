@@ -141,16 +141,10 @@ async function markEmailReplied(supabase: any, emailId: string) {
     });
   }
 
-  // Check settings for auto-opportunity creation
-  const { data: settings } = await supabase
-    .from('outreach_settings')
-    .select('value')
-    .eq('key', 'reply_creates_opportunity')
-    .single();
-
+  // Create opportunity automatically when a reply is received
   let opportunity = null;
 
-  if (settings?.value === 'true' && contact) {
+  if (contact) {
     opportunity = await createOpportunity(supabase, contact, company);
   }
 
@@ -295,16 +289,10 @@ async function processInboundEmail(
     received_at: new Date().toISOString(),
   });
 
-  // Check settings for auto-opportunity creation
-  const { data: settings } = await supabase
-    .from('outreach_settings')
-    .select('value')
-    .eq('key', 'reply_creates_opportunity')
-    .single();
-
+  // Create opportunity automatically when a reply is received
   let opportunity = null;
 
-  if (settings?.value === 'true' && contact) {
+  if (contact) {
     opportunity = await createOpportunity(supabase, contact, company);
   }
 
@@ -353,7 +341,7 @@ async function createOpportunity(supabase: any, contact: any, company: any) {
     .from('opportunities')
     .select('id')
     .eq('contact_id', contact.id)
-    .in('stage', ['lead', 'qualified', 'demo-scheduled', 'demo-completed', 'proposal', 'negotiation', 'pilot'])
+    .in('stage', ['outbound-reply', 'call-booked', 'call-completed', 'lead', 'qualified', 'demo-scheduled', 'demo-completed', 'proposal', 'negotiation', 'pilot'])
     .limit(1)
     .single();
 
@@ -369,15 +357,19 @@ async function createOpportunity(supabase: any, contact: any, company: any) {
   const estimatedValue = estimatedManagers * pricePerManager * 12; // Annual value
 
   // Create opportunity
+  const now = new Date();
   const { data: opportunity, error: oppError } = await supabase
     .from('opportunities')
     .insert({
       company_id: company?.id,
       contact_id: contact.id,
       title: `${company?.name || contact.first_name} - Outreach Reply`,
-      stage: 'lead',
+      stage: 'outbound-reply',
+      stage_entered_at: now.toISOString(),
+      reply_date: now.toISOString().split('T')[0],
       value: estimatedValue,
       probability: 10,
+      funnel: 'operational',
       managers_count: estimatedManagers,
       monthly_recurring_revenue: estimatedManagers * pricePerManager,
       annual_contract_value: estimatedValue,
