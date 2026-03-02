@@ -329,7 +329,7 @@
             <div id="tab-outbound" class="tab-content">
                 <div class="stats-bar" id="outboundStats"></div>
                 <div class="section-header">
-                    <div class="section-title">This Week's Target: <span id="outboundTarget">0/140</span></div>
+                    <div class="section-title">This Week's Target: <span id="outboundTarget">0/200</span></div>
                     <a href="outreach.html" class="btn btn-green btn-sm">Open Outreach</a>
                 </div>
                 <div class="progress-bar" style="margin-bottom:1rem"><div class="progress-fill progress-green" id="outboundProgress" style="width:0%"></div></div>
@@ -786,8 +786,8 @@
         `;
 
         // Target
-        document.getElementById('outboundTarget').textContent = sentCount + '/140';
-        const pct = Math.min(100, Math.round(sentCount / 140 * 100));
+        document.getElementById('outboundTarget').textContent = sentCount + '/200';
+        const pct = Math.min(100, Math.round(sentCount / 200 * 100));
         const bar = document.getElementById('outboundProgress');
         bar.style.width = pct + '%';
         bar.className = 'progress-fill ' + (pct >= 80 ? 'progress-green' : pct >= 50 ? 'progress-amber' : 'progress-red');
@@ -802,8 +802,8 @@
             const isFuture = dayDate > now;
             return `<div class="daily-cell">
                 <div class="day-label">${d}</div>
-                <div class="day-count" style="color:${isFuture ? 'var(--text3)' : dayCount >= 20 ? 'var(--green)' : dayCount >= 10 ? 'var(--amber)' : 'var(--red)'}">${isFuture ? '-' : dayCount}</div>
-                <div class="day-target">/20 target</div>
+                <div class="day-count" style="color:${isFuture ? 'var(--text3)' : dayCount >= 40 ? 'var(--green)' : dayCount >= 20 ? 'var(--amber)' : 'var(--red)'}">${isFuture ? '-' : dayCount}</div>
+                <div class="day-target">/40 target</div>
             </div>`;
         }).join('');
 
@@ -1139,7 +1139,7 @@
         document.getElementById('reportPipeline').innerHTML = metric('Active Opportunities', totalActive) + metric('Total Pipeline', fmt$(totalVal)) + metric('Weighted Forecast', fmt$(weightedVal)) + metric('Funnel A Deals', activeA.length) + metric('Funnel B Deals', activeB.length);
 
         // Outbound
-        document.getElementById('reportOutbound').innerHTML = metric('Sent This Week', sentCount) + metric('Target', '140') + metric('Hit Rate', Math.round(sentCount/140*100) + '%');
+        document.getElementById('reportOutbound').innerHTML = metric('Sent This Week', sentCount) + metric('Target', '200') + metric('Hit Rate', Math.round(sentCount/200*100) + '%');
     }
 
     function metric(label, value) {
