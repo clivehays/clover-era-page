@@ -2612,21 +2612,40 @@
                     .eq('prospect_id', prospectId)
                     .maybeSingle();
 
-                if (!existingCp) {
+                let cpId;
+                if (existingCp) {
                     await supabaseClient
+                        .from('campaign_prospects')
+                        .update({ status: 'pending', current_step: 0 })
+                        .eq('id', existingCp.id);
+                    cpId = existingCp.id;
+                } else {
+                    const { data: cpRow, error: cpError } = await supabaseClient
                         .from('campaign_prospects')
                         .insert({
                             campaign_id: selectedCampaignId,
                             prospect_id: prospectId,
                             status: 'pending'
-                        });
+                        })
+                        .select('id')
+                        .single();
+                    if (cpError) throw cpError;
+                    cpId = cpRow.id;
                 }
 
-                // Open turnover analysis with prospect data pre-filled
-                runTurnoverAnalysis(prospectId, encodeURIComponent(company), employeeCount || '', encodeURIComponent(industry), encodeURIComponent(firstName), encodeURIComponent(email));
+                // Open turnover analysis with prospect + campaign data pre-filled
+                const params = new URLSearchParams();
+                if (company) params.set('company', company);
+                if (employeeCount) params.set('employees', employeeCount);
+                if (industry) params.set('industry', industry);
+                if (firstName) params.set('name', firstName);
+                if (email) params.set('email', email);
+                params.set('prospect_id', prospectId);
+                params.set('cp_id', cpId);
+                window.open(`/turnover-analysis/?${params.toString()}`, '_blank');
 
                 closeModal('addProspectsModal');
-                alert(`${firstName} ${lastName} added to campaign.\n\nThe Turnover Analysis tool is open in a new tab. Once you calculate and download the PDF, the report will auto-link to this prospect.\n\nThen come back here and generate emails.`);
+                alert(`${firstName} ${lastName} added to campaign.\n\nThe Turnover Analysis tool is open in a new tab.\nCalculate the report and download the PDF.\nEmails will generate automatically with the report numbers.`);
 
                 loadCampaigns();
                 loadGlobalCapacity();

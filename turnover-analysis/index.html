@@ -1268,6 +1268,35 @@
             }
         }
 
+        // Trigger email generation via CRM edge function
+        async function triggerEmailGeneration(campaignProspectId) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ campaign_prospect_id: campaignProspectId })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    // Show confirmation banner
+                    const banner = document.createElement('div');
+                    banner.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #166534; color: white; padding: 1rem; text-align: center; font-size: 1.1rem; z-index: 9999; font-weight: 500;';
+                    banner.textContent = `Emails generated (${result.count} emails) with report numbers. Download the PDF, then return to CRM.`;
+                    document.body.prepend(banner);
+                    setTimeout(() => banner.remove(), 10000);
+                    console.log('Emails generated successfully:', result.count);
+                } else {
+                    console.error('Email generation failed:', result.error);
+                }
+            } catch (err) {
+                console.error('Failed to trigger email generation:', err);
+            }
+        }
+
         // Generate PDF using jsPDF directly - Condensed 3-page version
         async function generatePDF() {
             const loading = document.getElementById('loadingOverlay');
@@ -1747,8 +1776,14 @@
 
                 reportData = calculateReport(inputs);
 
-                // Save to Supabase
+                // Save to Supabase and link to prospect
                 await saveToSupabase(reportData);
+
+                // If launched from CRM with campaign_prospect_id, auto-generate emails
+                const cpIdParam = new URLSearchParams(window.location.search).get('cp_id');
+                if (cpIdParam) {
+                    await triggerEmailGeneration(cpIdParam);
+                }
 
                 displayResults(reportData);
             } catch (err) {
