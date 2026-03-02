@@ -210,6 +210,33 @@
         /* ── LOGIN WALL ── */
         #loginWall { display: flex; align-items: center; justify-content: center; height: 100vh; }
 
+        /* ── OUTBOUND CONTROLS ── */
+        .ob-controls { background: var(--white); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .ob-search-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
+        .ob-search { flex: 1; padding: 0.5rem 0.75rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; outline: none; transition: border-color 0.15s; }
+        .ob-search:focus { border-color: var(--green); }
+        .ob-result-count { font-size: 0.75rem; color: var(--text3); white-space: nowrap; }
+        .ob-filters-row { display: flex; gap: 1.25rem; align-items: flex-end; flex-wrap: wrap; }
+        .ob-filter-group { display: flex; flex-direction: column; gap: 0.25rem; }
+        .ob-filter-label { font-size: 0.68rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; }
+        .ob-status-pills { display: flex; gap: 0; background: var(--bg); border-radius: 6px; overflow: hidden; border: 2px solid var(--border); }
+        .ob-pill { padding: 0.35rem 0.65rem; font-size: 0.72rem; font-weight: 600; border: none; background: none; cursor: pointer; color: var(--text2); transition: all 0.15s; }
+        .ob-pill:hover { color: var(--text); }
+        .ob-pill.active { background: var(--green); color: white; }
+        .ob-select { padding: 0.4rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.78rem; font-family: inherit; color: var(--text); background: var(--white); cursor: pointer; }
+        .ob-select:focus { border-color: var(--green); outline: none; }
+
+        /* ── SORTABLE COLUMNS ── */
+        .sortable { cursor: pointer; user-select: none; }
+        .sortable:hover { color: var(--text); }
+        .sort-arrow { font-size: 0.6rem; margin-left: 0.2rem; }
+        .sort-arrow.asc::after { content: '▲'; }
+        .sort-arrow.desc::after { content: '▼'; }
+
+        /* ── PAGINATION ── */
+        .ob-pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.75rem 0; margin-top: 0.5rem; }
+        .ob-page-info { font-size: 0.78rem; color: var(--text2); font-weight: 600; }
+
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
             .container { padding: 0.75rem; }
@@ -219,6 +246,9 @@
             .nav-links { gap: 0.75rem; }
             body.panel-open .container { margin-right: 0; }
             .detail-panel { width: 100vw; right: -100vw; }
+            .ob-filters-row { flex-direction: column; gap: 0.5rem; }
+            .ob-status-pills { flex-wrap: wrap; }
+            .ob-search-row { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -304,10 +334,49 @@
                 </div>
                 <div class="progress-bar" style="margin-bottom:1rem"><div class="progress-fill progress-green" id="outboundProgress" style="width:0%"></div></div>
                 <div class="daily-grid" id="dailyGrid"></div>
-                <div class="section-header">
-                    <div class="section-title">Recent Sends</div>
+                <div class="ob-controls">
+                    <div class="ob-search-row">
+                        <input type="text" id="obSearchInput" class="ob-search" placeholder="Search name, company, or email..." oninput="handleObSearch(this.value)">
+                        <div class="ob-result-count" id="obResultCount"></div>
+                    </div>
+                    <div class="ob-filters-row">
+                        <div class="ob-filter-group">
+                            <label class="ob-filter-label">Status</label>
+                            <div class="ob-status-pills" id="obStatusPills">
+                                <button class="ob-pill active" data-status="all" onclick="setObStatus('all')">All</button>
+                                <button class="ob-pill" data-status="sent" onclick="setObStatus('sent')">Sent</button>
+                                <button class="ob-pill" data-status="opened" onclick="setObStatus('opened')">Opened</button>
+                                <button class="ob-pill" data-status="clicked" onclick="setObStatus('clicked')">Clicked</button>
+                                <button class="ob-pill" data-status="replied" onclick="setObStatus('replied')">Replied</button>
+                                <button class="ob-pill" data-status="bounced" onclick="setObStatus('bounced')">Bounced</button>
+                            </div>
+                        </div>
+                        <div class="ob-filter-group">
+                            <label class="ob-filter-label">Date Range</label>
+                            <select id="obDateRange" class="ob-select" onchange="setObDateRange(this.value)">
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <table class="data-table" id="tableOutbound"><thead><tr><th>Contact</th><th>Company</th><th>Sent</th><th>Opened</th><th>Replied</th><th>Status</th></tr></thead><tbody></tbody></table>
+                <table class="data-table" id="tableOutbound">
+                    <thead><tr>
+                        <th class="sortable" onclick="toggleObSort('contact')">Contact <span class="sort-arrow" id="sort-contact"></span></th>
+                        <th class="sortable" onclick="toggleObSort('company')">Company <span class="sort-arrow" id="sort-company"></span></th>
+                        <th class="sortable" onclick="toggleObSort('sent_at')">Sent <span class="sort-arrow" id="sort-sent_at"></span></th>
+                        <th class="sortable" onclick="toggleObSort('opened')">Opened <span class="sort-arrow" id="sort-opened"></span></th>
+                        <th class="sortable" onclick="toggleObSort('replied')">Replied <span class="sort-arrow" id="sort-replied"></span></th>
+                        <th class="sortable" onclick="toggleObSort('status')">Status <span class="sort-arrow" id="sort-status"></span></th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+                <div class="ob-pagination" id="obPagination" style="display:none">
+                    <button class="btn btn-white btn-sm" id="obPrevBtn" onclick="obPrevPage()">Previous</button>
+                    <span class="ob-page-info" id="obPageInfo">Page 1</span>
+                    <button class="btn btn-white btn-sm" id="obNextBtn" onclick="obNextPage()">Next</button>
+                </div>
             </div>
 
             <!-- ═══════════════ TAB: HOT LEADS ═══════════════ -->
@@ -442,6 +511,15 @@
     let currentFunnel = 'operational';
     let currentUser = null;
 
+    // Outbound filter/sort/pagination state
+    let obSearch = '';
+    let obStatusFilter = 'all';
+    let obDateRange = 'week';
+    let obSortCol = 'sent_at';
+    let obSortAsc = false;
+    let obPage = 0;
+    const OB_PAGE_SIZE = 50;
+
     // ═══════════════════════════════════════════════════════════════════════
     // AUTH
     // ═══════════════════════════════════════════════════════════════════════
@@ -470,7 +548,7 @@
         const [opps, acts, emails] = await Promise.all([
             sb.from('opportunities').select('*, company:companies(name, industry, employee_count), contact:contacts(first_name, last_name, email, title, linkedin_url, phone, pain_points, objections, key_quotes, personal_notes, next_action, next_action_date)').order('created_at', { ascending: false }),
             sb.from('activities').select('*').order('created_at', { ascending: false }).limit(500),
-            sb.from('outreach_emails').select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))').order('created_at', { ascending: false }).limit(200)
+            sb.from('outreach_emails').select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))').order('created_at', { ascending: false }).limit(1000)
         ]);
         allOpps = opps.data || [];
         allActivities = acts.data || [];
@@ -686,6 +764,7 @@
     // TAB: OUTBOUND
     // ═══════════════════════════════════════════════════════════════════════
     function renderOutbound() {
+        // Stats always show This Week
         const now = new Date();
         const weekStart = new Date(now);
         weekStart.setDate(now.getDate() - now.getDay() + 1); // Monday
@@ -728,20 +807,179 @@
             </div>`;
         }).join('');
 
-        // Recent sends table
-        const recentSends = allEmails.filter(e => e.status !== 'draft').slice(0, 30);
+        // Table (filtered/sorted/paginated)
+        renderOutboundTable();
+    }
+
+    function renderOutboundTable() {
+        // 1. Start with all non-draft emails
+        let filtered = allEmails.filter(e => e.status !== 'draft');
+
+        // 2. Date range filter
+        if (obDateRange !== 'all') {
+            const now = new Date();
+            let rangeStart;
+            if (obDateRange === 'week') {
+                rangeStart = new Date(now);
+                rangeStart.setDate(now.getDate() - now.getDay() + 1);
+                rangeStart.setHours(0, 0, 0, 0);
+            } else if (obDateRange === 'month') {
+                rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            }
+            const rangeISO = rangeStart.toISOString();
+            filtered = filtered.filter(e => e.sent_at && e.sent_at >= rangeISO);
+        }
+
+        // 3. Status filter
+        if (obStatusFilter !== 'all') {
+            if (obStatusFilter === 'opened') {
+                filtered = filtered.filter(e => e.opened_at);
+            } else if (obStatusFilter === 'replied') {
+                filtered = filtered.filter(e => e.replied_at || e.status === 'replied');
+            } else {
+                filtered = filtered.filter(e => e.status === obStatusFilter);
+            }
+        }
+
+        // 4. Search filter
+        if (obSearch) {
+            const term = obSearch.toLowerCase();
+            filtered = filtered.filter(e => {
+                const p = e.prospect?.prospect;
+                const searchable = [p?.first_name, p?.last_name, p?.company_name, p?.email].filter(Boolean).join(' ').toLowerCase();
+                return searchable.includes(term);
+            });
+        }
+
+        // 5. Sort
+        filtered.sort((a, b) => {
+            let valA, valB;
+            const pA = a.prospect?.prospect;
+            const pB = b.prospect?.prospect;
+            switch (obSortCol) {
+                case 'contact':
+                    valA = (pA ? pA.first_name + ' ' + (pA.last_name || '') : '').toLowerCase();
+                    valB = (pB ? pB.first_name + ' ' + (pB.last_name || '') : '').toLowerCase();
+                    break;
+                case 'company':
+                    valA = (pA?.company_name || '').toLowerCase();
+                    valB = (pB?.company_name || '').toLowerCase();
+                    break;
+                case 'sent_at':
+                    valA = a.sent_at || '';
+                    valB = b.sent_at || '';
+                    break;
+                case 'opened':
+                    valA = a.opened_at ? 1 : 0;
+                    valB = b.opened_at ? 1 : 0;
+                    break;
+                case 'replied':
+                    valA = (a.replied_at || a.status === 'replied') ? 1 : 0;
+                    valB = (b.replied_at || b.status === 'replied') ? 1 : 0;
+                    break;
+                case 'status':
+                    valA = a.status || '';
+                    valB = b.status || '';
+                    break;
+                default:
+                    valA = a.sent_at || '';
+                    valB = b.sent_at || '';
+            }
+            if (valA < valB) return obSortAsc ? -1 : 1;
+            if (valA > valB) return obSortAsc ? 1 : -1;
+            return 0;
+        });
+
+        // 6. Pagination
+        const totalFiltered = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(totalFiltered / OB_PAGE_SIZE));
+        if (obPage >= totalPages) obPage = totalPages - 1;
+        if (obPage < 0) obPage = 0;
+        const start = obPage * OB_PAGE_SIZE;
+        const pageItems = filtered.slice(start, start + OB_PAGE_SIZE);
+
+        // 7. Result count
+        if (totalFiltered > 0) {
+            document.getElementById('obResultCount').textContent = `Showing ${start + 1}\u2013${Math.min(start + OB_PAGE_SIZE, totalFiltered)} of ${totalFiltered}`;
+        } else {
+            document.getElementById('obResultCount').textContent = '0 results';
+        }
+
+        // 8. Sort arrows
+        document.querySelectorAll('#tableOutbound .sort-arrow').forEach(el => { el.className = 'sort-arrow'; });
+        const activeArrow = document.getElementById('sort-' + obSortCol);
+        if (activeArrow) activeArrow.className = 'sort-arrow ' + (obSortAsc ? 'asc' : 'desc');
+
+        // 9. Table rows
         const tbody = document.querySelector('#tableOutbound tbody');
-        tbody.innerHTML = recentSends.length === 0 ? '<tr><td colspan="6" class="empty-state">No emails sent yet</td></tr>' : recentSends.map(e => {
-            const p = e.prospect?.prospect;
-            return `<tr>
-                <td class="company">${p ? (p.first_name + ' ' + (p.last_name || '')) : '-'}</td>
-                <td>${p?.company_name || '-'}</td>
-                <td>${fmtDate(e.sent_at)}</td>
-                <td>${e.opened_at ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
-                <td>${e.replied_at || e.status === 'replied' ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
-                <td><span class="pill pill-${e.status === 'replied' ? 'green' : e.status === 'bounced' ? 'red' : 'gray'}">${e.status}</span></td>
-            </tr>`;
-        }).join('');
+        tbody.innerHTML = pageItems.length === 0
+            ? '<tr><td colspan="6" class="empty-state">No emails match filters</td></tr>'
+            : pageItems.map(e => {
+                const p = e.prospect?.prospect;
+                return `<tr>
+                    <td class="company">${p ? (p.first_name + ' ' + (p.last_name || '')) : '-'}</td>
+                    <td>${p?.company_name || '-'}</td>
+                    <td>${fmtDate(e.sent_at)}</td>
+                    <td>${e.opened_at ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
+                    <td>${e.replied_at || e.status === 'replied' ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
+                    <td><span class="pill pill-${e.status === 'replied' ? 'green' : e.status === 'bounced' ? 'red' : 'gray'}">${e.status}</span></td>
+                </tr>`;
+            }).join('');
+
+        // 10. Pagination controls
+        const pagDiv = document.getElementById('obPagination');
+        if (totalFiltered <= OB_PAGE_SIZE) {
+            pagDiv.style.display = 'none';
+        } else {
+            pagDiv.style.display = 'flex';
+            document.getElementById('obPageInfo').textContent = `Page ${obPage + 1} of ${totalPages}`;
+            document.getElementById('obPrevBtn').disabled = obPage === 0;
+            document.getElementById('obNextBtn').disabled = obPage >= totalPages - 1;
+        }
+    }
+
+    // ── Outbound control handlers ──
+    function handleObSearch(val) {
+        obSearch = val.trim();
+        obPage = 0;
+        renderOutboundTable();
+    }
+
+    function setObStatus(status) {
+        obStatusFilter = status;
+        obPage = 0;
+        document.querySelectorAll('#obStatusPills .ob-pill').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.status === status);
+        });
+        renderOutboundTable();
+    }
+
+    function setObDateRange(range) {
+        obDateRange = range;
+        obPage = 0;
+        renderOutboundTable();
+    }
+
+    function toggleObSort(col) {
+        if (obSortCol === col) {
+            obSortAsc = !obSortAsc;
+        } else {
+            obSortCol = col;
+            obSortAsc = (col === 'contact' || col === 'company' || col === 'status');
+        }
+        renderOutboundTable();
+    }
+
+    function obNextPage() {
+        obPage++;
+        renderOutboundTable();
+        document.getElementById('tableOutbound').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function obPrevPage() {
+        obPage--;
+        renderOutboundTable();
+        document.getElementById('tableOutbound').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // ═══════════════════════════════════════════════════════════════════════
