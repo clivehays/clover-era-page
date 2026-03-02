@@ -697,12 +697,12 @@
         const openedCount = weekEmails.filter(e => e.opened_at).length;
         const repliedCount = weekEmails.filter(e => e.replied_at || e.status === 'replied').length;
         const openRate = sentCount > 0 ? Math.round(openedCount / sentCount * 100) : 0;
-        const replyRate = sentCount > 0 ? Math.round(repliedCount / sentCount * 100) : 0;
+        const clickedCount = weekEmails.filter(e => e.status === 'clicked').length;
 
         document.getElementById('outboundStats').innerHTML = `
             <div class="stat-card"><div class="stat-label">Sent This Week</div><div class="stat-value">${sentCount}</div></div>
             <div class="stat-card"><div class="stat-label">Open Rate</div><div class="stat-value">${openRate}%</div></div>
-            <div class="stat-card"><div class="stat-label">Reply Rate</div><div class="stat-value">${replyRate}%</div></div>
+            <div class="stat-card"><div class="stat-label">Clicked</div><div class="stat-value">${clickedCount}</div></div>
             <div class="stat-card"><div class="stat-label">Replies</div><div class="stat-value">${repliedCount}</div></div>
         `;
 
