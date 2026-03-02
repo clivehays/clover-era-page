@@ -183,13 +183,14 @@ function calculateTurnoverFields(employeeCount: number, avgSalary: number) {
 }
 
 function formatDollar(amount: number): string {
-  if (amount >= 1000000) {
-    return `${(amount / 1000000).toFixed(1)}M`;
+  const rounded = Math.round(amount);
+  if (rounded >= 1000000) {
+    return `${(rounded / 1000000).toFixed(1)}M`;
   }
-  if (amount >= 1000) {
-    return amount.toLocaleString('en-US');
+  if (rounded >= 1000) {
+    return rounded.toLocaleString('en-US');
   }
-  return String(amount);
+  return String(rounded);
 }
 
 function getCurrencySymbol(country: string): string {
