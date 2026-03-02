@@ -605,7 +605,7 @@ async function generateOperationalSequence(
 
   // Generate custom_company_reference via Claude
   if (ANTHROPIC_API_KEY) {
-    const customRef = await generateCustomCompanyReference(context);
+    const customRef = await generateCustomCompanyReference(context, turnover, currencySymbol);
     replacements['{{custom_company_reference}}'] = customRef;
   }
 
@@ -633,7 +633,7 @@ async function generateOperationalSequence(
   });
 }
 
-async function generateCustomCompanyReference(context: any): Promise<string> {
+async function generateCustomCompanyReference(context: any, turnover: any, currencySymbol: string): Promise<string> {
   const prompt = `Generate a 1-2 sentence custom_company_reference for ${context.company_name} in ${context.industry || 'their industry'}.
 
 CONTEXT:
@@ -642,12 +642,19 @@ CONTEXT:
 - Research: ${context.research_summary || 'No specific research available.'}
 - Angle: ${context.personalization_angle || 'Focus on turnover cost visibility gap.'}
 
-Use public information (PE-backed, funding, expansion, industry challenge) to explain why turnover cost matters for them right now. 25-40 words maximum.
+ACTUAL TURNOVER NUMBERS (from their report - use ONLY these, do not invent figures):
+- Annual turnover cost: ${currencySymbol}${formatDollar(turnover.annual_turnover_cost)}
+- Cost per departure: ${currencySymbol}${formatDollar(turnover.cost_per_departure)}
+- Annual departures: ${turnover.calculated_departures}
+- People in 67-day window: ${turnover.sixty7_day_number}
+
+Use public information (PE-backed, funding, expansion, industry challenge) to explain why turnover cost matters for them right now. 25-40 words maximum. If you reference any dollar figures, use ONLY the numbers listed above.
 
 RULES:
 - Must be specific to THIS company, not generic
 - No em dashes
 - No fluff
+- Do NOT invent or calculate any dollar figures. Only use the exact numbers provided above.
 - Examples:
   "As a Blackstone portfolio company, you're reporting operational efficiency metrics quarterly. This is a line item that's invisible right now."
   "You just raised $40M Series B. If 15% of your engineering team walks in the next 12 months, that dilutes faster than you're planning for."
