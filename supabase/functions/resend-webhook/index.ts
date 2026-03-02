@@ -145,6 +145,9 @@ async function processEvent(supabase: any, event: any) {
       if (emailRecord.status !== 'replied') {
         statusUpdates.status = 'clicked';
       }
+      if (!emailRecord.clicked_at) {
+        statusUpdates.clicked_at = createdAt;
+      }
       // Update campaign click count
       await updateCampaignClickCount(supabase, emailRecord);
       break;
