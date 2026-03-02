@@ -876,7 +876,10 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-primary" onclick="quickAddProspect()" style="width: 100%;">Add to Campaign & Generate Email</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <button type="button" class="btn btn-secondary" onclick="quickAddAndRunAnalysis()" style="width: 100%; font-size: 0.85rem;">Run Turnover Analysis First</button>
+                        <button type="button" class="btn btn-primary" onclick="quickAddProspect()" style="width: 100%; font-size: 0.85rem;">Add & Generate Emails</button>
+                    </div>
                 </div>
 
                 <!-- Existing Prospects Section -->
@@ -2530,6 +2533,107 @@
             } catch (error) {
                 alert('Error: ' + error.message);
                 loadProspectsQueue();
+            }
+        }
+
+        async function quickAddAndRunAnalysis() {
+            const firstName = document.getElementById('qaFirstName').value.trim();
+            const lastName = document.getElementById('qaLastName').value.trim();
+            const email = document.getElementById('qaEmail').value.trim();
+            const company = document.getElementById('qaCompany').value.trim();
+            const title = document.getElementById('qaTitle').value.trim();
+            const industry = document.getElementById('qaIndustry').value.trim();
+            const employeeCount = parseInt(document.getElementById('qaEmployeeCount').value) || null;
+            const country = document.getElementById('qaCountry').value;
+
+            if (!firstName || !lastName || !email) {
+                alert('First name, last name, and email are required.');
+                return;
+            }
+
+            try {
+                // Save prospect first so it has an ID to link
+                const prospect = {
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    company_name: company || null,
+                    title: title || null,
+                    company_industry: industry || null,
+                    company_employee_count: employeeCount,
+                    country: country || null,
+                    status: 'pending',
+                    segment: 'buyer',
+                    import_batch: 'Quick Add'
+                };
+
+                if (currentCampaignSeqType === 'operational') {
+                    prospect.estimated_avg_salary = parseInt(document.getElementById('qaAvgSalary').value) || 85000;
+                }
+
+                // Check if prospect exists
+                const { data: existing } = await supabaseClient
+                    .from('outreach_prospects')
+                    .select('id')
+                    .eq('email', email)
+                    .maybeSingle();
+
+                let prospectId;
+                if (existing) {
+                    await supabaseClient
+                        .from('outreach_prospects')
+                        .update({
+                            first_name: firstName,
+                            last_name: lastName,
+                            company_name: prospect.company_name,
+                            title: prospect.title,
+                            company_industry: prospect.company_industry,
+                            company_employee_count: prospect.company_employee_count,
+                            country: prospect.country,
+                            ...(prospect.estimated_avg_salary && { estimated_avg_salary: prospect.estimated_avg_salary }),
+                        })
+                        .eq('id', existing.id);
+                    prospectId = existing.id;
+                } else {
+                    const { data: newProspect, error: prospectError } = await supabaseClient
+                        .from('outreach_prospects')
+                        .insert(prospect)
+                        .select('id')
+                        .single();
+                    if (prospectError) throw prospectError;
+                    prospectId = newProspect.id;
+                }
+
+                // Add to campaign
+                const { data: existingCp } = await supabaseClient
+                    .from('campaign_prospects')
+                    .select('id')
+                    .eq('campaign_id', selectedCampaignId)
+                    .eq('prospect_id', prospectId)
+                    .maybeSingle();
+
+                if (!existingCp) {
+                    await supabaseClient
+                        .from('campaign_prospects')
+                        .insert({
+                            campaign_id: selectedCampaignId,
+                            prospect_id: prospectId,
+                            status: 'pending'
+                        });
+                }
+
+                // Open turnover analysis with prospect data pre-filled
+                runTurnoverAnalysis(prospectId, encodeURIComponent(company), employeeCount || '', encodeURIComponent(industry), encodeURIComponent(firstName), encodeURIComponent(email));
+
+                closeModal('addProspectsModal');
+                alert(`${firstName} ${lastName} added to campaign.\n\nThe Turnover Analysis tool is open in a new tab. Once you calculate and download the PDF, the report will auto-link to this prospect.\n\nThen come back here and generate emails.`);
+
+                loadCampaigns();
+                loadGlobalCapacity();
+
+            } catch (err) {
+                console.error('Quick add + analysis error:', err);
+                alert('Error: ' + (err.message || err));
             }
         }
 
