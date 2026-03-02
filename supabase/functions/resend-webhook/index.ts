@@ -129,12 +129,12 @@ async function processEvent(supabase: any, event: any) {
       break;
 
     case 'email.opened':
-      // Only update to opened if not already replied
-      if (emailRecord.status !== 'replied') {
+      // Only update to opened if not already clicked or replied (prevent status regression)
+      if (emailRecord.status !== 'replied' && emailRecord.status !== 'clicked') {
         statusUpdates.status = 'opened';
-        if (!emailRecord.opened_at) {
-          statusUpdates.opened_at = createdAt;
-        }
+      }
+      if (!emailRecord.opened_at) {
+        statusUpdates.opened_at = createdAt;
       }
 
       // Update campaign stats
