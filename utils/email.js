@@ -1,13 +1,44 @@
-// Email utility functions using SendGrid
+// Email utility functions using Resend
 
-import sgMail from '@sendgrid/mail';
 import { createCalendarInvite } from './calendar';
 
-// Initialize SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = 'contact@cloverera.com';
 const FROM_NAME = 'Clive Hays - Clover ERA';
+
+async function sendEmail({ to, subject, html, text, attachments }) {
+    const payload = {
+        from: `${FROM_NAME} <${FROM_EMAIL}>`,
+        to,
+        subject,
+        html,
+        text,
+    };
+
+    // Resend supports attachments as { filename, content (base64) }
+    if (attachments && attachments.length > 0) {
+        payload.attachments = attachments.map(a => ({
+            filename: a.filename,
+            content: a.content, // already base64
+        }));
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Resend API error: ${response.status} - ${errorText}`);
+    }
+
+    return await response.json();
+}
 
 /**
  * Send confirmation email with calendar invite
@@ -26,18 +57,12 @@ export async function sendConfirmationEmail({ registration, roundtable, isWaitli
         htmlContent = generateWaitlistEmailHTML(registration, roundtable, date);
         textContent = generateWaitlistEmailText(registration, roundtable, date);
 
-        const msg = {
+        await sendEmail({
             to: registration.email,
-            from: {
-                email: FROM_EMAIL,
-                name: FROM_NAME
-            },
             subject,
+            html: htmlContent,
             text: textContent,
-            html: htmlContent
-        };
-
-        await sgMail.send(msg);
+        });
 
     } else {
         // Confirmed registration email with calendar invite
@@ -47,26 +72,18 @@ export async function sendConfirmationEmail({ registration, roundtable, isWaitli
         // Create calendar invite
         const calendarInvite = createCalendarInvite(roundtable, registration);
 
-        const msg = {
+        await sendEmail({
             to: registration.email,
-            from: {
-                email: FROM_EMAIL,
-                name: FROM_NAME
-            },
             subject,
-            text: textContent,
             html: htmlContent,
+            text: textContent,
             attachments: [
                 {
                     content: Buffer.from(calendarInvite).toString('base64'),
                     filename: 'manager-roundtable.ics',
-                    type: 'text/calendar',
-                    disposition: 'attachment'
                 }
-            ]
-        };
-
-        await sgMail.send(msg);
+            ],
+        });
     }
 }
 
@@ -80,18 +97,12 @@ export async function sendReminderEmail({ registration, roundtable }) {
     const htmlContent = generateReminderEmailHTML(registration, roundtable, date);
     const textContent = generateReminderEmailText(registration, roundtable, date);
 
-    const msg = {
+    await sendEmail({
         to: registration.email,
-        from: {
-            email: FROM_EMAIL,
-            name: FROM_NAME
-        },
         subject,
+        html: htmlContent,
         text: textContent,
-        html: htmlContent
-    };
-
-    await sgMail.send(msg);
+    });
 }
 
 /**
@@ -107,26 +118,18 @@ export async function sendWaitlistPromotionEmail({ registration, roundtable }) {
     // Create calendar invite
     const calendarInvite = createCalendarInvite(roundtable, registration);
 
-    const msg = {
+    await sendEmail({
         to: registration.email,
-        from: {
-            email: FROM_EMAIL,
-            name: FROM_NAME
-        },
         subject,
-        text: textContent,
         html: htmlContent,
+        text: textContent,
         attachments: [
             {
                 content: Buffer.from(calendarInvite).toString('base64'),
                 filename: 'manager-roundtable.ics',
-                type: 'text/calendar',
-                disposition: 'attachment'
             }
-        ]
-    };
-
-    await sgMail.send(msg);
+        ],
+    });
 }
 
 // ===== HTML EMAIL TEMPLATES =====

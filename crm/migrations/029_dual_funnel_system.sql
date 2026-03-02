@@ -171,7 +171,10 @@ END $$;
 
 DO $$ BEGIN
   ALTER TABLE opportunities ADD CONSTRAINT opp_pricing_tier_check
-    CHECK (pricing_tier IN ('single-team', '5-teams', '10-teams', '25-teams', 'custom'));
+    CHECK (pricing_tier IN (
+      'single-team', '5-teams', '10-teams', '25-teams', 'custom',
+      'enterprise-small', 'enterprise-medium', 'departmental', 'poc'
+    ));
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 

@@ -1471,7 +1471,7 @@
 
                 // CTA Box
                 doc.setFillColor('#46AEB8');
-                doc.roundedRect(margin + 15, y, contentWidth - 30, 70, 5, 5, 'F');
+                doc.roundedRect(margin + 15, y, contentWidth - 30, 100, 5, 5, 'F');
 
                 y += 22;
                 doc.setFontSize(16);
@@ -1484,8 +1484,23 @@
                 doc.setFont('helvetica', 'normal');
                 doc.text(`Your ${reportData.inThe67DayWindow} employees in the 67-day window won't wait. Neither should you.`, pageWidth / 2, y, { align: 'center', maxWidth: contentWidth - 50 });
 
-                y += 18;
+                // CTA Button linking to /talk/
+                y += 20;
+                const btnWidth = 180;
+                const btnHeight = 16;
+                const btnX = (pageWidth - btnWidth) / 2;
+                doc.setFillColor('#FFFFFF');
+                doc.roundedRect(btnX, y - 10, btnWidth, btnHeight, 4, 4, 'F');
+                doc.setFontSize(11);
+                doc.setTextColor('#0D7C88');
+                doc.setFont('helvetica', 'bold');
+                doc.text('Schedule Your Turnover Analysis', pageWidth / 2, y + 1, { align: 'center' });
+                doc.link(btnX, y - 10, btnWidth, btnHeight, { url: 'https://cloverera.com/talk/' });
+
+                y += 16;
                 doc.setFontSize(10);
+                doc.setTextColor('#FFFFFF');
+                doc.setFont('helvetica', 'normal');
                 doc.text('15 minutes. Your specific patterns.', pageWidth / 2, y, { align: 'center' });
 
                 y += 30;
