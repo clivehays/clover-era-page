@@ -527,28 +527,55 @@ async function generateOperationalSequence(
     sixty7_day_total: number;
   };
 
+  // Try to find a turnover report: by direct link, then by email, then by company name
+  let report: any = null;
+
   if (context.turnover_report_id) {
-    const { data: report, error: reportError } = await supabase
+    const { data } = await supabase
       .from('turnover_reports')
       .select('annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window')
       .eq('id', context.turnover_report_id)
       .single();
+    report = data;
+    if (report) console.log('Found turnover report by direct link');
+  }
 
-    if (report && !reportError && report.daily_cost != null && report.cost_per_departure != null) {
-      turnover = {
-        annual_turnover_cost: report.annual_cost,
-        daily_cost: report.daily_cost,
-        cost_per_departure: report.cost_per_departure,
-        calculated_departures: report.annual_departures,
-        sixty7_day_number: report.in_67_day_window,
-        sixty7_day_total: report.in_67_day_window * report.cost_per_departure,
-      };
-      console.log('Using linked turnover report data for email generation');
-    } else {
-      console.warn('Linked turnover report not found or incomplete, falling back to calculation');
-      turnover = calculateTurnoverFields(context.employee_count, context.estimated_avg_salary);
-    }
+  if (!report && context.email) {
+    const { data } = await supabase
+      .from('turnover_reports')
+      .select('id, annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window')
+      .eq('email', context.email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    report = data;
+    if (report) console.log('Found turnover report by email match');
+  }
+
+  if (!report && context.company_name) {
+    const { data } = await supabase
+      .from('turnover_reports')
+      .select('id, annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window')
+      .ilike('company_name', context.company_name)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    report = data;
+    if (report) console.log('Found turnover report by company name match');
+  }
+
+  if (report && report.daily_cost != null && report.cost_per_departure != null) {
+    turnover = {
+      annual_turnover_cost: report.annual_cost,
+      daily_cost: report.daily_cost,
+      cost_per_departure: report.cost_per_departure,
+      calculated_departures: report.annual_departures,
+      sixty7_day_number: report.in_67_day_window,
+      sixty7_day_total: report.in_67_day_window * report.cost_per_departure,
+    };
+    console.log('Using turnover report data for email generation');
   } else {
+    console.log('No turnover report found, using formula calculation');
     turnover = calculateTurnoverFields(context.employee_count, context.estimated_avg_salary);
   }
 
