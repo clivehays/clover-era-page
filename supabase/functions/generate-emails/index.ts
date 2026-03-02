@@ -248,6 +248,7 @@ serve(async (req) => {
     let postTopic: string;
     let commentText: string;
     let country: string;
+    let turnoverReportId: string | null;
 
     if (isProspectBased) {
       // PROSPECT-BASED EMAIL GENERATION
@@ -281,6 +282,7 @@ serve(async (req) => {
       postTopic = prospect.post_topic || '';
       commentText = prospect.comment_text || '';
       country = prospect.country || '';
+      turnoverReportId = prospect.turnover_report_id || null;
 
       // Get research by prospect_id (optional for self-serve sequence)
       const { data: prospectResearch } = await supabase
@@ -328,6 +330,7 @@ serve(async (req) => {
       postTopic = '';
       commentText = '';
       country = '';
+      turnoverReportId = null;
 
       // Get research by contact_id
       const { data: contactResearch } = await supabase
@@ -401,6 +404,7 @@ serve(async (req) => {
       post_topic: postTopic,
       comment_text: commentText,
       country: country,
+      turnover_report_id: turnoverReportId,
     };
 
     // Route to appropriate generator based on sequence type
@@ -409,7 +413,7 @@ serve(async (req) => {
     if (sequence.sequence_type === 'self_serve') {
       generatedEmailContents = await generateSelfServeSequence(templates, context);
     } else if (sequence.sequence_type === 'operational' && sequence.name.includes('Operational Buyer')) {
-      generatedEmailContents = await generateOperationalSequence(templates, context);
+      generatedEmailContents = await generateOperationalSequence(templates, context, supabase);
     } else {
       // Legacy or other sequences - use existing generation logic
       if (!research) {
@@ -509,11 +513,45 @@ serve(async (req) => {
 
 async function generateOperationalSequence(
   templates: any[],
-  context: any
+  context: any,
+  supabase: any
 ): Promise<Array<{ subject: string; body: string; notes: string }>> {
 
-  // Calculate turnover fields
-  const turnover = calculateTurnoverFields(context.employee_count, context.estimated_avg_salary);
+  // Check for linked turnover report first, fall back to formula
+  let turnover: {
+    annual_turnover_cost: number;
+    daily_cost: number;
+    cost_per_departure: number;
+    calculated_departures: number;
+    sixty7_day_number: number;
+    sixty7_day_total: number;
+  };
+
+  if (context.turnover_report_id) {
+    const { data: report, error: reportError } = await supabase
+      .from('turnover_reports')
+      .select('annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window')
+      .eq('id', context.turnover_report_id)
+      .single();
+
+    if (report && !reportError && report.daily_cost != null && report.cost_per_departure != null) {
+      turnover = {
+        annual_turnover_cost: report.annual_cost,
+        daily_cost: report.daily_cost,
+        cost_per_departure: report.cost_per_departure,
+        calculated_departures: report.annual_departures,
+        sixty7_day_number: report.in_67_day_window,
+        sixty7_day_total: report.in_67_day_window * report.cost_per_departure,
+      };
+      console.log('Using linked turnover report data for email generation');
+    } else {
+      console.warn('Linked turnover report not found or incomplete, falling back to calculation');
+      turnover = calculateTurnoverFields(context.employee_count, context.estimated_avg_salary);
+    }
+  } else {
+    turnover = calculateTurnoverFields(context.employee_count, context.estimated_avg_salary);
+  }
+
   const currencySymbol = getCurrencySymbol(context.country);
   const pdfFilename = `${context.company_name.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
 

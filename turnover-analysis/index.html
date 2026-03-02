@@ -859,13 +859,53 @@
             senior: 1.75
         };
 
-        // Supabase setup
-        const SUPABASE_URL = 'https://dvvsphsvcpxkplumutyc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2dnNwaHN2Y3B4a3BsdW11dHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDc3MzksImV4cCI6MjA3OTU4MzczOX0.waQs1wvf4Er66Oe-NI5Ht0M-tHJk83St1UR8AT2dOeI';
+        // Supabase setup (CRM project - shared with outreach system)
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Pre-fill form from URL parameters (for CRM integration)
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.get('company')) {
+                const el = document.getElementById('companyName');
+                if (el) el.value = params.get('company');
+            }
+            if (params.get('employees')) {
+                const el = document.getElementById('totalEmployees');
+                if (el) {
+                    el.value = params.get('employees');
+                    el.dispatchEvent(new Event('input'));
+                }
+            }
+            if (params.get('industry')) {
+                const industrySelect = document.getElementById('industry');
+                if (industrySelect) {
+                    const searchVal = params.get('industry').toLowerCase();
+                    const options = industrySelect.querySelectorAll('option');
+                    for (const opt of options) {
+                        if (opt.value.toLowerCase() === searchVal ||
+                            opt.textContent.toLowerCase().includes(searchVal)) {
+                            industrySelect.value = opt.value;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (params.get('name')) {
+                const el = document.getElementById('contactName');
+                if (el) el.value = params.get('name');
+            }
+            if (params.get('email')) {
+                const el = document.getElementById('email');
+                if (el) el.value = params.get('email');
+            }
+        });
 
         // State
         let reportData = null;
+        let currentReportId = null;
 
         // Format currency
         function formatCurrency(amount) {
@@ -1127,10 +1167,11 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Save to Supabase
+        // Save to Supabase (all calculated fields, with auto-match to outreach prospects)
         async function saveToSupabase(data) {
             try {
-                const { error } = await supabaseClient
+                // 1. Insert full report data
+                const { data: savedReport, error } = await supabaseClient
                     .from('turnover_reports')
                     .insert({
                         company_name: data.companyName,
@@ -1140,15 +1181,90 @@
                         total_employees: data.totalEmployees,
                         turnover_rate: data.turnoverRate,
                         annual_cost: data.totalAnnualCost,
+                        daily_cost: data.dailyCost,
+                        cost_per_departure: data.costPerDeparture,
+                        annual_departures: data.annualDepartures,
+                        in_67_day_window: data.inThe67DayWindow,
+                        number_of_managers: data.numberOfManagers,
+                        manager_ratio: data.managerRatio,
+                        industry_average: data.industryAverage,
+                        cost_breakdown: data.costBreakdown,
+                        savings_projections: data.savings,
                         pdf_generated: false,
                         email_sent: false
-                    });
+                    })
+                    .select('id')
+                    .single();
 
                 if (error) {
-                    console.error('Supabase error:', error);
+                    console.error('Supabase save error:', error);
+                    return null;
                 }
+
+                const reportId = savedReport.id;
+                currentReportId = reportId;
+
+                // 2. Check for prospect_id URL param (from CRM launch)
+                const urlProspectId = new URLSearchParams(window.location.search).get('prospect_id');
+
+                if (urlProspectId) {
+                    // Direct link via CRM
+                    await supabaseClient
+                        .from('outreach_prospects')
+                        .update({ turnover_report_id: reportId })
+                        .eq('id', urlProspectId);
+
+                    await supabaseClient
+                        .from('turnover_reports')
+                        .update({ prospect_id: urlProspectId })
+                        .eq('id', reportId);
+
+                    console.log('Linked report to prospect via URL param:', urlProspectId);
+                } else {
+                    // 3. Auto-match by email first, then company name
+                    let matchedProspect = null;
+
+                    const { data: emailMatch } = await supabaseClient
+                        .from('outreach_prospects')
+                        .select('id')
+                        .eq('email', data.email)
+                        .is('turnover_report_id', null)
+                        .limit(1)
+                        .maybeSingle();
+
+                    matchedProspect = emailMatch;
+
+                    if (!matchedProspect) {
+                        const { data: companyMatch } = await supabaseClient
+                            .from('outreach_prospects')
+                            .select('id')
+                            .ilike('company_name', data.companyName)
+                            .is('turnover_report_id', null)
+                            .limit(1)
+                            .maybeSingle();
+
+                        matchedProspect = companyMatch;
+                    }
+
+                    if (matchedProspect) {
+                        await supabaseClient
+                            .from('outreach_prospects')
+                            .update({ turnover_report_id: reportId })
+                            .eq('id', matchedProspect.id);
+
+                        await supabaseClient
+                            .from('turnover_reports')
+                            .update({ prospect_id: matchedProspect.id })
+                            .eq('id', reportId);
+
+                        console.log('Auto-linked report to prospect:', matchedProspect.id);
+                    }
+                }
+
+                return reportId;
             } catch (err) {
                 console.error('Failed to save to Supabase:', err);
+                return null;
             }
         }
 
@@ -1568,12 +1684,19 @@
 
                 // Update Supabase that PDF was generated
                 try {
-                    await supabaseClient
-                        .from('turnover_reports')
-                        .update({ pdf_generated: true })
-                        .eq('email', reportData.email)
-                        .order('created_at', { ascending: false })
-                        .limit(1);
+                    if (currentReportId) {
+                        await supabaseClient
+                            .from('turnover_reports')
+                            .update({ pdf_generated: true })
+                            .eq('id', currentReportId);
+                    } else {
+                        await supabaseClient
+                            .from('turnover_reports')
+                            .update({ pdf_generated: true })
+                            .eq('email', reportData.email)
+                            .order('created_at', { ascending: false })
+                            .limit(1);
+                    }
                 } catch (err) {
                     console.error('Failed to update PDF status:', err);
                 }

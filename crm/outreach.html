@@ -2430,7 +2430,7 @@
                     .from('campaign_prospects')
                     .select(`
                         *,
-                        prospect:outreach_prospects(id, first_name, last_name, email, title, company_name),
+                        prospect:outreach_prospects(id, first_name, last_name, email, title, company_name, company_employee_count, company_industry, turnover_report_id),
                         campaign:outreach_campaigns(name)
                     `)
                     .in('status', ['pending', 'researching'])
@@ -2466,6 +2466,11 @@
                                     <td><span class="badge badge-${cp.status}">${cp.status}</span></td>
                                     <td>
                                         <button class="btn btn-primary btn-sm" onclick="researchProspect('${cp.id}')">Research</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="runTurnoverAnalysis('${cp.prospect?.id || ''}', '${encodeURIComponent(cp.prospect?.company_name || '')}', '${cp.prospect?.company_employee_count || ''}', '${encodeURIComponent(cp.prospect?.company_industry || '')}', '${encodeURIComponent(cp.prospect?.first_name || '')}', '${encodeURIComponent(cp.prospect?.email || '')}')">Turnover Analysis</button>
+                                        ${!cp.prospect?.turnover_report_id ?
+                                            `<button class="btn btn-secondary btn-sm" onclick="linkTurnoverReport('${cp.prospect?.id || ''}')">Link Report</button>` :
+                                            `<span class="badge badge-ready" style="font-size: 0.75rem; margin-left: 0.25rem;">Report Linked</span>`
+                                        }
                                     </td>
                                 </tr>
                             `).join('')}
@@ -2525,6 +2530,96 @@
             } catch (error) {
                 alert('Error: ' + error.message);
                 loadProspectsQueue();
+            }
+        }
+
+        function runTurnoverAnalysis(prospectId, companyName, employeeCount, industry, firstName, email) {
+            const params = new URLSearchParams();
+            if (companyName) params.set('company', decodeURIComponent(companyName));
+            if (employeeCount) params.set('employees', employeeCount);
+            if (industry) params.set('industry', decodeURIComponent(industry));
+            if (firstName) params.set('name', decodeURIComponent(firstName));
+            if (email) params.set('email', decodeURIComponent(email));
+            if (prospectId) params.set('prospect_id', prospectId);
+
+            const url = `/turnover-analysis/?${params.toString()}`;
+            window.open(url, '_blank');
+        }
+
+        async function linkTurnoverReport(prospectId) {
+            const companyName = prompt('Search for turnover report by company name:');
+            if (!companyName) return;
+
+            try {
+                const { data: reports, error } = await supabaseClient
+                    .from('turnover_reports')
+                    .select('id, company_name, contact_name, email, annual_cost, created_at')
+                    .ilike('company_name', `%${companyName}%`)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                if (error || !reports || reports.length === 0) {
+                    alert('No turnover reports found for that company name.');
+                    return;
+                }
+
+                let selectedReport;
+                if (reports.length === 1) {
+                    selectedReport = reports[0];
+                } else {
+                    const options = reports.map((r, i) =>
+                        `${i + 1}. ${r.company_name} - ${r.contact_name} - $${Math.round(r.annual_cost).toLocaleString()} (${new Date(r.created_at).toLocaleDateString()})`
+                    ).join('\n');
+                    const choice = prompt(`Multiple reports found:\n${options}\n\nEnter number to select:`);
+                    const idx = parseInt(choice) - 1;
+                    if (isNaN(idx) || idx < 0 || idx >= reports.length) return;
+                    selectedReport = reports[idx];
+                }
+
+                // Link bidirectionally
+                await supabaseClient
+                    .from('outreach_prospects')
+                    .update({ turnover_report_id: selectedReport.id })
+                    .eq('id', prospectId);
+
+                await supabaseClient
+                    .from('turnover_reports')
+                    .update({ prospect_id: prospectId })
+                    .eq('id', selectedReport.id);
+
+                alert(`Linked to report for ${selectedReport.company_name} ($${Math.round(selectedReport.annual_cost).toLocaleString()}/yr)`);
+
+                // Offer to regenerate emails with accurate numbers
+                if (confirm('Regenerate emails with the turnover report numbers?')) {
+                    const { data: cp } = await supabaseClient
+                        .from('campaign_prospects')
+                        .select('id')
+                        .eq('prospect_id', prospectId)
+                        .in('status', ['ready', 'pending', 'researching'])
+                        .limit(1)
+                        .maybeSingle();
+
+                    if (cp) {
+                        const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            },
+                            body: JSON.stringify({ campaign_prospect_id: cp.id })
+                        });
+                        const result = await emailResponse.json();
+                        if (result.success) {
+                            alert(`Emails regenerated with turnover report data (${result.count} emails).`);
+                            loadEmailQueue();
+                        }
+                    }
+                }
+
+                loadProspectsQueue();
+
+            } catch (err) {
+                alert('Error linking report: ' + err.message);
             }
         }
 
