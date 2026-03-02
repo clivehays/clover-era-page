@@ -161,13 +161,31 @@ async function processEvent(supabase: any, event: any) {
           .from('campaign_contacts')
           .update({ status: 'bounced' })
           .eq('id', emailRecord.campaign_contact_id);
+
+        // Delete scheduled follow-up emails (position 2 and 3)
+        await supabase
+          .from('outreach_emails')
+          .delete()
+          .eq('campaign_contact_id', emailRecord.campaign_contact_id)
+          .in('status', ['scheduled', 'approved', 'pending_followup', 'draft'])
+          .gt('position', emailRecord.position);
       }
       if (emailRecord.campaign_prospect_id) {
         await supabase
           .from('campaign_prospects')
           .update({ status: 'bounced' })
           .eq('id', emailRecord.campaign_prospect_id);
+
+        // Delete scheduled follow-up emails (position 2 and 3)
+        await supabase
+          .from('outreach_emails')
+          .delete()
+          .eq('campaign_prospect_id', emailRecord.campaign_prospect_id)
+          .in('status', ['scheduled', 'approved', 'pending_followup', 'draft'])
+          .gt('position', emailRecord.position);
       }
+
+      console.log('Bounce: deleted follow-up emails for', emailRecord.id);
       break;
 
     case 'email.complained':
