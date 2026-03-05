@@ -32,6 +32,47 @@
             line-height: 1.6;
         }
 
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--teal);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
         .header {
             background: linear-gradient(135deg, var(--deep-teal), var(--teal));
             color: var(--white);
@@ -429,12 +470,20 @@
 </head>
 <body>
 
+<nav class="nav">
+    <div class="nav-brand">Clover ERA CRM</div>
+    <div class="nav-links">
+        <a href="command-center.html">Command Center</a>
+        <a href="people.html">People</a>
+        <a href="outreach.html">Outreach</a>
+        <a href="admin.html" id="adminLink" class="active">Admin</a>
+        <button class="btn-logout" id="btnLogout">Logout</button>
+    </div>
+</nav>
+
 <div class="header">
     <h1>Roundtable Admin</h1>
     <nav>
-        <a href="index.html">CRM Dashboard</a>
-        <a href="roundtable-admin.html">Roundtable</a>
-        <a href="kanban.html">Pipeline</a>
         <a href="../roundtable/index.html" target="_blank">View Landing Page</a>
     </nav>
 </div>
