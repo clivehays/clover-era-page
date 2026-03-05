@@ -320,6 +320,20 @@ body.panel-open .container { margin-right: var(--panel-w); }
     </div>
 </div>
 
+<!-- DELETE CONFIRMATION MODAL -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <h3 style="color:var(--red);">Delete Person</h3>
+        <p style="font-size:0.82rem; color:var(--text2); margin-bottom:0.75rem;">You are about to permanently delete this person:</p>
+        <p style="font-size:0.95rem; font-weight:700; margin-bottom:0.75rem;" id="deletePersonName"></p>
+        <p style="font-size:0.82rem; color:var(--red); margin-bottom:1rem;">This will remove the person and all their notes and activity history. This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn btn-white" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn" id="btnDelete" style="background:var(--red); color:white; border-color:var(--red);" onclick="executeDelete()">Delete Person</button>
+        </div>
+    </div>
+</div>
+
 <!-- PROMOTE MODAL -->
 <div class="modal-overlay" id="promoteModal">
     <div class="modal">
@@ -765,6 +779,7 @@ async function openPerson(id) {
     if (person._type === 'prospect') {
         html += '<button class="qa-btn" style="background:var(--green); color:white; border-color:var(--green);" onclick="showPromoteModal()">Promote to CRM</button>';
     }
+    html += '<button class="qa-btn" style="border-color:var(--red); color:var(--red);" onclick="showDeleteModal()">Delete</button>';
     html += '</div>';
 
     // Activity logger
@@ -1300,6 +1315,47 @@ async function executeQuickAdd() {
     // Clear form
     ['qaFirstName','qaLastName','qaEmail','qaCompany','qaTitle','qaLinkedin','qaNextAction','qaNextDate'].forEach(id => document.getElementById(id).value = '');
     await loadAllPeople();
+}
+
+// Delete person
+function showDeleteModal() {
+    if (!selectedPerson) return;
+    const name = `${selectedPerson.first_name || ''} ${selectedPerson.last_name || ''}`.trim() || selectedPerson.email || 'Unknown';
+    document.getElementById('deletePersonName').textContent = name;
+    document.getElementById('deleteModal').classList.add('active');
+}
+function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); }
+
+async function executeDelete() {
+    if (!selectedPerson) return;
+    const btn = document.getElementById('btnDelete');
+    btn.disabled = true; btn.textContent = 'Deleting...';
+    try {
+        // Delete person_notes first
+        if (selectedPerson._contactId) {
+            await sb.from('person_notes').delete().eq('contact_id', selectedPerson._contactId);
+        }
+        if (selectedPerson._prospectId) {
+            await sb.from('person_notes').delete().eq('prospect_id', selectedPerson._prospectId);
+        }
+
+        // Delete the person record
+        if (selectedPerson._type === 'contact' && selectedPerson._contactId) {
+            await sb.from('contacts').delete().eq('id', selectedPerson._contactId);
+        }
+        if (selectedPerson._prospectId) {
+            await sb.from('outreach_prospects').delete().eq('id', selectedPerson._prospectId);
+        }
+
+        closeDeleteModal();
+        closePanel();
+        showToast('Person deleted');
+        await loadAllPeople();
+    } catch (err) {
+        showToast('Delete failed: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false; btn.textContent = 'Delete Person';
+    }
 }
 
 // Logout
