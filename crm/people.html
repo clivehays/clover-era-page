@@ -423,17 +423,19 @@ function computeLifecycle(person) {
     // Check for book_sent notes
     if (person._hasBookSent) return 'book_sent';
 
-    // Contact without explicit stage = at least replied (they were promoted)
-    if (person._type === 'contact') return 'replied';
+    // Contact without explicit stage
+    if (person._type === 'contact') return 'cold';
 
-    // Prospect: check outreach email engagement
+    // Prospect: check outreach email engagement (highest first)
     if (person._hasClicked) return 'clicked';
     if (person._hasOpened) return 'opened';
 
     // Prospect status mapping
     const status = person.status || '';
     if (status === 'replied') return 'replied';
-    if (['active', 'completed'].includes(status)) return 'emailed';
+
+    // If they've been sent any email, they're "emailed"
+    if (person._hasSent || ['active', 'completed'].includes(status)) return 'emailed';
     return 'cold';
 }
 
@@ -462,7 +464,7 @@ async function loadAllPeople() {
         sb.from('opportunities')
             .select('id, contact_id, company_id, name, stage, value, close_date, created_at'),
         sb.from('outreach_emails')
-            .select('prospect_id, opened_at, clicked_at, replied_at')
+            .select('prospect_id, sent_at, opened_at, clicked_at, replied_at')
             .not('prospect_id', 'is', null),
         sb.from('person_notes')
             .select('contact_id, prospect_id, note_type')
@@ -470,11 +472,15 @@ async function loadAllPeople() {
     ]);
 
     // Build email engagement maps
+    const sentSet = new Set();
     const openedSet = new Set();
     const clickedSet = new Set();
     (emailsRes.data || []).forEach(e => {
-        if (e.opened_at && e.prospect_id) openedSet.add(e.prospect_id);
-        if (e.clicked_at && e.prospect_id) clickedSet.add(e.prospect_id);
+        if (e.prospect_id) {
+            if (e.sent_at) sentSet.add(e.prospect_id);
+            if (e.opened_at) openedSet.add(e.prospect_id);
+            if (e.clicked_at) clickedSet.add(e.prospect_id);
+        }
     });
 
     // Build book_sent set
@@ -525,6 +531,7 @@ async function loadAllPeople() {
         updated_at: p.created_at,
         _oppStages: [], _opps: [],
         _hasBookSent: bookSentProspects.has(p.id),
+        _hasSent: sentSet.has(p.id),
         _hasOpened: openedSet.has(p.id),
         _hasClicked: clickedSet.has(p.id),
         turnover_report_id: p.turnover_report_id
