@@ -101,17 +101,27 @@
         .stage-customer { background: #D1FAE5; color: #047857; }
         .stage-churned { background: #FEE2E2; color: #DC2626; }
 
-        /* ── KANBAN ── */
-        .kanban-row { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 1rem; min-height: 300px; }
-        .kanban-col { min-width: 160px; flex: 1; background: #f3f4f6; border-radius: 10px; padding: 0.75rem; }
-        .kanban-col-header { font-size: 0.72rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.6rem; display: flex; justify-content: space-between; }
-        .kanban-col-header .count { background: var(--white); padding: 0.1rem 0.4rem; border-radius: 8px; font-size: 0.65rem; }
-        .kanban-card { background: var(--white); border-radius: 8px; padding: 0.7rem; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; border-left: 3px solid var(--green); }
-        .kanban-card:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
-        .kanban-card .kc-name { font-weight: 700; font-size: 0.82rem; color: var(--text); }
-        .kanban-card .kc-company { font-size: 0.72rem; color: var(--text2); }
-        .kanban-card .kc-action { font-size: 0.72rem; color: var(--blue); margin-top: 0.25rem; }
-        .kanban-card .kc-meta { display: flex; justify-content: space-between; margin-top: 0.35rem; font-size: 0.68rem; color: var(--text3); }
+        /* ── PIPELINE FUNNEL ── */
+        .funnel-table { width: 100%; border-collapse: collapse; }
+        .funnel-row { cursor: pointer; transition: background 0.1s; }
+        .funnel-row:hover { background: #f9fafb; }
+        .funnel-row td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .funnel-stage { font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        .funnel-bar { height: 6px; border-radius: 3px; background: var(--green); transition: width 0.3s; }
+        .funnel-count { font-weight: 800; font-size: 1.1rem; text-align: right; }
+        .funnel-conv { font-size: 0.78rem; color: var(--text2); text-align: right; }
+        .funnel-attn { font-size: 0.78rem; text-align: right; }
+        .funnel-expand { display: none; }
+        .funnel-expand.open { display: table-row; }
+        .funnel-expand td { padding: 0; background: #f9fafb; }
+        .funnel-people { padding: 0.5rem 1rem 0.75rem; }
+        .funnel-person { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: var(--white); border-radius: 6px; margin-bottom: 0.35rem; border-left: 3px solid var(--green); cursor: pointer; transition: background 0.1s; }
+        .funnel-person:hover { background: #f0fdf4; }
+        .funnel-person.stale { border-left-color: var(--amber); }
+        .fp-name { font-weight: 600; font-size: 0.82rem; }
+        .fp-company { font-size: 0.72rem; color: var(--text2); }
+        .fp-meta { font-size: 0.72rem; color: var(--text3); text-align: right; }
+        .fp-action { font-size: 0.72rem; color: var(--blue); }
 
         /* ── PROGRESS BAR ── */
         .progress-bar { background: var(--border); border-radius: 8px; height: 10px; overflow: hidden; }
@@ -675,63 +685,93 @@
     // ═══════════════════════════════════════════════════════════════════════
     function renderPipeline() {
         const allNonChurned = allPeople.filter(p => p._lifecycle !== 'churned');
-        const coldCount = allNonChurned.filter(p => p._lifecycle === 'cold').length;
-        const emailedCount = allNonChurned.filter(p => p._lifecycle === 'emailed').length;
-
-        // Pipeline = Opened onward (excludes Cold & Emailed which are managed elsewhere)
-        const KANBAN_STAGES = PIPELINE_STAGES.filter(s => !['cold', 'emailed'].includes(s.id));
-        const pipelinePeople = allNonChurned.filter(p => !['cold', 'emailed'].includes(p._lifecycle));
-
-        // Stats
-        const active = pipelinePeople.filter(p => ACTIVE_STAGE_IDS.includes(p._lifecycle));
-        const customers = pipelinePeople.filter(p => p._lifecycle === 'customer');
         const now = Date.now();
-        const needsAttention = pipelinePeople.filter(p => {
-            const lastTouch = p.updated_at || p.created_at;
-            return lastTouch && (now - new Date(lastTouch).getTime()) > 7 * 86400000;
+
+        // Build stage data
+        const stageData = PIPELINE_STAGES.map(stage => {
+            const people = allNonChurned.filter(p => p._lifecycle === stage.id);
+            const stale = people.filter(p => {
+                const t = p.updated_at || p.created_at;
+                return t && (now - new Date(t).getTime()) > 7 * 86400000;
+            });
+            return { ...stage, people, staleCount: stale.length };
         });
 
+        // Find max count for bar scaling
+        const maxCount = Math.max(...stageData.map(s => s.people.length), 1);
+
+        // Conversion rates (from previous stage)
+        const convRates = stageData.map((s, i) => {
+            if (i === 0) return null;
+            const prev = stageData[i - 1].people.length;
+            return prev > 0 ? ((s.people.length / prev) * 100).toFixed(0) + '%' : '-';
+        });
+
+        // Stats
+        const totalPipeline = allNonChurned.length;
+        const active = allNonChurned.filter(p => ACTIVE_STAGE_IDS.includes(p._lifecycle));
+        const customers = allNonChurned.filter(p => p._lifecycle === 'customer');
+        const totalStale = stageData.reduce((sum, s) => sum + s.staleCount, 0);
+
         document.getElementById('pipelineStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">In Pipeline</div><div class="stat-value">${pipelinePeople.length}</div><div class="stat-sub">opened or beyond</div></div>
+            <div class="stat-card"><div class="stat-label">Total People</div><div class="stat-value">${totalPipeline.toLocaleString()}</div></div>
             <div class="stat-card"><div class="stat-label">Active (Replied+)</div><div class="stat-value">${active.length}</div></div>
             <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value" style="color:var(--green)">${customers.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Needs Attention</div><div class="stat-value" style="color:${needsAttention.length > 0 ? 'var(--amber)' : 'var(--text)'}">${needsAttention.length}</div><div class="stat-sub">no activity 7+ days</div></div>
+            <div class="stat-card"><div class="stat-label">Needs Attention</div><div class="stat-value" style="color:${totalStale > 0 ? 'var(--amber)' : 'var(--text)'}">${totalStale}</div><div class="stat-sub">no activity 7+ days</div></div>
         `;
 
-        // Context summary
+        // Funnel table
         const row = document.getElementById('kanbanRow');
-        let html = `<div style="display:flex; gap:1.5rem; margin-bottom:0.75rem; font-size:0.82rem; color:var(--text2); align-items:center;">
-            <span><strong>${coldCount.toLocaleString()}</strong> Cold</span>
-            <span><strong>${emailedCount.toLocaleString()}</strong> Emailed</span>
-            <span style="color:var(--text3);">|</span>
-            <span style="color:var(--text3);">Pipeline starts at Opened</span>
-        </div>`;
+        let html = `<table class="funnel-table">
+            <thead><tr style="font-size:0.7rem; text-transform:uppercase; color:var(--text3); font-weight:700;">
+                <td style="padding:0.5rem 1rem; width:30%;">Stage</td>
+                <td style="padding:0.5rem 1rem; width:30%;"></td>
+                <td style="padding:0.5rem 1rem; text-align:right; width:10%;">Count</td>
+                <td style="padding:0.5rem 1rem; text-align:right; width:15%;">Conv.</td>
+                <td style="padding:0.5rem 1rem; text-align:right; width:15%;">Attention</td>
+            </tr></thead><tbody>`;
 
-        // Kanban columns
-        html += '<div style="display:flex; gap:0.75rem; overflow-x:auto; padding-bottom:1rem; min-height:300px;">';
-        html += KANBAN_STAGES.map(stage => {
-            const stagePeople = pipelinePeople.filter(p => p._lifecycle === stage.id);
-            return `<div class="kanban-col" data-stage="${stage.id}">
-                <div class="kanban-col-header">${stage.name} <span class="count">${stagePeople.length}</span></div>
-                ${stagePeople.slice(0, 50).map(p => {
+        stageData.forEach((stage, i) => {
+            const barWidth = (stage.people.length / maxCount) * 100;
+            html += `<tr class="funnel-row" onclick="toggleFunnelExpand('${stage.id}')">
+                <td><div class="funnel-stage"><span class="stage-pill stage-${stage.id}" style="font-size:0.78rem;">${stage.name}</span></div></td>
+                <td><div style="width:100%; background:var(--border); border-radius:3px; height:6px;"><div class="funnel-bar" style="width:${barWidth}%"></div></div></td>
+                <td class="funnel-count">${stage.people.length.toLocaleString()}</td>
+                <td class="funnel-conv">${convRates[i] || '-'}</td>
+                <td class="funnel-attn">${stage.staleCount > 0 ? '<span style="color:var(--amber); font-weight:600;">' + stage.staleCount + '</span>' : '<span style="color:var(--text3);">0</span>'}</td>
+            </tr>`;
+            // Expandable people list
+            html += `<tr class="funnel-expand" id="funnel-${stage.id}"><td colspan="5"><div class="funnel-people">`;
+            if (stage.people.length === 0) {
+                html += '<div style="text-align:center; color:var(--text3); font-size:0.82rem; padding:0.5rem;">No people in this stage</div>';
+            } else {
+                stage.people.sort((a, b) => new Date(a.updated_at || a.created_at) - new Date(b.updated_at || b.created_at)).slice(0, 50).forEach(p => {
                     const lastTouch = p.updated_at || p.created_at;
-                    const stale = lastTouch && (now - new Date(lastTouch).getTime()) > 7 * 86400000;
-                    return `<div class="kanban-card" data-person="${p._id}" data-type="${p._type}" style="border-left-color:${stale ? 'var(--amber)' : 'var(--green)'}">
-                        <div class="kc-name">${escHtml(p.first_name + ' ' + p.last_name)}</div>
-                        <div class="kc-company">${escHtml(p.company_name) || '-'}</div>
-                        ${p.next_action ? '<div class="kc-action">' + escHtml(p.next_action) + '</div>' : ''}
-                        <div class="kc-meta">
-                            <span>${fmtDate(lastTouch)}</span>
-                            <span class="pill pill-${p.source === 'outbound' ? 'blue' : 'green'}" style="font-size:0.6rem">${p._type === 'contact' ? 'CRM' : 'Prospect'}</span>
+                    const isStale = lastTouch && (now - new Date(lastTouch).getTime()) > 7 * 86400000;
+                    const daysAgo = lastTouch ? Math.floor((now - new Date(lastTouch).getTime()) / 86400000) : '?';
+                    html += `<div class="funnel-person ${isStale ? 'stale' : ''}" onclick="event.stopPropagation(); window.open('people.html','_self');">
+                        <div>
+                            <div class="fp-name">${escHtml(p.first_name + ' ' + p.last_name)}</div>
+                            <div class="fp-company">${escHtml(p.company_name) || '-'}</div>
+                            ${p.next_action ? '<div class="fp-action">' + escHtml(p.next_action) + '</div>' : ''}
                         </div>
+                        <div class="fp-meta">${daysAgo}d ago</div>
                     </div>`;
-                }).join('')}
-                ${stagePeople.length > 50 ? '<div style="text-align:center;font-size:0.72rem;color:var(--text3);padding:0.5rem">+' + (stagePeople.length - 50) + ' more</div>' : ''}
-            </div>`;
-        }).join('');
-        html += '</div>';
+                });
+                if (stage.people.length > 50) {
+                    html += `<div style="text-align:center; font-size:0.72rem; color:var(--text3); padding:0.5rem;">+${stage.people.length - 50} more - view on People page</div>`;
+                }
+            }
+            html += '</div></td></tr>';
+        });
 
+        html += '</tbody></table>';
         row.innerHTML = html;
+    }
+
+    function toggleFunnelExpand(stageId) {
+        const el = document.getElementById('funnel-' + stageId);
+        if (el) el.classList.toggle('open');
     }
 
     // ═══════════════════════════════════════════════════════════════════════
