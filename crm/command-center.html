@@ -322,6 +322,7 @@
                     <thead><tr>
                         <th class="sortable" onclick="toggleObSort('contact')">Contact <span class="sort-arrow" id="sort-contact"></span></th>
                         <th class="sortable" onclick="toggleObSort('company')">Company <span class="sort-arrow" id="sort-company"></span></th>
+                        <th class="sortable" onclick="toggleObSort('position')">Email # <span class="sort-arrow" id="sort-position"></span></th>
                         <th class="sortable" onclick="toggleObSort('sent_at')">Sent <span class="sort-arrow" id="sort-sent_at"></span></th>
                         <th class="sortable" onclick="toggleObSort('opened')">Opened <span class="sort-arrow" id="sort-opened"></span></th>
                         <th class="sortable" onclick="toggleObSort('replied')">Replied <span class="sort-arrow" id="sort-replied"></span></th>
@@ -715,14 +716,16 @@
         const weekStartISO = weekStart.toISOString();
 
         const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= weekStartISO && e.status !== 'draft');
-        const sentCount = weekEmails.length;
-        const openedCount = weekEmails.filter(e => e.opened_at).length;
-        const repliedCount = weekEmails.filter(e => e.replied_at || e.status === 'replied').length;
+        // Stats based on Email 1s only (new prospects reached)
+        const email1s = weekEmails.filter(e => e.position === 1);
+        const sentCount = email1s.length;
+        const openedCount = email1s.filter(e => e.opened_at).length;
+        const repliedCount = email1s.filter(e => e.replied_at || e.status === 'replied').length;
         const openRate = sentCount > 0 ? Math.round(openedCount / sentCount * 100) : 0;
-        const clickedCount = weekEmails.filter(e => e.clicked_at).length;
+        const clickedCount = email1s.filter(e => e.clicked_at).length;
 
         document.getElementById('outboundStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Sent This Week</div><div class="stat-value">${sentCount}</div></div>
+            <div class="stat-card"><div class="stat-label">Email 1s This Week</div><div class="stat-value">${sentCount}</div><div class="stat-sub">new prospects reached</div></div>
             <div class="stat-card"><div class="stat-label">Open Rate</div><div class="stat-value">${openRate}%</div></div>
             <div class="stat-card"><div class="stat-label">Clicked</div><div class="stat-value">${clickedCount}</div></div>
             <div class="stat-card"><div class="stat-label">Replies</div><div class="stat-value">${repliedCount}</div></div>
@@ -739,7 +742,7 @@
             const dayDate = new Date(weekStart);
             dayDate.setDate(weekStart.getDate() + i);
             const dayISO = dayDate.toISOString().split('T')[0];
-            const dayCount = weekEmails.filter(e => e.sent_at && e.sent_at.startsWith(dayISO)).length;
+            const dayCount = email1s.filter(e => e.sent_at && e.sent_at.startsWith(dayISO)).length;
             const isFuture = dayDate > now;
             return `<div class="daily-cell">
                 <div class="day-label">${d}</div>
@@ -802,6 +805,10 @@
                     valA = (pA?.company_name || '').toLowerCase();
                     valB = (pB?.company_name || '').toLowerCase();
                     break;
+                case 'position':
+                    valA = a.position || 0;
+                    valB = b.position || 0;
+                    break;
                 case 'sent_at':
                     valA = a.sent_at || '';
                     valB = b.sent_at || '';
@@ -846,12 +853,13 @@
 
         const tbody = document.querySelector('#tableOutbound tbody');
         tbody.innerHTML = pageItems.length === 0
-            ? '<tr><td colspan="6" class="empty-state">No emails match filters</td></tr>'
+            ? '<tr><td colspan="7" class="empty-state">No emails match filters</td></tr>'
             : pageItems.map(e => {
                 const p = e.prospect?.prospect;
                 return `<tr>
                     <td class="company">${p ? (p.first_name + ' ' + (p.last_name || '')) : '-'}</td>
                     <td>${p?.company_name || '-'}</td>
+                    <td><span class="pill pill-${e.position === 1 ? 'blue' : 'gray'}">${e.position || '?'}</span></td>
                     <td>${fmtDate(e.sent_at)}</td>
                     <td>${e.opened_at ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
                     <td>${e.replied_at || e.status === 'replied' ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
@@ -939,15 +947,18 @@
             metric(s.name, stageCounts[s.id])
         ).join('');
 
-        // Outreach performance (from emails for the selected week)
+        // Outreach performance (Email 1s only for the selected week)
         const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= ws && e.sent_at <= we + 'T23:59:59' && e.status !== 'draft');
-        const sentCount = weekEmails.length;
-        const openCount = weekEmails.filter(e => e.opened_at).length;
-        const clickCount = weekEmails.filter(e => e.clicked_at).length;
-        const replyCount = weekEmails.filter(e => e.replied_at || e.status === 'replied').length;
+        const email1s = weekEmails.filter(e => e.position === 1);
+        const sentCount = email1s.length;
+        const openCount = email1s.filter(e => e.opened_at).length;
+        const clickCount = email1s.filter(e => e.clicked_at).length;
+        const replyCount = email1s.filter(e => e.replied_at || e.status === 'replied').length;
+        const totalAllEmails = weekEmails.length;
 
         document.getElementById('reportOutreach').innerHTML =
-            metric('Emails Sent', sentCount) +
+            metric('Email 1s Sent', sentCount) +
+            metric('Total Emails', totalAllEmails) +
             metric('Open Rate', sentCount > 0 ? Math.round(openCount / sentCount * 100) + '%' : '0%') +
             metric('Click Rate', sentCount > 0 ? Math.round(clickCount / sentCount * 100) + '%' : '0%') +
             metric('Reply Rate', sentCount > 0 ? Math.round(replyCount / sentCount * 100) + '%' : '0%') +

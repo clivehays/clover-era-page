@@ -861,12 +861,14 @@ async function loadTimeline(person) {
     }));
 
     if (person._prospectId) {
-        const { data: emails } = await sb.from('outreach_emails').select('subject, status, sent_at, opened_at, clicked_at, replied_at, created_at')
+        const { data: emails } = await sb.from('outreach_emails').select('subject, status, position, sent_at, opened_at, clicked_at, replied_at, created_at')
             .eq('prospect_id', person._prospectId).order('created_at', { ascending: false }).limit(20);
         (emails || []).forEach(e => {
-            let st = e.status || 'draft';
-            if (e.replied_at) st = 'replied'; else if (e.clicked_at) st = 'clicked'; else if (e.opened_at) st = 'opened'; else if (e.sent_at) st = 'sent';
-            items.push({ date: e.sent_at || e.created_at, type: 'email', text: `${e.subject || '(no subject)'} [${st}]`, source: 'outreach' });
+            items.push({
+                date: e.sent_at || e.created_at, type: 'email', text: e.subject || '(no subject)', source: 'outreach',
+                position: e.position, email_sent_at: e.sent_at, email_opened_at: e.opened_at,
+                email_clicked_at: e.clicked_at, email_replied_at: e.replied_at
+            });
         });
     }
 
@@ -887,8 +889,21 @@ function renderTimelineItem(item) {
         email: 'Outreach Email', book_sent: 'Book Sent', report_sent: 'Report Sent',
         system: 'System', task: 'Task', activity: 'Activity'
     };
-    const label = typeLabels[item.type] || 'Activity';
+    let label = typeLabels[item.type] || 'Activity';
     let extra = '';
+
+    // Email-specific rendering with position and open/click detail
+    if (item.type === 'email') {
+        label = item.position ? `Email ${item.position}` : 'Outreach Email';
+        const check = '<span style="color:var(--green);">&#10003;</span>';
+        const dash = '<span style="color:var(--text3);">&#8212;</span>';
+        extra += `<div class="timeline-extra" style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.2rem;">
+            <span>${item.email_sent_at ? check : dash} Sent ${item.email_sent_at ? fmtDate(item.email_sent_at) : ''}</span>
+            <span>${item.email_opened_at ? check : dash} Opened ${item.email_opened_at ? fmtDate(item.email_opened_at) : ''}</span>
+            <span>${item.email_clicked_at ? check : dash} Clicked ${item.email_clicked_at ? fmtDate(item.email_clicked_at) : ''}</span>
+            ${item.email_replied_at ? `<span>${check} Replied ${fmtDate(item.email_replied_at)}</span>` : ''}
+        </div>`;
+    }
 
     if (item.outcome) extra += `<div class="timeline-extra">Outcome: ${escHtml(item.outcome)}</div>`;
     if (item.duration) extra += `<div class="timeline-extra">${item.duration} min</div>`;
