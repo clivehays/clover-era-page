@@ -27,7 +27,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: var(--text); background: var(--bg); }
 
-/* NAV */
 .nav { background: var(--white); padding: 0.75rem 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
 .nav-brand { font-size: 1.25rem; font-weight: 700; color: var(--green); }
 .nav-links { display: flex; gap: 1.25rem; align-items: center; }
@@ -36,18 +35,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .nav-links a.active { color: var(--green); font-weight: 700; }
 .btn-logout { padding: 0.4rem 0.8rem; background: var(--border); color: var(--text); border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.8rem; }
 
-/* CONTAINER */
 .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem; transition: margin-right 0.25s; }
 body.panel-open .container { margin-right: var(--panel-w); }
 
-/* STATS */
-.stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
+.stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
 .stat-card { background: var(--white); padding: 0.85rem 1rem; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 .stat-label { font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
 .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--charcoal); margin-top: 0.15rem; }
 .stat-sub { font-size: 0.75rem; color: var(--text2); margin-top: 0.1rem; }
 
-/* CONTROLS */
 .ob-controls { background: var(--white); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 .ob-search-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
 .ob-search { flex: 1; padding: 0.5rem 0.75rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; outline: none; transition: border-color 0.15s; }
@@ -63,33 +59,34 @@ body.panel-open .container { margin-right: var(--panel-w); }
 .ob-select { padding: 0.4rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.78rem; font-family: inherit; color: var(--text); background: var(--white); cursor: pointer; }
 .ob-select:focus { border-color: var(--green); outline: none; }
 
-/* TABLE */
 .data-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-.data-table th { padding: 0.6rem 0.85rem; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; background: var(--bg); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
-.data-table th:hover { color: var(--text); }
+.data-table th { padding: 0.6rem 0.85rem; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; background: var(--bg); border-bottom: 1px solid var(--border); }
 .data-table td { padding: 0.65rem 0.85rem; font-size: 0.85rem; border-bottom: 1px solid #f3f4f6; color: var(--text); }
 .data-table tr { cursor: pointer; transition: background 0.1s; }
 .data-table tbody tr:hover { background: #f0fdf4; }
 .data-table .company { font-weight: 600; }
 .data-table .sub { font-size: 0.75rem; color: var(--text2); }
 
-/* PILLS */
 .pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
-.pill-prospect { background: #F3F4F6; color: #6B7280; }
-.pill-contacted { background: #DBEAFE; color: #1D4ED8; }
-.pill-engaged { background: #EDE9FE; color: #6D28D9; }
-.pill-qualified { background: #FEF3C7; color: #D97706; }
+.pill-cold { background: #F3F4F6; color: #6B7280; }
+.pill-emailed { background: #DBEAFE; color: #1D4ED8; }
+.pill-opened { background: #E0E7FF; color: #4338CA; }
+.pill-clicked { background: #EDE9FE; color: #6D28D9; }
+.pill-book_sent { background: #E0E7FF; color: #4338CA; }
+.pill-replied { background: #F3E8FF; color: #7C3AED; }
+.pill-call { background: #FEF3C7; color: #D97706; }
 .pill-pilot { background: #D1FAE5; color: #047857; }
 .pill-customer { background: #D1FAE5; color: #047857; }
 .pill-churned { background: #FEE2E2; color: #DC2626; }
 
 .source-badge { display: inline-block; padding: 0.1rem 0.45rem; border-radius: 6px; font-size: 0.65rem; font-weight: 600; }
 .source-outreach { background: #E0E7FF; color: #4338CA; }
+.source-outbound { background: #E0E7FF; color: #4338CA; }
 .source-linkedin { background: #DBEAFE; color: #1D4ED8; }
 .source-manual { background: #F3F4F6; color: #6B7280; }
 .source-inbound { background: #D1FAE5; color: #047857; }
+.source-referral { background: #FEF3C7; color: #D97706; }
 
-/* PAGINATION */
 .ob-pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.75rem 0; margin-top: 0.5rem; }
 .ob-page-info { font-size: 0.78rem; color: var(--text2); font-weight: 600; }
 .btn { padding: 0.45rem 0.9rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.78rem; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.35rem; }
@@ -98,11 +95,7 @@ body.panel-open .container { margin-right: var(--panel-w); }
 .btn-green:hover { background: var(--dark-green); }
 .btn-white { background: var(--white); color: var(--text); border: 2px solid var(--border); }
 .btn-white:hover { background: var(--bg); }
-.btn-red { background: #FEE2E2; color: var(--red); }
-.btn-blue { background: #DBEAFE; color: #1D4ED8; }
-.btn-amber { background: #FEF3C7; color: #D97706; }
 
-/* SLIDE-OUT PANEL */
 .panel-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.15); z-index: 200; }
 .panel-overlay.active { display: block; }
 .detail-panel { position: fixed; top: 0; right: -460px; width: var(--panel-w); height: 100vh; background: var(--white); box-shadow: -4px 0 20px rgba(0,0,0,0.1); z-index: 300; transition: right 0.25s ease; overflow-y: auto; }
@@ -115,21 +108,13 @@ body.panel-open .container { margin-right: var(--panel-w); }
 .panel-section { margin-bottom: 1.25rem; }
 .panel-section label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 0.3rem; }
 .panel-section .pv { font-size: 0.9rem; color: var(--text); }
-.panel-section .pv a { color: var(--blue); text-decoration: none; }
-.panel-section .pv a:hover { text-decoration: underline; }
-.panel-field { margin-bottom: 0.75rem; }
-.panel-field textarea { width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 0.5rem; font-size: 0.82rem; font-family: inherit; resize: vertical; min-height: 60px; }
-.panel-field textarea:focus { border-color: var(--green); outline: none; }
-.panel-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
 
-/* QUICK ACTIONS */
 .quick-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
 .qa-btn { padding: 0.4rem 0.7rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer; background: var(--white); color: var(--text); transition: all 0.15s; }
 .qa-btn:hover { border-color: var(--green); color: var(--green); }
 .qa-btn.primary { background: var(--green); color: white; border-color: var(--green); }
 .qa-btn.primary:hover { background: var(--dark-green); border-color: var(--dark-green); }
 
-/* TIMELINE */
 .timeline { margin-top: 0.5rem; }
 .timeline-item { display: flex; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }
 .timeline-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 0.4rem; flex-shrink: 0; }
@@ -145,7 +130,6 @@ body.panel-open .container { margin-right: var(--panel-w); }
 .timeline-meta { font-size: 0.7rem; color: var(--text3); margin-top: 0.15rem; }
 .timeline-empty { text-align: center; padding: 1.5rem; color: var(--text3); font-size: 0.82rem; }
 
-/* COLLAPSIBLE SECTIONS */
 .collapse-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 0.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
 .collapse-header:hover { color: var(--green); }
 .collapse-header h3 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text3); }
@@ -154,41 +138,41 @@ body.panel-open .container { margin-right: var(--panel-w); }
 .collapse-body { display: none; }
 .collapse-body.open { display: block; }
 
-/* OPP CARD */
 .opp-card { background: var(--bg); border-radius: 6px; padding: 0.6rem 0.75rem; margin-bottom: 0.5rem; cursor: pointer; transition: background 0.1s; }
 .opp-card:hover { background: #f0fdf4; }
 .opp-card .opp-name { font-size: 0.82rem; font-weight: 600; }
 .opp-card .opp-meta { font-size: 0.72rem; color: var(--text2); margin-top: 0.15rem; }
 
-/* NOTE INPUT */
 .note-input-area { margin-bottom: 1rem; display: none; }
 .note-input-area.visible { display: block; }
 .note-input-area textarea { width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 0.5rem; font-size: 0.82rem; font-family: inherit; resize: vertical; min-height: 70px; }
 .note-input-area textarea:focus { border-color: var(--green); outline: none; }
 .note-input-actions { display: flex; gap: 0.5rem; margin-top: 0.4rem; justify-content: flex-end; }
 
-/* PROMOTE MODAL */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 400; align-items: center; justify-content: center; }
 .modal-overlay.active { display: flex; }
-.modal { background: var(--white); border-radius: 10px; padding: 1.5rem; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+.modal { background: var(--white); border-radius: 10px; padding: 1.5rem; max-width: 480px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto; }
 .modal h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
 .modal-field { margin-bottom: 0.75rem; }
 .modal-field label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 0.25rem; }
 .modal-field input, .modal-field select { width: 100%; padding: 0.45rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; }
 .modal-field input:focus, .modal-field select:focus { border-color: var(--green); outline: none; }
 .modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
-/* LOADING / EMPTY */
 .loading { text-align: center; padding: 3rem; color: var(--text3); }
 .empty-state { text-align: center; padding: 3rem; color: var(--text3); font-size: 0.9rem; }
 
-/* TOAST */
 .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--charcoal); color: white; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; z-index: 500; opacity: 0; transform: translateY(10px); transition: all 0.3s; }
 .toast.show { opacity: 1; transform: translateY(0); }
 .toast.success { background: var(--green); }
 .toast.error { background: var(--red); }
 
-/* RESPONSIVE */
+.panel-input { width: 100%; padding: 0.45rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; }
+.panel-input:focus { border-color: var(--green); outline: none; }
+.panel-select { width: 100%; padding: 0.45rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; background: var(--white); }
+.panel-select:focus { border-color: var(--green); outline: none; }
+
 @media (max-width: 768px) {
     .container { padding: 0.75rem; }
     .stats-bar { grid-template-columns: repeat(2, 1fr); }
@@ -199,7 +183,6 @@ body.panel-open .container { margin-right: var(--panel-w); }
     .ob-filters-row { flex-direction: column; gap: 0.5rem; }
     .ob-search-row { flex-direction: column; align-items: stretch; }
 }
-
 #loginWall { display: flex; align-items: center; justify-content: center; height: 100vh; }
 </style>
 </head>
@@ -207,7 +190,6 @@ body.panel-open .container { margin-right: var(--panel-w); }
 <div id="loginWall" style="display:none"><p>Redirecting to login...</p></div>
 
 <div id="app" style="display:none">
-<!-- NAV -->
 <nav class="nav">
     <div class="nav-brand">Clover ERA CRM</div>
     <div class="nav-links">
@@ -219,41 +201,38 @@ body.panel-open .container { margin-right: var(--panel-w); }
     </div>
 </nav>
 
-<!-- MAIN CONTENT -->
 <div class="container">
-    <!-- Stats -->
     <div class="stats-bar" id="statsBar">
         <div class="stat-card"><div class="stat-label">Total People</div><div class="stat-value" id="statTotal">-</div></div>
-        <div class="stat-card"><div class="stat-label">Needs Action</div><div class="stat-value" id="statAction">-</div><div class="stat-sub">overdue follow-ups</div></div>
-        <div class="stat-card"><div class="stat-label">Engaged+</div><div class="stat-value" id="statEngaged">-</div></div>
+        <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value" id="statOverdue">-</div><div class="stat-sub">follow-ups due</div></div>
+        <div class="stat-card"><div class="stat-label">Active Pipeline</div><div class="stat-value" id="statActive">-</div><div class="stat-sub">Replied+</div></div>
         <div class="stat-card"><div class="stat-label">New This Week</div><div class="stat-value" id="statNew">-</div></div>
     </div>
 
-    <!-- Controls -->
     <div class="ob-controls">
         <div class="ob-search-row">
             <input type="text" id="searchInput" class="ob-search" placeholder="Search name, company, email...">
             <div class="ob-result-count" id="resultCount"></div>
+            <button class="btn btn-green" onclick="showQuickAddModal()">+ Add Person</button>
         </div>
         <div class="ob-filters-row">
             <div class="ob-filter-group">
-                <label class="ob-filter-label">Lifecycle</label>
+                <label class="ob-filter-label">Stage</label>
                 <div class="ob-status-pills" id="lifecyclePills">
-                    <button class="ob-pill active" data-lc="engaged+">Engaged+</button>
+                    <button class="ob-pill active" data-lc="active">Active</button>
+                    <button class="ob-pill" data-lc="warming">Warming</button>
                     <button class="ob-pill" data-lc="all">All</button>
-                    <button class="ob-pill" data-lc="prospect">Prospect</button>
-                    <button class="ob-pill" data-lc="contacted">Contacted</button>
-                    <button class="ob-pill" data-lc="qualified">Qualified+</button>
+                    <button class="ob-pill" data-lc="cold">Cold</button>
                 </div>
             </div>
             <div class="ob-filter-group">
                 <label class="ob-filter-label">Source</label>
                 <select id="sourceFilter" class="ob-select">
                     <option value="all">All Sources</option>
-                    <option value="outreach">Outreach</option>
-                    <option value="linkedin">LinkedIn</option>
-                    <option value="manual">Manual</option>
+                    <option value="outbound">Outbound</option>
                     <option value="inbound">Inbound</option>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="referral">Referral</option>
                 </select>
             </div>
             <div class="ob-filter-group">
@@ -262,18 +241,18 @@ body.panel-open .container { margin-right: var(--panel-w); }
                     <option value="updated">Last Updated</option>
                     <option value="name">Name</option>
                     <option value="company">Company</option>
+                    <option value="due">Next Action Due</option>
                 </select>
             </div>
         </div>
     </div>
 
-    <!-- Table -->
     <table class="data-table" id="peopleTable">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Company</th>
-                <th>Lifecycle</th>
+                <th>Stage</th>
                 <th>Source</th>
                 <th>Last Touch</th>
                 <th>Next Action</th>
@@ -284,7 +263,6 @@ body.panel-open .container { margin-right: var(--panel-w); }
         </tbody>
     </table>
 
-    <!-- Pagination -->
     <div class="ob-pagination" id="pagination" style="display:none;">
         <button class="btn btn-white btn-sm" id="btnPrev" onclick="changePage(-1)">Prev</button>
         <span class="ob-page-info" id="pageInfo"></span>
@@ -302,31 +280,53 @@ body.panel-open .container { margin-right: var(--panel-w); }
     <div class="panel-body" id="panelBody"></div>
 </div>
 
-<!-- PROMOTE TO CRM MODAL -->
+<!-- QUICK ADD MODAL -->
+<div class="modal-overlay" id="quickAddModal">
+    <div class="modal">
+        <h3>Add Person (Inbound)</h3>
+        <div class="modal-row">
+            <div class="modal-field"><label>First Name *</label><input type="text" id="qaFirstName"></div>
+            <div class="modal-field"><label>Last Name *</label><input type="text" id="qaLastName"></div>
+        </div>
+        <div class="modal-field"><label>Email *</label><input type="email" id="qaEmail"></div>
+        <div class="modal-row">
+            <div class="modal-field"><label>Company</label><input type="text" id="qaCompany"></div>
+            <div class="modal-field"><label>Title</label><input type="text" id="qaTitle"></div>
+        </div>
+        <div class="modal-field"><label>LinkedIn URL</label><input type="text" id="qaLinkedin"></div>
+        <div class="modal-row">
+            <div class="modal-field">
+                <label>Source</label>
+                <select id="qaSource"><option value="inbound">Inbound</option><option value="linkedin">LinkedIn</option><option value="referral">Referral</option><option value="website">Website</option></select>
+            </div>
+            <div class="modal-field">
+                <label>Initial Stage</label>
+                <select id="qaStage"><option value="cold">Cold</option><option value="replied" selected>Replied</option><option value="call">Call</option></select>
+            </div>
+        </div>
+        <div class="modal-row">
+            <div class="modal-field"><label>Next Action</label><input type="text" id="qaNextAction" placeholder="e.g., Send intro email"></div>
+            <div class="modal-field"><label>Due Date</label><input type="date" id="qaNextDate"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-white" onclick="closeQuickAddModal()">Cancel</button>
+            <button class="btn btn-green" onclick="executeQuickAdd()">Add Person</button>
+        </div>
+    </div>
+</div>
+
+<!-- PROMOTE MODAL -->
 <div class="modal-overlay" id="promoteModal">
     <div class="modal">
         <h3>Promote to CRM</h3>
-        <p style="font-size:0.82rem; color:var(--text2); margin-bottom:1rem;">This will create a Company + Contact record and optionally an Opportunity.</p>
+        <p style="font-size:0.82rem; color:var(--text2); margin-bottom:1rem;">Creates a Company + Contact record so you can manage this person through the pipeline.</p>
         <div class="modal-field">
-            <label>Create Opportunity?</label>
-            <select id="promoteCreateOpp">
-                <option value="yes">Yes - create opportunity</option>
-                <option value="no">No - just promote contact</option>
-            </select>
+            <label>Initial Stage</label>
+            <select id="promoteStage"><option value="replied" selected>Replied</option><option value="call">Call</option><option value="pilot">Pilot</option></select>
         </div>
-        <div id="promoteOppFields">
-            <div class="modal-field">
-                <label>Opportunity Value ($)</label>
-                <input type="number" id="promoteOppValue" value="96000">
-            </div>
-            <div class="modal-field">
-                <label>Stage</label>
-                <select id="promoteOppStage">
-                    <option value="discovery">Discovery</option>
-                    <option value="call-booked">Call Booked</option>
-                    <option value="qualified-opportunity">Qualified Opportunity</option>
-                </select>
-            </div>
+        <div class="modal-row">
+            <div class="modal-field"><label>Next Action</label><input type="text" id="promoteNextAction" placeholder="e.g., Follow up"></div>
+            <div class="modal-field"><label>Due Date</label><input type="date" id="promoteNextDate"></div>
         </div>
         <div class="modal-actions">
             <button class="btn btn-white" onclick="closePromoteModal()">Cancel</button>
@@ -335,79 +335,41 @@ body.panel-open .container { margin-right: var(--panel-w); }
     </div>
 </div>
 
-<!-- CREATE OPPORTUNITY MODAL -->
-<div class="modal-overlay" id="createOppModal">
-    <div class="modal">
-        <h3>Create Opportunity</h3>
-        <div class="modal-field">
-            <label>Opportunity Name</label>
-            <input type="text" id="oppName">
-        </div>
-        <div class="modal-field">
-            <label>Value ($)</label>
-            <input type="number" id="oppValue" value="96000">
-        </div>
-        <div class="modal-field">
-            <label>Stage</label>
-            <select id="oppStage">
-                <option value="discovery">Discovery</option>
-                <option value="call-booked">Call Booked</option>
-                <option value="call-completed">Call Completed</option>
-                <option value="qualified-opportunity">Qualified Opportunity</option>
-                <option value="pilot-started">Pilot Started</option>
-            </select>
-        </div>
-        <div class="modal-actions">
-            <button class="btn btn-white" onclick="closeCreateOppModal()">Cancel</button>
-            <button class="btn btn-green" onclick="executeCreateOpp()">Create</button>
-        </div>
-    </div>
-</div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
-
-</div><!-- /app -->
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ── CONFIG ──
 const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const STAGES = [
+    { id: 'cold', name: 'Cold' },
+    { id: 'emailed', name: 'Emailed' },
+    { id: 'opened', name: 'Opened' },
+    { id: 'clicked', name: 'Clicked' },
+    { id: 'book_sent', name: 'Book Sent' },
+    { id: 'replied', name: 'Replied' },
+    { id: 'call', name: 'Call' },
+    { id: 'pilot', name: 'Pilot' },
+    { id: 'customer', name: 'Customer' },
+    { id: 'churned', name: 'Churned' }
+];
+const STAGE_MAP = Object.fromEntries(STAGES.map(s => [s.id, s.name]));
 
 let currentUser = null;
 let allPeople = [];
 let filteredPeople = [];
 let currentPage = 1;
 const PAGE_SIZE = 50;
-let currentFilter = 'engaged+';
+let currentFilter = 'active';
 let currentSource = 'all';
 let currentSort = 'updated';
 let currentSearch = '';
 let selectedPerson = null;
 
-// ── AUTH ──
-async function init() {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) {
-        document.getElementById('loginWall').style.display = 'flex';
-        window.location.href = 'login.html';
-        return;
-    }
-    currentUser = session.user;
-
-    // Show admin link for admin users
-    const { data: profile } = await sb.from('profiles').select('role').eq('id', currentUser.id).single();
-    if (profile && profile.role === 'admin') {
-        document.getElementById('adminLink').style.display = '';
-    }
-
-    document.getElementById('app').style.display = 'block';
-    await loadAllPeople();
-}
-
-// ── UTILS ──
+// Utils
 function escHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 function fmtDate(d) { if (!d) return '-'; return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
 function fmtDateFull(d) { if (!d) return '-'; return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
@@ -420,70 +382,94 @@ function showToast(msg, type = 'success') {
     setTimeout(() => t.className = 'toast', 3000);
 }
 
-// ── LIFECYCLE COMPUTATION ──
-function computeLifecycle(person) {
-    // Manual override
-    if (person._type === 'contact' && person.lifecycle_stage) return person.lifecycle_stage;
-
-    // From opportunity stages
-    if (person._oppStages) {
-        const stages = person._oppStages;
-        if (stages.includes('active-customer') || stages.includes('converted-paid')) return 'customer';
-        if (stages.includes('pilot-started')) return 'pilot';
-        if (stages.includes('qualified-opportunity') || stages.includes('call-completed') || stages.includes('call-booked')) return 'qualified';
-        if (stages.includes('churned-lost') || stages.includes('closed-lost')) return 'churned';
-        if (stages.includes('discovery')) return 'engaged';
-    }
-
-    // Contact without opportunity = engaged (they were promoted from prospect)
-    if (person._type === 'contact') return 'engaged';
-
-    // Prospect statuses
-    const status = person.status || '';
-    if (['active', 'completed'].includes(status)) return 'contacted';
-    if (status === 'replied') return 'engaged';
-
-    return 'prospect';
-}
-
 function lifecyclePill(stage) {
-    const labels = { prospect: 'Prospect', contacted: 'Contacted', engaged: 'Engaged', qualified: 'Qualified', pilot: 'Pilot', customer: 'Customer', churned: 'Churned' };
-    return `<span class="pill pill-${stage}">${labels[stage] || stage}</span>`;
+    return `<span class="pill pill-${stage}">${STAGE_MAP[stage] || stage}</span>`;
 }
 
 function sourceBadge(source) {
     const s = (source || '').toLowerCase();
-    if (s.includes('outreach') || s.includes('outbound') || s.includes('cold')) return '<span class="source-badge source-outreach">Outreach</span>';
-    if (s.includes('linkedin')) return '<span class="source-badge source-linkedin">LinkedIn</span>';
-    if (s.includes('inbound') || s.includes('website')) return '<span class="source-badge source-inbound">Inbound</span>';
-    return '<span class="source-badge source-manual">Manual</span>';
+    let cls = 'manual', label = 'Manual';
+    if (s.includes('outbound') || s.includes('outreach') || s.includes('cold')) { cls = 'outbound'; label = 'Outbound'; }
+    else if (s.includes('inbound') || s.includes('website')) { cls = 'inbound'; label = 'Inbound'; }
+    else if (s.includes('linkedin')) { cls = 'linkedin'; label = 'LinkedIn'; }
+    else if (s.includes('referral')) { cls = 'referral'; label = 'Referral'; }
+    return `<span class="source-badge source-${cls}">${label}</span>`;
 }
 
-// ── LOAD DATA ──
+// Lifecycle computation
+function computeLifecycle(person) {
+    // Manual override always wins for contacts
+    if (person._type === 'contact' && person.lifecycle_stage) return person.lifecycle_stage;
+
+    // Check for book_sent notes
+    if (person._hasBookSent) return 'book_sent';
+
+    // Contact without explicit stage = at least replied (they were promoted)
+    if (person._type === 'contact') return 'replied';
+
+    // Prospect: check outreach email engagement
+    if (person._hasClicked) return 'clicked';
+    if (person._hasOpened) return 'opened';
+
+    // Prospect status mapping
+    const status = person.status || '';
+    if (status === 'replied') return 'replied';
+    if (['active', 'completed'].includes(status)) return 'emailed';
+    return 'cold';
+}
+
+// Auth
+async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { document.getElementById('loginWall').style.display = 'flex'; window.location.href = 'login.html'; return; }
+    currentUser = session.user;
+    const { data: profile } = await sb.from('profiles').select('role').eq('id', currentUser.id).single();
+    if (profile && profile.role === 'admin') document.getElementById('adminLink').style.display = '';
+    document.getElementById('app').style.display = 'block';
+    await loadAllPeople();
+}
+
+// Load data
 async function loadAllPeople() {
     document.getElementById('peopleBody').innerHTML = '<tr><td colspan="6" class="loading">Loading people...</td></tr>';
 
-    // Three parallel queries
-    const [contactsRes, prospectsRes, oppsRes] = await Promise.all([
+    const [contactsRes, prospectsRes, oppsRes, emailsRes, notesRes] = await Promise.all([
         sb.from('contacts')
-            .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, company_id, companies(id, name, industry, employee_count, website)')
+            .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, company_id, companies(id, name, industry, employee_count, website)')
             .order('updated_at', { ascending: false }),
         sb.from('outreach_prospects')
-            .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, source, created_at, updated_at, converted_contact_id, turnover_report_id')
+            .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, created_at, converted_contact_id, turnover_report_id')
             .not('status', 'in', '(converted,bounced,invalid,unsubscribed)'),
         sb.from('opportunities')
-            .select('id, contact_id, company_id, name, stage, value, close_date, created_at')
+            .select('id, contact_id, company_id, name, stage, value, close_date, created_at'),
+        sb.from('outreach_emails')
+            .select('prospect_id, opened_at, clicked_at, replied_at')
+            .not('prospect_id', 'is', null),
+        sb.from('person_notes')
+            .select('contact_id, prospect_id, note_type')
+            .eq('note_type', 'book_sent')
     ]);
 
+    // Build email engagement maps
+    const openedSet = new Set();
+    const clickedSet = new Set();
+    (emailsRes.data || []).forEach(e => {
+        if (e.opened_at && e.prospect_id) openedSet.add(e.prospect_id);
+        if (e.clicked_at && e.prospect_id) clickedSet.add(e.prospect_id);
+    });
+
+    // Build book_sent set
+    const bookSentContacts = new Set();
+    const bookSentProspects = new Set();
+    (notesRes.data || []).forEach(n => {
+        if (n.contact_id) bookSentContacts.add(n.contact_id);
+        if (n.prospect_id) bookSentProspects.add(n.prospect_id);
+    });
+
     const contacts = (contactsRes.data || []).map(c => ({
-        _type: 'contact',
-        _id: c.id,
-        _contactId: c.id,
-        _prospectId: null,
-        first_name: c.first_name || '',
-        last_name: c.last_name || '',
-        email: c.email || '',
-        title: c.title || '',
+        _type: 'contact', _id: c.id, _contactId: c.id, _prospectId: null,
+        first_name: c.first_name || '', last_name: c.last_name || '',
+        email: c.email || '', title: c.title || '',
         linkedin_url: c.linkedin_url || '',
         company_name: c.companies?.name || '',
         company_industry: c.companies?.industry || '',
@@ -493,79 +479,61 @@ async function loadAllPeople() {
         source: c.source || 'manual',
         status: null,
         lifecycle_stage: c.lifecycle_stage,
+        next_action: c.next_action, next_action_date: c.next_action_date,
         created_at: c.created_at,
         updated_at: c.updated_at || c.created_at,
-        _oppStages: [],
-        turnover_report_id: null
+        _oppStages: [], _opps: [],
+        _hasBookSent: bookSentContacts.has(c.id),
+        _hasOpened: false, _hasClicked: false
     }));
 
     const prospects = (prospectsRes.data || []).map(p => ({
-        _type: 'prospect',
-        _id: p.id,
-        _contactId: null,
-        _prospectId: p.id,
-        first_name: p.first_name || '',
-        last_name: p.last_name || '',
-        email: p.email || '',
-        title: p.title || '',
+        _type: 'prospect', _id: p.id, _contactId: null, _prospectId: p.id,
+        first_name: p.first_name || '', last_name: p.last_name || '',
+        email: p.email || '', title: p.title || '',
         linkedin_url: p.linkedin_url || '',
         company_name: p.company_name || '',
         company_industry: p.company_industry || '',
         company_employee_count: p.company_employee_count || 0,
         company_website: p.company_website || '',
         company_id: null,
-        source: p.source || 'outreach',
+        source: 'outbound',
         status: p.status,
         lifecycle_stage: null,
+        next_action: null, next_action_date: null,
         created_at: p.created_at,
-        updated_at: p.updated_at || p.created_at,
-        _oppStages: [],
+        updated_at: p.created_at,
+        _oppStages: [], _opps: [],
+        _hasBookSent: bookSentProspects.has(p.id),
+        _hasOpened: openedSet.has(p.id),
+        _hasClicked: clickedSet.has(p.id),
         turnover_report_id: p.turnover_report_id
     }));
 
     // Link opportunities to contacts
     const opps = oppsRes.data || [];
     const oppsByContact = {};
-    opps.forEach(o => {
-        if (o.contact_id) {
-            if (!oppsByContact[o.contact_id]) oppsByContact[o.contact_id] = [];
-            oppsByContact[o.contact_id].push(o);
-        }
-    });
-    contacts.forEach(c => {
-        const co = oppsByContact[c._contactId] || [];
-        c._oppStages = co.map(o => o.stage);
-        c._opps = co;
-    });
+    opps.forEach(o => { if (o.contact_id) { (oppsByContact[o.contact_id] = oppsByContact[o.contact_id] || []).push(o); } });
+    contacts.forEach(c => { c._opps = oppsByContact[c._contactId] || []; c._oppStages = c._opps.map(o => o.stage); });
 
-    // Merge, deduplicate by email (contacts take priority)
+    // Merge, deduplicate by email (contacts win)
     const emailMap = new Map();
-    contacts.forEach(c => {
-        if (c.email) emailMap.set(c.email.toLowerCase(), c);
-    });
+    contacts.forEach(c => { if (c.email) emailMap.set(c.email.toLowerCase(), c); });
     prospects.forEach(p => {
         const key = (p.email || '').toLowerCase();
-        if (key && !emailMap.has(key)) {
-            emailMap.set(key, p);
-        }
+        if (key && !emailMap.has(key)) emailMap.set(key, p);
     });
 
     allPeople = Array.from(emailMap.values());
-
-    // Compute lifecycle for each
-    allPeople.forEach(p => {
-        p._lifecycle = computeLifecycle(p);
-    });
-
+    allPeople.forEach(p => { p._lifecycle = computeLifecycle(p); });
     applyFilters();
     updateStats();
 }
 
-// ── FILTER & SORT ──
+// Filters
 function applyFilters() {
     let data = [...allPeople];
 
-    // Search
     if (currentSearch) {
         const q = currentSearch.toLowerCase();
         data = data.filter(p =>
@@ -576,49 +544,51 @@ function applyFilters() {
         );
     }
 
-    // Lifecycle filter
-    if (currentFilter === 'engaged+') {
-        data = data.filter(p => ['engaged', 'qualified', 'pilot', 'customer'].includes(p._lifecycle));
-    } else if (currentFilter === 'prospect') {
-        data = data.filter(p => p._lifecycle === 'prospect');
-    } else if (currentFilter === 'contacted') {
-        data = data.filter(p => p._lifecycle === 'contacted');
-    } else if (currentFilter === 'qualified+') {
-        data = data.filter(p => ['qualified', 'pilot', 'customer'].includes(p._lifecycle));
+    if (currentFilter === 'active') {
+        data = data.filter(p => ['replied', 'call', 'pilot', 'customer'].includes(p._lifecycle));
+    } else if (currentFilter === 'warming') {
+        data = data.filter(p => ['emailed', 'opened', 'clicked', 'book_sent'].includes(p._lifecycle));
+    } else if (currentFilter === 'cold') {
+        data = data.filter(p => p._lifecycle === 'cold');
     }
-    // 'all' = no filter
 
-    // Source filter
     if (currentSource !== 'all') {
         data = data.filter(p => {
             const s = (p.source || '').toLowerCase();
-            if (currentSource === 'outreach') return s.includes('outreach') || s.includes('outbound') || s.includes('cold') || p._type === 'prospect';
-            if (currentSource === 'linkedin') return s.includes('linkedin');
-            if (currentSource === 'manual') return s.includes('manual') || s === '';
+            if (currentSource === 'outbound') return s.includes('outbound') || s.includes('outreach') || p._type === 'prospect';
             if (currentSource === 'inbound') return s.includes('inbound') || s.includes('website');
+            if (currentSource === 'linkedin') return s.includes('linkedin');
+            if (currentSource === 'referral') return s.includes('referral');
             return true;
         });
     }
 
-    // Sort
     if (currentSort === 'updated') {
         data.sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at));
     } else if (currentSort === 'name') {
         data.sort((a, b) => (a.first_name + a.last_name).localeCompare(b.first_name + b.last_name));
     } else if (currentSort === 'company') {
         data.sort((a, b) => (a.company_name || '').localeCompare(b.company_name || ''));
+    } else if (currentSort === 'due') {
+        data.sort((a, b) => {
+            if (!a.next_action_date && !b.next_action_date) return 0;
+            if (!a.next_action_date) return 1;
+            if (!b.next_action_date) return -1;
+            return new Date(a.next_action_date) - new Date(b.next_action_date);
+        });
     }
 
     filteredPeople = data;
     currentPage = 1;
     renderTable();
-    document.getElementById('resultCount').textContent = `Showing ${filteredPeople.length} of ${allPeople.length}`;
+    document.getElementById('resultCount').textContent = `${filteredPeople.length} of ${allPeople.length}`;
 }
 
 function renderTable() {
     const start = (currentPage - 1) * PAGE_SIZE;
     const page = filteredPeople.slice(start, start + PAGE_SIZE);
     const tbody = document.getElementById('peopleBody');
+    const today = new Date().toISOString().split('T')[0];
 
     if (page.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No people found matching your filters.</td></tr>';
@@ -629,22 +599,22 @@ function renderTable() {
     tbody.innerHTML = page.map(p => {
         const name = escHtml((p.first_name + ' ' + p.last_name).trim() || p.email);
         const titleStr = p.title ? `<div class="sub">${escHtml(p.title)}</div>` : '';
-        const company = escHtml(p.company_name || '-');
-        const lastTouch = fmtDate(p.updated_at || p.created_at);
         const days = daysSince(p.updated_at || p.created_at);
         const daysLabel = days === 0 ? 'today' : days === 1 ? '1d ago' : `${days}d ago`;
+        const isOverdue = p.next_action_date && p.next_action_date < today;
 
         return `<tr onclick="openPerson('${p._id}')">
             <td><div class="company">${name}</div>${titleStr}</td>
-            <td>${company}</td>
+            <td>${escHtml(p.company_name || '-')}</td>
             <td>${lifecyclePill(p._lifecycle)}</td>
             <td>${sourceBadge(p.source)}</td>
-            <td><div>${lastTouch}</div><div class="sub">${daysLabel}</div></td>
-            <td><div class="sub">${p._type === 'prospect' ? 'Outreach prospect' : (p._opps?.length ? p._opps.length + ' opp(s)' : '-')}</div></td>
+            <td><div>${fmtDate(p.updated_at || p.created_at)}</div><div class="sub">${daysLabel}</div></td>
+            <td>${p.next_action_date
+                ? `<div style="font-size:0.78rem; font-weight:600; ${isOverdue ? 'color:var(--red)' : ''}">${fmtDate(p.next_action_date)}</div><div class="sub">${escHtml(p.next_action || '')}</div>`
+                : '<div class="sub">-</div>'}</td>
         </tr>`;
     }).join('');
 
-    // Pagination
     const totalPages = Math.ceil(filteredPeople.length / PAGE_SIZE);
     if (totalPages > 1) {
         document.getElementById('pagination').style.display = 'flex';
@@ -663,28 +633,21 @@ function changePage(dir) {
 }
 
 function updateStats() {
-    const total = allPeople.length;
-    const engaged = allPeople.filter(p => ['engaged', 'qualified', 'pilot', 'customer'].includes(p._lifecycle)).length;
-
-    // New this week
+    const today = new Date().toISOString().split('T')[0];
+    const overdue = allPeople.filter(p => p.next_action_date && p.next_action_date < today).length;
+    const active = allPeople.filter(p => ['replied', 'call', 'pilot', 'customer'].includes(p._lifecycle)).length;
     const weekAgo = Date.now() - 7 * 86400000;
     const newThisWeek = allPeople.filter(p => new Date(p.created_at) > weekAgo).length;
 
-    // Needs action: contacts with no update in 14+ days that have opportunities
-    const needsAction = allPeople.filter(p => p._type === 'contact' && p._opps?.length > 0 && daysSince(p.updated_at || p.created_at) >= 14).length;
-
-    document.getElementById('statTotal').textContent = total.toLocaleString();
-    document.getElementById('statEngaged').textContent = engaged.toLocaleString();
-    document.getElementById('statNew').textContent = newThisWeek.toLocaleString();
-    document.getElementById('statAction').textContent = needsAction.toLocaleString();
+    document.getElementById('statTotal').textContent = allPeople.length.toLocaleString();
+    document.getElementById('statOverdue').textContent = overdue;
+    document.getElementById('statOverdue').style.color = overdue > 0 ? 'var(--red)' : '';
+    document.getElementById('statActive').textContent = active;
+    document.getElementById('statNew').textContent = newThisWeek;
 }
 
-// ── EVENT LISTENERS ──
-document.getElementById('searchInput').addEventListener('input', function() {
-    currentSearch = this.value.trim();
-    applyFilters();
-});
-
+// Event listeners
+document.getElementById('searchInput').addEventListener('input', function() { currentSearch = this.value.trim(); applyFilters(); });
 document.querySelectorAll('#lifecyclePills .ob-pill').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('#lifecyclePills .ob-pill').forEach(b => b.classList.remove('active'));
@@ -693,35 +656,25 @@ document.querySelectorAll('#lifecyclePills .ob-pill').forEach(btn => {
         applyFilters();
     });
 });
+document.getElementById('sourceFilter').addEventListener('change', function() { currentSource = this.value; applyFilters(); });
+document.getElementById('sortSelect').addEventListener('change', function() { currentSort = this.value; applyFilters(); });
 
-document.getElementById('sourceFilter').addEventListener('change', function() {
-    currentSource = this.value;
-    applyFilters();
-});
-
-document.getElementById('sortSelect').addEventListener('change', function() {
-    currentSort = this.value;
-    applyFilters();
-});
-
-// ── PANEL ──
+// Panel
 function openPanel() {
     document.getElementById('detailPanel').classList.add('open');
     document.getElementById('panelOverlay').classList.add('active');
     document.body.classList.add('panel-open');
 }
-
 function closePanel() {
     document.getElementById('detailPanel').classList.remove('open');
     document.getElementById('panelOverlay').classList.remove('active');
     document.body.classList.remove('panel-open');
     selectedPerson = null;
 }
-
 document.getElementById('panelClose').addEventListener('click', closePanel);
 document.getElementById('panelOverlay').addEventListener('click', closePanel);
 
-// ── OPEN PERSON DETAIL ──
+// Open person detail
 async function openPerson(id) {
     const person = allPeople.find(p => p._id === id);
     if (!person) return;
@@ -729,92 +682,106 @@ async function openPerson(id) {
 
     const name = (person.first_name + ' ' + person.last_name).trim() || person.email;
     document.getElementById('panelTitle').textContent = name;
-
     const body = document.getElementById('panelBody');
     body.innerHTML = '<div class="loading">Loading...</div>';
     openPanel();
 
-    // Build header
-    let headerHtml = `
-        <div class="panel-section">
-            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
-                ${lifecyclePill(person._lifecycle)}
-                ${sourceBadge(person.source)}
-                <span style="font-size:0.72rem; color:var(--text3);">${person._type === 'prospect' ? 'Outreach Prospect' : 'CRM Contact'}</span>
-            </div>
-            ${person.title ? `<div style="font-size:0.85rem; color:var(--text2); margin-bottom:0.25rem;">${escHtml(person.title)}</div>` : ''}
-            ${person.company_name ? `<div style="font-size:0.85rem; font-weight:600;">${escHtml(person.company_name)}</div>` : ''}
-            <div style="margin-top:0.4rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-                ${person.email ? `<a href="mailto:${escHtml(person.email)}" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">${escHtml(person.email)}</a>` : ''}
-                ${person.linkedin_url ? `<a href="${escHtml(person.linkedin_url)}" target="_blank" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">LinkedIn</a>` : ''}
-            </div>
+    // Header
+    let html = `<div class="panel-section">
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+            ${lifecyclePill(person._lifecycle)}
+            ${sourceBadge(person.source)}
+            <span style="font-size:0.72rem; color:var(--text3);">${person._type === 'prospect' ? 'Outreach Prospect' : 'CRM Contact'}</span>
+        </div>
+        ${person.title ? `<div style="font-size:0.85rem; color:var(--text2); margin-bottom:0.25rem;">${escHtml(person.title)}</div>` : ''}
+        ${person.company_name ? `<div style="font-size:0.85rem; font-weight:600;">${escHtml(person.company_name)}</div>` : ''}
+        <div style="margin-top:0.4rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+            ${person.email ? `<a href="mailto:${escHtml(person.email)}" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">${escHtml(person.email)}</a>` : ''}
+            ${person.linkedin_url ? `<a href="${escHtml(person.linkedin_url)}" target="_blank" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">LinkedIn</a>` : ''}
+        </div>
+    </div>`;
+
+    // Lifecycle stage selector (contacts only)
+    if (person._type === 'contact') {
+        html += `<div class="panel-section">
+            <label>Stage</label>
+            <select class="panel-select" id="panelStage" onchange="updateLifecycle(this.value)">
+                ${STAGES.map(s => `<option value="${s.id}" ${s.id === person._lifecycle ? 'selected' : ''}>${s.name}</option>`).join('')}
+            </select>
         </div>`;
+    }
+
+    // Next action (contacts only)
+    if (person._type === 'contact') {
+        html += `<div class="panel-section">
+            <label>Next Action</label>
+            <input type="text" class="panel-input" id="panelNextAction" value="${escHtml(person.next_action || '')}" placeholder="What's next?">
+            <div style="margin-top:0.4rem;"><label>Due Date</label>
+            <input type="date" class="panel-input" id="panelNextDate" value="${person.next_action_date || ''}"></div>
+            <button class="btn btn-green btn-sm" style="margin-top:0.5rem;" onclick="saveNextAction()">Save</button>
+        </div>`;
+    }
 
     // Quick actions
-    let actionsHtml = '<div class="quick-actions">';
-    actionsHtml += '<button class="qa-btn primary" onclick="toggleNoteInput()">Log Note</button>';
-    actionsHtml += '<button class="qa-btn" onclick="quickAction(\'book_sent\')">Book Sent</button>';
-    actionsHtml += '<button class="qa-btn" onclick="quickAction(\'report_sent\')">Report Sent</button>';
-    if (person._type === 'contact') {
-        actionsHtml += '<button class="qa-btn" onclick="showCreateOppModal()">Create Opportunity</button>';
-    }
+    html += '<div class="quick-actions">';
+    html += '<button class="qa-btn primary" onclick="toggleNoteInput()">Log Note</button>';
+    html += '<button class="qa-btn" onclick="quickAction(\'book_sent\')">Book Sent</button>';
+    html += '<button class="qa-btn" onclick="quickAction(\'report_sent\')">Report Sent</button>';
     if (person._type === 'prospect') {
-        actionsHtml += '<button class="qa-btn btn-green" style="border-color:var(--green);" onclick="showPromoteModal()">Promote to CRM</button>';
+        html += '<button class="qa-btn" style="background:var(--green); color:white; border-color:var(--green);" onclick="showPromoteModal()">Promote to CRM</button>';
     }
-    actionsHtml += '</div>';
+    html += '</div>';
 
     // Note input
-    let noteInputHtml = `
-        <div class="note-input-area" id="noteInputArea">
-            <textarea id="noteText" placeholder="Write a note..."></textarea>
-            <div class="note-input-actions">
-                <button class="btn btn-white btn-sm" onclick="toggleNoteInput()">Cancel</button>
-                <button class="btn btn-green btn-sm" onclick="saveNote()">Save Note</button>
-            </div>
+    html += `<div class="note-input-area" id="noteInputArea">
+        <textarea id="noteText" placeholder="Write a note..."></textarea>
+        <div class="note-input-actions">
+            <button class="btn btn-white btn-sm" onclick="toggleNoteInput()">Cancel</button>
+            <button class="btn btn-green btn-sm" onclick="saveNote()">Save Note</button>
+        </div>
+    </div>`;
+
+    // Timeline
+    const timeline = await loadTimeline(person);
+    html += `<div class="collapse-header" onclick="toggleCollapse('timelineSection')" style="margin-top:0;">
+        <h3>Timeline</h3><span class="collapse-arrow open" id="arrow-timelineSection">&#9660;</span>
+    </div>
+    <div class="collapse-body open" id="timelineSection">
+        <div class="timeline" id="timelineContainer">${timeline}</div>
+    </div>`;
+
+    // Opportunities (if contact)
+    if (person._type === 'contact' && person._opps?.length) {
+        html += `<div class="collapse-header" onclick="toggleCollapse('oppsSection')">
+            <h3>Opportunities (${person._opps.length})</h3><span class="collapse-arrow open" id="arrow-oppsSection">&#9660;</span>
+        </div>
+        <div class="collapse-body open" id="oppsSection">
+            ${person._opps.map(o => `<div class="opp-card" onclick="window.open('opportunity.html?id=${o.id}','_blank')">
+                <div class="opp-name">${escHtml(o.name)}</div>
+                <div class="opp-meta">${fmt$(o.value)} ${o.close_date ? '| Close: ' + fmtDate(o.close_date) : ''}</div>
+            </div>`).join('')}
         </div>`;
-
-    // Load timeline, opportunities in parallel
-    const timelinePromise = loadTimeline(person);
-    const oppsHtml = buildOppsSection(person);
-
-    const timeline = await timelinePromise;
-
-    // Company info (collapsed)
-    let companyHtml = '';
-    if (person.company_name) {
-        companyHtml = `
-            <div class="collapse-header" onclick="toggleCollapse('companySection')">
-                <h3>Company Info</h3>
-                <span class="collapse-arrow" id="arrow-companySection">&#9660;</span>
-            </div>
-            <div class="collapse-body" id="companySection">
-                <div class="panel-section">
-                    <div style="font-size:0.82rem; margin-bottom:0.25rem;"><strong>${escHtml(person.company_name)}</strong></div>
-                    ${person.company_industry ? `<div style="font-size:0.78rem; color:var(--text2);">Industry: ${escHtml(person.company_industry)}</div>` : ''}
-                    ${person.company_employee_count ? `<div style="font-size:0.78rem; color:var(--text2);">Employees: ${person.company_employee_count.toLocaleString()}</div>` : ''}
-                    ${person.company_website ? `<div style="font-size:0.78rem;"><a href="${escHtml(person.company_website)}" target="_blank" style="color:var(--blue); text-decoration:none;">${escHtml(person.company_website)}</a></div>` : ''}
-                </div>
-            </div>`;
     }
 
-    body.innerHTML = headerHtml + actionsHtml + noteInputHtml + `
-        <div class="collapse-header" onclick="toggleCollapse('timelineSection')" style="margin-top:0;">
-            <h3>Timeline</h3>
-            <span class="collapse-arrow open" id="arrow-timelineSection">&#9660;</span>
+    // Company info
+    if (person.company_name) {
+        html += `<div class="collapse-header" onclick="toggleCollapse('companySection')">
+            <h3>Company Info</h3><span class="collapse-arrow" id="arrow-companySection">&#9660;</span>
         </div>
-        <div class="collapse-body open" id="timelineSection">
-            <div class="timeline" id="timelineContainer">${timeline}</div>
-        </div>
-        ${oppsHtml}
-        ${companyHtml}
-    `;
+        <div class="collapse-body" id="companySection">
+            <div style="font-size:0.82rem; margin-bottom:0.25rem;"><strong>${escHtml(person.company_name)}</strong></div>
+            ${person.company_industry ? `<div style="font-size:0.78rem; color:var(--text2);">Industry: ${escHtml(person.company_industry)}</div>` : ''}
+            ${person.company_employee_count ? `<div style="font-size:0.78rem; color:var(--text2);">Employees: ${person.company_employee_count.toLocaleString()}</div>` : ''}
+        </div>`;
+    }
+
+    body.innerHTML = html;
 }
 
-// ── TIMELINE ──
+// Timeline
 async function loadTimeline(person) {
     const items = [];
 
-    // 1. Person notes
     let noteQuery = sb.from('person_notes').select('*');
     if (person._contactId && person._prospectId) {
         noteQuery = noteQuery.or(`contact_id.eq.${person._contactId},prospect_id.eq.${person._prospectId}`);
@@ -824,353 +791,244 @@ async function loadTimeline(person) {
         noteQuery = noteQuery.eq('prospect_id', person._prospectId);
     }
     const { data: notes } = await noteQuery.order('created_at', { ascending: false }).limit(50);
+    (notes || []).forEach(n => items.push({ date: n.created_at, type: n.note_type || 'note', text: n.content, source: 'note' }));
 
-    (notes || []).forEach(n => {
-        items.push({
-            date: n.created_at,
-            type: n.note_type || 'note',
-            text: n.content,
-            source: 'note'
-        });
-    });
-
-    // 2. Outreach emails (if prospect)
     if (person._prospectId) {
-        const { data: emails } = await sb
-            .from('outreach_emails')
-            .select('subject, status, sent_at, opened_at, clicked_at, replied_at, created_at')
-            .eq('prospect_id', person._prospectId)
-            .order('created_at', { ascending: false })
-            .limit(20);
-
+        const { data: emails } = await sb.from('outreach_emails').select('subject, status, sent_at, opened_at, clicked_at, replied_at, created_at')
+            .eq('prospect_id', person._prospectId).order('created_at', { ascending: false }).limit(20);
         (emails || []).forEach(e => {
-            let statusText = e.status || 'draft';
-            if (e.replied_at) statusText = 'replied';
-            else if (e.clicked_at) statusText = 'clicked';
-            else if (e.opened_at) statusText = 'opened';
-            else if (e.sent_at) statusText = 'sent';
-
-            items.push({
-                date: e.sent_at || e.created_at,
-                type: 'email',
-                text: `Email: ${e.subject || '(no subject)'} [${statusText}]`,
-                source: 'outreach'
-            });
+            let st = e.status || 'draft';
+            if (e.replied_at) st = 'replied'; else if (e.clicked_at) st = 'clicked'; else if (e.opened_at) st = 'opened'; else if (e.sent_at) st = 'sent';
+            items.push({ date: e.sent_at || e.created_at, type: 'email', text: `Email: ${e.subject || '(no subject)'} [${st}]`, source: 'outreach' });
         });
     }
 
-    // 3. Activities (if contact)
     if (person._contactId) {
-        const { data: activities } = await sb
-            .from('activities')
-            .select('type, description, created_at')
-            .eq('contact_id', person._contactId)
-            .order('created_at', { ascending: false })
-            .limit(20);
-
-        (activities || []).forEach(a => {
-            items.push({
-                date: a.created_at,
-                type: a.type || 'note',
-                text: a.description || a.type,
-                source: 'activity'
-            });
-        });
+        const { data: activities } = await sb.from('activities').select('type, description, created_at')
+            .eq('contact_id', person._contactId).order('created_at', { ascending: false }).limit(20);
+        (activities || []).forEach(a => items.push({ date: a.created_at, type: a.type || 'note', text: a.description || a.type, source: 'activity' }));
     }
 
-    // Sort all by date desc
     items.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    if (items.length === 0) {
-        return '<div class="timeline-empty">No activity yet. Log a note to get started.</div>';
-    }
-
-    return items.map(item => `
-        <div class="timeline-item">
-            <div class="timeline-dot ${item.type}"></div>
-            <div class="timeline-content">
-                <div class="timeline-text">${escHtml(item.text)}</div>
-                <div class="timeline-meta">${fmtDateFull(item.date)}</div>
-            </div>
-        </div>
-    `).join('');
+    if (items.length === 0) return '<div class="timeline-empty">No activity yet. Log a note to get started.</div>';
+    return items.map(item => `<div class="timeline-item">
+        <div class="timeline-dot ${item.type}"></div>
+        <div class="timeline-content"><div class="timeline-text">${escHtml(item.text)}</div><div class="timeline-meta">${fmtDateFull(item.date)}</div></div>
+    </div>`).join('');
 }
 
-function buildOppsSection(person) {
-    if (person._type !== 'contact' || !person._opps?.length) return '';
-
-    const oppsHtml = person._opps.map(o => `
-        <div class="opp-card" onclick="window.open('opportunity.html?id=${o.id}', '_blank')">
-            <div class="opp-name">${escHtml(o.name)}</div>
-            <div class="opp-meta">
-                ${lifecyclePill(stageToLifecycle(o.stage))} ${fmt$(o.value)} ${o.close_date ? '| Close: ' + fmtDate(o.close_date) : ''}
-            </div>
-        </div>
-    `).join('');
-
-    return `
-        <div class="collapse-header" onclick="toggleCollapse('oppsSection')">
-            <h3>Opportunities (${person._opps.length})</h3>
-            <span class="collapse-arrow open" id="arrow-oppsSection">&#9660;</span>
-        </div>
-        <div class="collapse-body open" id="oppsSection">${oppsHtml}</div>
-    `;
-}
-
-function stageToLifecycle(stage) {
-    if (['active-customer', 'converted-paid'].includes(stage)) return 'customer';
-    if (stage === 'pilot-started') return 'pilot';
-    if (['qualified-opportunity', 'call-completed', 'call-booked'].includes(stage)) return 'qualified';
-    if (['churned-lost', 'closed-lost'].includes(stage)) return 'churned';
-    return 'engaged';
-}
-
-// ── COLLAPSIBLE SECTIONS ──
 function toggleCollapse(id) {
-    const body = document.getElementById(id);
-    const arrow = document.getElementById('arrow-' + id);
-    body.classList.toggle('open');
-    arrow.classList.toggle('open');
+    document.getElementById(id).classList.toggle('open');
+    document.getElementById('arrow-' + id).classList.toggle('open');
 }
 
-// ── QUICK ACTIONS ──
+// Quick actions
 function toggleNoteInput() {
     const area = document.getElementById('noteInputArea');
     area.classList.toggle('visible');
-    if (area.classList.contains('visible')) {
-        document.getElementById('noteText').focus();
-    }
+    if (area.classList.contains('visible')) document.getElementById('noteText').focus();
 }
 
 async function saveNote() {
     if (!selectedPerson) return;
     const text = document.getElementById('noteText').value.trim();
     if (!text) return;
-
     const { error } = await sb.from('person_notes').insert({
-        contact_id: selectedPerson._contactId,
-        prospect_id: selectedPerson._prospectId,
-        note_type: 'note',
-        content: text,
-        created_by: currentUser?.id
+        contact_id: selectedPerson._contactId, prospect_id: selectedPerson._prospectId,
+        note_type: 'note', content: text, created_by: currentUser?.id
     });
-
-    if (error) {
-        showToast('Failed to save note: ' + error.message, 'error');
-        return;
-    }
-
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
     document.getElementById('noteText').value = '';
     toggleNoteInput();
     showToast('Note saved');
-
-    // Refresh timeline
-    const timeline = await loadTimeline(selectedPerson);
-    document.getElementById('timelineContainer').innerHTML = timeline;
+    document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
 }
 
 async function quickAction(type) {
     if (!selectedPerson) return;
-    const labels = {
-        book_sent: 'Already Gone book sent',
-        report_sent: 'Turnover Intelligence Report sent'
-    };
+    const labels = { book_sent: 'Already Gone book sent', report_sent: 'Turnover Intelligence Report sent' };
     const content = labels[type] + ' ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
     const { error } = await sb.from('person_notes').insert({
-        contact_id: selectedPerson._contactId,
-        prospect_id: selectedPerson._prospectId,
-        note_type: type,
-        content: content,
-        created_by: currentUser?.id
+        contact_id: selectedPerson._contactId, prospect_id: selectedPerson._prospectId,
+        note_type: type, content: content, created_by: currentUser?.id
     });
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    showToast(labels[type] + ' recorded');
 
-    if (error) {
-        showToast('Failed to record action: ' + error.message, 'error');
-        return;
+    // If book_sent and contact, update lifecycle if currently before book_sent
+    if (type === 'book_sent' && selectedPerson._type === 'contact') {
+        const earlyStages = ['cold', 'emailed', 'opened', 'clicked'];
+        if (earlyStages.includes(selectedPerson._lifecycle)) {
+            await sb.from('contacts').update({ lifecycle_stage: 'book_sent', updated_at: new Date().toISOString() }).eq('id', selectedPerson._contactId);
+        }
     }
 
-    showToast(labels[type] + ' recorded');
-    const timeline = await loadTimeline(selectedPerson);
-    document.getElementById('timelineContainer').innerHTML = timeline;
+    document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
 }
 
-// ── PROMOTE TO CRM ──
+// Lifecycle stage change
+async function updateLifecycle(stage) {
+    if (!selectedPerson || selectedPerson._type !== 'contact') return;
+    const { error } = await sb.from('contacts').update({
+        lifecycle_stage: stage, updated_at: new Date().toISOString()
+    }).eq('id', selectedPerson._contactId);
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    selectedPerson._lifecycle = stage;
+    selectedPerson.lifecycle_stage = stage;
+    showToast('Stage updated to ' + (STAGE_MAP[stage] || stage));
+    await sb.from('person_notes').insert({
+        contact_id: selectedPerson._contactId, note_type: 'system',
+        content: `Stage changed to ${STAGE_MAP[stage] || stage}`, created_by: currentUser?.id
+    });
+}
+
+// Next action
+async function saveNextAction() {
+    if (!selectedPerson || selectedPerson._type !== 'contact') return;
+    const action = document.getElementById('panelNextAction').value.trim();
+    const date = document.getElementById('panelNextDate').value;
+    const { error } = await sb.from('contacts').update({
+        next_action: action || null, next_action_date: date || null, updated_at: new Date().toISOString()
+    }).eq('id', selectedPerson._contactId);
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    selectedPerson.next_action = action;
+    selectedPerson.next_action_date = date;
+    showToast('Next action saved');
+    if (action) {
+        await sb.from('person_notes').insert({
+            contact_id: selectedPerson._contactId, note_type: 'system',
+            content: `Next action: ${action}${date ? ' (due ' + fmtDate(date) + ')' : ''}`, created_by: currentUser?.id
+        });
+    }
+    updateStats();
+    applyFilters();
+}
+
+// Promote to CRM
 function showPromoteModal() {
     if (!selectedPerson || selectedPerson._type !== 'prospect') return;
     document.getElementById('promoteModal').classList.add('active');
 }
-
-function closePromoteModal() {
-    document.getElementById('promoteModal').classList.remove('active');
-}
-
-document.getElementById('promoteCreateOpp').addEventListener('change', function() {
-    document.getElementById('promoteOppFields').style.display = this.value === 'yes' ? 'block' : 'none';
-});
+function closePromoteModal() { document.getElementById('promoteModal').classList.remove('active'); }
 
 async function executePromote() {
     if (!selectedPerson) return;
     const p = selectedPerson;
     const btn = document.getElementById('btnPromote');
-    btn.disabled = true;
-    btn.textContent = 'Promoting...';
-
+    btn.disabled = true; btn.textContent = 'Promoting...';
     try {
-        // 1. Create/find company
         let companyId = null;
         if (p.company_name) {
             const { data: existing } = await sb.from('companies').select('id').eq('name', p.company_name).single();
-            if (existing) {
-                companyId = existing.id;
-            } else {
+            if (existing) { companyId = existing.id; }
+            else {
                 const { data: newCo, error: coErr } = await sb.from('companies').insert({
-                    name: p.company_name,
-                    website: p.company_website || null,
-                    industry: p.company_industry || null,
-                    employee_count: p.company_employee_count || null,
-                    source: 'people_promote',
-                    created_at: new Date().toISOString()
+                    name: p.company_name, website: p.company_website || null,
+                    industry: p.company_industry || null, employee_count: p.company_employee_count || null,
+                    source: 'people_promote', created_at: new Date().toISOString()
                 }).select('id').single();
                 if (coErr) throw coErr;
                 companyId = newCo.id;
             }
         }
 
-        // 2. Create/find contact
         let contactId = null;
         if (p.email) {
             const { data: existing } = await sb.from('contacts').select('id').eq('email', p.email).single();
-            if (existing) {
-                contactId = existing.id;
-            } else {
+            if (existing) { contactId = existing.id; }
+            else {
+                const stage = document.getElementById('promoteStage').value || 'replied';
+                const nextAction = document.getElementById('promoteNextAction').value.trim();
+                const nextDate = document.getElementById('promoteNextDate').value;
                 const { data: newC, error: cErr } = await sb.from('contacts').insert({
-                    company_id: companyId,
-                    first_name: p.first_name,
-                    last_name: p.last_name,
-                    email: p.email,
-                    title: p.title || null,
-                    linkedin_url: p.linkedin_url || null,
-                    source: 'people_promote',
-                    created_at: new Date().toISOString()
+                    company_id: companyId, first_name: p.first_name, last_name: p.last_name,
+                    email: p.email, title: p.title || null, linkedin_url: p.linkedin_url || null,
+                    source: 'people_promote', lifecycle_stage: stage,
+                    next_action: nextAction || null, next_action_date: nextDate || null,
+                    created_at: new Date().toISOString(), updated_at: new Date().toISOString()
                 }).select('id').single();
                 if (cErr) throw cErr;
                 contactId = newC.id;
             }
         }
 
-        // 3. Update prospect
         await sb.from('outreach_prospects').update({
-            status: 'converted',
-            converted_contact_id: contactId,
-            converted_at: new Date().toISOString()
+            status: 'converted', converted_contact_id: contactId, converted_at: new Date().toISOString()
         }).eq('id', p._prospectId);
 
-        // 4. Migrate person_notes
         if (contactId && p._prospectId) {
             await sb.from('person_notes').update({ contact_id: contactId }).eq('prospect_id', p._prospectId).is('contact_id', null);
         }
 
-        // 5. Optionally create opportunity
-        const createOpp = document.getElementById('promoteCreateOpp').value === 'yes';
-        if (createOpp && companyId && contactId) {
-            const oppValue = parseInt(document.getElementById('promoteOppValue').value) || 96000;
-            const oppStage = document.getElementById('promoteOppStage').value || 'discovery';
-            await sb.from('opportunities').insert({
-                company_id: companyId,
-                contact_id: contactId,
-                name: `${p.company_name || p.first_name} - Promoted`,
-                stage: oppStage,
-                source: 'people_promote',
-                value: oppValue,
-                notes: 'Promoted from outreach prospect via People page.',
-                created_at: new Date().toISOString()
-            });
-        }
-
-        // Log system note
         await sb.from('person_notes').insert({
-            contact_id: contactId,
-            prospect_id: p._prospectId,
-            note_type: 'system',
-            content: 'Promoted from outreach prospect to CRM contact.',
-            created_by: currentUser?.id
+            contact_id: contactId, prospect_id: p._prospectId, note_type: 'system',
+            content: 'Promoted from outreach prospect to CRM contact.', created_by: currentUser?.id
         });
 
-        closePromoteModal();
-        closePanel();
-        showToast('Promoted to CRM successfully');
+        closePromoteModal(); closePanel();
+        showToast('Promoted to CRM');
         await loadAllPeople();
-
     } catch (err) {
         showToast('Promote failed: ' + err.message, 'error');
     } finally {
-        btn.disabled = false;
-        btn.textContent = 'Promote';
+        btn.disabled = false; btn.textContent = 'Promote';
     }
 }
 
-// ── CREATE OPPORTUNITY ──
-function showCreateOppModal() {
-    if (!selectedPerson) return;
-    document.getElementById('oppName').value = `${selectedPerson.company_name || selectedPerson.first_name} - New Opportunity`;
-    document.getElementById('createOppModal').classList.add('active');
-}
+// Quick Add (Inbound)
+function showQuickAddModal() { document.getElementById('quickAddModal').classList.add('active'); document.getElementById('qaFirstName').focus(); }
+function closeQuickAddModal() { document.getElementById('quickAddModal').classList.remove('active'); }
 
-function closeCreateOppModal() {
-    document.getElementById('createOppModal').classList.remove('active');
-}
+async function executeQuickAdd() {
+    const firstName = document.getElementById('qaFirstName').value.trim();
+    const lastName = document.getElementById('qaLastName').value.trim();
+    const email = document.getElementById('qaEmail').value.trim();
+    if (!firstName || !lastName || !email) { showToast('First name, last name, and email are required', 'error'); return; }
 
-async function executeCreateOpp() {
-    if (!selectedPerson || selectedPerson._type !== 'contact') return;
-    const p = selectedPerson;
+    const { data: dup } = await sb.from('contacts').select('id').eq('email', email).maybeSingle();
+    if (dup) { showToast('Contact with this email already exists', 'error'); return; }
 
-    const name = document.getElementById('oppName').value.trim();
-    const value = parseInt(document.getElementById('oppValue').value) || 96000;
-    const stage = document.getElementById('oppStage').value || 'discovery';
-
-    const { error } = await sb.from('opportunities').insert({
-        company_id: p.company_id,
-        contact_id: p._contactId,
-        name: name,
-        stage: stage,
-        source: 'people_page',
-        value: value,
-        created_at: new Date().toISOString()
-    });
-
-    if (error) {
-        showToast('Failed to create opportunity: ' + error.message, 'error');
-        return;
+    const companyName = document.getElementById('qaCompany').value.trim();
+    let companyId = null;
+    if (companyName) {
+        const { data: existingCo } = await sb.from('companies').select('id').eq('name', companyName).maybeSingle();
+        if (existingCo) { companyId = existingCo.id; }
+        else {
+            const { data: newCo } = await sb.from('companies').insert({ name: companyName, source: 'inbound', created_at: new Date().toISOString() }).select('id').single();
+            if (newCo) companyId = newCo.id;
+        }
     }
 
-    // Log system note
+    const { data: contact, error } = await sb.from('contacts').insert({
+        first_name: firstName, last_name: lastName, email: email,
+        title: document.getElementById('qaTitle').value.trim() || null,
+        linkedin_url: document.getElementById('qaLinkedin').value.trim() || null,
+        company_id: companyId,
+        source: document.getElementById('qaSource').value,
+        lifecycle_stage: document.getElementById('qaStage').value,
+        next_action: document.getElementById('qaNextAction').value.trim() || null,
+        next_action_date: document.getElementById('qaNextDate').value || null,
+        created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+    }).select('id').single();
+
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+
     await sb.from('person_notes').insert({
-        contact_id: p._contactId,
-        prospect_id: p._prospectId,
-        note_type: 'system',
-        content: `Opportunity created: ${name} (${fmt$(value)})`,
-        created_by: currentUser?.id
+        contact_id: contact.id, note_type: 'system',
+        content: 'Added via People Quick Add (inbound)', created_by: currentUser?.id
     });
 
-    closeCreateOppModal();
-    showToast('Opportunity created');
+    closeQuickAddModal();
+    showToast('Person added');
+    // Clear form
+    ['qaFirstName','qaLastName','qaEmail','qaCompany','qaTitle','qaLinkedin','qaNextAction','qaNextDate'].forEach(id => document.getElementById(id).value = '');
     await loadAllPeople();
-    openPerson(p._id);
 }
 
-// ── LOGOUT ──
-document.getElementById('btnLogout').addEventListener('click', async () => {
-    await sb.auth.signOut();
-    window.location.href = 'login.html';
-});
+// Logout
+document.getElementById('btnLogout').addEventListener('click', async () => { await sb.auth.signOut(); window.location.href = 'login.html'; });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
 
-// ── KEYBOARD ──
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closePanel();
-});
-
-// ── INIT ──
 init();
 </script>
 </body>

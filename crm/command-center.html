@@ -7,7 +7,6 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <style>
         :root {
             --green: #10b981;
@@ -81,49 +80,38 @@
 
         /* ── PILLS & BADGES ── */
         .pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
-        .pill-a { background: #EDE9FE; color: #6D28D9; }
-        .pill-b { background: #DBEAFE; color: #1D4ED8; }
         .pill-red { background: #FEE2E2; color: #DC2626; }
         .pill-amber { background: #FEF3C7; color: #D97706; }
         .pill-green { background: #D1FAE5; color: #047857; }
         .pill-cyan { background: #CFFAFE; color: #0E7490; }
         .pill-gray { background: #F3F4F6; color: #6B7280; }
+        .pill-blue { background: #DBEAFE; color: #1D4ED8; }
+        .pill-purple { background: #F3E8FF; color: #7C3AED; }
+        .pill-indigo { background: #EDE9FE; color: #4338CA; }
 
         .stage-pill { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
-        .stage-cold-outbound { background: #E0E7FF; color: #4338CA; }
-        .stage-outbound-reply { background: #E0F2FE; color: #0369A1; }
-        .stage-call-booked { background: #DBEAFE; color: #1E40AF; }
-        .stage-call-completed { background: #E0E7FF; color: #4338CA; }
-        .stage-qualified-opportunity { background: #F3E8FF; color: #7C3AED; }
-        .stage-pilot-started { background: #D1FAE5; color: #047857; }
-        .stage-active-customer { background: #D1FAE5; color: #047857; }
-        .stage-churned-lost { background: #FEE2E2; color: #DC2626; }
-        .stage-linkedin-engagement { background: #DBEAFE; color: #1D4ED8; }
-        .stage-post-comment-email { background: #E0F2FE; color: #0369A1; }
-        .stage-assessment-taken { background: #FEF3C7; color: #D97706; }
-        .stage-trial-started { background: #D1FAE5; color: #047857; }
-        .stage-trial-day-7 { background: #FEF3C7; color: #D97706; }
-        .stage-trial-day-12 { background: #FEE2E2; color: #DC2626; }
-        .stage-converted-paid { background: #D1FAE5; color: #047857; }
-        .stage-trial-expired { background: #F3F4F6; color: #6B7280; }
+        .stage-cold { background: #F3F4F6; color: #6B7280; }
+        .stage-emailed { background: #DBEAFE; color: #1D4ED8; }
+        .stage-opened { background: #DBEAFE; color: #1D4ED8; }
+        .stage-clicked { background: #F3E8FF; color: #7C3AED; }
+        .stage-book_sent { background: #EDE9FE; color: #4338CA; }
+        .stage-replied { background: #F3E8FF; color: #7C3AED; }
+        .stage-call { background: #FEF3C7; color: #D97706; }
+        .stage-pilot { background: #D1FAE5; color: #047857; }
+        .stage-customer { background: #D1FAE5; color: #047857; }
+        .stage-churned { background: #FEE2E2; color: #DC2626; }
 
         /* ── KANBAN ── */
-        .kanban-controls { display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; }
-        .funnel-toggle { display: flex; background: var(--white); border-radius: 8px; overflow: hidden; border: 2px solid var(--border); }
-        .funnel-toggle button { padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 600; border: none; background: none; cursor: pointer; color: var(--text2); transition: all 0.15s; }
-        .funnel-toggle button.active { background: var(--green); color: white; }
         .kanban-row { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 1rem; min-height: 300px; }
-        .kanban-col { min-width: 200px; flex: 1; background: #f3f4f6; border-radius: 10px; padding: 0.75rem; }
+        .kanban-col { min-width: 160px; flex: 1; background: #f3f4f6; border-radius: 10px; padding: 0.75rem; }
         .kanban-col-header { font-size: 0.72rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.6rem; display: flex; justify-content: space-between; }
         .kanban-col-header .count { background: var(--white); padding: 0.1rem 0.4rem; border-radius: 8px; font-size: 0.65rem; }
         .kanban-card { background: var(--white); border-radius: 8px; padding: 0.7rem; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; border-left: 3px solid var(--green); }
         .kanban-card:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
-        .kanban-card.dragging { opacity: 0.5; }
-        .kanban-card .kc-company { font-weight: 700; font-size: 0.82rem; color: var(--text); }
-        .kanban-card .kc-contact { font-size: 0.72rem; color: var(--text2); }
-        .kanban-card .kc-value { font-size: 0.85rem; font-weight: 800; color: var(--green); margin-top: 0.3rem; }
+        .kanban-card .kc-name { font-weight: 700; font-size: 0.82rem; color: var(--text); }
+        .kanban-card .kc-company { font-size: 0.72rem; color: var(--text2); }
+        .kanban-card .kc-action { font-size: 0.72rem; color: var(--blue); margin-top: 0.25rem; }
         .kanban-card .kc-meta { display: flex; justify-content: space-between; margin-top: 0.35rem; font-size: 0.68rem; color: var(--text3); }
-        .kanban-col.drag-over { background: #ecfdf5; outline: 2px dashed var(--green); }
 
         /* ── PROGRESS BAR ── */
         .progress-bar { background: var(--border); border-radius: 8px; height: 10px; overflow: hidden; }
@@ -138,17 +126,6 @@
         .daily-cell .day-label { font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; }
         .daily-cell .day-count { font-size: 1.5rem; font-weight: 800; color: var(--charcoal); }
         .daily-cell .day-target { font-size: 0.7rem; color: var(--text3); }
-
-        /* ── TRIAL CARDS ── */
-        .trial-card { background: var(--white); border-radius: 10px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-        .trial-card.day-green { border-left: 4px solid var(--green); }
-        .trial-card.day-amber { border-left: 4px solid var(--amber); }
-        .trial-card.day-red { border-left: 4px solid var(--red); }
-        .trial-info { flex: 1; }
-        .trial-info .ti-name { font-weight: 700; font-size: 0.9rem; }
-        .trial-info .ti-company { font-size: 0.8rem; color: var(--text2); }
-        .trial-info .ti-meta { font-size: 0.75rem; color: var(--text3); margin-top: 0.25rem; }
-        .trial-actions { display: flex; gap: 0.4rem; }
 
         /* ── REPORT SECTIONS ── */
         .report-section { background: var(--white); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
@@ -181,16 +158,6 @@
         }
         .panel-field input:focus, .panel-field select:focus { border-color: var(--green); outline: none; }
         .panel-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
-
-        /* ── ACTIVITY TIMELINE ── */
-        .timeline-item { display: flex; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }
-        .timeline-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 0.4rem; flex-shrink: 0; }
-        .timeline-dot.call { background: var(--green); }
-        .timeline-dot.email { background: var(--blue); }
-        .timeline-dot.meeting { background: var(--purple); }
-        .timeline-dot.note { background: var(--text3); }
-        .timeline-text { font-size: 0.8rem; color: var(--text); }
-        .timeline-date { font-size: 0.7rem; color: var(--text3); }
 
         /* ── BUTTONS ── */
         .btn { padding: 0.45rem 0.9rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.78rem; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.35rem; }
@@ -276,51 +243,42 @@
             <button class="tab-btn active" data-tab="today">Today <span class="badge" id="todayBadge" style="display:none">0</span></button>
             <button class="tab-btn" data-tab="pipeline">Pipeline</button>
             <button class="tab-btn" data-tab="outbound">Outbound</button>
-            <button class="tab-btn" data-tab="hot">Hot Leads</button>
-            <button class="tab-btn" data-tab="trials">Trials</button>
-            <button class="tab-btn" data-tab="report">Friday Report</button>
+            <button class="tab-btn" data-tab="report">Weekly Report</button>
         </div>
 
-        <!-- ═══════════════ TAB: TODAY ═══════════════ -->
         <div class="container">
+            <!-- ═══════════════ TAB: TODAY ═══════════════ -->
             <div id="tab-today" class="tab-content active">
                 <div class="stats-bar" id="todayStats"></div>
 
-                <!-- Overdue -->
+                <!-- Overdue Follow-ups -->
                 <div class="section-header">
-                    <div class="section-title"><span class="dot dot-red"></span> Overdue Actions</div>
+                    <div class="section-title"><span class="dot dot-red"></span> Overdue Follow-ups</div>
                 </div>
-                <table class="data-table" id="tableOverdue"><thead><tr><th>Contact</th><th>Company</th><th>Stage</th><th>Funnel</th><th>Action Due</th><th>Days Late</th></tr></thead><tbody></tbody></table>
+                <table class="data-table" id="tableOverdue"><thead><tr><th>Person</th><th>Company</th><th>Stage</th><th>Next Action</th><th>Due</th><th>Days Late</th></tr></thead><tbody></tbody></table>
 
                 <!-- Due Today -->
                 <div class="section-header">
                     <div class="section-title"><span class="dot dot-amber"></span> Due Today</div>
                 </div>
-                <table class="data-table" id="tableDueToday"><thead><tr><th>Contact</th><th>Company</th><th>Stage</th><th>Funnel</th><th>Next Action</th></tr></thead><tbody></tbody></table>
+                <table class="data-table" id="tableDueToday"><thead><tr><th>Person</th><th>Company</th><th>Stage</th><th>Next Action</th></tr></thead><tbody></tbody></table>
 
-                <!-- Stalled Deals -->
+                <!-- Recently Replied (48h) -->
                 <div class="section-header">
-                    <div class="section-title"><span class="dot dot-amber"></span> Stalled Deals (7+ days no activity)</div>
+                    <div class="section-title"><span class="dot dot-green"></span> Recently Replied (48h)</div>
                 </div>
-                <table class="data-table" id="tableStalled"><thead><tr><th>Contact</th><th>Company</th><th>Stage</th><th>Value</th><th>Days Stalled</th><th>Last Activity</th></tr></thead><tbody></tbody></table>
+                <table class="data-table" id="tableReplied"><thead><tr><th>Person</th><th>Company</th><th>Source</th><th>Updated</th></tr></thead><tbody></tbody></table>
 
-                <!-- Renewals -->
+                <!-- Stalled (14+ days) -->
                 <div class="section-header">
-                    <div class="section-title"><span class="dot dot-blue"></span> Renewals (next 60 days)</div>
+                    <div class="section-title"><span class="dot dot-amber"></span> Stalled (14+ days, no next action)</div>
                 </div>
-                <table class="data-table" id="tableRenewals"><thead><tr><th>Company</th><th>Value</th><th>Renewal Date</th><th>Days Until</th></tr></thead><tbody></tbody></table>
+                <table class="data-table" id="tableStalled"><thead><tr><th>Person</th><th>Company</th><th>Stage</th><th>Days Since Update</th></tr></thead><tbody></tbody></table>
             </div>
 
             <!-- ═══════════════ TAB: PIPELINE ═══════════════ -->
             <div id="tab-pipeline" class="tab-content">
                 <div class="stats-bar" id="pipelineStats"></div>
-                <div class="kanban-controls">
-                    <div class="funnel-toggle">
-                        <button class="active" data-funnel="operational">Funnel A: Operational</button>
-                        <button data-funnel="self_serve">Funnel B: Self-Serve</button>
-                        <button data-funnel="all">All</button>
-                    </div>
-                </div>
                 <div class="kanban-row" id="kanbanRow"></div>
             </div>
 
@@ -378,33 +336,7 @@
                 </div>
             </div>
 
-            <!-- ═══════════════ TAB: HOT LEADS ═══════════════ -->
-            <div id="tab-hot" class="tab-content">
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-red"></span> Replied in Last 48 Hours</div>
-                </div>
-                <table class="data-table" id="tableReplied"><thead><tr><th>Contact</th><th>Company</th><th>Source</th><th>Replied</th><th>Sentiment</th></tr></thead><tbody></tbody></table>
-
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-green"></span> Calls Booked This Week</div>
-                </div>
-                <table class="data-table" id="tableCallsBooked"><thead><tr><th>Contact</th><th>Company</th><th>Call Type</th><th>Date</th><th>Value</th></tr></thead><tbody></tbody></table>
-            </div>
-
-            <!-- ═══════════════ TAB: TRIALS ═══════════════ -->
-            <div id="tab-trials" class="tab-content">
-                <div class="stats-bar" id="trialStats"></div>
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-green"></span> Active Trials</div>
-                </div>
-                <div id="activeTrials"></div>
-                <div class="section-header" style="margin-top:2rem">
-                    <div class="section-title"><span class="dot dot-amber"></span> Expired / Did Not Convert</div>
-                </div>
-                <table class="data-table" id="tableExpiredTrials"><thead><tr><th>Contact</th><th>Company</th><th>Expired</th><th>Reason</th><th>Re-engage</th></tr></thead><tbody></tbody></table>
-            </div>
-
-            <!-- ═══════════════ TAB: FRIDAY REPORT ═══════════════ -->
+            <!-- ═══════════════ TAB: WEEKLY REPORT ═══════════════ -->
             <div id="tab-report" class="tab-content">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
                     <h2 style="font-size:1.1rem;font-weight:700">Weekly Report</h2>
@@ -415,23 +347,18 @@
                 </div>
 
                 <div class="report-section">
-                    <h3>Funnel A: Operational Buyers</h3>
-                    <div class="report-grid" id="reportFunnelA"></div>
+                    <h3>People by Stage</h3>
+                    <div class="report-grid" id="reportStages"></div>
                 </div>
 
                 <div class="report-section">
-                    <h3>Funnel B: Self-Serve</h3>
-                    <div class="report-grid" id="reportFunnelB"></div>
+                    <h3>Outreach Performance</h3>
+                    <div class="report-grid" id="reportOutreach"></div>
                 </div>
 
                 <div class="report-section">
-                    <h3>Pipeline Summary</h3>
-                    <div class="report-grid" id="reportPipeline"></div>
-                </div>
-
-                <div class="report-section">
-                    <h3>Outbound Performance</h3>
-                    <div class="report-grid" id="reportOutbound"></div>
+                    <h3>Pipeline Activity</h3>
+                    <div class="report-grid" id="reportActivity"></div>
                 </div>
             </div>
         </div>
@@ -440,11 +367,10 @@
         <div class="panel-overlay" id="panelOverlay"></div>
         <div class="detail-panel" id="detailPanel">
             <div class="panel-header">
-                <h2 id="panelTitle">Contact Details</h2>
+                <h2 id="panelTitle">Person Details</h2>
                 <button class="panel-close" id="panelClose">&times;</button>
             </div>
             <div class="panel-body" id="panelBody">
-                <!-- Populated dynamically -->
             </div>
         </div>
     </div>
@@ -457,57 +383,35 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const FUNNEL_A_STAGES = [
-        { id: 'cold-outbound', name: 'Cold Outbound', prob: 0.02 },
-        { id: 'outbound-reply', name: 'Outbound Reply', prob: 0.10 },
-        { id: 'call-booked', name: 'Call Booked', prob: 0.20 },
-        { id: 'call-completed', name: 'Call Completed', prob: 0.30 },
-        { id: 'qualified-opportunity', name: 'Qualified', prob: 0.50 },
-        { id: 'pilot-started', name: 'Pilot Started', prob: 0.90 },
-        { id: 'active-customer', name: 'Active Customer', prob: 1.00 },
-        { id: 'churned-lost', name: 'Churned/Lost', prob: 0.00 }
+    const STAGES = [
+        { id: 'cold', name: 'Cold' },
+        { id: 'emailed', name: 'Emailed' },
+        { id: 'opened', name: 'Opened' },
+        { id: 'clicked', name: 'Clicked' },
+        { id: 'book_sent', name: 'Book Sent' },
+        { id: 'replied', name: 'Replied' },
+        { id: 'call', name: 'Call' },
+        { id: 'pilot', name: 'Pilot' },
+        { id: 'customer', name: 'Customer' },
+        { id: 'churned', name: 'Churned' }
     ];
+    const STAGE_MAP = Object.fromEntries(STAGES.map(s => [s.id, s.name]));
+    // Active stages for pipeline (exclude churned)
+    const PIPELINE_STAGES = STAGES.filter(s => s.id !== 'churned');
+    // "Active" = replied and beyond
+    const ACTIVE_STAGE_IDS = ['replied', 'call', 'pilot', 'customer'];
+    const TERMINAL_STAGES = ['customer', 'churned'];
 
-    const FUNNEL_B_STAGES = [
-        { id: 'linkedin-engagement', name: 'LinkedIn Engaged', prob: 0.01 },
-        { id: 'post-comment-email', name: 'Email Sent', prob: 0.05 },
-        { id: 'assessment-taken', name: 'Assessment Taken', prob: 0.15 },
-        { id: 'trial-started', name: 'Trial Started', prob: 0.40 },
-        { id: 'trial-day-7', name: 'Trial Day 7+', prob: 0.60 },
-        { id: 'trial-day-12', name: 'Trial Day 12', prob: 0.60 },
-        { id: 'converted-paid', name: 'Converted', prob: 1.00 },
-        { id: 'active-customer', name: 'Active Customer', prob: 1.00 },
-        { id: 'trial-expired', name: 'Expired', prob: 0.00 }
-    ];
-
-    const ALL_STAGES = [...FUNNEL_A_STAGES, ...FUNNEL_B_STAGES.filter(s => !FUNNEL_A_STAGES.find(a => a.id === s.id))];
-
-    function stageProb(stage) {
-        const s = ALL_STAGES.find(st => st.id === stage);
-        return s ? s.prob : 0;
-    }
-    function stageName(stage) {
-        const s = ALL_STAGES.find(st => st.id === stage);
-        return s ? s.name : stage;
-    }
-    function fmt$(n) {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n || 0);
-    }
-    function fmtDate(d) {
-        if (!d) return '-';
-        return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-    function daysBetween(d1, d2) {
-        return Math.floor((new Date(d2) - new Date(d1)) / 86400000);
-    }
+    function stageName(id) { return STAGE_MAP[id] || id; }
+    function fmtDate(d) { if (!d) return '-'; return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    function daysBetween(d1, d2) { return Math.floor((new Date(d2) - new Date(d1)) / 86400000); }
+    function escHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
     // ═══════════════════════════════════════════════════════════════════════
     // STATE
     // ═══════════════════════════════════════════════════════════════════════
-    let allOpps = [];
-    let allActivities = [];
+    let allPeople = [];
     let allEmails = [];
-    let currentFunnel = 'operational';
     let currentUser = null;
 
     // Outbound filter/sort/pagination state
@@ -530,6 +434,8 @@
             return;
         }
         currentUser = session.user;
+        const { data: profile } = await sb.from('profiles').select('role').eq('id', currentUser.id).single();
+        if (profile && profile.role === 'admin') document.getElementById('adminLink').style.display = '';
         document.getElementById('app').style.display = 'block';
         await loadData();
         renderToday();
@@ -541,17 +447,111 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    // DATA LOADING
+    // DATA LOADING (People-centric)
     // ═══════════════════════════════════════════════════════════════════════
+    function computeLifecycle(person) {
+        if (person._type === 'contact' && person.lifecycle_stage) return person.lifecycle_stage;
+        if (person._hasBookSent) return 'book_sent';
+        if (person._type === 'contact') return 'replied';
+        if (person._hasClicked) return 'clicked';
+        if (person._hasOpened) return 'opened';
+        const status = person.status || '';
+        if (status === 'replied') return 'replied';
+        if (['active', 'completed'].includes(status)) return 'emailed';
+        return 'cold';
+    }
+
     async function loadData() {
-        const [opps, acts, emails] = await Promise.all([
-            sb.from('opportunities').select('*, company:companies(name, industry, employee_count), contact:contacts(first_name, last_name, email, title, linkedin_url, phone, pain_points, objections, key_quotes, personal_notes, next_action, next_action_date)').order('created_at', { ascending: false }),
-            sb.from('activities').select('*').order('created_at', { ascending: false }).limit(500),
-            sb.from('outreach_emails').select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))').order('created_at', { ascending: false }).limit(1000)
+        const [contactsRes, prospectsRes, emailsRes, notesRes] = await Promise.all([
+            sb.from('contacts')
+                .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, company_id, companies(id, name, industry, employee_count, website)')
+                .order('updated_at', { ascending: false }),
+            sb.from('outreach_prospects')
+                .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, created_at, converted_contact_id, turnover_report_id')
+                .not('status', 'in', '(converted,bounced,invalid,unsubscribed)'),
+            sb.from('outreach_emails')
+                .select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))')
+                .order('created_at', { ascending: false })
+                .limit(1000),
+            sb.from('person_notes')
+                .select('contact_id, prospect_id, note_type')
+                .eq('note_type', 'book_sent')
         ]);
-        allOpps = opps.data || [];
-        allActivities = acts.data || [];
-        allEmails = emails.data || [];
+
+        // Also fetch prospect-level email engagement
+        const emailEngRes = await sb.from('outreach_emails')
+            .select('prospect_id, opened_at, clicked_at, replied_at')
+            .not('prospect_id', 'is', null);
+
+        allEmails = emailsRes.data || [];
+
+        // Build email engagement maps
+        const openedSet = new Set();
+        const clickedSet = new Set();
+        (emailEngRes.data || []).forEach(e => {
+            if (e.opened_at && e.prospect_id) openedSet.add(e.prospect_id);
+            if (e.clicked_at && e.prospect_id) clickedSet.add(e.prospect_id);
+        });
+
+        // Build book_sent set
+        const bookSentContacts = new Set();
+        const bookSentProspects = new Set();
+        (notesRes.data || []).forEach(n => {
+            if (n.contact_id) bookSentContacts.add(n.contact_id);
+            if (n.prospect_id) bookSentProspects.add(n.prospect_id);
+        });
+
+        const contacts = (contactsRes.data || []).map(c => ({
+            _type: 'contact', _id: c.id, _contactId: c.id, _prospectId: null,
+            first_name: c.first_name || '', last_name: c.last_name || '',
+            email: c.email || '', title: c.title || '',
+            linkedin_url: c.linkedin_url || '',
+            company_name: c.companies?.name || '',
+            company_industry: c.companies?.industry || '',
+            company_employee_count: c.companies?.employee_count || 0,
+            company_website: c.companies?.website || '',
+            company_id: c.company_id,
+            source: c.source || 'manual',
+            status: null,
+            lifecycle_stage: c.lifecycle_stage,
+            next_action: c.next_action, next_action_date: c.next_action_date,
+            created_at: c.created_at,
+            updated_at: c.updated_at || c.created_at,
+            _hasBookSent: bookSentContacts.has(c.id),
+            _hasOpened: false, _hasClicked: false
+        }));
+
+        const prospects = (prospectsRes.data || []).map(p => ({
+            _type: 'prospect', _id: p.id, _contactId: null, _prospectId: p.id,
+            first_name: p.first_name || '', last_name: p.last_name || '',
+            email: p.email || '', title: p.title || '',
+            linkedin_url: p.linkedin_url || '',
+            company_name: p.company_name || '',
+            company_industry: p.company_industry || '',
+            company_employee_count: p.company_employee_count || 0,
+            company_website: p.company_website || '',
+            company_id: null,
+            source: 'outbound',
+            status: p.status,
+            lifecycle_stage: null,
+            next_action: null, next_action_date: null,
+            created_at: p.created_at,
+            updated_at: p.created_at,
+            _hasBookSent: bookSentProspects.has(p.id),
+            _hasOpened: openedSet.has(p.id),
+            _hasClicked: clickedSet.has(p.id)
+        }));
+
+        // Merge, deduplicate by email (contacts win)
+        const emailMap = new Map();
+        contacts.forEach(c => { if (c.email) emailMap.set(c.email.toLowerCase(), c); });
+        prospects.forEach(p => {
+            const key = (p.email || '').toLowerCase();
+            if (key && !emailMap.has(key)) emailMap.set(key, p);
+        });
+
+        allPeople = Array.from(emailMap.values());
+        allPeople.forEach(p => { p._lifecycle = computeLifecycle(p); });
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -567,206 +567,150 @@
             if (tab === 'today') renderToday();
             else if (tab === 'pipeline') renderPipeline();
             else if (tab === 'outbound') renderOutbound();
-            else if (tab === 'hot') renderHotLeads();
-            else if (tab === 'trials') renderTrials();
             else if (tab === 'report') renderReport();
         });
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TAB: TODAY
+    // TAB: TODAY (People-centric)
     // ═══════════════════════════════════════════════════════════════════════
     function renderToday() {
-        const today = new Date().toISOString().split('T')[0];
         const now = new Date();
+        const today = now.toISOString().split('T')[0];
+
+        // Active people = not cold, not churned, not customer
+        const activePeople = allPeople.filter(p => !['cold', 'churned', 'customer'].includes(p._lifecycle));
+        const overduePeople = allPeople.filter(p => p.next_action_date && p.next_action_date < today && !TERMINAL_STAGES.includes(p._lifecycle));
+        const dueTodayPeople = allPeople.filter(p => p.next_action_date && p.next_action_date.startsWith(today));
+
+        // Recently replied: people at 'replied' stage updated in last 48h
+        const ago48h = new Date(now.getTime() - 48 * 3600000).toISOString();
+        const recentReplied = allPeople.filter(p => p._lifecycle === 'replied' && p.updated_at && p.updated_at >= ago48h);
 
         // Stats
-        const activeOpps = allOpps.filter(o => !['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage));
-        const totalValue = activeOpps.reduce((s, o) => s + (o.value || 0), 0);
-        const weightedValue = activeOpps.reduce((s, o) => s + (o.value || 0) * stageProb(o.stage), 0);
-        const stalledCount = allOpps.filter(o => {
-            if (['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage)) return false;
-            const days = o.stage_entered_at ? daysBetween(o.stage_entered_at, now) : 0;
-            return days >= 7;
-        }).length;
-
         document.getElementById('todayStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Active Deals</div><div class="stat-value">${activeOpps.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Pipeline Value</div><div class="stat-value">${fmt$(totalValue)}</div></div>
-            <div class="stat-card"><div class="stat-label">Weighted Forecast</div><div class="stat-value">${fmt$(weightedValue)}</div></div>
-            <div class="stat-card"><div class="stat-label">Stalled</div><div class="stat-value" style="color:${stalledCount > 0 ? 'var(--red)' : 'var(--green)'}">${stalledCount}</div></div>
+            <div class="stat-card"><div class="stat-label">Active People</div><div class="stat-value">${activePeople.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value" style="color:${overduePeople.length > 0 ? 'var(--red)' : 'var(--green)'}">${overduePeople.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Due Today</div><div class="stat-value" style="color:${dueTodayPeople.length > 0 ? 'var(--amber)' : 'var(--green)'}">${dueTodayPeople.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Total Pipeline</div><div class="stat-value">${allPeople.filter(p => !TERMINAL_STAGES.includes(p._lifecycle)).length}</div></div>
         `;
 
-        // Overdue: activities with due_date < today and not completed
-        const overdue = allActivities.filter(a => a.due_date && a.due_date < today && !a.completed);
-        renderActionTable('tableOverdue', overdue.map(a => {
-            const opp = allOpps.find(o => o.id === a.opportunity_id);
-            return {
-                contact: a.subject || 'Follow-up',
-                company: opp?.company?.name || '-',
-                stage: opp?.stage || '-',
-                funnel: opp?.funnel || '-',
-                action: a.subject || a.type,
-                daysLate: daysBetween(a.due_date, today),
-                oppId: opp?.id
-            };
-        }).sort((a, b) => b.daysLate - a.daysLate), ['contact', 'company', 'stage', 'funnel', 'action', 'daysLate']);
+        // Overdue follow-ups
+        const overdueTbody = document.querySelector('#tableOverdue tbody');
+        const overdueRows = overduePeople.sort((a, b) => daysBetween(b.next_action_date, today) - daysBetween(a.next_action_date, today));
+        overdueTbody.innerHTML = overdueRows.length === 0
+            ? '<tr><td colspan="6" class="empty-state">No overdue follow-ups</td></tr>'
+            : overdueRows.map(p => `<tr data-person="${p._id}" data-type="${p._type}">
+                <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
+                <td>${escHtml(p.company_name) || '-'}</td>
+                <td><span class="stage-pill stage-${p._lifecycle}">${stageName(p._lifecycle)}</span></td>
+                <td>${escHtml(p.next_action) || '-'}</td>
+                <td>${fmtDate(p.next_action_date)}</td>
+                <td><span class="pill pill-red">${daysBetween(p.next_action_date, today)}d late</span></td>
+            </tr>`).join('');
 
         // Due today
-        const dueToday = allActivities.filter(a => a.due_date === today && !a.completed);
-        renderActionTable('tableDueToday', dueToday.map(a => {
-            const opp = allOpps.find(o => o.id === a.opportunity_id);
-            return {
-                contact: a.subject || 'Task',
-                company: opp?.company?.name || '-',
-                stage: opp?.stage || '-',
-                funnel: opp?.funnel || '-',
-                action: a.subject || a.type,
-                oppId: opp?.id
-            };
-        }), ['contact', 'company', 'stage', 'funnel', 'action']);
+        const dueTbody = document.querySelector('#tableDueToday tbody');
+        dueTbody.innerHTML = dueTodayPeople.length === 0
+            ? '<tr><td colspan="4" class="empty-state">Nothing due today</td></tr>'
+            : dueTodayPeople.map(p => `<tr data-person="${p._id}" data-type="${p._type}">
+                <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
+                <td>${escHtml(p.company_name) || '-'}</td>
+                <td><span class="stage-pill stage-${p._lifecycle}">${stageName(p._lifecycle)}</span></td>
+                <td>${escHtml(p.next_action) || '-'}</td>
+            </tr>`).join('');
 
-        // Stalled
-        const stalled = allOpps.filter(o => {
-            if (['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage)) return false;
-            const days = o.stage_entered_at ? daysBetween(o.stage_entered_at, now) : 0;
-            return days >= 7;
+        // Recently replied
+        const repliedTbody = document.querySelector('#tableReplied tbody');
+        repliedTbody.innerHTML = recentReplied.length === 0
+            ? '<tr><td colspan="4" class="empty-state">No replies in last 48 hours</td></tr>'
+            : recentReplied.map(p => `<tr data-person="${p._id}" data-type="${p._type}">
+                <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
+                <td>${escHtml(p.company_name) || '-'}</td>
+                <td><span class="pill pill-${p.source === 'outbound' ? 'blue' : 'green'}">${p.source || 'manual'}</span></td>
+                <td>${fmtDate(p.updated_at)}</td>
+            </tr>`).join('');
+
+        // Stalled: active people (not cold/churned/customer), no next action set, not touched in 14+ days
+        const stalledPeople = allPeople.filter(p => {
+            if (TERMINAL_STAGES.includes(p._lifecycle) || p._lifecycle === 'cold') return false;
+            if (p.next_action_date) return false; // has a scheduled action, not stalled
+            const lastTouch = p.updated_at || p.created_at;
+            if (!lastTouch) return false;
+            return daysBetween(lastTouch, now) >= 14;
         }).sort((a, b) => {
-            const da = a.stage_entered_at ? daysBetween(a.stage_entered_at, now) : 0;
-            const db = b.stage_entered_at ? daysBetween(b.stage_entered_at, now) : 0;
+            const da = daysBetween(a.updated_at || a.created_at, now);
+            const db = daysBetween(b.updated_at || b.created_at, now);
             return db - da;
         });
-        const stalledTbody = document.querySelector('#tableStalled tbody');
-        stalledTbody.innerHTML = stalled.length === 0 ? '<tr><td colspan="6" class="empty-state">No stalled deals</td></tr>' : stalled.map(o => {
-            const days = o.stage_entered_at ? daysBetween(o.stage_entered_at, now) : 0;
-            const lastAct = allActivities.find(a => a.opportunity_id === o.id);
-            return `<tr data-opp="${o.id}">
-                <td class="company">${contactName(o)}</td>
-                <td>${o.company?.name || '-'}</td>
-                <td><span class="stage-pill stage-${o.stage}">${stageName(o.stage)}</span></td>
-                <td>${fmt$(o.value)}</td>
-                <td><span class="pill ${days >= 14 ? 'pill-red' : 'pill-amber'}">${days}d</span></td>
-                <td>${lastAct ? fmtDate(lastAct.created_at) : '-'}</td>
-            </tr>`;
-        }).join('');
 
-        // Renewals
-        const inSixtyDays = new Date(now.getTime() + 60 * 86400000).toISOString().split('T')[0];
-        const renewals = allOpps.filter(o => o.renewal_date && o.renewal_date <= inSixtyDays && o.renewal_date >= today);
-        const renewalTbody = document.querySelector('#tableRenewals tbody');
-        renewalTbody.innerHTML = renewals.length === 0 ? '<tr><td colspan="4" class="empty-state">No upcoming renewals</td></tr>' : renewals.map(o => {
-            const daysUntil = daysBetween(today, o.renewal_date);
-            return `<tr data-opp="${o.id}">
-                <td class="company">${o.company?.name || '-'}</td>
-                <td>${fmt$(o.value)}</td>
-                <td>${fmtDate(o.renewal_date)}</td>
-                <td><span class="pill ${daysUntil <= 14 ? 'pill-red' : daysUntil <= 30 ? 'pill-amber' : 'pill-green'}">${daysUntil}d</span></td>
-            </tr>`;
-        }).join('');
+        const stalledTbody = document.querySelector('#tableStalled tbody');
+        stalledTbody.innerHTML = stalledPeople.length === 0
+            ? '<tr><td colspan="4" class="empty-state">No stalled people</td></tr>'
+            : stalledPeople.map(p => {
+                const days = daysBetween(p.updated_at || p.created_at, now);
+                return `<tr data-person="${p._id}" data-type="${p._type}">
+                    <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
+                    <td>${escHtml(p.company_name) || '-'}</td>
+                    <td><span class="stage-pill stage-${p._lifecycle}">${stageName(p._lifecycle)}</span></td>
+                    <td><span class="pill ${days >= 30 ? 'pill-red' : 'pill-amber'}">${days}d</span></td>
+                </tr>`;
+            }).join('');
 
         // Badge count
-        const urgentCount = overdue.length + stalledCount;
+        const urgentCount = overduePeople.length;
         const badge = document.getElementById('todayBadge');
         if (urgentCount > 0) { badge.textContent = urgentCount; badge.style.display = 'inline-block'; }
         else { badge.style.display = 'none'; }
     }
 
-    function renderActionTable(tableId, rows, cols) {
-        const tbody = document.querySelector('#' + tableId + ' tbody');
-        if (rows.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="' + cols.length + '" class="empty-state">Nothing here</td></tr>';
-            return;
-        }
-        tbody.innerHTML = rows.map(r => {
-            return '<tr data-opp="' + (r.oppId || '') + '">' + cols.map(c => {
-                if (c === 'stage') return '<td><span class="stage-pill stage-' + r[c] + '">' + stageName(r[c]) + '</span></td>';
-                if (c === 'funnel') return '<td><span class="pill ' + (r[c] === 'operational' ? 'pill-a' : 'pill-b') + '">' + (r[c] === 'operational' ? 'A' : 'B') + '</span></td>';
-                if (c === 'daysLate') return '<td><span class="pill pill-red">' + r[c] + 'd late</span></td>';
-                return '<td>' + (r[c] || '-') + '</td>';
-            }).join('') + '</tr>';
-        }).join('');
-    }
-
-    function contactName(opp) {
-        if (opp.contact) return (opp.contact.first_name || '') + ' ' + (opp.contact.last_name || '');
-        return opp.title || '-';
-    }
-
     // ═══════════════════════════════════════════════════════════════════════
-    // TAB: PIPELINE (Kanban)
+    // TAB: PIPELINE (People Kanban by Stage)
     // ═══════════════════════════════════════════════════════════════════════
     function renderPipeline() {
-        const stages = currentFunnel === 'operational' ? FUNNEL_A_STAGES :
-                       currentFunnel === 'self_serve' ? FUNNEL_B_STAGES : ALL_STAGES;
-        const opps = currentFunnel === 'all' ? allOpps : allOpps.filter(o => o.funnel === currentFunnel);
+        // Exclude churned for kanban display
+        const pipelinePeople = allPeople.filter(p => p._lifecycle !== 'churned');
 
         // Stats
-        const active = opps.filter(o => !['churned-lost', 'trial-expired', 'closed-lost', 'active-customer', 'converted-paid'].includes(o.stage));
-        const tv = active.reduce((s, o) => s + (o.value || 0), 0);
-        const wv = active.reduce((s, o) => s + (o.value || 0) * stageProb(o.stage), 0);
+        const active = pipelinePeople.filter(p => ACTIVE_STAGE_IDS.includes(p._lifecycle));
+        const warming = pipelinePeople.filter(p => ['emailed', 'opened', 'clicked', 'book_sent'].includes(p._lifecycle));
+        const customers = pipelinePeople.filter(p => p._lifecycle === 'customer');
         document.getElementById('pipelineStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Deals</div><div class="stat-value">${active.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Total Value</div><div class="stat-value">${fmt$(tv)}</div></div>
-            <div class="stat-card"><div class="stat-label">Weighted</div><div class="stat-value">${fmt$(wv)}</div></div>
+            <div class="stat-card"><div class="stat-label">Active (Replied+)</div><div class="stat-value">${active.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Warming</div><div class="stat-value">${warming.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value" style="color:var(--green)">${customers.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Total Pipeline</div><div class="stat-value">${pipelinePeople.length}</div></div>
         `;
 
         // Kanban
         const row = document.getElementById('kanbanRow');
-        row.innerHTML = stages.map(stage => {
-            const stageOpps = opps.filter(o => o.stage === stage.id);
-            return `<div class="kanban-col" data-stage="${stage.id}"
-                        ondragover="event.preventDefault(); this.classList.add('drag-over')"
-                        ondragleave="this.classList.remove('drag-over')"
-                        ondrop="handleDrop(event, '${stage.id}')">
-                <div class="kanban-col-header">${stage.name} <span class="count">${stageOpps.length}</span></div>
-                ${stageOpps.map(o => `
-                    <div class="kanban-card" draggable="true" data-opp="${o.id}"
-                         ondragstart="event.dataTransfer.setData('text/plain','${o.id}'); this.classList.add('dragging')"
-                         ondragend="this.classList.remove('dragging')">
-                        <div class="kc-company">${o.company?.name || 'Unknown'}</div>
-                        <div class="kc-contact">${contactName(o)}</div>
-                        ${o.value ? '<div class="kc-value">' + fmt$(o.value) + '</div>' : ''}
+        row.innerHTML = PIPELINE_STAGES.map(stage => {
+            const stagePeople = pipelinePeople.filter(p => p._lifecycle === stage.id);
+            return `<div class="kanban-col" data-stage="${stage.id}">
+                <div class="kanban-col-header">${stage.name} <span class="count">${stagePeople.length}</span></div>
+                ${stagePeople.slice(0, 20).map(p => `
+                    <div class="kanban-card" data-person="${p._id}" data-type="${p._type}">
+                        <div class="kc-name">${escHtml(p.first_name + ' ' + p.last_name)}</div>
+                        <div class="kc-company">${escHtml(p.company_name) || '-'}</div>
+                        ${p.next_action ? '<div class="kc-action">' + escHtml(p.next_action) + '</div>' : ''}
                         <div class="kc-meta">
-                            <span>${o.stage_entered_at ? daysBetween(o.stage_entered_at, new Date()) + 'd' : '-'}</span>
-                            <span class="pill ${o.funnel === 'operational' ? 'pill-a' : 'pill-b'}" style="font-size:0.6rem">${o.funnel === 'operational' ? 'A' : 'B'}</span>
+                            <span>${fmtDate(p.updated_at || p.created_at)}</span>
+                            <span class="pill pill-${p.source === 'outbound' ? 'blue' : 'green'}" style="font-size:0.6rem">${p._type === 'contact' ? 'CRM' : 'Prospect'}</span>
                         </div>
                     </div>
                 `).join('')}
+                ${stagePeople.length > 20 ? '<div style="text-align:center;font-size:0.72rem;color:var(--text3);padding:0.5rem">+' + (stagePeople.length - 20) + ' more</div>' : ''}
             </div>`;
         }).join('');
     }
 
-    // Funnel toggle
-    document.querySelectorAll('.funnel-toggle button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.funnel-toggle button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFunnel = btn.dataset.funnel;
-            renderPipeline();
-        });
-    });
-
-    async function handleDrop(e, newStage) {
-        e.preventDefault();
-        e.currentTarget.classList.remove('drag-over');
-        const oppId = e.dataTransfer.getData('text/plain');
-        if (!oppId) return;
-        const { error } = await sb.from('opportunities').update({ stage: newStage, stage_entered_at: new Date().toISOString() }).eq('id', oppId);
-        if (!error) {
-            const opp = allOpps.find(o => o.id === oppId);
-            if (opp) { opp.stage = newStage; opp.stage_entered_at = new Date().toISOString(); }
-            renderPipeline();
-        }
-    }
-
     // ═══════════════════════════════════════════════════════════════════════
-    // TAB: OUTBOUND
+    // TAB: OUTBOUND (Preserved as-is)
     // ═══════════════════════════════════════════════════════════════════════
     function renderOutbound() {
-        // Stats always show This Week
         const now = new Date();
         const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - now.getDay() + 1); // Monday
+        weekStart.setDate(now.getDate() - now.getDay() + 1);
         weekStart.setHours(0, 0, 0, 0);
         const weekStartISO = weekStart.toISOString();
 
@@ -784,14 +728,12 @@
             <div class="stat-card"><div class="stat-label">Replies</div><div class="stat-value">${repliedCount}</div></div>
         `;
 
-        // Target
         document.getElementById('outboundTarget').textContent = sentCount + '/200';
         const pct = Math.min(100, Math.round(sentCount / 200 * 100));
         const bar = document.getElementById('outboundProgress');
         bar.style.width = pct + '%';
         bar.className = 'progress-fill ' + (pct >= 80 ? 'progress-green' : pct >= 50 ? 'progress-amber' : 'progress-red');
 
-        // Daily grid
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
         document.getElementById('dailyGrid').innerHTML = days.map((d, i) => {
             const dayDate = new Date(weekStart);
@@ -806,15 +748,12 @@
             </div>`;
         }).join('');
 
-        // Table (filtered/sorted/paginated)
         renderOutboundTable();
     }
 
     function renderOutboundTable() {
-        // 1. Start with all non-draft emails
         let filtered = allEmails.filter(e => e.status !== 'draft');
 
-        // 2. Date range filter
         if (obDateRange !== 'all') {
             const now = new Date();
             let rangeStart;
@@ -829,7 +768,6 @@
             filtered = filtered.filter(e => e.sent_at && e.sent_at >= rangeISO);
         }
 
-        // 3. Status filter
         if (obStatusFilter !== 'all') {
             if (obStatusFilter === 'opened') {
                 filtered = filtered.filter(e => e.opened_at);
@@ -842,7 +780,6 @@
             }
         }
 
-        // 4. Search filter
         if (obSearch) {
             const term = obSearch.toLowerCase();
             filtered = filtered.filter(e => {
@@ -852,7 +789,6 @@
             });
         }
 
-        // 5. Sort
         filtered.sort((a, b) => {
             let valA, valB;
             const pA = a.prospect?.prospect;
@@ -891,7 +827,6 @@
             return 0;
         });
 
-        // 6. Pagination
         const totalFiltered = filtered.length;
         const totalPages = Math.max(1, Math.ceil(totalFiltered / OB_PAGE_SIZE));
         if (obPage >= totalPages) obPage = totalPages - 1;
@@ -899,19 +834,16 @@
         const start = obPage * OB_PAGE_SIZE;
         const pageItems = filtered.slice(start, start + OB_PAGE_SIZE);
 
-        // 7. Result count
         if (totalFiltered > 0) {
             document.getElementById('obResultCount').textContent = `Showing ${start + 1}\u2013${Math.min(start + OB_PAGE_SIZE, totalFiltered)} of ${totalFiltered}`;
         } else {
             document.getElementById('obResultCount').textContent = '0 results';
         }
 
-        // 8. Sort arrows
         document.querySelectorAll('#tableOutbound .sort-arrow').forEach(el => { el.className = 'sort-arrow'; });
         const activeArrow = document.getElementById('sort-' + obSortCol);
         if (activeArrow) activeArrow.className = 'sort-arrow ' + (obSortAsc ? 'asc' : 'desc');
 
-        // 9. Table rows
         const tbody = document.querySelector('#tableOutbound tbody');
         tbody.innerHTML = pageItems.length === 0
             ? '<tr><td colspan="6" class="empty-state">No emails match filters</td></tr>'
@@ -927,7 +859,6 @@
                 </tr>`;
             }).join('');
 
-        // 10. Pagination controls
         const pagDiv = document.getElementById('obPagination');
         if (totalFiltered <= OB_PAGE_SIZE) {
             pagDiv.style.display = 'none';
@@ -939,7 +870,6 @@
         }
     }
 
-    // ── Outbound control handlers ──
     function handleObSearch(val) {
         obSearch = val.trim();
         obPage = 0;
@@ -984,116 +914,7 @@
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TAB: HOT LEADS
-    // ═══════════════════════════════════════════════════════════════════════
-    function renderHotLeads() {
-        const now = new Date();
-        const ago48h = new Date(now.getTime() - 48 * 3600000).toISOString();
-
-        // Replied
-        const replied = allOpps.filter(o => o.reply_date && o.reply_date >= ago48h.split('T')[0])
-            .concat(allOpps.filter(o => o.stage === 'outbound-reply' && o.stage_entered_at && o.stage_entered_at >= ago48h));
-        // Deduplicate
-        const repliedUnique = [...new Map(replied.map(o => [o.id, o])).values()];
-        const repliedTbody = document.querySelector('#tableReplied tbody');
-        repliedTbody.innerHTML = repliedUnique.length === 0 ? '<tr><td colspan="5" class="empty-state">No replies in last 48 hours</td></tr>' : repliedUnique.map(o => `<tr data-opp="${o.id}">
-            <td class="company">${contactName(o)}</td>
-            <td>${o.company?.name || '-'}</td>
-            <td><span class="pill pill-${o.funnel === 'operational' ? 'a' : 'b'}">${o.source || '-'}</span></td>
-            <td>${fmtDate(o.reply_date || o.stage_entered_at)}</td>
-            <td>${o.reply_sentiment ? '<span class="pill pill-' + (o.reply_sentiment === 'positive' ? 'green' : o.reply_sentiment === 'negative' ? 'red' : 'amber') + '">' + o.reply_sentiment + '</span>' : '-'}</td>
-        </tr>`).join('');
-
-        // Calls booked
-        const thisWeekEnd = new Date(now);
-        thisWeekEnd.setDate(now.getDate() + (7 - now.getDay()));
-        const calls = allOpps.filter(o => o.stage === 'call-booked');
-        const callsTbody = document.querySelector('#tableCallsBooked tbody');
-        callsTbody.innerHTML = calls.length === 0 ? '<tr><td colspan="5" class="empty-state">No calls booked</td></tr>' : calls.map(o => `<tr data-opp="${o.id}">
-            <td class="company">${contactName(o)}</td>
-            <td>${o.company?.name || '-'}</td>
-            <td>${o.call_type || 'Discovery'}</td>
-            <td>${fmtDate(o.expected_close_date || o.stage_entered_at)}</td>
-            <td>${fmt$(o.value)}</td>
-        </tr>`).join('');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB: TRIALS
-    // ═══════════════════════════════════════════════════════════════════════
-    function renderTrials() {
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
-
-        const activeTrialStages = ['trial-started', 'trial-day-7', 'trial-day-12'];
-        const trials = allOpps.filter(o => activeTrialStages.includes(o.stage));
-        const expired = allOpps.filter(o => o.stage === 'trial-expired');
-        const converted = allOpps.filter(o => o.stage === 'converted-paid');
-
-        document.getElementById('trialStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Active Trials</div><div class="stat-value">${trials.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Converted</div><div class="stat-value" style="color:var(--green)">${converted.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Expired</div><div class="stat-value">${expired.length}</div></div>
-        `;
-
-        // Active trials
-        const container = document.getElementById('activeTrials');
-        container.innerHTML = trials.length === 0 ? '<div class="empty-state">No active trials</div>' : trials.map(o => {
-            const dayNum = o.trial_start_date ? daysBetween(o.trial_start_date, today) : 0;
-            const colorClass = dayNum <= 6 ? 'day-green' : dayNum <= 11 ? 'day-amber' : 'day-red';
-            return `<div class="trial-card ${colorClass}" data-opp="${o.id}">
-                <div class="trial-info">
-                    <div class="ti-name">${contactName(o)}</div>
-                    <div class="ti-company">${o.company?.name || '-'}</div>
-                    <div class="ti-meta">Day ${dayNum} | Team size: ${o.trial_team_size || '?'} | Usage: ${o.trial_usage || '?'}</div>
-                </div>
-                <div class="trial-actions">
-                    ${dayNum >= 7 && !o.trial_day7_sent ? '<button class="btn btn-sm btn-blue" onclick="sendTrialEmail(event,\'' + o.id + '\',7)">Day 7 Check</button>' : ''}
-                    ${dayNum >= 12 && !o.trial_day12_sent ? '<button class="btn btn-sm btn-red" onclick="sendTrialEmail(event,\'' + o.id + '\',12)">Day 12 Alert</button>' : ''}
-                    <button class="btn btn-sm btn-green" onclick="markConverted(event,'${o.id}')">Converted</button>
-                </div>
-            </div>`;
-        }).join('');
-
-        // Expired
-        const expTbody = document.querySelector('#tableExpiredTrials tbody');
-        expTbody.innerHTML = expired.length === 0 ? '<tr><td colspan="5" class="empty-state">No expired trials</td></tr>' : expired.map(o => `<tr data-opp="${o.id}">
-            <td class="company">${contactName(o)}</td>
-            <td>${o.company?.name || '-'}</td>
-            <td>${fmtDate(o.trial_end_date)}</td>
-            <td>${o.trial_expired_reason || '-'}</td>
-            <td>${o.nurture_enrolled ? '<span class="pill pill-green">In Nurture</span>' : '<button class="btn btn-sm btn-white" onclick="enrollNurture(event,\'' + o.id + '\')">Enroll</button>'}</td>
-        </tr>`).join('');
-    }
-
-    async function sendTrialEmail(e, oppId, day) {
-        e.stopPropagation();
-        const field = day === 7 ? 'trial_day7_sent' : 'trial_day12_sent';
-        const stage = day === 7 ? 'trial-day-7' : 'trial-day-12';
-        await sb.from('opportunities').update({ [field]: true, stage: stage, stage_entered_at: new Date().toISOString() }).eq('id', oppId);
-        const opp = allOpps.find(o => o.id === oppId);
-        if (opp) { opp[field] = true; opp.stage = stage; }
-        renderTrials();
-    }
-
-    async function markConverted(e, oppId) {
-        e.stopPropagation();
-        await sb.from('opportunities').update({ stage: 'converted-paid', conversion_date: new Date().toISOString().split('T')[0], stage_entered_at: new Date().toISOString() }).eq('id', oppId);
-        const opp = allOpps.find(o => o.id === oppId);
-        if (opp) { opp.stage = 'converted-paid'; }
-        renderTrials();
-    }
-
-    async function enrollNurture(e, oppId) {
-        e.stopPropagation();
-        await sb.from('opportunities').update({ nurture_enrolled: true }).eq('id', oppId);
-        const opp = allOpps.find(o => o.id === oppId);
-        if (opp) opp.nurture_enrolled = true;
-        renderTrials();
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB: FRIDAY REPORT
+    // TAB: WEEKLY REPORT
     // ═══════════════════════════════════════════════════════════════════════
     function renderReport() {
         const now = new Date();
@@ -1101,7 +922,6 @@
         weekStart.setDate(now.getDate() - now.getDay() + 1);
         weekStart.setHours(0, 0, 0, 0);
 
-        // Set date picker default
         const picker = document.getElementById('reportWeekStart');
         if (!picker.value) picker.value = weekStart.toISOString().split('T')[0];
 
@@ -1110,37 +930,39 @@
         weDate.setDate(weDate.getDate() + 6);
         const we = weDate.toISOString().split('T')[0];
 
-        // Funnel A metrics
-        const funnelAOpps = allOpps.filter(o => o.funnel === 'operational');
-        const funnelANew = funnelAOpps.filter(o => o.created_at >= ws && o.created_at <= we + 'T23:59:59');
-        const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= ws && e.sent_at <= we + 'T23:59:59');
-        const sentCount = weekEmails.filter(e => e.status !== 'draft').length;
+        // People by stage
+        const stageCounts = {};
+        STAGES.forEach(s => { stageCounts[s.id] = 0; });
+        allPeople.forEach(p => { if (stageCounts[p._lifecycle] !== undefined) stageCounts[p._lifecycle]++; });
+
+        document.getElementById('reportStages').innerHTML = STAGES.map(s =>
+            metric(s.name, stageCounts[s.id])
+        ).join('');
+
+        // Outreach performance (from emails for the selected week)
+        const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= ws && e.sent_at <= we + 'T23:59:59' && e.status !== 'draft');
+        const sentCount = weekEmails.length;
         const openCount = weekEmails.filter(e => e.opened_at).length;
+        const clickCount = weekEmails.filter(e => e.clicked_at).length;
         const replyCount = weekEmails.filter(e => e.replied_at || e.status === 'replied').length;
-        const callsBooked = funnelAOpps.filter(o => o.stage === 'call-booked' && o.stage_entered_at >= ws && o.stage_entered_at <= we + 'T23:59:59').length;
-        const qualified = funnelAOpps.filter(o => o.stage === 'qualified-opportunity' && o.stage_entered_at >= ws).length;
 
-        document.getElementById('reportFunnelA').innerHTML = metric('Emails Sent', sentCount) + metric('Open Rate', sentCount > 0 ? Math.round(openCount/sentCount*100) + '%' : '0%') + metric('Reply Rate', sentCount > 0 ? Math.round(replyCount/sentCount*100) + '%' : '0%') + metric('Replies', replyCount) + metric('Calls Booked', callsBooked) + metric('Qualified', qualified);
+        document.getElementById('reportOutreach').innerHTML =
+            metric('Emails Sent', sentCount) +
+            metric('Open Rate', sentCount > 0 ? Math.round(openCount / sentCount * 100) + '%' : '0%') +
+            metric('Click Rate', sentCount > 0 ? Math.round(clickCount / sentCount * 100) + '%' : '0%') +
+            metric('Reply Rate', sentCount > 0 ? Math.round(replyCount / sentCount * 100) + '%' : '0%') +
+            metric('Replies', replyCount);
 
-        // Funnel B metrics
-        const funnelBOpps = allOpps.filter(o => o.funnel === 'self_serve');
-        const assessments = funnelBOpps.filter(o => o.stage === 'assessment-taken' && o.created_at >= ws).length;
-        const trialsStarted = funnelBOpps.filter(o => o.trial_start_date && o.trial_start_date >= ws && o.trial_start_date <= we).length;
-        const conversions = funnelBOpps.filter(o => o.conversion_date && o.conversion_date >= ws && o.conversion_date <= we).length;
+        // Pipeline activity
+        const withNextAction = allPeople.filter(p => p.next_action && !TERMINAL_STAGES.includes(p._lifecycle)).length;
+        const overdue = allPeople.filter(p => p.next_action_date && p.next_action_date < now.toISOString().split('T')[0] && !TERMINAL_STAGES.includes(p._lifecycle)).length;
+        const activePipeline = allPeople.filter(p => !['cold', 'churned', 'customer'].includes(p._lifecycle)).length;
 
-        document.getElementById('reportFunnelB').innerHTML = metric('Assessments', assessments) + metric('Trials Started', trialsStarted) + metric('Conversions', conversions);
-
-        // Pipeline summary
-        const activeA = funnelAOpps.filter(o => !['churned-lost', 'active-customer'].includes(o.stage));
-        const activeB = funnelBOpps.filter(o => !['trial-expired', 'converted-paid', 'active-customer'].includes(o.stage));
-        const totalActive = activeA.length + activeB.length;
-        const totalVal = activeA.reduce((s,o) => s + (o.value||0), 0) + activeB.reduce((s,o) => s + (o.value||0), 0);
-        const weightedVal = activeA.reduce((s,o) => s + (o.value||0) * stageProb(o.stage), 0) + activeB.reduce((s,o) => s + (o.value||0) * stageProb(o.stage), 0);
-
-        document.getElementById('reportPipeline').innerHTML = metric('Active Opportunities', totalActive) + metric('Total Pipeline', fmt$(totalVal)) + metric('Weighted Forecast', fmt$(weightedVal)) + metric('Funnel A Deals', activeA.length) + metric('Funnel B Deals', activeB.length);
-
-        // Outbound
-        document.getElementById('reportOutbound').innerHTML = metric('Sent This Week', sentCount) + metric('Target', '200') + metric('Hit Rate', Math.round(sentCount/200*100) + '%');
+        document.getElementById('reportActivity').innerHTML =
+            metric('Active Pipeline', activePipeline) +
+            metric('With Next Action', withNextAction) +
+            metric('Overdue', overdue) +
+            metric('Customers', stageCounts['customer']);
     }
 
     function metric(label, value) {
@@ -1150,47 +972,46 @@
     document.getElementById('reportWeekStart').addEventListener('change', renderReport);
 
     // ═══════════════════════════════════════════════════════════════════════
-    // SLIDE-OUT DETAIL PANEL
+    // SLIDE-OUT DETAIL PANEL (Person view)
     // ═══════════════════════════════════════════════════════════════════════
-    function openPanel(oppId) {
-        const opp = allOpps.find(o => o.id === oppId);
-        if (!opp) return;
-        const c = opp.contact || {};
+    function openPanel(personId, personType) {
+        const person = allPeople.find(p => p._id === personId);
+        if (!person) return;
         const panel = document.getElementById('detailPanel');
         const overlay = document.getElementById('panelOverlay');
 
-        document.getElementById('panelTitle').textContent = (c.first_name || '') + ' ' + (c.last_name || opp.company?.name || 'Deal');
+        document.getElementById('panelTitle').textContent = (person.first_name + ' ' + person.last_name).trim() || 'Person';
+
+        const isContact = person._type === 'contact';
 
         document.getElementById('panelBody').innerHTML = `
             <div class="panel-section">
-                <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
-                    <span class="pill ${opp.funnel === 'operational' ? 'pill-a' : 'pill-b'}">${opp.funnel === 'operational' ? 'Funnel A' : 'Funnel B'}</span>
-                    <span class="stage-pill stage-${opp.stage}">${stageName(opp.stage)}</span>
-                    ${opp.value ? '<span style="font-weight:700;color:var(--green);font-size:0.85rem">' + fmt$(opp.value) + '</span>' : ''}
+                <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap">
+                    <span class="stage-pill stage-${person._lifecycle}">${stageName(person._lifecycle)}</span>
+                    <span class="pill pill-${person.source === 'outbound' ? 'blue' : 'green'}">${person.source || 'manual'}</span>
+                    <span class="pill pill-gray">${isContact ? 'CRM Contact' : 'Prospect'}</span>
                 </div>
             </div>
 
             <div class="panel-section">
-                <label>Contact</label>
-                <div class="pv">${c.first_name || ''} ${c.last_name || ''} ${c.title ? '(' + c.title + ')' : ''}</div>
-                ${c.email ? '<div class="pv"><a href="mailto:' + c.email + '">' + c.email + '</a></div>' : ''}
-                ${c.phone ? '<div class="pv">' + c.phone + '</div>' : ''}
-                ${c.linkedin_url ? '<div class="pv"><a href="' + c.linkedin_url + '" target="_blank">LinkedIn Profile</a></div>' : ''}
+                <label>Contact Info</label>
+                <div class="pv">${escHtml(person.first_name + ' ' + person.last_name)} ${person.title ? '(' + escHtml(person.title) + ')' : ''}</div>
+                ${person.email ? '<div class="pv"><a href="mailto:' + escHtml(person.email) + '">' + escHtml(person.email) + '</a></div>' : ''}
+                ${person.linkedin_url ? '<div class="pv"><a href="' + escHtml(person.linkedin_url) + '" target="_blank">LinkedIn Profile</a></div>' : ''}
             </div>
 
             <div class="panel-section">
                 <label>Company</label>
-                <div class="pv" style="font-weight:600">${opp.company?.name || '-'}</div>
-                <div class="pv sub">${opp.company?.industry || ''} ${opp.company?.employee_count ? '| ' + opp.company.employee_count + ' employees' : ''}</div>
+                <div class="pv" style="font-weight:600">${escHtml(person.company_name) || '-'}</div>
+                <div class="pv sub">${escHtml(person.company_industry) || ''} ${person.company_employee_count ? '| ' + person.company_employee_count + ' employees' : ''}</div>
             </div>
 
+            ${isContact ? `
             <div class="panel-section">
-                <label>Stage</label>
+                <label>Lifecycle Stage</label>
                 <div class="panel-field">
-                    <select id="panelStage" onchange="updateOppField('${opp.id}', 'stage', this.value)">
-                        ${(opp.funnel === 'operational' ? FUNNEL_A_STAGES : FUNNEL_B_STAGES).map(s =>
-                            '<option value="' + s.id + '" ' + (s.id === opp.stage ? 'selected' : '') + '>' + s.name + '</option>'
-                        ).join('')}
+                    <select id="panelStage" onchange="updatePersonField('${person._contactId}', 'lifecycle_stage', this.value)">
+                        ${STAGES.map(s => '<option value="' + s.id + '" ' + (s.id === person._lifecycle ? 'selected' : '') + '>' + s.name + '</option>').join('')}
                     </select>
                 </div>
             </div>
@@ -1198,56 +1019,28 @@
             <div class="panel-section">
                 <label>Next Action</label>
                 <div class="panel-field">
-                    <input type="text" id="panelNextStep" value="${escHtml(opp.next_step || '')}" onchange="updateOppField('${opp.id}', 'next_step', this.value)" placeholder="What's the next step?">
+                    <input type="text" id="panelNextAction" value="${escHtml(person.next_action || '')}" onchange="updatePersonField('${person._contactId}', 'next_action', this.value)" placeholder="What's the next step?">
                 </div>
                 <div class="panel-field">
                     <label>Due Date</label>
-                    <input type="date" id="panelCloseDate" value="${opp.expected_close_date || ''}" onchange="updateOppField('${opp.id}', 'expected_close_date', this.value)">
+                    <input type="date" id="panelNextDate" value="${person.next_action_date || ''}" onchange="updatePersonField('${person._contactId}', 'next_action_date', this.value)">
                 </div>
             </div>
-
+            ` : `
             <div class="panel-section">
-                <label>Pain Points</label>
-                <div class="panel-field"><textarea id="panelPain" onchange="updateOppField('${opp.id}', 'key_pain_points', this.value)" placeholder="What problems did they mention?">${escHtml(opp.key_pain_points || '')}</textarea></div>
+                <label>Stage</label>
+                <div class="pv">${stageName(person._lifecycle)} <span style="font-size:0.75rem;color:var(--text3)">(auto-computed from outreach data)</span></div>
             </div>
-            <div class="panel-section">
-                <label>Objections</label>
-                <div class="panel-field"><textarea id="panelObj" onchange="updateOppField('${opp.id}', 'objections', this.value)" placeholder="What pushback came up?">${escHtml(opp.objections || '')}</textarea></div>
-            </div>
-            <div class="panel-section">
-                <label>Key Quotes (their exact words)</label>
-                <div class="panel-field"><textarea id="panelQuotes" onchange="updateOppField('${opp.id}', 'key_quotes', this.value)" placeholder="Copy their memorable phrases...">${escHtml(opp.key_quotes || '')}</textarea></div>
-            </div>
-            <div class="panel-section">
-                <label>Personal Notes</label>
-                <div class="panel-field"><textarea id="panelNotes" onchange="updateOppField('${opp.id}', 'personal_notes', this.value)" placeholder="Context for future conversations...">${escHtml(opp.personal_notes || '')}</textarea></div>
-            </div>
-
-            <div class="panel-section">
-                <label>Recent Activity</label>
-                ${renderPanelTimeline(opp.id)}
-            </div>
+            `}
 
             <div class="panel-actions">
-                <a href="opportunity.html?id=${opp.id}" class="btn btn-white">Open Full Record</a>
+                <a href="people.html" class="btn btn-white">Open in People</a>
             </div>
         `;
 
         panel.classList.add('open');
         overlay.classList.add('active');
         document.body.classList.add('panel-open');
-    }
-
-    function renderPanelTimeline(oppId) {
-        const acts = allActivities.filter(a => a.opportunity_id === oppId).slice(0, 10);
-        if (acts.length === 0) return '<div class="empty-state" style="padding:0.5rem;font-size:0.8rem">No activities yet</div>';
-        return acts.map(a => `<div class="timeline-item">
-            <div class="timeline-dot ${a.type || 'note'}"></div>
-            <div>
-                <div class="timeline-text">${escHtml(a.subject || a.type || 'Activity')}</div>
-                <div class="timeline-date">${fmtDate(a.created_at)}</div>
-            </div>
-        </div>`).join('');
     }
 
     function closePanel() {
@@ -1259,28 +1052,26 @@
     document.getElementById('panelClose').addEventListener('click', closePanel);
     document.getElementById('panelOverlay').addEventListener('click', closePanel);
 
-    async function updateOppField(oppId, field, value) {
+    async function updatePersonField(contactId, field, value) {
         const update = { [field]: value || null };
-        if (field === 'stage') update.stage_entered_at = new Date().toISOString();
-        await sb.from('opportunities').update(update).eq('id', oppId);
-        const opp = allOpps.find(o => o.id === oppId);
-        if (opp) Object.assign(opp, update);
+        await sb.from('contacts').update(update).eq('id', contactId);
+        // Update local state
+        const person = allPeople.find(p => p._contactId === contactId);
+        if (person) {
+            person[field] = value || null;
+            if (field === 'lifecycle_stage') {
+                person._lifecycle = computeLifecycle(person);
+            }
+        }
     }
 
-    function escHtml(s) {
-        const d = document.createElement('div');
-        d.textContent = s;
-        return d.innerHTML;
-    }
-
-    // Click delegation for all tables and kanban cards
+    // Click delegation for tables and kanban cards
     document.addEventListener('click', function(e) {
-        const row = e.target.closest('tr[data-opp]');
-        const card = e.target.closest('.kanban-card[data-opp]');
-        const trial = e.target.closest('.trial-card[data-opp]');
-        const el = row || card || trial;
-        if (el && el.dataset.opp) {
-            openPanel(el.dataset.opp);
+        const row = e.target.closest('tr[data-person]');
+        const card = e.target.closest('.kanban-card[data-person]');
+        const el = row || card;
+        if (el && el.dataset.person) {
+            openPanel(el.dataset.person, el.dataset.type);
         }
     });
 
