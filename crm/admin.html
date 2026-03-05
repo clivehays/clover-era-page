@@ -462,7 +462,8 @@
             }
 
             currentUser = session.user;
-            document.getElementById('userInfo').textContent = session.user.email;
+            const userInfoEl = document.getElementById('userInfo');
+            if (userInfoEl) userInfoEl.textContent = session.user.email;
 
             // Check if user is admin
             const { data: profile, error: profileError } = await supabaseClient

@@ -589,7 +589,8 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) { window.location.href = '/crm/login.html'; return false; }
             currentUserId = session.user.id;
-            document.getElementById('userInfo').textContent = session.user.email;
+            const userInfoEl = document.getElementById('userInfo');
+            if (userInfoEl) userInfoEl.textContent = session.user.email;
             const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
             const adminLink = document.getElementById('adminLink');
             if (profile && profile.role === 'admin' && adminLink) adminLink.style.display = 'inline-block';

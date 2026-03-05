@@ -498,7 +498,8 @@
             }
             currentUserId = session.user.id;
             currentUserEmail = session.user.email;
-            document.getElementById('userInfo').textContent = session.user.email;
+            const userInfoEl = document.getElementById('userInfo');
+            if (userInfoEl) userInfoEl.textContent = session.user.email;
 
             const { data: profile } = await supabaseClient
                 .from('profiles')

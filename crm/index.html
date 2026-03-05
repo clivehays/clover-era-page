@@ -1162,7 +1162,8 @@
             currentUserId = session.user.id;
             currentUserEmail = session.user.email;
 
-            document.getElementById('userInfo').textContent = session.user.email;
+            const userInfoEl = document.getElementById('userInfo');
+            if (userInfoEl) userInfoEl.textContent = session.user.email;
             document.getElementById('currentUserDisplay').textContent = `Logged in as: ${session.user.email}`;
 
             // Check if user is admin and show admin link
