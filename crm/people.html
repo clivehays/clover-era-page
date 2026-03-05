@@ -457,18 +457,23 @@ async function loadAllPeople() {
     const [contactsRes, prospectsRes, oppsRes, emailsRes, notesRes] = await Promise.all([
         sb.from('contacts')
             .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, last_activity_date, company_id, companies(id, name, industry, employee_count, website)')
-            .order('updated_at', { ascending: false }),
+            .order('updated_at', { ascending: false })
+            .limit(10000),
         sb.from('outreach_prospects')
             .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, created_at, converted_contact_id, turnover_report_id')
-            .not('status', 'in', '(converted,bounced,invalid,unsubscribed)'),
+            .not('status', 'in', '(converted,bounced,invalid,unsubscribed)')
+            .limit(50000),
         sb.from('opportunities')
-            .select('id, contact_id, company_id, name, stage, value, close_date, created_at'),
+            .select('id, contact_id, company_id, name, stage, value, close_date, created_at')
+            .limit(10000),
         sb.from('outreach_emails')
             .select('prospect_id, sent_at, opened_at, clicked_at, replied_at')
-            .not('prospect_id', 'is', null),
+            .not('prospect_id', 'is', null)
+            .limit(50000),
         sb.from('person_notes')
             .select('contact_id, prospect_id, note_type')
             .eq('note_type', 'book_sent')
+            .limit(10000)
     ]);
 
     // Build email engagement maps
