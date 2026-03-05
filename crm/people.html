@@ -1231,7 +1231,20 @@ async function executePromote() {
 
         closePromoteModal(); closePanel();
         showToast('Promoted to CRM');
+
+        // Switch to All filter so the promoted person is visible, then re-open them
+        document.querySelectorAll('#lifecyclePills .ob-pill').forEach(b => b.classList.remove('active'));
+        const allPill = document.querySelector('#lifecyclePills .ob-pill[data-lc="all"]');
+        if (allPill) allPill.classList.add('active');
+        currentFilter = 'all';
+
         await loadAllPeople();
+
+        // Re-open the promoted person's panel
+        if (contactId) {
+            const promoted = allPeople.find(p => p._contactId === contactId);
+            if (promoted) openPerson(promoted._id);
+        }
     } catch (err) {
         showToast('Promote failed: ' + err.message, 'error');
     } finally {
