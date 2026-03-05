@@ -1232,11 +1232,11 @@ async function executePromote() {
         closePromoteModal(); closePanel();
         showToast('Promoted to CRM');
 
-        // Switch to All filter so the promoted person is visible, then re-open them
+        // Switch to Active filter — promoted people are active by definition
         document.querySelectorAll('#lifecyclePills .ob-pill').forEach(b => b.classList.remove('active'));
-        const allPill = document.querySelector('#lifecyclePills .ob-pill[data-lc="all"]');
-        if (allPill) allPill.classList.add('active');
-        currentFilter = 'all';
+        const activePill = document.querySelector('#lifecyclePills .ob-pill[data-lc="active"]');
+        if (activePill) activePill.classList.add('active');
+        currentFilter = 'active';
 
         await loadAllPeople();
 
