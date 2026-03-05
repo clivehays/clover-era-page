@@ -772,7 +772,9 @@
         }
 
         if (obStatusFilter !== 'all') {
-            if (obStatusFilter === 'opened') {
+            if (obStatusFilter === 'sent') {
+                filtered = filtered.filter(e => e.sent_at);
+            } else if (obStatusFilter === 'opened') {
                 filtered = filtered.filter(e => e.opened_at);
             } else if (obStatusFilter === 'clicked') {
                 filtered = filtered.filter(e => e.clicked_at);

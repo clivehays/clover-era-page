@@ -557,6 +557,7 @@ async function loadAllPeople() {
     });
 
     allPeople = Array.from(emailMap.values());
+    console.log('[People Debug]', 'emails:', (emailsRes.data||[]).length, 'sentSet:', sentSet.size, 'prospects:', prospects.length, 'contacts:', contacts.length);
     allPeople.forEach(p => { p._lifecycle = computeLifecycle(p); });
     applyFilters();
     updateStats();
