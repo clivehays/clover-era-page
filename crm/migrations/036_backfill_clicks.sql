@@ -1,13 +1,35 @@
 -- =============================================
--- Migration 036: Backfill Clicked Emails from Resend
+-- Migration 036: Fix Status Constraint + Backfill Clicks
 -- =============================================
--- Resend webhook events are not reliably delivering click events.
--- This backfills clicked_at and status from Resend CSV export.
--- Matches by sendgrid_message_id (stores Resend email ID).
--- Also sets opened_at since a click implies an open.
+-- ROOT CAUSE: The CHECK constraint on outreach_emails.status does not
+-- include 'clicked' (or 'sending', 'pending_followup'). This means
+-- the Resend webhook has NEVER been able to record clicks because
+-- setting status='clicked' violates the constraint.
+--
+-- Fix: Drop old constraint, add new one with all valid statuses.
+-- Then backfill clicked_at from the Resend CSV export.
 -- =============================================
 
--- Backfill clicked_at and status for emails matched by Resend ID
+-- 1. Fix the CHECK constraint to include all statuses used by the system
+ALTER TABLE outreach_emails DROP CONSTRAINT IF EXISTS outreach_emails_status_check;
+
+ALTER TABLE outreach_emails ADD CONSTRAINT outreach_emails_status_check
+  CHECK (status IN (
+    'draft',
+    'approved',
+    'pending_followup',
+    'scheduled',
+    'sending',
+    'sent',
+    'delivered',
+    'opened',
+    'clicked',
+    'replied',
+    'bounced',
+    'failed'
+  ));
+
+-- 2. Backfill clicked_at and status for emails matched by Resend ID
 UPDATE outreach_emails
 SET
     clicked_at = COALESCE(clicked_at, sent_at),
@@ -50,11 +72,11 @@ WHERE sendgrid_message_id IN (
 )
 AND clicked_at IS NULL;
 
--- VERIFY: count how many were updated
+-- 3. VERIFY
 SELECT
     COUNT(*) FILTER (WHERE clicked_at IS NOT NULL) as clicked_count,
     COUNT(*) FILTER (WHERE opened_at IS NOT NULL) as opened_count,
-    COUNT(*) as total
+    COUNT(*) as total_matched
 FROM outreach_emails
 WHERE sendgrid_message_id IN (
     'c8ece73b-6175-4a42-9225-4d07dd7a13ce',
