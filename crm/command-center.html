@@ -453,12 +453,12 @@
     function computeLifecycle(person) {
         if (person._type === 'contact' && person.lifecycle_stage) return person.lifecycle_stage;
         if (person._hasBookSent) return 'book_sent';
-        if (person._type === 'contact') return 'replied';
+        if (person._type === 'contact') return 'cold';
         if (person._hasClicked) return 'clicked';
         if (person._hasOpened) return 'opened';
         const status = person.status || '';
         if (status === 'replied') return 'replied';
-        if (['active', 'completed'].includes(status)) return 'emailed';
+        if (person._hasSent || ['active', 'completed'].includes(status)) return 'emailed';
         return 'cold';
     }
 
@@ -487,11 +487,15 @@
         allEmails = emailsRes.data || [];
 
         // Build email engagement maps
+        const sentSet = new Set();
         const openedSet = new Set();
         const clickedSet = new Set();
         (emailEngRes.data || []).forEach(e => {
-            if (e.opened_at && e.prospect_id) openedSet.add(e.prospect_id);
-            if (e.clicked_at && e.prospect_id) clickedSet.add(e.prospect_id);
+            if (e.prospect_id) {
+                sentSet.add(e.prospect_id);
+                if (e.opened_at) openedSet.add(e.prospect_id);
+                if (e.clicked_at) clickedSet.add(e.prospect_id);
+            }
         });
 
         // Build book_sent set
@@ -539,6 +543,7 @@
             created_at: p.created_at,
             updated_at: p.created_at,
             _hasBookSent: bookSentProspects.has(p.id),
+            _hasSent: sentSet.has(p.id),
             _hasOpened: openedSet.has(p.id),
             _hasClicked: clickedSet.has(p.id)
         }));
@@ -669,40 +674,64 @@
     // TAB: PIPELINE (People Kanban by Stage)
     // ═══════════════════════════════════════════════════════════════════════
     function renderPipeline() {
-        // Exclude churned for kanban display
-        const pipelinePeople = allPeople.filter(p => p._lifecycle !== 'churned');
+        const allNonChurned = allPeople.filter(p => p._lifecycle !== 'churned');
+        const coldCount = allNonChurned.filter(p => p._lifecycle === 'cold').length;
+        const emailedCount = allNonChurned.filter(p => p._lifecycle === 'emailed').length;
+
+        // Pipeline = Opened onward (excludes Cold & Emailed which are managed elsewhere)
+        const KANBAN_STAGES = PIPELINE_STAGES.filter(s => !['cold', 'emailed'].includes(s.id));
+        const pipelinePeople = allNonChurned.filter(p => !['cold', 'emailed'].includes(p._lifecycle));
 
         // Stats
         const active = pipelinePeople.filter(p => ACTIVE_STAGE_IDS.includes(p._lifecycle));
-        const warming = pipelinePeople.filter(p => ['emailed', 'opened', 'clicked', 'book_sent'].includes(p._lifecycle));
         const customers = pipelinePeople.filter(p => p._lifecycle === 'customer');
+        const now = Date.now();
+        const needsAttention = pipelinePeople.filter(p => {
+            const lastTouch = p.updated_at || p.created_at;
+            return lastTouch && (now - new Date(lastTouch).getTime()) > 7 * 86400000;
+        });
+
         document.getElementById('pipelineStats').innerHTML = `
+            <div class="stat-card"><div class="stat-label">In Pipeline</div><div class="stat-value">${pipelinePeople.length}</div><div class="stat-sub">opened or beyond</div></div>
             <div class="stat-card"><div class="stat-label">Active (Replied+)</div><div class="stat-value">${active.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Warming</div><div class="stat-value">${warming.length}</div></div>
             <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value" style="color:var(--green)">${customers.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Total Pipeline</div><div class="stat-value">${pipelinePeople.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Needs Attention</div><div class="stat-value" style="color:${needsAttention.length > 0 ? 'var(--amber)' : 'var(--text)'}">${needsAttention.length}</div><div class="stat-sub">no activity 7+ days</div></div>
         `;
 
-        // Kanban
+        // Context summary
         const row = document.getElementById('kanbanRow');
-        row.innerHTML = PIPELINE_STAGES.map(stage => {
+        let html = `<div style="display:flex; gap:1.5rem; margin-bottom:0.75rem; font-size:0.82rem; color:var(--text2); align-items:center;">
+            <span><strong>${coldCount.toLocaleString()}</strong> Cold</span>
+            <span><strong>${emailedCount.toLocaleString()}</strong> Emailed</span>
+            <span style="color:var(--text3);">|</span>
+            <span style="color:var(--text3);">Pipeline starts at Opened</span>
+        </div>`;
+
+        // Kanban columns
+        html += '<div style="display:flex; gap:0.75rem; overflow-x:auto; padding-bottom:1rem; min-height:300px;">';
+        html += KANBAN_STAGES.map(stage => {
             const stagePeople = pipelinePeople.filter(p => p._lifecycle === stage.id);
             return `<div class="kanban-col" data-stage="${stage.id}">
                 <div class="kanban-col-header">${stage.name} <span class="count">${stagePeople.length}</span></div>
-                ${stagePeople.slice(0, 20).map(p => `
-                    <div class="kanban-card" data-person="${p._id}" data-type="${p._type}">
+                ${stagePeople.slice(0, 50).map(p => {
+                    const lastTouch = p.updated_at || p.created_at;
+                    const stale = lastTouch && (now - new Date(lastTouch).getTime()) > 7 * 86400000;
+                    return `<div class="kanban-card" data-person="${p._id}" data-type="${p._type}" style="border-left-color:${stale ? 'var(--amber)' : 'var(--green)'}">
                         <div class="kc-name">${escHtml(p.first_name + ' ' + p.last_name)}</div>
                         <div class="kc-company">${escHtml(p.company_name) || '-'}</div>
                         ${p.next_action ? '<div class="kc-action">' + escHtml(p.next_action) + '</div>' : ''}
                         <div class="kc-meta">
-                            <span>${fmtDate(p.updated_at || p.created_at)}</span>
+                            <span>${fmtDate(lastTouch)}</span>
                             <span class="pill pill-${p.source === 'outbound' ? 'blue' : 'green'}" style="font-size:0.6rem">${p._type === 'contact' ? 'CRM' : 'Prospect'}</span>
                         </div>
-                    </div>
-                `).join('')}
-                ${stagePeople.length > 20 ? '<div style="text-align:center;font-size:0.72rem;color:var(--text3);padding:0.5rem">+' + (stagePeople.length - 20) + ' more</div>' : ''}
+                    </div>`;
+                }).join('')}
+                ${stagePeople.length > 50 ? '<div style="text-align:center;font-size:0.72rem;color:var(--text3);padding:0.5rem">+' + (stagePeople.length - 50) + ' more</div>' : ''}
             </div>`;
         }).join('');
+        html += '</div>';
+
+        row.innerHTML = html;
     }
 
     // ═══════════════════════════════════════════════════════════════════════
