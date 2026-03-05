@@ -285,6 +285,22 @@ export default async function handler(req, res) {
                 continue;
             }
 
+            // Skip auto-replies and system messages
+            const subject = (email.subject || '').toLowerCase();
+            const autoReplyPatterns = [
+                'out of office', 'automatic reply', 'auto-reply', 'autoreply',
+                'delivery status', 'undeliverable', 'delivery failure',
+                'mail delivery failed', 'returned mail', 'non-delivery',
+                'mailer-daemon', 'postmaster', 'do not reply', 'do-not-reply',
+                'noreply', 'no-reply', 'away from office', 'on vacation',
+                'out of the office', 'currently unavailable'
+            ];
+            if (autoReplyPatterns.some(p => subject.includes(p))) {
+                await logProcessedEmail(email.id, null, 'auto_reply_skipped');
+                results.skipped++;
+                continue;
+            }
+
             // Skip if already processed
             if (await isEmailProcessed(email.id)) {
                 results.skipped++;
