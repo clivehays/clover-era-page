@@ -125,9 +125,14 @@ body.panel-open .container { margin-right: var(--panel-w); }
 .timeline-dot.system { background: var(--amber); }
 .timeline-dot.book_sent { background: var(--indigo); }
 .timeline-dot.report_sent { background: var(--teal); }
+.timeline-dot.email_sent { background: var(--blue); }
+.timeline-dot.task { background: var(--amber); }
+.timeline-dot.activity { background: var(--text3); }
 .timeline-content { flex: 1; min-width: 0; }
+.timeline-type-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text3); margin-bottom: 0.1rem; }
 .timeline-text { font-size: 0.8rem; color: var(--text); }
 .timeline-meta { font-size: 0.7rem; color: var(--text3); margin-top: 0.15rem; }
+.timeline-extra { font-size: 0.75rem; color: var(--text2); margin-top: 0.15rem; }
 .timeline-empty { text-align: center; padding: 1.5rem; color: var(--text3); font-size: 0.82rem; }
 
 .collapse-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 0.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
@@ -206,7 +211,7 @@ body.panel-open .container { margin-right: var(--panel-w); }
         <div class="stat-card"><div class="stat-label">Total People</div><div class="stat-value" id="statTotal">-</div></div>
         <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value" id="statOverdue">-</div><div class="stat-sub">follow-ups due</div></div>
         <div class="stat-card"><div class="stat-label">Active Pipeline</div><div class="stat-value" id="statActive">-</div><div class="stat-sub">Replied+</div></div>
-        <div class="stat-card"><div class="stat-label">New This Week</div><div class="stat-value" id="statNew">-</div></div>
+        <div class="stat-card"><div class="stat-label">Needs Attention</div><div class="stat-value" id="statStale">-</div><div class="stat-sub">no contact 7+ days</div></div>
     </div>
 
     <div class="ob-controls">
@@ -435,7 +440,7 @@ async function loadAllPeople() {
 
     const [contactsRes, prospectsRes, oppsRes, emailsRes, notesRes] = await Promise.all([
         sb.from('contacts')
-            .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, company_id, companies(id, name, industry, employee_count, website)')
+            .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, last_activity_date, company_id, companies(id, name, industry, employee_count, website)')
             .order('updated_at', { ascending: false }),
         sb.from('outreach_prospects')
             .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, created_at, converted_contact_id, turnover_report_id')
@@ -480,6 +485,7 @@ async function loadAllPeople() {
         status: null,
         lifecycle_stage: c.lifecycle_stage,
         next_action: c.next_action, next_action_date: c.next_action_date,
+        last_activity_date: c.last_activity_date,
         created_at: c.created_at,
         updated_at: c.updated_at || c.created_at,
         _oppStages: [], _opps: [],
@@ -599,8 +605,11 @@ function renderTable() {
     tbody.innerHTML = page.map(p => {
         const name = escHtml((p.first_name + ' ' + p.last_name).trim() || p.email);
         const titleStr = p.title ? `<div class="sub">${escHtml(p.title)}</div>` : '';
-        const days = daysSince(p.updated_at || p.created_at);
-        const daysLabel = days === 0 ? 'today' : days === 1 ? '1d ago' : `${days}d ago`;
+        const lastTouch = p.last_activity_date || p.updated_at || p.created_at;
+        const touchDays = daysSince(lastTouch);
+        const daysLabel = touchDays === 0 ? 'today' : touchDays === 1 ? '1d ago' : `${touchDays}d ago`;
+        const isActive = ['replied', 'call', 'pilot'].includes(p._lifecycle);
+        const touchColor = isActive && touchDays > 14 ? 'color:var(--red);font-weight:600;' : isActive && touchDays > 7 ? 'color:var(--amber);font-weight:600;' : '';
         const isOverdue = p.next_action_date && p.next_action_date < today;
 
         return `<tr onclick="openPerson('${p._id}')">
@@ -608,7 +617,7 @@ function renderTable() {
             <td>${escHtml(p.company_name || '-')}</td>
             <td>${lifecyclePill(p._lifecycle)}</td>
             <td>${sourceBadge(p.source)}</td>
-            <td><div>${fmtDate(p.updated_at || p.created_at)}</div><div class="sub">${daysLabel}</div></td>
+            <td><div style="${touchColor}">${fmtDate(lastTouch)}</div><div class="sub">${daysLabel}</div></td>
             <td>${p.next_action_date
                 ? `<div style="font-size:0.78rem; font-weight:600; ${isOverdue ? 'color:var(--red)' : ''}">${fmtDate(p.next_action_date)}</div><div class="sub">${escHtml(p.next_action || '')}</div>`
                 : '<div class="sub">-</div>'}</td>
@@ -636,14 +645,18 @@ function updateStats() {
     const today = new Date().toISOString().split('T')[0];
     const overdue = allPeople.filter(p => p.next_action_date && p.next_action_date < today).length;
     const active = allPeople.filter(p => ['replied', 'call', 'pilot', 'customer'].includes(p._lifecycle)).length;
-    const weekAgo = Date.now() - 7 * 86400000;
-    const newThisWeek = allPeople.filter(p => new Date(p.created_at) > weekAgo).length;
+    const stale = allPeople.filter(p => {
+        if (!['replied', 'call', 'pilot'].includes(p._lifecycle)) return false;
+        const lastTouch = p.last_activity_date || p.updated_at || p.created_at;
+        return daysSince(lastTouch) >= 7;
+    }).length;
 
     document.getElementById('statTotal').textContent = allPeople.length.toLocaleString();
     document.getElementById('statOverdue').textContent = overdue;
     document.getElementById('statOverdue').style.color = overdue > 0 ? 'var(--red)' : '';
     document.getElementById('statActive').textContent = active;
-    document.getElementById('statNew').textContent = newThisWeek;
+    document.getElementById('statStale').textContent = stale;
+    document.getElementById('statStale').style.color = stale > 0 ? 'var(--amber)' : '';
 }
 
 // Event listeners
@@ -688,17 +701,35 @@ async function openPerson(id) {
 
     // Header
     let html = `<div class="panel-section">
-        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
-            ${lifecyclePill(person._lifecycle)}
-            ${sourceBadge(person.source)}
-            <span style="font-size:0.72rem; color:var(--text3);">${person._type === 'prospect' ? 'Outreach Prospect' : 'CRM Contact'}</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                ${lifecyclePill(person._lifecycle)}
+                ${sourceBadge(person.source)}
+                <span style="font-size:0.72rem; color:var(--text3);">${person._type === 'prospect' ? 'Outreach Prospect' : 'CRM Contact'}</span>
+            </div>
+            ${person._type === 'contact' ? '<button class="btn btn-white btn-sm" id="btnEditContact" onclick="toggleEditContact()">Edit</button>' : ''}
         </div>
-        ${person.title ? `<div style="font-size:0.85rem; color:var(--text2); margin-bottom:0.25rem;">${escHtml(person.title)}</div>` : ''}
-        ${person.company_name ? `<div style="font-size:0.85rem; font-weight:600;">${escHtml(person.company_name)}</div>` : ''}
-        <div style="margin-top:0.4rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-            ${person.email ? `<a href="mailto:${escHtml(person.email)}" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">${escHtml(person.email)}</a>` : ''}
-            ${person.linkedin_url ? `<a href="${escHtml(person.linkedin_url)}" target="_blank" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">LinkedIn</a>` : ''}
+        <div id="contactDisplay">
+            ${person.title ? `<div style="font-size:0.85rem; color:var(--text2); margin-bottom:0.25rem;">${escHtml(person.title)}</div>` : ''}
+            ${person.company_name ? `<div style="font-size:0.85rem; font-weight:600;">${escHtml(person.company_name)}</div>` : ''}
+            <div style="margin-top:0.4rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+                ${person.email ? `<a href="mailto:${escHtml(person.email)}" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">${escHtml(person.email)}</a>` : ''}
+                ${person.linkedin_url ? `<a href="${escHtml(person.linkedin_url)}" target="_blank" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">LinkedIn</a>` : ''}
+            </div>
         </div>
+        ${person._type === 'contact' ? `<div id="contactEdit" style="display:none;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:0.5rem;">
+                <div><label>First Name</label><input class="panel-input" id="editFirstName" value="${escHtml(person.first_name)}"></div>
+                <div><label>Last Name</label><input class="panel-input" id="editLastName" value="${escHtml(person.last_name)}"></div>
+            </div>
+            <div style="margin-bottom:0.5rem;"><label>Title</label><input class="panel-input" id="editTitle" value="${escHtml(person.title || '')}"></div>
+            <div style="margin-bottom:0.5rem;"><label>Email</label><input class="panel-input" id="editEmail" value="${escHtml(person.email || '')}"></div>
+            <div style="margin-bottom:0.5rem;"><label>LinkedIn URL</label><input class="panel-input" id="editLinkedin" value="${escHtml(person.linkedin_url || '')}"></div>
+            <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                <button class="btn btn-green btn-sm" onclick="saveContactEdit()">Save</button>
+                <button class="btn btn-white btn-sm" onclick="toggleEditContact()">Cancel</button>
+            </div>
+        </div>` : ''}
     </div>`;
 
     // Lifecycle stage selector (contacts only)
@@ -724,7 +755,11 @@ async function openPerson(id) {
 
     // Quick actions
     html += '<div class="quick-actions">';
-    html += '<button class="qa-btn primary" onclick="toggleNoteInput()">Log Note</button>';
+    html += '<button class="qa-btn primary" onclick="showActivityLogger(\'note\')">Note</button>';
+    html += '<button class="qa-btn" onclick="showActivityLogger(\'call\')" style="border-color:var(--green);color:var(--green);">Call</button>';
+    html += '<button class="qa-btn" onclick="showActivityLogger(\'meeting\')" style="border-color:var(--purple);color:var(--purple);">Meeting</button>';
+    html += '<button class="qa-btn" onclick="showActivityLogger(\'email_sent\')" style="border-color:var(--blue);color:var(--blue);">Email</button>';
+    html += '<button class="qa-btn" onclick="showActivityLogger(\'task\')" style="border-color:var(--amber);color:var(--amber);">Task</button>';
     html += '<button class="qa-btn" onclick="quickAction(\'book_sent\')">Book Sent</button>';
     html += '<button class="qa-btn" onclick="quickAction(\'report_sent\')">Report Sent</button>';
     if (person._type === 'prospect') {
@@ -732,12 +767,27 @@ async function openPerson(id) {
     }
     html += '</div>';
 
-    // Note input
-    html += `<div class="note-input-area" id="noteInputArea">
-        <textarea id="noteText" placeholder="Write a note..."></textarea>
+    // Activity logger
+    html += `<div class="note-input-area" id="activityLogger">
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
+            <span id="activityTypeLabel" style="font-size:0.72rem; font-weight:700; color:var(--text3); text-transform:uppercase;"></span>
+        </div>
+        <textarea id="noteText" placeholder="What happened?"></textarea>
+        <div id="activityExtraFields" style="display:none; margin-top:0.5rem;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                <div><label>Outcome</label><input class="panel-input" id="activityOutcome" placeholder="e.g., Interested in pilot"></div>
+                <div><label>Duration (min)</label><input class="panel-input" id="activityDuration" type="number" placeholder="30"></div>
+            </div>
+        </div>
+        <div id="taskFields" style="display:none; margin-top:0.5rem;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                <div><label>Due Date</label><input class="panel-input" id="taskDueDate" type="date"></div>
+                <div style="display:flex; align-items:end;"><label style="display:flex; align-items:center; gap:0.3rem; font-size:0.78rem;"><input type="checkbox" id="taskCompleted"> Already done</label></div>
+            </div>
+        </div>
         <div class="note-input-actions">
-            <button class="btn btn-white btn-sm" onclick="toggleNoteInput()">Cancel</button>
-            <button class="btn btn-green btn-sm" onclick="saveNote()">Save Note</button>
+            <button class="btn btn-white btn-sm" onclick="hideActivityLogger()">Cancel</button>
+            <button class="btn btn-green btn-sm" onclick="saveActivity()">Save</button>
         </div>
     </div>`;
 
@@ -764,14 +814,28 @@ async function openPerson(id) {
     }
 
     // Company info
-    if (person.company_name) {
+    if (person.company_name || (person._type === 'contact' && person.company_id)) {
         html += `<div class="collapse-header" onclick="toggleCollapse('companySection')">
             <h3>Company Info</h3><span class="collapse-arrow" id="arrow-companySection">&#9660;</span>
         </div>
         <div class="collapse-body" id="companySection">
-            <div style="font-size:0.82rem; margin-bottom:0.25rem;"><strong>${escHtml(person.company_name)}</strong></div>
-            ${person.company_industry ? `<div style="font-size:0.78rem; color:var(--text2);">Industry: ${escHtml(person.company_industry)}</div>` : ''}
-            ${person.company_employee_count ? `<div style="font-size:0.78rem; color:var(--text2);">Employees: ${person.company_employee_count.toLocaleString()}</div>` : ''}
+            <div id="companyDisplay">
+                <div style="font-size:0.82rem; margin-bottom:0.25rem;"><strong>${escHtml(person.company_name)}</strong></div>
+                ${person.company_industry ? `<div style="font-size:0.78rem; color:var(--text2);">Industry: ${escHtml(person.company_industry)}</div>` : ''}
+                ${person.company_employee_count ? `<div style="font-size:0.78rem; color:var(--text2);">Employees: ${person.company_employee_count.toLocaleString()}</div>` : ''}
+                ${person.company_website ? `<div style="font-size:0.78rem;"><a href="${escHtml(person.company_website)}" target="_blank" style="color:var(--blue); text-decoration:none;">${escHtml(person.company_website)}</a></div>` : ''}
+                ${person._type === 'contact' && person.company_id ? '<button class="btn btn-white btn-sm" style="margin-top:0.5rem;" onclick="toggleEditCompany()">Edit Company</button>' : ''}
+            </div>
+            ${person._type === 'contact' && person.company_id ? `<div id="companyEdit" style="display:none;">
+                <div style="margin-bottom:0.5rem;"><label>Company Name</label><input class="panel-input" id="editCompanyName" value="${escHtml(person.company_name || '')}"></div>
+                <div style="margin-bottom:0.5rem;"><label>Industry</label><input class="panel-input" id="editCompanyIndustry" value="${escHtml(person.company_industry || '')}"></div>
+                <div style="margin-bottom:0.5rem;"><label>Employees</label><input class="panel-input" id="editCompanyEmployees" type="number" value="${person.company_employee_count || ''}"></div>
+                <div style="margin-bottom:0.5rem;"><label>Website</label><input class="panel-input" id="editCompanyWebsite" value="${escHtml(person.company_website || '')}"></div>
+                <div style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-green btn-sm" onclick="saveCompanyEdit()">Save</button>
+                    <button class="btn btn-white btn-sm" onclick="toggleEditCompany()">Cancel</button>
+                </div>
+            </div>` : ''}
         </div>`;
     }
 
@@ -782,7 +846,7 @@ async function openPerson(id) {
 async function loadTimeline(person) {
     const items = [];
 
-    let noteQuery = sb.from('person_notes').select('*');
+    let noteQuery = sb.from('person_notes').select('id, contact_id, prospect_id, note_type, content, outcome, duration_minutes, due_date, completed, created_by, created_at');
     if (person._contactId && person._prospectId) {
         noteQuery = noteQuery.or(`contact_id.eq.${person._contactId},prospect_id.eq.${person._prospectId}`);
     } else if (person._contactId) {
@@ -791,7 +855,10 @@ async function loadTimeline(person) {
         noteQuery = noteQuery.eq('prospect_id', person._prospectId);
     }
     const { data: notes } = await noteQuery.order('created_at', { ascending: false }).limit(50);
-    (notes || []).forEach(n => items.push({ date: n.created_at, type: n.note_type || 'note', text: n.content, source: 'note' }));
+    (notes || []).forEach(n => items.push({
+        id: n.id, date: n.created_at, type: n.note_type || 'note', text: n.content, source: 'note',
+        outcome: n.outcome, duration: n.duration_minutes, due_date: n.due_date, completed: n.completed
+    }));
 
     if (person._prospectId) {
         const { data: emails } = await sb.from('outreach_emails').select('subject, status, sent_at, opened_at, clicked_at, replied_at, created_at')
@@ -799,22 +866,50 @@ async function loadTimeline(person) {
         (emails || []).forEach(e => {
             let st = e.status || 'draft';
             if (e.replied_at) st = 'replied'; else if (e.clicked_at) st = 'clicked'; else if (e.opened_at) st = 'opened'; else if (e.sent_at) st = 'sent';
-            items.push({ date: e.sent_at || e.created_at, type: 'email', text: `Email: ${e.subject || '(no subject)'} [${st}]`, source: 'outreach' });
+            items.push({ date: e.sent_at || e.created_at, type: 'email', text: `${e.subject || '(no subject)'} [${st}]`, source: 'outreach' });
         });
     }
 
     if (person._contactId) {
         const { data: activities } = await sb.from('activities').select('type, description, created_at')
             .eq('contact_id', person._contactId).order('created_at', { ascending: false }).limit(20);
-        (activities || []).forEach(a => items.push({ date: a.created_at, type: a.type || 'note', text: a.description || a.type, source: 'activity' }));
+        (activities || []).forEach(a => items.push({ date: a.created_at, type: a.type || 'activity', text: a.description || a.type, source: 'activity' }));
     }
 
     items.sort((a, b) => new Date(b.date) - new Date(a.date));
     if (items.length === 0) return '<div class="timeline-empty">No activity yet. Log a note to get started.</div>';
-    return items.map(item => `<div class="timeline-item">
+    return items.map(item => renderTimelineItem(item)).join('');
+}
+
+function renderTimelineItem(item) {
+    const typeLabels = {
+        note: 'Note', call: 'Call', meeting: 'Meeting', email_sent: 'Email Sent',
+        email: 'Outreach Email', book_sent: 'Book Sent', report_sent: 'Report Sent',
+        system: 'System', task: 'Task', activity: 'Activity'
+    };
+    const label = typeLabels[item.type] || 'Activity';
+    let extra = '';
+
+    if (item.outcome) extra += `<div class="timeline-extra">Outcome: ${escHtml(item.outcome)}</div>`;
+    if (item.duration) extra += `<div class="timeline-extra">${item.duration} min</div>`;
+    if (item.type === 'task' && item.due_date) {
+        const today = new Date().toISOString().split('T')[0];
+        const overdue = !item.completed && item.due_date < today;
+        extra += `<div class="timeline-extra" style="${overdue ? 'color:var(--red);font-weight:600;' : ''}">Due: ${fmtDate(item.due_date)} ${item.completed ? '(done)' : overdue ? '(overdue)' : ''}</div>`;
+        if (!item.completed && item.id) {
+            extra += `<button class="btn btn-green btn-sm" style="margin-top:0.25rem;padding:0.2rem 0.5rem;font-size:0.68rem;" onclick="completeTask('${item.id}')">Mark Done</button>`;
+        }
+    }
+
+    return `<div class="timeline-item">
         <div class="timeline-dot ${item.type}"></div>
-        <div class="timeline-content"><div class="timeline-text">${escHtml(item.text)}</div><div class="timeline-meta">${fmtDateFull(item.date)}</div></div>
-    </div>`).join('');
+        <div class="timeline-content">
+            <div class="timeline-type-label">${label}</div>
+            <div class="timeline-text">${escHtml(item.text)}</div>
+            ${extra}
+            <div class="timeline-meta">${fmtDateFull(item.date)}</div>
+        </div>
+    </div>`;
 }
 
 function toggleCollapse(id) {
@@ -822,26 +917,172 @@ function toggleCollapse(id) {
     document.getElementById('arrow-' + id).classList.toggle('open');
 }
 
-// Quick actions
-function toggleNoteInput() {
-    const area = document.getElementById('noteInputArea');
-    area.classList.toggle('visible');
-    if (area.classList.contains('visible')) document.getElementById('noteText').focus();
+// Activity logging
+let currentActivityType = 'note';
+
+function showActivityLogger(type) {
+    currentActivityType = type;
+    const area = document.getElementById('activityLogger');
+    const label = document.getElementById('activityTypeLabel');
+    const extra = document.getElementById('activityExtraFields');
+    const taskF = document.getElementById('taskFields');
+    const textarea = document.getElementById('noteText');
+
+    const labels = { note: 'Log Note', call: 'Log Call', meeting: 'Log Meeting', email_sent: 'Log Email', task: 'Create Task' };
+    const placeholders = { note: 'Write a note...', call: 'What did you discuss?', meeting: 'Meeting summary...', email_sent: 'What did you send?', task: 'What needs to be done?' };
+
+    label.textContent = labels[type] || 'Log Activity';
+    textarea.placeholder = placeholders[type] || 'Details...';
+    extra.style.display = ['call', 'meeting'].includes(type) ? '' : 'none';
+    taskF.style.display = type === 'task' ? '' : 'none';
+    area.classList.add('visible');
+    textarea.focus();
 }
 
-async function saveNote() {
+function hideActivityLogger() {
+    const area = document.getElementById('activityLogger');
+    if (area) area.classList.remove('visible');
+    const textarea = document.getElementById('noteText');
+    if (textarea) textarea.value = '';
+    const outcome = document.getElementById('activityOutcome');
+    if (outcome) outcome.value = '';
+    const duration = document.getElementById('activityDuration');
+    if (duration) duration.value = '';
+    const dueDate = document.getElementById('taskDueDate');
+    if (dueDate) dueDate.value = '';
+    const completed = document.getElementById('taskCompleted');
+    if (completed) completed.checked = false;
+}
+
+async function saveActivity() {
     if (!selectedPerson) return;
     const text = document.getElementById('noteText').value.trim();
-    if (!text) return;
-    const { error } = await sb.from('person_notes').insert({
-        contact_id: selectedPerson._contactId, prospect_id: selectedPerson._prospectId,
-        note_type: 'note', content: text, created_by: currentUser?.id
-    });
+    if (!text) { showToast('Please enter details', 'error'); return; }
+
+    const record = {
+        contact_id: selectedPerson._contactId,
+        prospect_id: selectedPerson._prospectId,
+        note_type: currentActivityType,
+        content: text,
+        created_by: currentUser?.id
+    };
+
+    if (['call', 'meeting'].includes(currentActivityType)) {
+        const outcome = document.getElementById('activityOutcome').value.trim();
+        const duration = parseInt(document.getElementById('activityDuration').value);
+        if (outcome) record.outcome = outcome;
+        if (duration > 0) record.duration_minutes = duration;
+    }
+
+    if (currentActivityType === 'task') {
+        const dueDate = document.getElementById('taskDueDate').value;
+        const completed = document.getElementById('taskCompleted').checked;
+        if (dueDate) record.due_date = dueDate;
+        record.completed = completed;
+    }
+
+    const { error } = await sb.from('person_notes').insert(record);
     if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-    document.getElementById('noteText').value = '';
-    toggleNoteInput();
-    showToast('Note saved');
+
+    // Update last_activity_date on contact (except for tasks not yet done)
+    if (selectedPerson._contactId && !(currentActivityType === 'task' && !document.getElementById('taskCompleted').checked)) {
+        await sb.from('contacts').update({
+            last_activity_date: new Date().toISOString(), updated_at: new Date().toISOString()
+        }).eq('id', selectedPerson._contactId);
+        selectedPerson.last_activity_date = new Date().toISOString();
+    }
+
+    // Auto-set next action for tasks with a due date
+    if (currentActivityType === 'task' && !document.getElementById('taskCompleted').checked) {
+        const dueDate = document.getElementById('taskDueDate').value;
+        if (selectedPerson._contactId && dueDate) {
+            await sb.from('contacts').update({
+                next_action: text.substring(0, 100), next_action_date: dueDate, updated_at: new Date().toISOString()
+            }).eq('id', selectedPerson._contactId);
+            selectedPerson.next_action = text.substring(0, 100);
+            selectedPerson.next_action_date = dueDate;
+        }
+    }
+
+    hideActivityLogger();
+    showToast(currentActivityType === 'task' ? 'Task created' : 'Activity saved');
     document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
+    updateStats();
+    applyFilters();
+}
+
+async function completeTask(noteId) {
+    const { error } = await sb.from('person_notes').update({ completed: true }).eq('id', noteId);
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    showToast('Task completed');
+    if (selectedPerson?._contactId) {
+        await sb.from('contacts').update({
+            last_activity_date: new Date().toISOString(), updated_at: new Date().toISOString()
+        }).eq('id', selectedPerson._contactId);
+        selectedPerson.last_activity_date = new Date().toISOString();
+    }
+    document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
+}
+
+// Edit contact
+function toggleEditContact() {
+    const display = document.getElementById('contactDisplay');
+    const edit = document.getElementById('contactEdit');
+    const btn = document.getElementById('btnEditContact');
+    if (!display || !edit) return;
+    const isEditing = edit.style.display !== 'none';
+    display.style.display = isEditing ? '' : 'none';
+    edit.style.display = isEditing ? 'none' : '';
+    if (btn) btn.textContent = isEditing ? 'Edit' : 'Cancel';
+}
+
+async function saveContactEdit() {
+    if (!selectedPerson || selectedPerson._type !== 'contact') return;
+    const updates = {
+        first_name: document.getElementById('editFirstName').value.trim(),
+        last_name: document.getElementById('editLastName').value.trim(),
+        email: document.getElementById('editEmail').value.trim(),
+        title: document.getElementById('editTitle').value.trim() || null,
+        linkedin_url: document.getElementById('editLinkedin').value.trim() || null,
+        updated_at: new Date().toISOString()
+    };
+    if (!updates.first_name || !updates.last_name) { showToast('Name is required', 'error'); return; }
+    const { error } = await sb.from('contacts').update(updates).eq('id', selectedPerson._contactId);
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    Object.assign(selectedPerson, updates);
+    showToast('Contact updated');
+    toggleEditContact();
+    document.getElementById('panelTitle').textContent = (updates.first_name + ' ' + updates.last_name).trim();
+    applyFilters();
+}
+
+// Edit company
+function toggleEditCompany() {
+    const d = document.getElementById('companyDisplay');
+    const e = document.getElementById('companyEdit');
+    if (!d || !e) return;
+    d.style.display = d.style.display === 'none' ? '' : 'none';
+    e.style.display = e.style.display === 'none' ? '' : 'none';
+}
+
+async function saveCompanyEdit() {
+    if (!selectedPerson || !selectedPerson.company_id) return;
+    const updates = {
+        name: document.getElementById('editCompanyName').value.trim(),
+        industry: document.getElementById('editCompanyIndustry').value.trim() || null,
+        employee_count: parseInt(document.getElementById('editCompanyEmployees').value) || null,
+        website: document.getElementById('editCompanyWebsite').value.trim() || null
+    };
+    if (!updates.name) { showToast('Company name required', 'error'); return; }
+    const { error } = await sb.from('companies').update(updates).eq('id', selectedPerson.company_id);
+    if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    selectedPerson.company_name = updates.name;
+    selectedPerson.company_industry = updates.industry;
+    selectedPerson.company_employee_count = updates.employee_count;
+    selectedPerson.company_website = updates.website;
+    showToast('Company updated');
+    toggleEditCompany();
+    applyFilters();
 }
 
 async function quickAction(type) {
@@ -861,6 +1102,14 @@ async function quickAction(type) {
         if (earlyStages.includes(selectedPerson._lifecycle)) {
             await sb.from('contacts').update({ lifecycle_stage: 'book_sent', updated_at: new Date().toISOString() }).eq('id', selectedPerson._contactId);
         }
+    }
+
+    // Update last_activity_date
+    if (selectedPerson._contactId) {
+        await sb.from('contacts').update({
+            last_activity_date: new Date().toISOString(), updated_at: new Date().toISOString()
+        }).eq('id', selectedPerson._contactId);
+        selectedPerson.last_activity_date = new Date().toISOString();
     }
 
     document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
