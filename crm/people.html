@@ -477,7 +477,7 @@ async function loadAllPeople() {
     const clickedSet = new Set();
     (emailsRes.data || []).forEach(e => {
         if (e.prospect_id) {
-            if (e.sent_at) sentSet.add(e.prospect_id);
+            sentSet.add(e.prospect_id); // any email row = they've been emailed
             if (e.opened_at) openedSet.add(e.prospect_id);
             if (e.clicked_at) clickedSet.add(e.prospect_id);
         }
