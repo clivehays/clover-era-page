@@ -925,7 +925,7 @@ async function executePromote() {
                 const { data: newCo, error: coErr } = await sb.from('companies').insert({
                     name: p.company_name, website: p.company_website || null,
                     industry: p.company_industry || null, employee_count: p.company_employee_count || null,
-                    source: 'people_promote', created_at: new Date().toISOString()
+                    created_at: new Date().toISOString()
                 }).select('id').single();
                 if (coErr) throw coErr;
                 companyId = newCo.id;
@@ -994,7 +994,7 @@ async function executeQuickAdd() {
         const { data: existingCo } = await sb.from('companies').select('id').eq('name', companyName).maybeSingle();
         if (existingCo) { companyId = existingCo.id; }
         else {
-            const { data: newCo } = await sb.from('companies').insert({ name: companyName, source: 'inbound', created_at: new Date().toISOString() }).select('id').single();
+            const { data: newCo } = await sb.from('companies').insert({ name: companyName, created_at: new Date().toISOString() }).select('id').single();
             if (newCo) companyId = newCo.id;
         }
     }
