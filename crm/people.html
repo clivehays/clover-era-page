@@ -256,6 +256,7 @@ body.panel-open .container { margin-right: var(--panel-w); }
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Last Action</th>
                 <th>Company</th>
                 <th>Stage</th>
                 <th>Source</th>
@@ -264,7 +265,7 @@ body.panel-open .container { margin-right: var(--panel-w); }
             </tr>
         </thead>
         <tbody id="peopleBody">
-            <tr><td colspan="6" class="loading">Loading people...</td></tr>
+            <tr><td colspan="7" class="loading">Loading people...</td></tr>
         </tbody>
     </table>
 
@@ -405,6 +406,21 @@ function lifecyclePill(stage) {
     return `<span class="pill pill-${stage}">${STAGE_MAP[stage] || stage}</span>`;
 }
 
+const ACTION_LABELS = {
+    note: 'Note', call: 'Call', meeting: 'Meeting', email_sent: 'Email Sent',
+    book_sent: 'Book Sent', report_sent: 'Report Sent', task: 'Task'
+};
+const ACTION_COLORS = {
+    note: '--text3', call: '--green', meeting: '--purple', email_sent: '--blue',
+    book_sent: '--indigo', report_sent: '--teal', task: '--amber'
+};
+function actionPill(lastAction) {
+    if (!lastAction) return '<span style="font-size:0.72rem; color:var(--text3);">-</span>';
+    const label = ACTION_LABELS[lastAction.type] || lastAction.type;
+    const color = ACTION_COLORS[lastAction.type] || '--text3';
+    return `<span style="display:inline-block; padding:0.15rem 0.5rem; border-radius:4px; font-size:0.68rem; font-weight:600; background:color-mix(in srgb, var(${color}) 15%, white); color:var(${color});">${label}</span>`;
+}
+
 function sourceBadge(source) {
     const s = (source || '').toLowerCase();
     let cls = 'manual', label = 'Manual';
@@ -452,9 +468,9 @@ async function init() {
 
 // Load data
 async function loadAllPeople() {
-    document.getElementById('peopleBody').innerHTML = '<tr><td colspan="6" class="loading">Loading people...</td></tr>';
+    document.getElementById('peopleBody').innerHTML = '<tr><td colspan="7" class="loading">Loading people...</td></tr>';
 
-    const [contactsRes, prospectsRes, oppsRes, emailsRes, notesRes] = await Promise.all([
+    const [contactsRes, prospectsRes, oppsRes, emailsRes, notesRes, lastActionsRes] = await Promise.all([
         sb.from('contacts')
             .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, last_activity_date, company_id, companies(id, name, industry, employee_count, website)')
             .order('updated_at', { ascending: false })
@@ -473,7 +489,12 @@ async function loadAllPeople() {
         sb.from('person_notes')
             .select('contact_id, prospect_id, note_type')
             .eq('note_type', 'book_sent')
-            .limit(10000)
+            .limit(10000),
+        sb.from('person_notes')
+            .select('contact_id, prospect_id, note_type, created_at')
+            .not('note_type', 'eq', 'system')
+            .order('created_at', { ascending: false })
+            .limit(50000)
     ]);
 
     // Build email engagement maps
@@ -496,6 +517,18 @@ async function loadAllPeople() {
         if (n.prospect_id) bookSentProspects.add(n.prospect_id);
     });
 
+    // Build last action map (first occurrence per person = most recent due to order desc)
+    const lastActionByContact = new Map();
+    const lastActionByProspect = new Map();
+    (lastActionsRes.data || []).forEach(n => {
+        if (n.contact_id && !lastActionByContact.has(n.contact_id)) {
+            lastActionByContact.set(n.contact_id, { type: n.note_type, date: n.created_at });
+        }
+        if (n.prospect_id && !lastActionByProspect.has(n.prospect_id)) {
+            lastActionByProspect.set(n.prospect_id, { type: n.note_type, date: n.created_at });
+        }
+    });
+
     const contacts = (contactsRes.data || []).map(c => ({
         _type: 'contact', _id: c.id, _contactId: c.id, _prospectId: null,
         first_name: c.first_name || '', last_name: c.last_name || '',
@@ -515,7 +548,8 @@ async function loadAllPeople() {
         updated_at: c.updated_at || c.created_at,
         _oppStages: [], _opps: [],
         _hasBookSent: bookSentContacts.has(c.id),
-        _hasOpened: false, _hasClicked: false
+        _hasOpened: false, _hasClicked: false,
+        _lastAction: lastActionByContact.get(c.id) || null
     }));
 
     const prospects = (prospectsRes.data || []).map(p => ({
@@ -539,6 +573,7 @@ async function loadAllPeople() {
         _hasSent: sentSet.has(p.id),
         _hasOpened: openedSet.has(p.id),
         _hasClicked: clickedSet.has(p.id),
+        _lastAction: lastActionByProspect.get(p.id) || null,
         turnover_report_id: p.turnover_report_id
     }));
 
@@ -624,7 +659,7 @@ function renderTable() {
     const today = new Date().toISOString().split('T')[0];
 
     if (page.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No people found matching your filters.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No people found matching your filters.</td></tr>';
         document.getElementById('pagination').style.display = 'none';
         return;
     }
@@ -632,7 +667,7 @@ function renderTable() {
     tbody.innerHTML = page.map(p => {
         const name = escHtml((p.first_name + ' ' + p.last_name).trim() || p.email);
         const titleStr = p.title ? `<div class="sub">${escHtml(p.title)}</div>` : '';
-        const lastTouch = p.last_activity_date || p.updated_at || p.created_at;
+        const lastTouch = (p._lastAction ? p._lastAction.date : null) || p.last_activity_date || p.updated_at || p.created_at;
         const touchDays = daysSince(lastTouch);
         const daysLabel = touchDays === 0 ? 'today' : touchDays === 1 ? '1d ago' : `${touchDays}d ago`;
         const isActive = ['replied', 'call', 'pilot'].includes(p._lifecycle);
@@ -641,6 +676,7 @@ function renderTable() {
 
         return `<tr onclick="openPerson('${p._id}')">
             <td><div class="company">${name}</div>${titleStr}</td>
+            <td>${actionPill(p._lastAction)}</td>
             <td>${escHtml(p.company_name || '-')}</td>
             <td>${lifecyclePill(p._lifecycle)}</td>
             <td>${sourceBadge(p.source)}</td>
@@ -1047,6 +1083,9 @@ async function saveActivity() {
         }
     }
 
+    // Update last action in memory
+    selectedPerson._lastAction = { type: currentActivityType, date: new Date().toISOString() };
+
     hideActivityLogger();
     showToast(currentActivityType === 'task' ? 'Task created' : 'Activity saved');
     document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
@@ -1137,6 +1176,7 @@ async function quickAction(type) {
         note_type: type, content: content, created_by: currentUser?.id
     });
     if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+    selectedPerson._lastAction = { type: type, date: new Date().toISOString() };
     showToast(labels[type] + ' recorded');
 
     // If book_sent and contact, update lifecycle if currently before book_sent
