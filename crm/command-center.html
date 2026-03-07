@@ -723,13 +723,34 @@
             return { ...stage, people, staleCount: stale.length };
         });
 
-        // Find max count for bar scaling
-        const maxCount = Math.max(...stageData.map(s => s.people.length), 1);
+        // Build cumulative funnel counts (each stage includes everyone who reached it or beyond)
+        const stageIndex = Object.fromEntries(stageData.map((s, i) => [s.id, i]));
+        const cumulativeCounts = {};
+        const emailedIdx = stageIndex['emailed'];
+        const openedIdx = stageIndex['opened'];
+        const clickedIdx = stageIndex['clicked'];
+        // Emailed = emailed + opened + clicked (everyone who was sent an email and is in those 3 stages)
+        cumulativeCounts['emailed'] = (stageData[emailedIdx]?.people.length || 0) + (stageData[openedIdx]?.people.length || 0) + (stageData[clickedIdx]?.people.length || 0);
+        // Opened = opened + clicked
+        cumulativeCounts['opened'] = (stageData[openedIdx]?.people.length || 0) + (stageData[clickedIdx]?.people.length || 0);
+        // Clicked = just clicked
+        cumulativeCounts['clicked'] = stageData[clickedIdx]?.people.length || 0;
 
-        // Conversion rates (as % of all Email 1s sent)
+        // Display count: use cumulative for emailed/opened/clicked, raw for everything else
+        const displayCount = (stage) => {
+            if (cumulativeCounts[stage.id] !== undefined) return cumulativeCounts[stage.id];
+            return stage.people.length;
+        };
+
+        // Find max count for bar scaling (use display counts)
+        const maxCount = Math.max(...stageData.map(s => displayCount(s)), 1);
+
+        // Conversion rates (as % of all Email 1s sent, using cumulative counts where applicable)
         const convRates = stageData.map((s, i) => {
-            if (s.id === 'cold' || s.id === 'emailed') return null;
-            return totalEmail1s > 0 ? ((s.people.length / totalEmail1s) * 100).toFixed(1) + '%' : '-';
+            if (s.id === 'cold') return null;
+            const count = displayCount(s);
+            if (s.id === 'emailed') return null; // emailed IS the total sent
+            return totalEmail1s > 0 ? ((count / totalEmail1s) * 100).toFixed(1) + '%' : '-';
         });
 
         // Stats
@@ -757,11 +778,12 @@
             </tr></thead><tbody>`;
 
         stageData.forEach((stage, i) => {
-            const barWidth = (stage.people.length / maxCount) * 100;
+            const count = displayCount(stage);
+            const barWidth = (count / maxCount) * 100;
             html += `<tr class="funnel-row" onclick="toggleFunnelExpand('${stage.id}')">
                 <td><div class="funnel-stage"><span class="stage-pill stage-${stage.id}" style="font-size:0.78rem;">${stage.name}</span></div></td>
                 <td><div style="width:100%; background:var(--border); border-radius:3px; height:6px;"><div class="funnel-bar" style="width:${barWidth}%"></div></div></td>
-                <td class="funnel-count">${stage.people.length.toLocaleString()}</td>
+                <td class="funnel-count">${count.toLocaleString()}</td>
                 <td class="funnel-conv">${convRates[i] || '-'}</td>
                 <td class="funnel-attn">${stage.staleCount > 0 ? '<span style="color:var(--amber); font-weight:600;">' + stage.staleCount + '</span>' : '<span style="color:var(--text3);">0</span>'}</td>
             </tr>`;
