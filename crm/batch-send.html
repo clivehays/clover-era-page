@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Send - Clover ERA CRM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-green: #2D5A27;
+            --dark-green: #1E3D1A;
+            --light-green: #E8F5E9;
+            --charcoal: #333333;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --background: #f5f5f5;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --medium-gray: #E5E7EB;
+            --light-gray: #F3F4F6;
+            --success-green: #059669;
+            --warning-orange: #D97706;
+            --danger-red: #DC2626;
+            --info-blue: #2563EB;
+            --teal: #0D7C88;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary-green); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-green); }
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 { font-size: 2rem; color: var(--text-primary); }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hidden { display: none !important; }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.15s;
+        }
+        .btn-primary { background: var(--primary-green); color: white; }
+        .btn-primary:hover { background: var(--dark-green); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-secondary { background: var(--light-gray); color: var(--text-primary); }
+        .btn-secondary:hover { background: var(--medium-gray); }
+        .btn-danger { background: var(--danger-red); color: white; }
+        .btn-danger:hover { opacity: 0.9; }
+
+        /* Setup section */
+        .setup-row {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-end;
+        }
+        .setup-field { flex: 1; }
+        .setup-field label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+        .setup-field select, .setup-field input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: white;
+        }
+
+        /* Upload zone */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--light-gray);
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+        }
+        .upload-zone h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
+        .upload-zone p { color: var(--text-secondary); font-size: 0.875rem; }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .stat-item { display: flex; gap: 0.4rem; }
+        .stat-label { color: var(--text-secondary); }
+        .stat-value { font-weight: 700; }
+        .stat-value.valid { color: var(--success-green); }
+        .stat-value.dup { color: var(--warning-orange); }
+        .stat-value.invalid { color: var(--danger-red); }
+
+        /* Preview table */
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .preview-table th {
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            background: var(--light-gray);
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+        }
+        .preview-table td {
+            padding: 0.4rem 0.75rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .preview-table tr.invalid { background: #fef2f2; }
+        .preview-table tr.duplicate { background: #fffbeb; }
+        .preview-wrap {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        /* Column mapping */
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .mapping-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .mapping-item label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .mapping-item select {
+            padding: 0.35rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .mapping-item .mapped { border-color: var(--success-green); background: #f0fdf4; }
+        .mapping-item .unmapped { border-color: var(--danger-red); background: #fef2f2; }
+
+        /* Progress section */
+        .progress-bar-wrap {
+            width: 100%;
+            height: 8px;
+            background: var(--medium-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-green);
+            border-radius: 4px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .progress-text { font-size: 0.85rem; color: var(--text-secondary); }
+        .progress-count { font-size: 0.85rem; font-weight: 600; }
+
+        /* Processing log */
+        .process-log {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+        .log-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.4rem 0.75rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .log-row:last-child { border-bottom: none; }
+        .log-row.success { background: #f0fdf4; }
+        .log-row.error { background: #fef2f2; }
+        .log-row.active { background: #eff6ff; }
+        .log-icon { font-size: 0.9rem; flex-shrink: 0; width: 1.2rem; text-align: center; }
+        .log-name { font-weight: 600; min-width: 140px; }
+        .log-company { color: var(--text-secondary); min-width: 120px; }
+        .log-status { color: var(--text-secondary); flex: 1; }
+        .log-steps { display: flex; gap: 0.3rem; }
+        .log-step {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            color: white;
+        }
+        .log-step.done { background: var(--success-green); }
+        .log-step.active { background: var(--info-blue); animation: pulse 1s infinite; }
+        .log-step.error { background: var(--danger-red); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Summary */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .summary-card {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background: var(--light-gray);
+        }
+        .summary-value { font-size: 1.5rem; font-weight: 700; }
+        .summary-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .summary-card.green { background: #f0fdf4; }
+        .summary-card.green .summary-value { color: var(--success-green); }
+        .summary-card.blue { background: #eff6ff; }
+        .summary-card.blue .summary-value { color: var(--info-blue); }
+        .summary-card.red { background: #fef2f2; }
+        .summary-card.red .summary-value { color: var(--danger-red); }
+        .summary-card.orange { background: #fffbeb; }
+        .summary-card.orange .summary-value { color: var(--warning-orange); }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">Clover ERA CRM</div>
+        <div class="nav-links">
+            <a href="command-center.html">Command Center</a>
+            <a href="people.html">People</a>
+            <a href="outreach.html">Outreach</a>
+            <a href="admin.html" id="adminLink" style="display:none;">Admin</a>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Batch Send</h1>
+            <a href="outreach.html" class="btn btn-secondary">Back to Outreach</a>
+        </div>
+
+        <!-- Step 1: Setup -->
+        <div class="card" id="setupSection">
+            <h2>1. Select Campaign & Upload CSV</h2>
+            <div class="setup-row" style="margin-bottom: 1.5rem;">
+                <div class="setup-field">
+                    <label>Campaign</label>
+                    <select id="campaignSelect">
+                        <option value="">Loading campaigns...</option>
+                    </select>
+                </div>
+                <div class="setup-field" style="flex: 0.5;">
+                    <label>Options</label>
+                    <label style="font-weight: 400; font-size: 0.82rem; display: flex; align-items: center; gap: 0.4rem;">
+                        <input type="checkbox" id="skipDuplicates" checked> Skip existing prospects
+                    </label>
+                </div>
+            </div>
+
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvFile').click()">
+                <h3>Drop CSV file here or click to browse</h3>
+                <p>Expected columns: First Name, Last Name, Title, Email, Company Name, # Employees, Industry</p>
+                <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="handleFileSelect(event)">
+            </div>
+        </div>
+
+        <!-- Step 2: Column Mapping & Preview -->
+        <div class="card hidden" id="mappingSection">
+            <h2>2. Column Mapping</h2>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Auto-detected columns below. Adjust if needed.
+            </p>
+            <div class="mapping-grid" id="mappingGrid"></div>
+        </div>
+
+        <div class="card hidden" id="previewSection">
+            <h2>3. Preview</h2>
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-item"><span class="stat-label">Total:</span> <span class="stat-value" id="statTotal">0</span></div>
+                <div class="stat-item"><span class="stat-label">Valid:</span> <span class="stat-value valid" id="statValid">0</span></div>
+                <div class="stat-item"><span class="stat-label">Duplicates:</span> <span class="stat-value dup" id="statDup">0</span></div>
+                <div class="stat-item"><span class="stat-label">Invalid:</span> <span class="stat-value invalid" id="statInvalid">0</span></div>
+                <div class="stat-item"><span class="stat-label">Companies:</span> <span class="stat-value" id="statCompanies">0</span></div>
+            </div>
+
+            <div class="preview-wrap">
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Employees</th>
+                            <th>Industry</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewBody"></tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="resetAll()">Start Over</button>
+                <button class="btn btn-primary" id="processBtn" onclick="startProcessing()">Process & Send</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Processing -->
+        <div class="card hidden" id="processingSection">
+            <div class="progress-header">
+                <h2 id="processingTitle">Processing...</h2>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-danger" id="stopBtn" onclick="stopProcessing()">Stop</button>
+                </div>
+            </div>
+
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span class="progress-text" id="progressText">Starting...</span>
+                <span class="progress-count" id="progressCount">0 / 0</span>
+            </div>
+
+            <div class="process-log" id="processLog"></div>
+        </div>
+
+        <!-- Step 4: Summary -->
+        <div class="card hidden" id="summarySection">
+            <h2>Complete</h2>
+            <div class="summary-grid">
+                <div class="summary-card green">
+                    <div class="summary-value" id="sumProcessed">0</div>
+                    <div class="summary-label">Processed</div>
+                </div>
+                <div class="summary-card blue">
+                    <div class="summary-value" id="sumApproved">0</div>
+                    <div class="summary-label">Emails Approved</div>
+                </div>
+                <div class="summary-card green">
+                    <div class="summary-value" id="sumSent">0</div>
+                    <div class="summary-label">Sent Today</div>
+                </div>
+                <div class="summary-card orange">
+                    <div class="summary-value" id="sumQueued">0</div>
+                    <div class="summary-label">Queued for Later</div>
+                </div>
+            </div>
+            <div id="sumErrors" class="hidden" style="margin-top: 1rem; padding: 0.75rem; background: #fef2f2; border-radius: 8px; font-size: 0.85rem; color: var(--danger-red);"></div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="resetAll()">Process Another Batch</button>
+                <a href="outreach.html" class="btn btn-primary">Go to Outreach</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ CONFIG ============
+        const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const CONCURRENCY = 2;
+
+        // Industry benchmarks (same as turnover-analysis)
+        const industryBenchmarks = {
+            'technology': { rate: 29, name: 'Technology / Software' },
+            'professional_services': { rate: 46, name: 'Professional Services' },
+            'finance': { rate: 25, name: 'Finance & Insurance' },
+            'healthcare': { rate: 36, name: 'Healthcare' },
+            'manufacturing': { rate: 28, name: 'Manufacturing' },
+            'retail': { rate: 53, name: 'Retail' },
+            'hospitality': { rate: 67, name: 'Hospitality' },
+            'other': { rate: 41, name: 'All Industries Average' }
+        };
+
+        const AVG_SALARIES = {
+            technology: 85000, finance: 75000, healthcare: 65000,
+            professional_services: 70000, manufacturing: 55000,
+            retail: 35000, hospitality: 32000, other: 50000
+        };
+
+        // Industry mapping - fuzzy match CSV values to our keys
+        const INDUSTRY_ALIASES = {
+            technology: ['technology', 'tech', 'software', 'it', 'information technology', 'saas', 'computer', 'internet'],
+            professional_services: ['professional services', 'consulting', 'legal', 'accounting', 'management consulting', 'staffing'],
+            finance: ['finance', 'financial', 'banking', 'insurance', 'investment', 'fintech', 'financial services'],
+            healthcare: ['healthcare', 'health', 'medical', 'hospital', 'pharma', 'pharmaceutical', 'biotech', 'health care'],
+            manufacturing: ['manufacturing', 'industrial', 'automotive', 'aerospace', 'construction', 'engineering'],
+            retail: ['retail', 'e-commerce', 'ecommerce', 'consumer goods', 'consumer', 'wholesale'],
+            hospitality: ['hospitality', 'hotel', 'restaurant', 'food', 'travel', 'tourism', 'leisure']
+        };
+
+        // Column header aliases for auto-detection
+        const HEADER_ALIASES = {
+            firstName: ['first name', 'first_name', 'first', 'fname', 'given name'],
+            lastName: ['last name', 'last_name', 'last', 'lname', 'surname', 'family name'],
+            email: ['email', 'email address', 'e-mail', 'work email', 'business email'],
+            title: ['title', 'job title', 'position', 'role', 'designation'],
+            companyName: ['company', 'company name', 'organization', 'organisation', 'employer'],
+            employees: ['# employees', 'employees', 'company size', 'number of employees', 'employee count', 'headcount', 'num employees', 'total employees'],
+            industry: ['industry', 'sector', 'business type']
+        };
+
+        const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'companyName'];
+
+        // ============ STATE ============
+        let parsedData = [];
+        let csvHeaders = [];
+        let columnMapping = {};
+        let existingEmails = new Set();
+        let campaigns = [];
+        let stopRequested = false;
+
+        // ============ INIT ============
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!await checkAuth()) return;
+            setupDragDrop();
+            await Promise.all([loadCampaigns(), loadExistingEmails()]);
+        });
+
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) { window.location.href = '/crm/login.html'; return false; }
+            return true;
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = '/crm/login.html';
+        }
+
+        async function loadCampaigns() {
+            const { data, error } = await supabaseClient
+                .from('outreach_campaigns')
+                .select('id, name, status, sequence:outreach_sequences(name, sequence_type)')
+                .in('status', ['active', 'draft'])
+                .order('created_at', { ascending: false });
+
+            campaigns = data || [];
+            const sel = document.getElementById('campaignSelect');
+            sel.innerHTML = campaigns.length === 0
+                ? '<option value="">No campaigns found</option>'
+                : '<option value="">Select a campaign...</option>' +
+                  campaigns.map(c => `<option value="${c.id}">${c.name} (${c.status}) - ${c.sequence?.name || 'No sequence'}</option>`).join('');
+        }
+
+        async function loadExistingEmails() {
+            const { data } = await supabaseClient
+                .from('outreach_prospects')
+                .select('email');
+            if (data) data.forEach(p => { if (p.email) existingEmails.add(p.email.toLowerCase()); });
+        }
+
+        // ============ DRAG & DROP ============
+        function setupDragDrop() {
+            const zone = document.getElementById('uploadZone');
+            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+            zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file && file.name.endsWith('.csv')) processFile(file);
+            });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) processFile(file);
+        }
+
+        // ============ CSV PARSING ============
+        function processFile(file) {
+            const reader = new FileReader();
+            reader.onload = e => parseCSV(e.target.result);
+            reader.readAsText(file);
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (ch === '"') inQuotes = !inQuotes;
+                else if (ch === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+                else current += ch;
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            csvHeaders = parseCSVLine(lines[0]).map(h => h.replace(/^"|"$/g, '').trim());
+
+            // Auto-detect column mapping
+            columnMapping = {};
+            for (const [field, aliases] of Object.entries(HEADER_ALIASES)) {
+                const idx = csvHeaders.findIndex(h => aliases.includes(h.toLowerCase()));
+                if (idx >= 0) columnMapping[field] = idx;
+            }
+
+            // Show mapping UI
+            renderMapping();
+
+            // Parse rows
+            reparseRows(lines);
+
+            document.getElementById('mappingSection').classList.remove('hidden');
+            document.getElementById('previewSection').classList.remove('hidden');
+        }
+
+        function reparseRows(lines) {
+            if (!lines) {
+                // Re-parse from stored raw (we store lines on first parse)
+                return;
+            }
+            window._csvLines = lines;
+            const skipDup = document.getElementById('skipDuplicates').checked;
+
+            parsedData = [];
+            const uniqueCompanies = new Set();
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const values = parseCSVLine(lines[i]);
+
+                const get = (field) => {
+                    const idx = columnMapping[field];
+                    if (idx === undefined || idx < 0 || idx >= values.length) return '';
+                    return values[idx]?.replace(/^"|"$/g, '').trim() || '';
+                };
+
+                const row = {
+                    firstName: get('firstName'),
+                    lastName: get('lastName'),
+                    email: get('email'),
+                    title: get('title'),
+                    companyName: get('companyName'),
+                    employees: parseInt(get('employees')) || null,
+                    industry: get('industry'),
+                    _status: 'valid'
+                };
+
+                if (!row.email || !row.email.includes('@')) {
+                    row._status = 'invalid';
+                } else if (skipDup && existingEmails.has(row.email.toLowerCase())) {
+                    row._status = 'duplicate';
+                }
+
+                if (row.companyName) uniqueCompanies.add(row.companyName);
+                parsedData.push(row);
+            }
+
+            const valid = parsedData.filter(r => r._status === 'valid').length;
+            const dup = parsedData.filter(r => r._status === 'duplicate').length;
+            const invalid = parsedData.filter(r => r._status === 'invalid').length;
+
+            document.getElementById('statTotal').textContent = parsedData.length;
+            document.getElementById('statValid').textContent = valid;
+            document.getElementById('statDup').textContent = dup;
+            document.getElementById('statInvalid').textContent = invalid;
+            document.getElementById('statCompanies').textContent = uniqueCompanies.size;
+
+            renderPreview();
+
+            // Enable/disable process button
+            const btn = document.getElementById('processBtn');
+            btn.disabled = valid === 0;
+            btn.textContent = `Process & Send (${valid} prospects)`;
+        }
+
+        function renderMapping() {
+            const grid = document.getElementById('mappingGrid');
+            const fields = Object.keys(HEADER_ALIASES);
+
+            grid.innerHTML = fields.map(field => {
+                const mapped = columnMapping[field] !== undefined;
+                const required = REQUIRED_FIELDS.includes(field);
+                const label = field.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
+
+                return `<div class="mapping-item">
+                    <label>${label}${required ? ' *' : ''}</label>
+                    <select class="${mapped ? 'mapped' : (required ? 'unmapped' : '')}" onchange="updateMapping('${field}', this.value)">
+                        <option value="-1">-- Not mapped --</option>
+                        ${csvHeaders.map((h, i) => `<option value="${i}" ${columnMapping[field] === i ? 'selected' : ''}>${h}</option>`).join('')}
+                    </select>
+                </div>`;
+            }).join('');
+        }
+
+        function updateMapping(field, value) {
+            const idx = parseInt(value);
+            if (idx >= 0) columnMapping[field] = idx;
+            else delete columnMapping[field];
+            renderMapping();
+            reparseRows(window._csvLines);
+        }
+
+        function renderPreview() {
+            const tbody = document.getElementById('previewBody');
+            const rows = parsedData.slice(0, 200);
+            tbody.innerHTML = rows.map(r => {
+                const cls = r._status === 'invalid' ? 'invalid' : r._status === 'duplicate' ? 'duplicate' : '';
+                const icon = r._status === 'valid' ? '&#10003;' : r._status === 'duplicate' ? '&#9888;' : '&#10007;';
+                return `<tr class="${cls}">
+                    <td>${icon}</td>
+                    <td>${esc(r.firstName)}</td>
+                    <td>${esc(r.lastName)}</td>
+                    <td>${esc(r.email)}</td>
+                    <td>${esc(r.title)}</td>
+                    <td>${esc(r.companyName)}</td>
+                    <td>${r.employees || '-'}</td>
+                    <td>${esc(r.industry)}</td>
+                </tr>`;
+            }).join('');
+
+            if (parsedData.length > 200) {
+                tbody.innerHTML += `<tr><td colspan="8" style="text-align:center; color:var(--text-secondary); padding:0.5rem;">... and ${parsedData.length - 200} more rows</td></tr>`;
+            }
+        }
+
+        function esc(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function resetAll() {
+            parsedData = [];
+            csvHeaders = [];
+            columnMapping = {};
+            document.getElementById('csvFile').value = '';
+            document.getElementById('mappingSection').classList.add('hidden');
+            document.getElementById('previewSection').classList.add('hidden');
+            document.getElementById('processingSection').classList.add('hidden');
+            document.getElementById('summarySection').classList.add('hidden');
+            document.getElementById('setupSection').classList.remove('hidden');
+        }
+
+        // ============ INDUSTRY MAPPING ============
+        function mapIndustry(csvIndustry) {
+            if (!csvIndustry) return 'other';
+            const lower = csvIndustry.toLowerCase().trim();
+            for (const [key, aliases] of Object.entries(INDUSTRY_ALIASES)) {
+                if (aliases.some(a => lower.includes(a) || a.includes(lower))) return key;
+            }
+            return 'other';
+        }
+
+        // ============ TURNOVER CALCULATION ============
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency', currency: 'USD',
+                minimumFractionDigits: 0, maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function calculateBatchTurnover(companyName, employees, csvIndustry, contactName, email) {
+            const industry = mapIndustry(csvIndustry);
+            const avgSalary = AVG_SALARIES[industry] || AVG_SALARIES.other;
+            const turnoverRate = industryBenchmarks[industry]?.rate || 12;
+            const managers = Math.max(1, Math.round(employees / 17));
+            const departures = Math.round(employees * turnoverRate / 100);
+            const costPerDep = Math.round(avgSalary * 1.5);
+            const annualCost = departures * costPerDep;
+            const dailyCost = Math.round(annualCost / 365);
+            const in67Day = Math.round((67 / 365) * departures);
+            const managerRatio = Math.round(employees / managers);
+
+            // Pricing tiers
+            const allTiers = [
+                { name: 'Single Team', teams: 1, annual: 2950 },
+                { name: '5 Teams', teams: 5, annual: 12500 },
+                { name: '10 Teams', teams: 10, annual: 21000 },
+                { name: '25 Teams', teams: 25, annual: 45000 },
+                { name: '26+ Teams', teams: 26, annual: null, custom: true }
+            ];
+
+            let selectedTiers = [];
+            if (managers <= 1) selectedTiers = [allTiers[0]];
+            else if (managers >= 26) selectedTiers = [allTiers[3], allTiers[4]];
+            else {
+                let lower = allTiers[0], upper = allTiers[1];
+                for (let t = 0; t < allTiers.length - 1; t++) {
+                    if (managers >= allTiers[t].teams) {
+                        lower = allTiers[t];
+                        upper = allTiers[Math.min(t + 1, allTiers.length - 1)];
+                    }
+                }
+                selectedTiers = lower === upper ? [lower] : [lower, upper];
+            }
+            selectedTiers = selectedTiers.map(tier => ({
+                ...tier,
+                breakeven: (!tier.custom && costPerDep > 0) ? Math.ceil(tier.annual / costPerDep) : 0
+            }));
+
+            return {
+                companyName,
+                contactName: contactName || '',
+                email: email || '',
+                industry,
+                industryName: industryBenchmarks[industry]?.name || 'All Industries Average',
+                totalEmployees: employees,
+                numberOfManagers: managers,
+                managerRatio,
+                turnoverRate,
+                industryAverage: turnoverRate,
+                vsIndustry: 0,
+                vsIndustryPercent: 0,
+                annualDepartures: departures,
+                totalAnnualCost: annualCost,
+                dailyCost,
+                costBreakdown: {
+                    directRecruiting: Math.round(annualCost * 0.20),
+                    onboardingTraining: Math.round(annualCost * 0.25),
+                    lostProductivity: Math.round(annualCost * 0.35),
+                    knowledgeLoss: Math.round(annualCost * 0.10),
+                    managerTime: Math.round(annualCost * 0.10),
+                },
+                inThe67DayWindow: in67Day,
+                recentRestructure: false,
+                savings: {
+                    prevent10: { departures: Math.round(departures * 0.1), amount: Math.round(annualCost * 0.1) },
+                    prevent20: { departures: Math.round(departures * 0.2), amount: Math.round(annualCost * 0.2) },
+                    prevent30: { departures: Math.round(departures * 0.3), amount: Math.round(annualCost * 0.3) },
+                },
+                costPerDeparture: costPerDep,
+                estimatedTeams: managers,
+                selectedTiers,
+                generatedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            };
+        }
+
+        // ============ PDF GENERATION (adapted from turnover-analysis) ============
+        function generatePDFBlob(reportData) {
+            const { jsPDF } = window.jspdf || window;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            const pageWidth = 210;
+            const pageHeight = 297;
+            const margin = 15;
+            const contentWidth = pageWidth - (margin * 2);
+            let y = margin;
+
+            const addFooter = () => {
+                doc.setFontSize(7);
+                doc.setTextColor('#9CA3AF');
+                doc.text('Prepared by Clover ERA | cloverera.com | Industry benchmarks from BLS JOLTS data', pageWidth / 2, pageHeight - 8, { align: 'center' });
+            };
+
+            // ===== PAGE 1: Cover + Key Numbers =====
+            y = 25;
+            doc.setFontSize(22);
+            doc.setTextColor('#2C3E50');
+            doc.setFont('helvetica', 'bold');
+            doc.text('TURNOVER INTELLIGENCE REPORT', pageWidth / 2, y, { align: 'center' });
+            y += 10;
+            doc.setFontSize(12);
+            doc.setTextColor('#4B5563');
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Prepared for ${reportData.companyName}`, pageWidth / 2, y, { align: 'center' });
+            y += 6;
+            doc.setFontSize(10);
+            doc.setTextColor('#6B7280');
+            doc.text(`${reportData.generatedDate} | Prepared by Clover ERA`, pageWidth / 2, y, { align: 'center' });
+
+            // Main cost box
+            y += 12;
+            doc.setFillColor('#2C3E50');
+            doc.roundedRect(margin, y, contentWidth, 45, 4, 4, 'F');
+            y += 15;
+            doc.setFontSize(11);
+            doc.setTextColor('#FFFFFF');
+            doc.text('Your Annual Turnover Cost', pageWidth / 2, y, { align: 'center' });
+            y += 12;
+            doc.setFontSize(32);
+            doc.setTextColor('#E8846B');
+            doc.setFont('helvetica', 'bold');
+            doc.text(formatCurrency(reportData.totalAnnualCost), pageWidth / 2, y, { align: 'center' });
+            y += 10;
+            doc.setFontSize(11);
+            doc.setTextColor('#FFFFFF');
+            doc.setFont('helvetica', 'normal');
+            doc.text(`That's ${formatCurrency(reportData.dailyCost)} per day`, pageWidth / 2, y, { align: 'center' });
+
+            // Key stats row
+            y += 18;
+            const statBoxWidth = (contentWidth - 8) / 4;
+            const statBoxHeight = 28;
+            const stats = [
+                { label: 'Your Rate', value: `${reportData.turnoverRate}%` },
+                { label: 'Industry Avg', value: `${reportData.industryAverage}%` },
+                { label: 'Departures/yr', value: `${reportData.annualDepartures}` },
+                { label: 'Mgr Ratio', value: `1:${reportData.managerRatio}` }
+            ];
+            stats.forEach((stat, i) => {
+                const x = margin + (i * (statBoxWidth + 2.67));
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(x, y, statBoxWidth, statBoxHeight, 2, 2, 'F');
+                doc.setFontSize(8);
+                doc.setTextColor('#6B7280');
+                doc.setFont('helvetica', 'normal');
+                doc.text(stat.label, x + statBoxWidth/2, y + 10, { align: 'center' });
+                doc.setFontSize(16);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                doc.text(stat.value, x + statBoxWidth/2, y + 22, { align: 'center' });
+            });
+
+            // Hidden Cost Breakdown
+            y += statBoxHeight + 16;
+            doc.setFontSize(14);
+            doc.setTextColor('#2C3E50');
+            doc.setFont('helvetica', 'bold');
+            doc.text('Hidden Cost Breakdown', margin, y);
+            y += 8;
+
+            const costItems = [
+                { label: 'Direct Recruiting (20%)', value: reportData.costBreakdown.directRecruiting },
+                { label: 'Onboarding & Training (25%)', value: reportData.costBreakdown.onboardingTraining },
+                { label: 'Lost Productivity (35%)', value: reportData.costBreakdown.lostProductivity },
+                { label: 'Knowledge Loss (10%)', value: reportData.costBreakdown.knowledgeLoss },
+                { label: 'Manager Time (10%)', value: reportData.costBreakdown.managerTime }
+            ];
+            costItems.forEach(item => {
+                doc.setFillColor('#F9F6F1');
+                doc.roundedRect(margin, y, contentWidth, 10, 2, 2, 'F');
+                doc.setFontSize(9);
+                doc.setTextColor('#4B5563');
+                doc.setFont('helvetica', 'normal');
+                doc.text(item.label, margin + 4, y + 7);
+                doc.setFont('helvetica', 'bold');
+                doc.text(formatCurrency(item.value), margin + contentWidth - 4, y + 7, { align: 'right' });
+                y += 12;
+            });
+
+            y += 2;
+            doc.setFontSize(7);
+            doc.setTextColor('#9CA3AF');
+            doc.setFont('helvetica', 'italic');
+            doc.text('Cost model based on SHRM replacement cost research and Clover ERA\u2019s methodology', margin, y);
+            addFooter();
+
+            // ===== PAGE 2: 67-Day Reality + Savings =====
+            doc.addPage();
+            y = margin;
+
+            doc.setFontSize(14);
+            doc.setTextColor('#2C3E50');
+            doc.setFont('helvetica', 'bold');
+            doc.text('The 67-Day Reality', margin, y);
+            y += 8;
+
+            doc.setFillColor('#0D7C88');
+            doc.roundedRect(margin, y, contentWidth, 55, 4, 4, 'F');
+            y += 18;
+            doc.setFontSize(36);
+            doc.setTextColor('#FFFFFF');
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${reportData.inThe67DayWindow}`, pageWidth / 2, y, { align: 'center' });
+            y += 10;
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text('employees have already decided to leave but haven\'t told you yet', pageWidth / 2, y, { align: 'center' });
+            y += 12;
+            doc.setFontSize(9);
+            doc.text('Based on Work Institute research: avg 67 days between decision and resignation', pageWidth / 2, y, { align: 'center' });
+
+            y += 20;
+            doc.setFillColor('#F9F6F1');
+            doc.roundedRect(margin, y, contentWidth, 18, 2, 2, 'F');
+            y += 11;
+            doc.setFontSize(10);
+            doc.setTextColor('#2C3E50');
+            const insightLines = doc.splitTextToSize('These decisions are happening now. The question is whether you have visibility before the resignation letter arrives.', contentWidth - 10);
+            insightLines.forEach(line => {
+                doc.text(line, pageWidth / 2, y, { align: 'center' });
+                y += 5;
+            });
+
+            // Peer Comparison
+            y += 10;
+            const peerLow = formatCurrency(Math.round(reportData.totalAnnualCost * 0.85));
+            const peerHigh = formatCurrency(Math.round(reportData.totalAnnualCost * 1.15));
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            const peerText = `Companies in ${reportData.industryName} with similar headcount typically uncover hidden turnover costs between ${peerLow} and ${peerHigh}`;
+            const peerLines = doc.splitTextToSize(peerText, contentWidth - 10);
+            const peerBoxHeight = 6 + (peerLines.length * 5) + 6;
+            doc.setFillColor('#F0FDFA');
+            doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'F');
+            doc.setDrawColor('#46AEB8');
+            doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'S');
+            doc.setTextColor('#0D7C88');
+            peerLines.forEach((line, i) => {
+                doc.text(line, pageWidth / 2, y + 8 + (i * 5), { align: 'center' });
+            });
+            y += peerBoxHeight + 8;
+
+            // Savings Scenarios
+            doc.setFontSize(14);
+            doc.setTextColor('#2C3E50');
+            doc.setFont('helvetica', 'bold');
+            doc.text('Savings Scenarios', margin, y);
+            y += 10;
+
+            doc.setFillColor('#F9F6F1');
+            doc.rect(margin, y, contentWidth, 10, 'F');
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.text('If You Prevent', margin + 4, y + 7);
+            doc.text('Departures', margin + 65, y + 7);
+            doc.text('Annual Savings', margin + 115, y + 7);
+            y += 10;
+
+            const savingsData = [
+                { label: '10% of turnover', deps: reportData.savings.prevent10.departures, amount: reportData.savings.prevent10.amount },
+                { label: '20% of turnover', deps: reportData.savings.prevent20.departures, amount: reportData.savings.prevent20.amount },
+                { label: '30% of turnover', deps: reportData.savings.prevent30.departures, amount: reportData.savings.prevent30.amount }
+            ];
+            savingsData.forEach(row => {
+                doc.setDrawColor('#E5E7EB');
+                doc.line(margin, y + 10, margin + contentWidth, y + 10);
+                doc.setFontSize(9);
+                doc.setTextColor('#4B5563');
+                doc.setFont('helvetica', 'normal');
+                doc.text(row.label, margin + 4, y + 7);
+                doc.text(`${row.deps}`, margin + 65, y + 7);
+                doc.setTextColor('#059669');
+                doc.setFont('helvetica', 'bold');
+                doc.text(formatCurrency(row.amount), margin + 115, y + 7);
+                y += 10;
+            });
+
+            // Investment Context
+            y += 12;
+            doc.setFontSize(14);
+            doc.setTextColor('#2C3E50');
+            doc.setFont('helvetica', 'bold');
+            doc.text('Investment Context', margin, y);
+            y += 6;
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor('#6B7280');
+            doc.text(`Based on your cost per departure of ${formatCurrency(reportData.costPerDeparture)}:`, margin, y);
+            y += 8;
+
+            doc.setFontSize(8);
+            doc.text(`Your ${reportData.totalEmployees} employees across ${reportData.estimatedTeams} manager${reportData.estimatedTeams !== 1 ? 's' : ''} = approximately ${reportData.estimatedTeams} team${reportData.estimatedTeams !== 1 ? 's' : ''}:`, margin, y);
+            y += 8;
+
+            doc.setFillColor('#F9F6F1');
+            doc.rect(margin, y, contentWidth, 10, 'F');
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor('#2C3E50');
+            doc.text('Option', margin + 4, y + 7);
+            doc.text('Teams', margin + 55, y + 7);
+            doc.text('Annual investment', margin + 90, y + 7);
+            doc.text('Break-even', margin + 148, y + 7);
+            y += 10;
+
+            reportData.selectedTiers.forEach(tier => {
+                doc.setDrawColor('#E5E7EB');
+                doc.line(margin, y + 10, margin + contentWidth, y + 10);
+                doc.setFontSize(9);
+                doc.setTextColor('#4B5563');
+                doc.setFont('helvetica', 'normal');
+                doc.text(tier.name, margin + 4, y + 7);
+                doc.text(tier.custom ? `${tier.teams}+` : `${tier.teams}`, margin + 55, y + 7);
+                doc.text(tier.custom ? 'Custom' : `${formatCurrency(tier.annual)}/yr`, margin + 90, y + 7);
+                doc.setTextColor('#2C3E50');
+                doc.setFont('helvetica', 'bold');
+                if (tier.custom) doc.text('Contact us', margin + 148, y + 7);
+                else doc.text(`${tier.breakeven} departure${tier.breakeven !== 1 ? 's' : ''}`, margin + 148, y + 7);
+                y += 10;
+            });
+
+            y += 4;
+            doc.setFontSize(7);
+            doc.setTextColor('#9CA3AF');
+            doc.setFont('helvetica', 'italic');
+            doc.text('Pricing from cloverera.com/pricing. All tiers include daily check-ins, bi-weekly manager reports, and monthly team insights.', margin, y);
+            addFooter();
+
+            // ===== PAGE 3: Next Steps =====
+            doc.addPage();
+            y = 60;
+
+            doc.setFontSize(18);
+            doc.setTextColor('#2C3E50');
+            doc.setFont('helvetica', 'bold');
+            doc.text('NEXT STEPS', pageWidth / 2, y, { align: 'center' });
+            y += 20;
+
+            doc.setFillColor('#46AEB8');
+            doc.roundedRect(margin + 15, y, contentWidth - 30, 103, 5, 5, 'F');
+            y += 22;
+            doc.setFontSize(16);
+            doc.setTextColor('#FFFFFF');
+            doc.setFont('helvetica', 'bold');
+            doc.text('Schedule Your Free Turnover Analysis', pageWidth / 2, y, { align: 'center' });
+            y += 12;
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Your ${reportData.inThe67DayWindow} employees in the 67-day window won't wait. Neither should you.`, pageWidth / 2, y, { align: 'center', maxWidth: contentWidth - 50 });
+            y += 20;
+            const btnWidth = 90;
+            const btnHeight = 16;
+            const btnX = (pageWidth - btnWidth) / 2;
+            doc.setFillColor('#FFFFFF');
+            doc.roundedRect(btnX, y - 10, btnWidth, btnHeight, 4, 4, 'F');
+            doc.setFontSize(11);
+            doc.setTextColor('#0D7C88');
+            doc.setFont('helvetica', 'bold');
+            doc.text('Schedule Your Turnover Analysis', pageWidth / 2, y + 1, { align: 'center' });
+            doc.link(btnX, y - 10, btnWidth, btnHeight, { url: 'https://cloverera.com/talk/' });
+            y += 16;
+            doc.setFontSize(10);
+            doc.setTextColor('#FFFFFF');
+            doc.setFont('helvetica', 'normal');
+            doc.text('15 minutes. Your specific patterns.', pageWidth / 2, y, { align: 'center' });
+            y += 20;
+            doc.setFontSize(11);
+            doc.text('contact@cloverera.com', pageWidth / 2, y, { align: 'center' });
+            y += 8;
+            doc.setFontSize(13);
+            doc.setFont('helvetica', 'bold');
+            doc.text('cloverera.com', pageWidth / 2, y, { align: 'center' });
+
+            // CLOVER Grid
+            y += 25;
+            doc.setFontSize(14);
+            doc.setTextColor('#2C3E50');
+            doc.setFont('helvetica', 'bold');
+            doc.text('What Clover ERA Measures Daily', pageWidth / 2, y, { align: 'center' });
+            y += 10;
+            const cloverItems = [
+                { letter: 'C', label: 'Communication', desc: 'Are managers checking in regularly?' },
+                { letter: 'L', label: 'Learning', desc: 'Are growth conversations happening?' },
+                { letter: 'O', label: 'Opportunity', desc: 'Do people see a future here?' },
+                { letter: 'V', label: 'Vulnerability', desc: 'Can people speak honestly?' },
+                { letter: 'E', label: 'Enablement', desc: 'Do managers have the right tools?' },
+                { letter: 'R', label: 'Reflection', desc: 'Is the team learning from patterns?' }
+            ];
+            const gridCols = 3;
+            const cellWidth = (contentWidth - 10) / gridCols;
+            const cellHeight = 22;
+            cloverItems.forEach((item, i) => {
+                const col = i % gridCols;
+                const row = Math.floor(i / gridCols);
+                const cellX = margin + 5 + (col * cellWidth);
+                const cellY = y + (row * (cellHeight + 4));
+                doc.setFontSize(16);
+                doc.setTextColor('#46AEB8');
+                doc.setFont('helvetica', 'bold');
+                doc.text(item.letter, cellX, cellY + 7);
+                doc.setFontSize(9);
+                doc.setTextColor('#2C3E50');
+                doc.text(item.label, cellX + 10, cellY + 7);
+                doc.setFontSize(8);
+                doc.setTextColor('#6B7280');
+                doc.setFont('helvetica', 'normal');
+                doc.text(item.desc, cellX + 10, cellY + 14);
+            });
+
+            addFooter();
+
+            return doc.output('blob');
+        }
+
+        // ============ PROCESSING PIPELINE ============
+        async function startProcessing() {
+            const campaignId = document.getElementById('campaignSelect').value;
+            if (!campaignId) { alert('Please select a campaign.'); return; }
+
+            const validRows = parsedData.filter(r => r._status === 'valid');
+            if (validRows.length === 0) { alert('No valid prospects to process.'); return; }
+
+            // Show processing section
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('mappingSection').classList.add('hidden');
+            document.getElementById('previewSection').classList.add('hidden');
+            document.getElementById('processingSection').classList.remove('hidden');
+
+            stopRequested = false;
+            const log = document.getElementById('processLog');
+            log.innerHTML = '';
+
+            // Create log rows for all prospects
+            validRows.forEach((row, i) => {
+                const div = document.createElement('div');
+                div.className = 'log-row';
+                div.id = `log-${i}`;
+                div.innerHTML = `
+                    <span class="log-icon">&#183;</span>
+                    <span class="log-name">${esc(row.firstName)} ${esc(row.lastName)}</span>
+                    <span class="log-company">${esc(row.companyName)} (${row.employees || '?'})</span>
+                    <span class="log-status">Waiting...</span>
+                    <span class="log-steps">
+                        <span class="log-step" title="Prospect">P</span>
+                        <span class="log-step" title="Report">R</span>
+                        <span class="log-step" title="PDF">D</span>
+                        <span class="log-step" title="Emails">E</span>
+                        <span class="log-step" title="Attach">A</span>
+                        <span class="log-step" title="Approve">V</span>
+                    </span>
+                `;
+                log.appendChild(div);
+            });
+
+            let processed = 0, succeeded = 0, failed = 0;
+            const errors = [];
+            const total = validRows.length;
+
+            // Process in parallel batches
+            let i = 0;
+            while (i < total && !stopRequested) {
+                const batch = [];
+                for (let j = 0; j < CONCURRENCY && i < total; j++, i++) {
+                    batch.push(processOneProspect(validRows[i], i, campaignId));
+                }
+
+                const results = await Promise.allSettled(batch);
+                for (const result of results) {
+                    processed++;
+                    if (result.status === 'fulfilled' && result.value.success) {
+                        succeeded++;
+                    } else {
+                        failed++;
+                        const err = result.status === 'rejected' ? result.reason?.message : result.value?.error;
+                        errors.push(err || 'Unknown error');
+                    }
+
+                    // Update progress
+                    const pct = Math.round((processed / total) * 100);
+                    document.getElementById('progressFill').style.width = pct + '%';
+                    document.getElementById('progressText').textContent = `${succeeded} succeeded, ${failed} failed`;
+                    document.getElementById('progressCount').textContent = `${processed} / ${total}`;
+                }
+
+                // Small delay between batches
+                if (i < total && !stopRequested) await sleep(500);
+            }
+
+            // Processing complete - now send
+            document.getElementById('processingTitle').textContent = stopRequested ? 'Stopped' : 'Sending...';
+            document.getElementById('stopBtn').classList.add('hidden');
+
+            let sentCount = 0;
+            if (succeeded > 0 && !stopRequested) {
+                try {
+                    updateProgressText('Sending approved emails...');
+                    const sendResult = await sendCampaignEmails(campaignId);
+                    sentCount = sendResult.sent || 0;
+                } catch (err) {
+                    console.error('Send failed:', err);
+                }
+            }
+
+            // Show summary
+            document.getElementById('processingSection').classList.add('hidden');
+            document.getElementById('summarySection').classList.remove('hidden');
+            document.getElementById('sumProcessed').textContent = succeeded;
+            document.getElementById('sumApproved').textContent = succeeded;
+            document.getElementById('sumSent').textContent = sentCount;
+            document.getElementById('sumQueued').textContent = Math.max(0, succeeded - sentCount);
+
+            if (errors.length > 0) {
+                const errDiv = document.getElementById('sumErrors');
+                errDiv.classList.remove('hidden');
+                errDiv.innerHTML = `<strong>${failed} errors:</strong><br>${errors.slice(0, 10).map(e => esc(e)).join('<br>')}`;
+                if (errors.length > 10) errDiv.innerHTML += `<br>...and ${errors.length - 10} more`;
+            }
+        }
+
+        function updateProgressText(text) {
+            document.getElementById('progressText').textContent = text;
+        }
+
+        function stopProcessing() {
+            stopRequested = true;
+            document.getElementById('stopBtn').textContent = 'Stopping...';
+            document.getElementById('stopBtn').disabled = true;
+        }
+
+        function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        function updateLogRow(index, step, status, statusText) {
+            const row = document.getElementById(`log-${index}`);
+            if (!row) return;
+
+            const steps = row.querySelectorAll('.log-step');
+            const statusEl = row.querySelector('.log-status');
+            const iconEl = row.querySelector('.log-icon');
+
+            if (statusText) statusEl.textContent = statusText;
+
+            if (step >= 0 && step < steps.length) {
+                steps[step].classList.add(status); // 'done', 'active', 'error'
+                if (status === 'active') steps[step].classList.remove('done');
+            }
+
+            if (status === 'done' && step === steps.length - 1) {
+                row.className = 'log-row success';
+                iconEl.innerHTML = '&#10003;';
+            } else if (status === 'error') {
+                row.className = 'log-row error';
+                iconEl.innerHTML = '&#10007;';
+            } else if (status === 'active') {
+                row.className = 'log-row active';
+                iconEl.innerHTML = '&#8594;';
+            }
+
+            // Auto-scroll to show active row
+            row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        async function processOneProspect(row, index, campaignId) {
+            try {
+                // Step 0: Mark as active
+                updateLogRow(index, 0, 'active', 'Creating prospect...');
+
+                // Step 1: Upsert prospect
+                const { data: existing } = await supabaseClient
+                    .from('outreach_prospects')
+                    .select('id')
+                    .eq('email', row.email.toLowerCase())
+                    .maybeSingle();
+
+                let prospectId;
+                const industry = mapIndustry(row.industry);
+
+                if (existing) {
+                    prospectId = existing.id;
+                    // Update with any new data
+                    await supabaseClient
+                        .from('outreach_prospects')
+                        .update({
+                            first_name: row.firstName,
+                            last_name: row.lastName,
+                            title: row.title || null,
+                            company_name: row.companyName,
+                            company_employee_count: row.employees,
+                            company_industry: row.industry,
+                            updated_at: new Date().toISOString(),
+                        })
+                        .eq('id', prospectId);
+                } else {
+                    const { data: newProspect, error: insertErr } = await supabaseClient
+                        .from('outreach_prospects')
+                        .insert({
+                            email: row.email.toLowerCase(),
+                            first_name: row.firstName,
+                            last_name: row.lastName,
+                            title: row.title || null,
+                            company_name: row.companyName,
+                            company_employee_count: row.employees,
+                            company_industry: row.industry,
+                            status: 'imported',
+                            import_batch: 'batch-send',
+                        })
+                        .select('id')
+                        .single();
+
+                    if (insertErr) throw new Error(`Insert prospect: ${insertErr.message}`);
+                    prospectId = newProspect.id;
+                }
+
+                updateLogRow(index, 0, 'done', 'Calculating turnover...');
+
+                // Step 2: Calculate turnover
+                updateLogRow(index, 1, 'active', 'Generating report...');
+                const employees = row.employees || 100;
+                const reportData = calculateBatchTurnover(
+                    row.companyName, employees, row.industry,
+                    `${row.firstName} ${row.lastName}`, row.email
+                );
+
+                // Step 3: Insert turnover_reports record
+                const { data: report, error: reportErr } = await supabaseClient
+                    .from('turnover_reports')
+                    .insert({
+                        company_name: row.companyName,
+                        contact_name: `${row.firstName} ${row.lastName}`,
+                        email: row.email.toLowerCase(),
+                        industry: industry,
+                        total_employees: employees,
+                        turnover_rate: reportData.turnoverRate,
+                        annual_cost: reportData.totalAnnualCost,
+                        daily_cost: reportData.dailyCost,
+                        cost_per_departure: reportData.costPerDeparture,
+                        annual_departures: reportData.annualDepartures,
+                        in_67_day_window: reportData.inThe67DayWindow,
+                        number_of_managers: reportData.numberOfManagers,
+                        manager_ratio: reportData.managerRatio,
+                        industry_average: reportData.industryAverage,
+                        cost_breakdown: reportData.costBreakdown,
+                        savings_projections: reportData.savings,
+                        prospect_id: prospectId,
+                        pdf_generated: true,
+                    })
+                    .select('id')
+                    .single();
+
+                if (reportErr) throw new Error(`Insert report: ${reportErr.message}`);
+
+                // Link turnover report to prospect
+                await supabaseClient
+                    .from('outreach_prospects')
+                    .update({ turnover_report_id: report.id })
+                    .eq('id', prospectId);
+
+                updateLogRow(index, 1, 'done', 'Generating PDF...');
+
+                // Step 4: Generate PDF and upload
+                updateLogRow(index, 2, 'active', 'Uploading PDF...');
+                const pdfBlob = generatePDFBlob(reportData);
+                const pdfFilename = `${row.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
+                const storagePath = `batch/${campaignId}/${prospectId}_${pdfFilename}`;
+
+                const { error: uploadErr } = await supabaseClient.storage
+                    .from('outreach-attachments')
+                    .upload(storagePath, pdfBlob, {
+                        contentType: 'application/pdf',
+                        upsert: true
+                    });
+
+                if (uploadErr) throw new Error(`Upload PDF: ${uploadErr.message}`);
+
+                const { data: urlData } = supabaseClient.storage
+                    .from('outreach-attachments')
+                    .getPublicUrl(storagePath);
+
+                const pdfUrl = urlData.publicUrl;
+
+                updateLogRow(index, 2, 'done', 'Generating emails...');
+
+                // Step 5: Add to campaign
+                // Check if already in campaign
+                const { data: existingCp } = await supabaseClient
+                    .from('campaign_prospects')
+                    .select('id')
+                    .eq('campaign_id', campaignId)
+                    .eq('prospect_id', prospectId)
+                    .maybeSingle();
+
+                let cpId;
+                if (existingCp) {
+                    cpId = existingCp.id;
+                } else {
+                    const { data: newCp, error: cpErr } = await supabaseClient
+                        .from('campaign_prospects')
+                        .insert({
+                            campaign_id: campaignId,
+                            prospect_id: prospectId,
+                            status: 'pending',
+                        })
+                        .select('id')
+                        .single();
+
+                    if (cpErr) throw new Error(`Add to campaign: ${cpErr.message}`);
+                    cpId = newCp.id;
+                }
+
+                // Step 6: Generate emails via edge function
+                updateLogRow(index, 3, 'active', 'AI generating emails...');
+
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ campaign_prospect_id: cpId })
+                });
+
+                const emailResult = await emailResponse.json();
+                if (!emailResult.success) throw new Error(`Generate emails: ${emailResult.error || 'Failed'}`);
+
+                updateLogRow(index, 3, 'done', 'Attaching PDF...');
+
+                // Step 7: Attach PDF to Email 1
+                updateLogRow(index, 4, 'active', 'Attaching PDF...');
+
+                // Find Email 1 for this campaign_prospect
+                const { data: email1, error: email1Err } = await supabaseClient
+                    .from('outreach_emails')
+                    .select('id, personalization_notes')
+                    .eq('campaign_prospect_id', cpId)
+                    .eq('position', 1)
+                    .single();
+
+                if (email1Err || !email1) throw new Error('Could not find Email 1');
+
+                // Update personalization_notes with attachment URL
+                let notes = {};
+                try { notes = JSON.parse(email1.personalization_notes || '{}'); } catch {}
+                notes.attachment_url = pdfUrl;
+                notes.attachment_name = pdfFilename;
+
+                await supabaseClient
+                    .from('outreach_emails')
+                    .update({ personalization_notes: JSON.stringify(notes) })
+                    .eq('id', email1.id);
+
+                updateLogRow(index, 4, 'done', 'Approving...');
+
+                // Step 8: Approve Email 1
+                updateLogRow(index, 5, 'active', 'Approving...');
+
+                await supabaseClient
+                    .from('outreach_emails')
+                    .update({ status: 'approved' })
+                    .eq('id', email1.id);
+
+                // Update campaign_prospect status
+                await supabaseClient
+                    .from('campaign_prospects')
+                    .update({ status: 'ready' })
+                    .eq('id', cpId);
+
+                updateLogRow(index, 5, 'done', 'Done');
+
+                return { success: true };
+
+            } catch (err) {
+                console.error(`Error processing ${row.email}:`, err);
+                updateLogRow(index, -1, 'error', `Error: ${err.message}`);
+                return { success: false, error: err.message };
+            }
+        }
+
+        // ============ SEND ============
+        async function sendCampaignEmails(campaignId) {
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                },
+                body: JSON.stringify({ type: 'send_campaign_batch', campaign_id: campaignId })
+            });
+
+            const result = await response.json();
+            if (!result.success && result.error) throw new Error(result.error);
+            return result;
+        }
+    </script>
+</body>
+</html>

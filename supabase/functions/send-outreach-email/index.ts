@@ -499,30 +499,65 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
     .eq('campaign_id', campaignId);
   const campProspectIds = (campProspects || []).map((p: any) => p.id);
 
-  // Step 3: Get approved contact-based emails (any position - includes retried follow-ups)
+  // Step 3: Get approved contact-based Email 1s only
   let contactEmails: any[] = [];
   if (campContactIds.length > 0) {
     const { data } = await supabase
       .from('outreach_emails')
       .select('*, contact:contacts(*)')
       .eq('status', 'approved')
+      .eq('position', 1)
       .in('campaign_contact_id', campContactIds)
       .order('position', { ascending: true })
       .limit(remaining);
     contactEmails = data || [];
   }
 
-  // Step 4: Get approved prospect-based emails (any position - includes retried follow-ups)
+  // Step 4: Get approved prospect-based Email 1s only
   let prospectEmails: any[] = [];
   if (campProspectIds.length > 0) {
     const { data } = await supabase
       .from('outreach_emails')
       .select('*, prospect:outreach_prospects(*)')
       .eq('status', 'approved')
+      .eq('position', 1)
       .in('campaign_prospect_id', campProspectIds)
       .order('position', { ascending: true })
       .limit(remaining - contactEmails.length);
     prospectEmails = data || [];
+  }
+
+  // Step 5: Handle re-approved follow-ups (position > 1)
+  // These are emails that failed (e.g. rate limit) and were manually re-approved.
+  // Instead of sending them directly, reschedule them so the cron picks them up.
+  const allTargetIds = [...campContactIds, ...campProspectIds];
+  if (allTargetIds.length > 0) {
+    // Find approved emails at position > 1 (contact-based)
+    if (campContactIds.length > 0) {
+      await supabase
+        .from('outreach_emails')
+        .update({
+          status: 'scheduled',
+          scheduled_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('status', 'approved')
+        .gt('position', 1)
+        .in('campaign_contact_id', campContactIds);
+    }
+    // Find approved emails at position > 1 (prospect-based)
+    if (campProspectIds.length > 0) {
+      await supabase
+        .from('outreach_emails')
+        .update({
+          status: 'scheduled',
+          scheduled_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('status', 'approved')
+        .gt('position', 1)
+        .in('campaign_prospect_id', campProspectIds);
+    }
   }
 
   // Combine and limit
