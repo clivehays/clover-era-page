@@ -974,7 +974,7 @@
             ? '<tr><td colspan="7" class="empty-state">No emails match filters</td></tr>'
             : pageItems.map(e => {
                 const p = e.prospect?.prospect;
-                return `<tr>
+                return `<tr${e.prospect_id ? ` data-person="${e.prospect_id}" data-type="prospect" style="cursor:pointer;"` : ''}>
                     <td class="company">${p ? (p.first_name + ' ' + (p.last_name || '')) : '-'}</td>
                     <td>${p?.company_name || '-'}</td>
                     <td><span class="pill pill-${e.position === 1 ? 'blue' : 'gray'}">${e.position || '?'}</span></td>
