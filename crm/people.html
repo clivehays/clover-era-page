@@ -371,6 +371,8 @@ const STAGES = [
     { id: 'emailed', name: 'Emailed' },
     { id: 'opened', name: 'Opened' },
     { id: 'clicked', name: 'Clicked' },
+    { id: 'li_con_req', name: 'LI Con Req' },
+    { id: 'li_dm', name: 'LinkedIn DM' },
     { id: 'book_sent', name: 'Book Sent' },
     { id: 'replied', name: 'Replied' },
     { id: 'call', name: 'Call' },
@@ -440,8 +442,10 @@ function computeLifecycle(person) {
     // Manual override always wins for contacts
     if (person._type === 'contact' && person.lifecycle_stage) return person.lifecycle_stage;
 
-    // Check for book_sent notes
+    // Check for manual action notes (highest engagement first)
     if (person._hasBookSent) return 'book_sent';
+    if (person._hasLiDm) return 'li_dm';
+    if (person._hasLiConReq) return 'li_con_req';
 
     // Contact without explicit stage
     if (person._type === 'contact') return 'cold';
@@ -492,7 +496,7 @@ async function loadAllPeople() {
             .limit(50000),
         sb.from('person_notes')
             .select('contact_id, prospect_id, note_type')
-            .eq('note_type', 'book_sent')
+            .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
             .limit(10000),
         sb.from('person_notes')
             .select('contact_id, prospect_id, note_type, created_at')
@@ -513,12 +517,24 @@ async function loadAllPeople() {
         }
     });
 
-    // Build book_sent set
+    // Build action sets from person_notes (book_sent, li_con_req, li_dm)
     const bookSentContacts = new Set();
     const bookSentProspects = new Set();
+    const liConReqContacts = new Set();
+    const liConReqProspects = new Set();
+    const liDmContacts = new Set();
+    const liDmProspects = new Set();
     (notesRes.data || []).forEach(n => {
-        if (n.contact_id) bookSentContacts.add(n.contact_id);
-        if (n.prospect_id) bookSentProspects.add(n.prospect_id);
+        if (n.note_type === 'book_sent') {
+            if (n.contact_id) bookSentContacts.add(n.contact_id);
+            if (n.prospect_id) bookSentProspects.add(n.prospect_id);
+        } else if (n.note_type === 'li_con_req') {
+            if (n.contact_id) liConReqContacts.add(n.contact_id);
+            if (n.prospect_id) liConReqProspects.add(n.prospect_id);
+        } else if (n.note_type === 'li_dm') {
+            if (n.contact_id) liDmContacts.add(n.contact_id);
+            if (n.prospect_id) liDmProspects.add(n.prospect_id);
+        }
     });
 
     // Build last action map (first occurrence per person = most recent due to order desc)
@@ -552,6 +568,8 @@ async function loadAllPeople() {
         updated_at: c.updated_at || c.created_at,
         _oppStages: [], _opps: [],
         _hasBookSent: bookSentContacts.has(c.id),
+        _hasLiConReq: liConReqContacts.has(c.id),
+        _hasLiDm: liDmContacts.has(c.id),
         _hasOpened: false, _hasClicked: false,
         _lastAction: lastActionByContact.get(c.id) || null
     }));
@@ -574,6 +592,8 @@ async function loadAllPeople() {
         updated_at: p.created_at,
         _oppStages: [], _opps: [],
         _hasBookSent: bookSentProspects.has(p.id),
+        _hasLiConReq: liConReqProspects.has(p.id),
+        _hasLiDm: liDmProspects.has(p.id),
         _hasSent: sentSet.has(p.id),
         _hasOpened: openedSet.has(p.id),
         _hasClicked: clickedSet.has(p.id),
@@ -619,7 +639,7 @@ function applyFilters() {
     if (currentFilter === 'active') {
         data = data.filter(p => ['replied', 'call', 'pilot', 'customer'].includes(p._lifecycle));
     } else if (currentFilter === 'warming') {
-        data = data.filter(p => ['emailed', 'opened', 'clicked', 'book_sent'].includes(p._lifecycle));
+        data = data.filter(p => ['emailed', 'opened', 'clicked', 'li_con_req', 'li_dm', 'book_sent'].includes(p._lifecycle));
     } else if (currentFilter === 'cold') {
         data = data.filter(p => p._lifecycle === 'cold');
     }

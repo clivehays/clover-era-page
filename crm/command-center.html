@@ -95,6 +95,8 @@
         .stage-opened { background: #DBEAFE; color: #1D4ED8; }
         .stage-clicked { background: #F3E8FF; color: #7C3AED; }
         .stage-book_sent { background: #EDE9FE; color: #4338CA; }
+        .stage-li_con_req { background: #DBEAFE; color: #1D4ED8; }
+        .stage-li_dm { background: #DBEAFE; color: #1D4ED8; }
         .stage-replied { background: #F3E8FF; color: #7C3AED; }
         .stage-call { background: #FEF3C7; color: #D97706; }
         .stage-pilot { background: #D1FAE5; color: #047857; }
@@ -399,6 +401,8 @@
         { id: 'emailed', name: 'Emailed' },
         { id: 'opened', name: 'Opened' },
         { id: 'clicked', name: 'Clicked' },
+        { id: 'li_con_req', name: 'LI Con Req' },
+        { id: 'li_dm', name: 'LinkedIn DM' },
         { id: 'book_sent', name: 'Book Sent' },
         { id: 'replied', name: 'Replied' },
         { id: 'call', name: 'Call' },
@@ -423,6 +427,7 @@
     // ═══════════════════════════════════════════════════════════════════════
     let allPeople = [];
     let allEmails = [];
+    let totalEmail1s = 0;
     let currentUser = null;
 
     // Outbound filter/sort/pagination state
@@ -463,6 +468,8 @@
     function computeLifecycle(person) {
         if (person._type === 'contact' && person.lifecycle_stage) return person.lifecycle_stage;
         if (person._hasBookSent) return 'book_sent';
+        if (person._hasLiDm) return 'li_dm';
+        if (person._hasLiConReq) return 'li_con_req';
         if (person._type === 'contact') return 'cold';
         if (person._hasClicked) return 'clicked';
         if (person._hasOpened) return 'opened';
@@ -486,12 +493,12 @@
                 .limit(1000),
             sb.from('person_notes')
                 .select('contact_id, prospect_id, note_type')
-                .eq('note_type', 'book_sent')
+                .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
         ]);
 
         // Also fetch prospect-level email engagement
         const emailEngRes = await sb.from('outreach_emails')
-            .select('prospect_id, opened_at, clicked_at, replied_at')
+            .select('prospect_id, opened_at, clicked_at, replied_at, position')
             .not('prospect_id', 'is', null);
 
         allEmails = emailsRes.data || [];
@@ -500,20 +507,35 @@
         const sentSet = new Set();
         const openedSet = new Set();
         const clickedSet = new Set();
+        const email1Set = new Set();
         (emailEngRes.data || []).forEach(e => {
             if (e.prospect_id) {
                 sentSet.add(e.prospect_id);
+                if (e.position === 1) email1Set.add(e.prospect_id);
                 if (e.opened_at) openedSet.add(e.prospect_id);
                 if (e.clicked_at) clickedSet.add(e.prospect_id);
             }
         });
+        totalEmail1s = email1Set.size;
 
-        // Build book_sent set
+        // Build action sets from person_notes (book_sent, li_con_req, li_dm)
         const bookSentContacts = new Set();
         const bookSentProspects = new Set();
+        const liConReqContacts = new Set();
+        const liConReqProspects = new Set();
+        const liDmContacts = new Set();
+        const liDmProspects = new Set();
         (notesRes.data || []).forEach(n => {
-            if (n.contact_id) bookSentContacts.add(n.contact_id);
-            if (n.prospect_id) bookSentProspects.add(n.prospect_id);
+            if (n.note_type === 'book_sent') {
+                if (n.contact_id) bookSentContacts.add(n.contact_id);
+                if (n.prospect_id) bookSentProspects.add(n.prospect_id);
+            } else if (n.note_type === 'li_con_req') {
+                if (n.contact_id) liConReqContacts.add(n.contact_id);
+                if (n.prospect_id) liConReqProspects.add(n.prospect_id);
+            } else if (n.note_type === 'li_dm') {
+                if (n.contact_id) liDmContacts.add(n.contact_id);
+                if (n.prospect_id) liDmProspects.add(n.prospect_id);
+            }
         });
 
         const contacts = (contactsRes.data || []).map(c => ({
@@ -533,6 +555,8 @@
             created_at: c.created_at,
             updated_at: c.updated_at || c.created_at,
             _hasBookSent: bookSentContacts.has(c.id),
+            _hasLiConReq: liConReqContacts.has(c.id),
+            _hasLiDm: liDmContacts.has(c.id),
             _hasOpened: false, _hasClicked: false
         }));
 
@@ -553,6 +577,8 @@
             created_at: p.created_at,
             updated_at: p.created_at,
             _hasBookSent: bookSentProspects.has(p.id),
+            _hasLiConReq: liConReqProspects.has(p.id),
+            _hasLiDm: liDmProspects.has(p.id),
             _hasSent: sentSet.has(p.id),
             _hasOpened: openedSet.has(p.id),
             _hasClicked: clickedSet.has(p.id)
@@ -700,11 +726,10 @@
         // Find max count for bar scaling
         const maxCount = Math.max(...stageData.map(s => s.people.length), 1);
 
-        // Conversion rates (from previous stage)
+        // Conversion rates (as % of all Email 1s sent)
         const convRates = stageData.map((s, i) => {
-            if (i === 0) return null;
-            const prev = stageData[i - 1].people.length;
-            return prev > 0 ? ((s.people.length / prev) * 100).toFixed(0) + '%' : '-';
+            if (s.id === 'cold' || s.id === 'emailed') return null;
+            return totalEmail1s > 0 ? ((s.people.length / totalEmail1s) * 100).toFixed(1) + '%' : '-';
         });
 
         // Stats
@@ -727,7 +752,7 @@
                 <td style="padding:0.5rem 1rem; width:30%;">Stage</td>
                 <td style="padding:0.5rem 1rem; width:30%;"></td>
                 <td style="padding:0.5rem 1rem; text-align:right; width:10%;">Count</td>
-                <td style="padding:0.5rem 1rem; text-align:right; width:15%;">Conv.</td>
+                <td style="padding:0.5rem 1rem; text-align:right; width:15%;">% of Sent</td>
                 <td style="padding:0.5rem 1rem; text-align:right; width:15%;">Attention</td>
             </tr></thead><tbody>`;
 
