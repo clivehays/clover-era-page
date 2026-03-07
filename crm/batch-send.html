@@ -307,6 +307,37 @@
         .summary-card.red .summary-value { color: var(--danger-red); }
         .summary-card.orange { background: #fffbeb; }
         .summary-card.orange .summary-value { color: var(--warning-orange); }
+
+        /* Countdown timer */
+        .countdown-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1rem;
+            background: #eff6ff;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--info-blue);
+        }
+        .countdown-bar .countdown-time {
+            font-weight: 700;
+            font-size: 1.1rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .countdown-fill {
+            flex: 1;
+            height: 4px;
+            background: var(--medium-gray);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .countdown-fill-inner {
+            height: 100%;
+            background: var(--info-blue);
+            border-radius: 2px;
+            transition: width 1s linear;
+        }
     </style>
 </head>
 <body>
@@ -414,6 +445,12 @@
             </div>
 
             <div class="process-log" id="processLog"></div>
+            <div class="countdown-bar hidden" id="countdownBar">
+                <span>Next in</span>
+                <span class="countdown-time" id="countdownTime">2:00</span>
+                <div class="countdown-fill"><div class="countdown-fill-inner" id="countdownFill" style="width:100%"></div></div>
+                <button class="btn btn-secondary" onclick="skipCountdown()" style="padding:0.3rem 0.6rem; font-size:0.75rem;">Skip</button>
+            </div>
         </div>
 
         <!-- Step 4: Summary -->
@@ -430,11 +467,11 @@
                 </div>
                 <div class="summary-card green">
                     <div class="summary-value" id="sumSent">0</div>
-                    <div class="summary-label">Sent Today</div>
+                    <div class="summary-label">Email 1 Sent</div>
                 </div>
-                <div class="summary-card orange">
-                    <div class="summary-value" id="sumQueued">0</div>
-                    <div class="summary-label">Queued for Later</div>
+                <div class="summary-card blue">
+                    <div class="summary-value" id="sumScheduled">0</div>
+                    <div class="summary-label">Follow-ups Scheduled</div>
                 </div>
             </div>
             <div id="sumErrors" class="hidden" style="margin-top: 1rem; padding: 0.75rem; background: #fef2f2; border-radius: 8px; font-size: 0.85rem; color: var(--danger-red);"></div>
@@ -452,7 +489,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const CONCURRENCY = 2;
+        const INTERVAL_MS = 120000; // 2 minutes between each prospect
 
         // Industry benchmarks (same as turnover-analysis)
         const industryBenchmarks = {
@@ -503,6 +540,7 @@
         let existingEmails = new Set();
         let campaigns = [];
         let stopRequested = false;
+        let countdownResolve = null; // to skip the countdown
 
         // ============ INIT ============
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1198,59 +1236,53 @@
                         <span class="log-step" title="Emails">E</span>
                         <span class="log-step" title="Attach">A</span>
                         <span class="log-step" title="Approve">V</span>
+                        <span class="log-step" title="Send">S</span>
                     </span>
                 `;
                 log.appendChild(div);
             });
 
-            let processed = 0, succeeded = 0, failed = 0;
+            let processed = 0, succeeded = 0, failed = 0, sentCount = 0;
             const errors = [];
             const total = validRows.length;
 
-            // Process in parallel batches
-            let i = 0;
-            while (i < total && !stopRequested) {
-                const batch = [];
-                for (let j = 0; j < CONCURRENCY && i < total; j++, i++) {
-                    batch.push(processOneProspect(validRows[i], i, campaignId));
+            // Estimate total time
+            const estMinutes = Math.round((total * 2));
+            document.getElementById('progressText').textContent = `Estimated time: ~${estMinutes} minutes (${total} prospects x 2 min each)`;
+
+            // Process one at a time, send each, wait 2 minutes
+            for (let i = 0; i < total; i++) {
+                if (stopRequested) break;
+
+                const result = await processOneProspect(validRows[i], i, campaignId);
+                processed++;
+
+                if (result.success) {
+                    succeeded++;
+                    if (result.sent) sentCount++;
+                } else {
+                    failed++;
+                    errors.push(result.error || 'Unknown error');
                 }
 
-                const results = await Promise.allSettled(batch);
-                for (const result of results) {
-                    processed++;
-                    if (result.status === 'fulfilled' && result.value.success) {
-                        succeeded++;
-                    } else {
-                        failed++;
-                        const err = result.status === 'rejected' ? result.reason?.message : result.value?.error;
-                        errors.push(err || 'Unknown error');
-                    }
+                // Update progress
+                const pct = Math.round((processed / total) * 100);
+                document.getElementById('progressFill').style.width = pct + '%';
+                document.getElementById('progressText').textContent = `Sent ${sentCount} | Failed ${failed} | ${total - processed} remaining`;
+                document.getElementById('progressCount').textContent = `${processed} / ${total}`;
 
-                    // Update progress
-                    const pct = Math.round((processed / total) * 100);
-                    document.getElementById('progressFill').style.width = pct + '%';
-                    document.getElementById('progressText').textContent = `${succeeded} succeeded, ${failed} failed`;
-                    document.getElementById('progressCount').textContent = `${processed} / ${total}`;
+                // Wait 2 minutes before next (unless last or stopped)
+                if (i < total - 1 && !stopRequested) {
+                    await showCountdown(INTERVAL_MS);
                 }
-
-                // Small delay between batches
-                if (i < total && !stopRequested) await sleep(500);
             }
 
-            // Processing complete - now send
-            document.getElementById('processingTitle').textContent = stopRequested ? 'Stopped' : 'Sending...';
+            // Hide countdown
+            document.getElementById('countdownBar').classList.add('hidden');
+
+            // Done
+            document.getElementById('processingTitle').textContent = stopRequested ? 'Stopped' : 'Complete';
             document.getElementById('stopBtn').classList.add('hidden');
-
-            let sentCount = 0;
-            if (succeeded > 0 && !stopRequested) {
-                try {
-                    updateProgressText('Sending approved emails...');
-                    const sendResult = await sendCampaignEmails(campaignId);
-                    sentCount = sendResult.sent || 0;
-                } catch (err) {
-                    console.error('Send failed:', err);
-                }
-            }
 
             // Show summary
             document.getElementById('processingSection').classList.add('hidden');
@@ -1258,7 +1290,7 @@
             document.getElementById('sumProcessed').textContent = succeeded;
             document.getElementById('sumApproved').textContent = succeeded;
             document.getElementById('sumSent').textContent = sentCount;
-            document.getElementById('sumQueued').textContent = Math.max(0, succeeded - sentCount);
+            document.getElementById('sumScheduled').textContent = sentCount * 2; // Email 2 and 3 for each sent
 
             if (errors.length > 0) {
                 const errDiv = document.getElementById('sumErrors');
@@ -1279,6 +1311,39 @@
         }
 
         function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        function skipCountdown() {
+            if (countdownResolve) { countdownResolve(); countdownResolve = null; }
+        }
+
+        function showCountdown(ms) {
+            return new Promise(resolve => {
+                countdownResolve = resolve;
+                const bar = document.getElementById('countdownBar');
+                const timeEl = document.getElementById('countdownTime');
+                const fillEl = document.getElementById('countdownFill');
+                bar.classList.remove('hidden');
+
+                const totalSec = Math.round(ms / 1000);
+                let remaining = totalSec;
+
+                fillEl.style.width = '100%';
+
+                const tick = setInterval(() => {
+                    remaining--;
+                    if (remaining <= 0 || stopRequested) {
+                        clearInterval(tick);
+                        bar.classList.add('hidden');
+                        resolve();
+                        return;
+                    }
+                    const min = Math.floor(remaining / 60);
+                    const sec = remaining % 60;
+                    timeEl.textContent = `${min}:${String(sec).padStart(2, '0')}`;
+                    fillEl.style.width = `${(remaining / totalSec) * 100}%`;
+                }, 1000);
+            });
+        }
 
         function updateLogRow(index, step, status, statusText) {
             const row = document.getElementById(`log-${index}`);
@@ -1516,9 +1581,26 @@
                     .update({ status: 'ready' })
                     .eq('id', cpId);
 
-                updateLogRow(index, 5, 'done', 'Done');
+                updateLogRow(index, 5, 'done', 'Sending...');
 
-                return { success: true };
+                // Step 9: Send Email 1 immediately
+                updateLogRow(index, 6, 'active', 'Sending Email 1...');
+
+                const sendResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({ type: 'send_single', email_id: email1.id })
+                });
+
+                const sendResult = await sendResponse.json();
+                if (!sendResult.success) throw new Error(`Send: ${sendResult.error || 'Failed'}`);
+
+                updateLogRow(index, 6, 'done', 'Sent + follow-ups scheduled');
+
+                return { success: true, sent: true };
 
             } catch (err) {
                 console.error(`Error processing ${row.email}:`, err);
@@ -1527,21 +1609,7 @@
             }
         }
 
-        // ============ SEND ============
-        async function sendCampaignEmails(campaignId) {
-            const response = await fetch(`${SUPABASE_URL}/functions/v1/send-outreach-email`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                },
-                body: JSON.stringify({ type: 'send_campaign_batch', campaign_id: campaignId })
-            });
-
-            const result = await response.json();
-            if (!result.success && result.error) throw new Error(result.error);
-            return result;
-        }
+        // sendCampaignEmails removed - each email is sent individually during processing
     </script>
 </body>
 </html>
