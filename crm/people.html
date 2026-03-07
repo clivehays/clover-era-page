@@ -128,6 +128,8 @@ body.panel-open .container { margin-right: var(--panel-w); }
 .timeline-dot.email_sent { background: var(--blue); }
 .timeline-dot.task { background: var(--amber); }
 .timeline-dot.activity { background: var(--text3); }
+.timeline-dot.li_con_req { background: var(--blue); }
+.timeline-dot.li_dm { background: var(--blue); }
 .timeline-content { flex: 1; min-width: 0; }
 .timeline-type-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text3); margin-bottom: 0.1rem; }
 .timeline-text { font-size: 0.8rem; color: var(--text); }
@@ -408,11 +410,13 @@ function lifecyclePill(stage) {
 
 const ACTION_LABELS = {
     note: 'Note', call: 'Call', meeting: 'Meeting', email_sent: 'Email Sent',
-    book_sent: 'Book Sent', report_sent: 'Report Sent', task: 'Task'
+    book_sent: 'Book Sent', report_sent: 'Report Sent', task: 'Task',
+    li_con_req: 'LI Con Req', li_dm: 'LinkedIn DM'
 };
 const ACTION_COLORS = {
     note: '--text3', call: '--green', meeting: '--purple', email_sent: '--blue',
-    book_sent: '--indigo', report_sent: '--teal', task: '--amber'
+    book_sent: '--indigo', report_sent: '--teal', task: '--amber',
+    li_con_req: '--blue', li_dm: '--blue'
 };
 function actionPill(lastAction) {
     if (!lastAction) return '<span style="font-size:0.72rem; color:var(--text3);">-</span>';
@@ -825,6 +829,8 @@ async function openPerson(id) {
     html += '<button class="qa-btn" onclick="showActivityLogger(\'task\')" style="border-color:var(--amber);color:var(--amber);">Task</button>';
     html += '<button class="qa-btn" onclick="quickAction(\'book_sent\')">Book Sent</button>';
     html += '<button class="qa-btn" onclick="quickAction(\'report_sent\')">Report Sent</button>';
+    html += '<button class="qa-btn" onclick="quickAction(\'li_con_req\')" style="border-color:var(--blue);color:var(--blue);">LI Con Req</button>';
+    html += '<button class="qa-btn" onclick="quickAction(\'li_dm\')" style="border-color:var(--blue);color:var(--blue);">LinkedIn DM</button>';
     if (person._type === 'prospect') {
         html += '<button class="qa-btn" style="background:var(--green); color:white; border-color:var(--green);" onclick="showPromoteModal()">Promote to CRM</button>';
     }
@@ -951,7 +957,8 @@ function renderTimelineItem(item) {
     const typeLabels = {
         note: 'Note', call: 'Call', meeting: 'Meeting', email_sent: 'Email Sent',
         email: 'Outreach Email', book_sent: 'Book Sent', report_sent: 'Report Sent',
-        system: 'System', task: 'Task', activity: 'Activity'
+        system: 'System', task: 'Task', activity: 'Activity',
+        li_con_req: 'LI Connection Request', li_dm: 'LinkedIn DM'
     };
     let label = typeLabels[item.type] || 'Activity';
     let extra = '';
@@ -1169,7 +1176,7 @@ async function saveCompanyEdit() {
 
 async function quickAction(type) {
     if (!selectedPerson) return;
-    const labels = { book_sent: 'Already Gone book sent', report_sent: 'Turnover Intelligence Report sent' };
+    const labels = { book_sent: 'Already Gone book sent', report_sent: 'Turnover Intelligence Report sent', li_con_req: 'LinkedIn connection request sent', li_dm: 'LinkedIn DM sent' };
     const content = labels[type] + ' ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const { error } = await sb.from('person_notes').insert({
         contact_id: selectedPerson._contactId, prospect_id: selectedPerson._prospectId,
