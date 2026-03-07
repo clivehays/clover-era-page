@@ -230,6 +230,17 @@ body.panel-open .container { margin-right: var(--panel-w); }
                     <button class="ob-pill" data-lc="warming">Warming</button>
                     <button class="ob-pill" data-lc="all">All</button>
                     <button class="ob-pill" data-lc="cold">Cold</button>
+                    <span style="color:var(--border); margin:0 0.15rem;">|</span>
+                    <button class="ob-pill" data-lc="opened1">Opened 1</button>
+                    <button class="ob-pill" data-lc="opened2">Opened 2</button>
+                    <button class="ob-pill" data-lc="opened3">Opened 3+</button>
+                    <button class="ob-pill" data-lc="clicked1">Clicked 1</button>
+                    <button class="ob-pill" data-lc="clicked2">Clicked 2</button>
+                    <button class="ob-pill" data-lc="clicked3">Clicked 3+</button>
+                    <span style="color:var(--border); margin:0 0.15rem;">|</span>
+                    <button class="ob-pill" data-lc="book_sent">Book Sent</button>
+                    <button class="ob-pill" data-lc="li_con_req">LI Con Req</button>
+                    <button class="ob-pill" data-lc="li_dm">LinkedIn DM</button>
                 </div>
             </div>
             <div class="ob-filter-group">
@@ -491,7 +502,7 @@ async function loadAllPeople() {
             .select('id, contact_id, company_id, name, stage, value, close_date, created_at')
             .limit(10000),
         sb.from('outreach_emails')
-            .select('prospect_id, sent_at, opened_at, clicked_at, replied_at')
+            .select('prospect_id, position, sent_at, opened_at, clicked_at, replied_at')
             .not('prospect_id', 'is', null)
             .limit(50000),
         sb.from('person_notes')
@@ -509,11 +520,19 @@ async function loadAllPeople() {
     const sentSet = new Set();
     const openedSet = new Set();
     const clickedSet = new Set();
+    const openedCountMap = new Map(); // prospect_id -> count of distinct opened emails
+    const clickedCountMap = new Map(); // prospect_id -> count of distinct clicked emails
     (emailsRes.data || []).forEach(e => {
         if (e.prospect_id) {
-            sentSet.add(e.prospect_id); // any email row = they've been emailed
-            if (e.opened_at) openedSet.add(e.prospect_id);
-            if (e.clicked_at) clickedSet.add(e.prospect_id);
+            sentSet.add(e.prospect_id);
+            if (e.opened_at) {
+                openedSet.add(e.prospect_id);
+                openedCountMap.set(e.prospect_id, (openedCountMap.get(e.prospect_id) || 0) + 1);
+            }
+            if (e.clicked_at) {
+                clickedSet.add(e.prospect_id);
+                clickedCountMap.set(e.prospect_id, (clickedCountMap.get(e.prospect_id) || 0) + 1);
+            }
         }
     });
 
@@ -571,6 +590,7 @@ async function loadAllPeople() {
         _hasLiConReq: liConReqContacts.has(c.id),
         _hasLiDm: liDmContacts.has(c.id),
         _hasOpened: false, _hasClicked: false,
+        _openedCount: 0, _clickedCount: 0,
         _lastAction: lastActionByContact.get(c.id) || null
     }));
 
@@ -597,6 +617,8 @@ async function loadAllPeople() {
         _hasSent: sentSet.has(p.id),
         _hasOpened: openedSet.has(p.id),
         _hasClicked: clickedSet.has(p.id),
+        _openedCount: openedCountMap.get(p.id) || 0,
+        _clickedCount: clickedCountMap.get(p.id) || 0,
         _lastAction: lastActionByProspect.get(p.id) || null,
         turnover_report_id: p.turnover_report_id
     }));
@@ -642,6 +664,24 @@ function applyFilters() {
         data = data.filter(p => ['emailed', 'opened', 'clicked', 'li_con_req', 'li_dm', 'book_sent'].includes(p._lifecycle));
     } else if (currentFilter === 'cold') {
         data = data.filter(p => p._lifecycle === 'cold');
+    } else if (currentFilter === 'opened1') {
+        data = data.filter(p => p._openedCount === 1);
+    } else if (currentFilter === 'opened2') {
+        data = data.filter(p => p._openedCount === 2);
+    } else if (currentFilter === 'opened3') {
+        data = data.filter(p => p._openedCount >= 3);
+    } else if (currentFilter === 'clicked1') {
+        data = data.filter(p => p._clickedCount === 1);
+    } else if (currentFilter === 'clicked2') {
+        data = data.filter(p => p._clickedCount === 2);
+    } else if (currentFilter === 'clicked3') {
+        data = data.filter(p => p._clickedCount >= 3);
+    } else if (currentFilter === 'book_sent') {
+        data = data.filter(p => p._lifecycle === 'book_sent');
+    } else if (currentFilter === 'li_con_req') {
+        data = data.filter(p => p._lifecycle === 'li_con_req');
+    } else if (currentFilter === 'li_dm') {
+        data = data.filter(p => p._lifecycle === 'li_dm');
     }
 
     if (currentSource !== 'all') {
