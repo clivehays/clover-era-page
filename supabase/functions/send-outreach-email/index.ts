@@ -499,28 +499,28 @@ async function sendCampaignBatch(supabase: any, campaignId: string) {
     .eq('campaign_id', campaignId);
   const campProspectIds = (campProspects || []).map((p: any) => p.id);
 
-  // Step 3: Get approved contact-based emails (position 1 only - follow-ups are scheduled)
+  // Step 3: Get approved contact-based emails (any position - includes retried follow-ups)
   let contactEmails: any[] = [];
   if (campContactIds.length > 0) {
     const { data } = await supabase
       .from('outreach_emails')
       .select('*, contact:contacts(*)')
       .eq('status', 'approved')
-      .eq('position', 1)
       .in('campaign_contact_id', campContactIds)
+      .order('position', { ascending: true })
       .limit(remaining);
     contactEmails = data || [];
   }
 
-  // Step 4: Get approved prospect-based emails (position 1 only - follow-ups are scheduled)
+  // Step 4: Get approved prospect-based emails (any position - includes retried follow-ups)
   let prospectEmails: any[] = [];
   if (campProspectIds.length > 0) {
     const { data } = await supabase
       .from('outreach_emails')
       .select('*, prospect:outreach_prospects(*)')
       .eq('status', 'approved')
-      .eq('position', 1)
       .in('campaign_prospect_id', campProspectIds)
+      .order('position', { ascending: true })
       .limit(remaining - contactEmails.length);
     prospectEmails = data || [];
   }
