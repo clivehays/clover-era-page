@@ -1297,7 +1297,7 @@
             }
         }
 
-        // Generate PDF using jsPDF directly - Condensed 3-page version
+        // Generate PDF using jsPDF directly - 2-page version (Cost Breakdown + 67-Day Reality)
         async function generatePDF() {
             const loading = document.getElementById('loadingOverlay');
             loading.classList.add('visible');
@@ -1307,20 +1307,22 @@
                 const doc = new jsPDF({
                     orientation: 'portrait',
                     unit: 'mm',
-                    format: 'a4'
+                    format: 'letter'
                 });
 
-                const pageWidth = 210;
-                const pageHeight = 297;
+                const pageWidth = 215.9;
+                const pageHeight = 279.4;
                 const margin = 15;
                 const contentWidth = pageWidth - (margin * 2);
                 let y = margin;
 
                 // Helper function for adding footer
                 const addFooter = () => {
-                    doc.setFontSize(7);
+                    doc.setFontSize(8);
                     doc.setTextColor('#9CA3AF');
-                    doc.text('Prepared by Clover ERA | cloverera.com | Industry benchmarks from BLS JOLTS data', pageWidth / 2, pageHeight - 8, { align: 'center' });
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Prepared by Clover ERA | cloverera.com', pageWidth / 2, pageHeight - 12, { align: 'center' });
+                    doc.text('Industry benchmarks from BLS JOLTS data', pageWidth / 2, pageHeight - 8, { align: 'center' });
                 };
 
                 // ============ PAGE 1: Cover + Key Numbers ============
@@ -1450,265 +1452,171 @@
                 // Footer
                 addFooter();
 
-                // ============ PAGE 2: 67-Day Reality + Savings ============
+                // ============ PAGE 2: The 67-Day Reality + What This Means ============
                 doc.addPage();
                 y = margin;
 
-                // 67-Day Reality
-                doc.setFontSize(14);
-                doc.setTextColor('#2C3E50');
-                doc.setFont('helvetica', 'bold');
-                doc.text('The 67-Day Reality', margin, y);
-                y += 8;
+                // Calculate 67-day total cost
+                const sixtySevenDayTotalCost = Math.round(reportData.inThe67DayWindow * reportData.costPerDeparture);
+                const sixtySevenDayTotalCostFormatted = sixtySevenDayTotalCost >= 1000000
+                    ? `$${(sixtySevenDayTotalCost / 1000000).toFixed(1)}M`
+                    : formatCurrency(sixtySevenDayTotalCost);
 
-                doc.setFillColor('#0D7C88');
-                doc.roundedRect(margin, y, contentWidth, 55, 4, 4, 'F');
-                y += 18;
-                doc.setFontSize(36);
+                // Section heading
+                doc.setFontSize(16);
+                doc.setTextColor('#2D3748');
+                doc.setFont('helvetica', 'bold');
+                doc.text('THE 67-DAY REALITY', pageWidth / 2, y + 5, { align: 'center' });
+                y += 14;
+
+                // === Section 1: 67-Day Reality Teal Box ===
+                const tealBoxHeight = 62;
+                doc.setFillColor('#4A9B9B');
+                doc.roundedRect(margin, y, contentWidth, tealBoxHeight, 4, 4, 'F');
+
+                // Large number
+                doc.setFontSize(72);
                 doc.setTextColor('#FFFFFF');
                 doc.setFont('helvetica', 'bold');
-                doc.text(`${reportData.inThe67DayWindow}`, pageWidth / 2, y, { align: 'center' });
-                y += 10;
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'normal');
-                doc.text('employees have already decided to leave but haven\'t told you yet', pageWidth / 2, y, { align: 'center' });
-                y += 12;
-                doc.setFontSize(9);
-                doc.text('Based on Work Institute research: avg 67 days between decision and resignation', pageWidth / 2, y, { align: 'center' });
+                doc.text(`${reportData.inThe67DayWindow}`, pageWidth / 2, y + 28, { align: 'center' });
 
-                y += 20;
-                doc.setFillColor('#F9F6F1');
-                doc.roundedRect(margin, y, contentWidth, 18, 2, 2, 'F');
-                y += 11;
+                // Subtitle text
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'normal');
+                doc.text('employees have already decided to leave', pageWidth / 2, y + 38, { align: 'center' });
+                doc.text('but haven\'t told you yet', pageWidth / 2, y + 46, { align: 'center' });
+
+                // Research attribution
                 doc.setFontSize(10);
-                doc.setTextColor('#2C3E50');
-                const insightLines = doc.splitTextToSize('These decisions are happening now. The question is whether you have visibility before the resignation letter arrives.', contentWidth - 10);
-                insightLines.forEach(line => {
+                doc.setFont('helvetica', 'italic');
+                doc.text('Based on Work Institute research: average 67 days between decision and resignation', pageWidth / 2, y + 56, { align: 'center' });
+
+                y += tealBoxHeight + 10;
+
+                // === Section 2: Unresolved Question ===
+                doc.setFontSize(11);
+                doc.setTextColor('#2D3748');
+                doc.setFont('helvetica', 'normal');
+                const unresolved = 'These decisions are happening now. The question is whether you have visibility before the resignation letter arrives.';
+                const unresolvedLines = doc.splitTextToSize(unresolved, contentWidth - 10);
+                unresolvedLines.forEach(line => {
                     doc.text(line, pageWidth / 2, y, { align: 'center' });
-                    y += 5;
+                    y += 6;
                 });
 
-                // Peer Comparison Callout
-                y += 10;
+                // === Section 3: Industry Benchmark Box ===
+                y += 6;
                 const peerLow = formatCurrency(Math.round(reportData.totalAnnualCost * 0.85));
                 const peerHigh = formatCurrency(Math.round(reportData.totalAnnualCost * 1.15));
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'normal');
                 const peerText = `Companies in ${reportData.industryName} with similar headcount typically uncover hidden turnover costs between ${peerLow} and ${peerHigh}`;
-                const peerLines = doc.splitTextToSize(peerText, contentWidth - 10);
-                const peerBoxHeight = 6 + (peerLines.length * 5) + 6;
+                const peerLines = doc.splitTextToSize(peerText, contentWidth - 16);
+                const peerBoxHeight = 8 + (peerLines.length * 5) + 6;
                 doc.setFillColor('#F0FDFA');
-                doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'F');
-                doc.setDrawColor('#46AEB8');
-                doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 2, 2, 'S');
-                doc.setTextColor('#0D7C88');
+                doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 3, 3, 'F');
+                doc.setDrawColor('#4A9B9B');
+                doc.roundedRect(margin, y, contentWidth, peerBoxHeight, 3, 3, 'S');
+                doc.setFontSize(10);
+                doc.setTextColor('#2D3748');
+                doc.setFont('helvetica', 'normal');
                 peerLines.forEach((line, i) => {
                     doc.text(line, pageWidth / 2, y + 8 + (i * 5), { align: 'center' });
                 });
-                y += peerBoxHeight + 8;
+                y += peerBoxHeight + 10;
 
-                // Savings Scenarios
+                // === Section 4: What This Means for [Company] ===
                 doc.setFontSize(14);
-                doc.setTextColor('#2C3E50');
+                doc.setTextColor('#2D3748');
                 doc.setFont('helvetica', 'bold');
-                doc.text('Savings Scenarios', margin, y);
-                y += 10;
+                doc.text(`WHAT THIS MEANS FOR ${reportData.companyName.toUpperCase()}`, margin, y);
+                y += 8;
 
-                // Table header
-                doc.setFillColor('#F9F6F1');
-                doc.rect(margin, y, contentWidth, 10, 'F');
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'bold');
-                doc.text('If You Prevent', margin + 4, y + 7);
-                doc.text('Departures', margin + 65, y + 7);
-                doc.text('Annual Savings', margin + 115, y + 7);
-                y += 10;
-
-                const savingsData = [
-                    { label: '10% of turnover', deps: reportData.savings.prevent10.departures, amount: reportData.savings.prevent10.amount },
-                    { label: '20% of turnover', deps: reportData.savings.prevent20.departures, amount: reportData.savings.prevent20.amount },
-                    { label: '30% of turnover', deps: reportData.savings.prevent30.departures, amount: reportData.savings.prevent30.amount }
-                ];
-
-                savingsData.forEach(row => {
-                    doc.setDrawColor('#E5E7EB');
-                    doc.line(margin, y + 10, margin + contentWidth, y + 10);
-                    doc.setFontSize(9);
-                    doc.setTextColor('#4B5563');
-                    doc.setFont('helvetica', 'normal');
-                    doc.text(row.label, margin + 4, y + 7);
-                    doc.text(`${row.deps}`, margin + 65, y + 7);
-                    doc.setTextColor('#059669');
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(formatCurrency(row.amount), margin + 115, y + 7);
-                    y += 10;
-                });
-
-                // Investment Context - Volume-based pricing
-                y += 12;
-                doc.setFontSize(14);
-                doc.setTextColor('#2C3E50');
-                doc.setFont('helvetica', 'bold');
-                doc.text('Investment Context', margin, y);
-                y += 6;
-                doc.setFontSize(9);
+                doc.setFontSize(11);
                 doc.setFont('helvetica', 'normal');
-                doc.setTextColor('#6B7280');
-                doc.text(`Based on your cost per departure of ${formatCurrency(reportData.costPerDeparture)}:`, margin, y);
-                y += 8;
-
-                // Team context
-                doc.setFontSize(8);
-                doc.setTextColor('#6B7280');
-                doc.text(`Your ${reportData.totalEmployees} employees across ${reportData.estimatedTeams} manager${reportData.estimatedTeams !== 1 ? 's' : ''} = approximately ${reportData.estimatedTeams} team${reportData.estimatedTeams !== 1 ? 's' : ''}:`, margin, y);
-                y += 8;
-
-                // Table header
-                doc.setFillColor('#F9F6F1');
-                doc.rect(margin, y, contentWidth, 10, 'F');
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor('#2C3E50');
-                doc.text('Option', margin + 4, y + 7);
-                doc.text('Teams', margin + 55, y + 7);
-                doc.text('Annual investment', margin + 90, y + 7);
-                doc.text('Break-even', margin + 148, y + 7);
+                doc.setTextColor('#2D3748');
+                doc.text(`Your ${formatCurrency(reportData.totalAnnualCost)} annual cost breaks down to:`, margin, y);
                 y += 10;
 
-                reportData.selectedTiers.forEach(tier => {
-                    doc.setDrawColor('#E5E7EB');
-                    doc.line(margin, y + 10, margin + contentWidth, y + 10);
-                    doc.setFontSize(9);
-                    doc.setTextColor('#4B5563');
+                // Bullet points
+                const bullets = [
+                    `${formatCurrency(reportData.dailyCost)} per day in ongoing turnover cost`,
+                    `${formatCurrency(Math.round(reportData.costPerDeparture))} average cost per departure`,
+                    `${reportData.inThe67DayWindow} employees in the 67-day decision window`
+                ];
+                bullets.forEach(bullet => {
+                    doc.setFontSize(11);
+                    doc.setTextColor('#2D3748');
                     doc.setFont('helvetica', 'normal');
-                    doc.text(tier.name, margin + 4, y + 7);
-                    doc.text(tier.custom ? `${tier.teams}+` : `${tier.teams}`, margin + 55, y + 7);
-                    doc.text(tier.custom ? 'Custom' : `${formatCurrency(tier.annual)}/yr`, margin + 90, y + 7);
-                    doc.setTextColor('#2C3E50');
-                    doc.setFont('helvetica', 'bold');
-                    if (tier.custom) {
-                        doc.text('Contact us', margin + 148, y + 7);
-                    } else {
-                        doc.text(`${tier.breakeven} departure${tier.breakeven !== 1 ? 's' : ''}`, margin + 148, y + 7);
-                    }
-                    y += 10;
+                    doc.text(`\u2022  ${bullet}`, margin + 4, y);
+                    y += 7;
                 });
 
-                // Volume pricing footnote
                 y += 4;
-                doc.setFontSize(7);
-                doc.setTextColor('#9CA3AF');
-                doc.setFont('helvetica', 'italic');
-                doc.text('Pricing from cloverera.com/pricing. All tiers include daily check-ins, bi-weekly manager reports, and monthly team insights.', margin, y);
 
-                // Footer
-                addFooter();
+                // Narrative paragraph
+                const narrative1 = `The ${reportData.inThe67DayWindow} employees who've already decided to leave represent ${sixtySevenDayTotalCostFormatted} in replacement costs the moment they resign. Right now they're still showing up. Still productive. Still on payroll.`;
+                const narrative1Lines = doc.splitTextToSize(narrative1, contentWidth - 4);
+                doc.setFontSize(11);
+                doc.setTextColor('#2D3748');
+                doc.setFont('helvetica', 'normal');
+                narrative1Lines.forEach(line => {
+                    doc.text(line, margin, y);
+                    y += 5.5;
+                });
 
-                // ============ PAGE 3: Next Steps ============
-                doc.addPage();
-                y = 60;
+                y += 4;
 
-                doc.setFontSize(18);
-                doc.setTextColor('#2C3E50');
-                doc.setFont('helvetica', 'bold');
-                doc.text('NEXT STEPS', pageWidth / 2, y, { align: 'center' });
-                y += 20;
+                const narrative2 = 'The question isn\'t whether they\'re leaving. It\'s whether you can see them before they resign.';
+                const narrative2Lines = doc.splitTextToSize(narrative2, contentWidth - 4);
+                narrative2Lines.forEach(line => {
+                    doc.text(line, margin, y);
+                    y += 5.5;
+                });
 
-                // CTA Box
-                doc.setFillColor('#46AEB8');
-                doc.roundedRect(margin + 15, y, contentWidth - 30, 103, 5, 5, 'F');
+                // === Section 5: CTA Box ===
+                y += 8;
+                const ctaBoxHeight = 58;
+                doc.setFillColor('#4A9B9B');
+                doc.roundedRect(margin, y, contentWidth, ctaBoxHeight, 4, 4, 'F');
 
-                y += 22;
+                // CTA Heading
                 doc.setFontSize(16);
                 doc.setTextColor('#FFFFFF');
                 doc.setFont('helvetica', 'bold');
-                doc.text('Schedule Your Free Turnover Analysis', pageWidth / 2, y, { align: 'center' });
+                doc.text('SCHEDULE YOUR FREE TURNOVER ANALYSIS', pageWidth / 2, y + 14, { align: 'center' });
 
-                y += 12;
-                doc.setFontSize(11);
+                // CTA Subheading
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'normal');
-                doc.text(`Your ${reportData.inThe67DayWindow} employees in the 67-day window won't wait. Neither should you.`, pageWidth / 2, y, { align: 'center', maxWidth: contentWidth - 50 });
+                doc.text('15 minutes. Your specific patterns.', pageWidth / 2, y + 23, { align: 'center' });
 
-                // CTA Button linking to /talk/
-                y += 20;
-                const btnWidth = 90;
-                const btnHeight = 16;
+                // CTA Button
+                const btnWidth = 80;
+                const btnHeight = 14;
                 const btnX = (pageWidth - btnWidth) / 2;
+                const btnY = y + 29;
                 doc.setFillColor('#FFFFFF');
-                doc.roundedRect(btnX, y - 10, btnWidth, btnHeight, 4, 4, 'F');
-                doc.setFontSize(11);
-                doc.setTextColor('#0D7C88');
+                doc.roundedRect(btnX, btnY, btnWidth, btnHeight, 4, 4, 'F');
+                doc.setFontSize(12);
+                doc.setTextColor('#4A9B9B');
                 doc.setFont('helvetica', 'bold');
-                doc.text('Schedule Your Turnover Analysis', pageWidth / 2, y + 1, { align: 'center' });
-                doc.link(btnX, y - 10, btnWidth, btnHeight, { url: 'https://cloverera.com/talk/' });
+                doc.text('Schedule Your Analysis', pageWidth / 2, btnY + 9.5, { align: 'center' });
+                const calendlyUrl = 'https://calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era-clone';
+                doc.link(btnX, btnY, btnWidth, btnHeight, { url: calendlyUrl });
 
-                y += 16;
-                doc.setFontSize(10);
+                // Calendly URL text as backup
+                doc.setFontSize(8);
                 doc.setTextColor('#FFFFFF');
                 doc.setFont('helvetica', 'normal');
-                doc.text('15 minutes. Your specific patterns.', pageWidth / 2, y, { align: 'center' });
+                doc.text('calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era-clone', pageWidth / 2, y + 52, { align: 'center' });
+                doc.link(margin, y + 48, contentWidth, 8, { url: calendlyUrl });
 
-                y += 20;
-                doc.setFontSize(11);
-                doc.setTextColor('#FFFFFF');
-                doc.text('contact@cloverera.com', pageWidth / 2, y, { align: 'center' });
-                y += 8;
-                doc.setFontSize(13);
-                doc.setFont('helvetica', 'bold');
-                doc.text('cloverera.com', pageWidth / 2, y, { align: 'center' });
-
-                // What Clover ERA Measures Daily - CLOVER Grid
-                y += 25;
-                doc.setFontSize(14);
-                doc.setTextColor('#2C3E50');
-                doc.setFont('helvetica', 'bold');
-                doc.text('What Clover ERA Measures Daily', pageWidth / 2, y, { align: 'center' });
-                y += 10;
-
-                const cloverItems = [
-                    { letter: 'C', label: 'Communication', desc: 'Are managers checking in regularly?' },
-                    { letter: 'L', label: 'Learning', desc: 'Are growth conversations happening?' },
-                    { letter: 'O', label: 'Opportunity', desc: 'Do people see a future here?' },
-                    { letter: 'V', label: 'Vulnerability', desc: 'Can people speak honestly?' },
-                    { letter: 'E', label: 'Enablement', desc: 'Do managers have the right tools?' },
-                    { letter: 'R', label: 'Reflection', desc: 'Is the team learning from patterns?' }
-                ];
-
-                const gridCols = 3;
-                const gridRows = 2;
-                const cellWidth = (contentWidth - 10) / gridCols;
-                const cellHeight = 22;
-
-                cloverItems.forEach((item, i) => {
-                    const col = i % gridCols;
-                    const row = Math.floor(i / gridCols);
-                    const cellX = margin + 5 + (col * cellWidth);
-                    const cellY = y + (row * (cellHeight + 4));
-
-                    // Teal letter
-                    doc.setFontSize(16);
-                    doc.setTextColor('#46AEB8');
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(item.letter, cellX, cellY + 7);
-
-                    // Label
-                    doc.setFontSize(9);
-                    doc.setTextColor('#2C3E50');
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(item.label, cellX + 10, cellY + 7);
-
-                    // Description
-                    doc.setFontSize(8);
-                    doc.setTextColor('#6B7280');
-                    doc.setFont('helvetica', 'normal');
-                    doc.text(item.desc, cellX + 10, cellY + 14);
-                });
-
-                // Footer
+                // === Section 6: Footer ===
                 addFooter();
 
                 // Save the PDF
-                const filename = `${reportData.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
+                const today = new Date();
+                const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                const filename = `Turnover_Intelligence_Report_${reportData.companyName.replace(/[^a-zA-Z0-9]/g, '_')}_${dateStr}.pdf`;
                 doc.save(filename);
 
                 // Update Supabase that PDF was generated
