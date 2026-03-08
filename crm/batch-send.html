@@ -1326,8 +1326,8 @@
                 document.getElementById('progressText').textContent = `Sent ${sentCount} | Failed ${failed} | ${total - processed} remaining`;
                 document.getElementById('progressCount').textContent = `${processed} / ${total}`;
 
-                // Wait random interval before next (unless last or stopped)
-                if (i < total - 1 && !stopRequested) {
+                // Wait random interval before next (skip delay for skipped/failed prospects)
+                if (i < total - 1 && !stopRequested && result.sent) {
                     await showCountdown(getRandomInterval());
                 }
             }
@@ -1562,6 +1562,27 @@
                 let cpId;
                 if (existingCp) {
                     cpId = existingCp.id;
+
+                    // Check if already sent - skip if Email 1 already sent
+                    const { data: sentEmails } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('id')
+                        .eq('campaign_prospect_id', cpId)
+                        .eq('position', 1)
+                        .eq('status', 'sent')
+                        .maybeSingle();
+
+                    if (sentEmails) {
+                        updateLogRow(index, 3, 'skip', 'Already processed - skipping');
+                        return { success: true, sent: false, skipped: true };
+                    }
+
+                    // Clean up any non-sent emails from previous runs
+                    await supabaseClient
+                        .from('outreach_emails')
+                        .delete()
+                        .eq('campaign_prospect_id', cpId)
+                        .in('status', ['draft', 'pending_followup', 'approved', 'failed']);
                 } else {
                     const { data: newCp, error: cpErr } = await supabaseClient
                         .from('campaign_prospects')
