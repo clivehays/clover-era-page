@@ -1470,7 +1470,7 @@
                 y += 14;
 
                 // === Section 1: 67-Day Reality Teal Box ===
-                const tealBoxHeight = 62;
+                const tealBoxHeight = 55;
                 doc.setFillColor('#4A9B9B');
                 doc.roundedRect(margin, y, contentWidth, tealBoxHeight, 4, 4, 'F');
 
@@ -1478,20 +1478,20 @@
                 doc.setFontSize(72);
                 doc.setTextColor('#FFFFFF');
                 doc.setFont('helvetica', 'bold');
-                doc.text(`${reportData.inThe67DayWindow}`, pageWidth / 2, y + 28, { align: 'center' });
+                doc.text(`${reportData.inThe67DayWindow}`, pageWidth / 2, y + 24, { align: 'center' });
 
                 // Subtitle text
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'normal');
-                doc.text('employees have already decided to leave', pageWidth / 2, y + 38, { align: 'center' });
-                doc.text('but haven\'t told you yet', pageWidth / 2, y + 46, { align: 'center' });
+                doc.text('employees have already decided to leave', pageWidth / 2, y + 34, { align: 'center' });
+                doc.text('but haven\'t told you yet', pageWidth / 2, y + 42, { align: 'center' });
 
                 // Research attribution
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'italic');
-                doc.text('Based on Work Institute research: average 67 days between decision and resignation', pageWidth / 2, y + 56, { align: 'center' });
+                doc.text('Based on Work Institute research: average 67 days between decision and resignation', pageWidth / 2, y + 50, { align: 'center' });
 
-                y += tealBoxHeight + 10;
+                y += tealBoxHeight + 7;
 
                 // === Section 2: Unresolved Question ===
                 doc.setFontSize(11);
@@ -1505,7 +1505,7 @@
                 });
 
                 // === Section 3: Industry Benchmark Box ===
-                y += 6;
+                y += 4;
                 const peerLow = formatCurrency(Math.round(reportData.totalAnnualCost * 0.85));
                 const peerHigh = formatCurrency(Math.round(reportData.totalAnnualCost * 1.15));
                 const peerText = `Companies in ${reportData.industryName} with similar headcount typically uncover hidden turnover costs between ${peerLow} and ${peerHigh}`;
@@ -1521,20 +1521,20 @@
                 peerLines.forEach((line, i) => {
                     doc.text(line, pageWidth / 2, y + 8 + (i * 5), { align: 'center' });
                 });
-                y += peerBoxHeight + 10;
+                y += peerBoxHeight + 6;
 
                 // === Section 4: What This Means for [Company] ===
                 doc.setFontSize(14);
                 doc.setTextColor('#2D3748');
                 doc.setFont('helvetica', 'bold');
                 doc.text(`WHAT THIS MEANS FOR ${reportData.companyName.toUpperCase()}`, margin, y);
-                y += 8;
+                y += 7;
 
                 doc.setFontSize(11);
                 doc.setFont('helvetica', 'normal');
                 doc.setTextColor('#2D3748');
                 doc.text(`Your ${formatCurrency(reportData.totalAnnualCost)} annual cost breaks down to:`, margin, y);
-                y += 10;
+                y += 8;
 
                 // Bullet points
                 const bullets = [
@@ -1547,10 +1547,10 @@
                     doc.setTextColor('#2D3748');
                     doc.setFont('helvetica', 'normal');
                     doc.text(`\u2022  ${bullet}`, margin + 4, y);
-                    y += 7;
+                    y += 6;
                 });
 
-                y += 4;
+                y += 2;
 
                 // Narrative paragraph
                 const narrative1 = `The ${reportData.inThe67DayWindow} employees who've already decided to leave represent ${sixtySevenDayTotalCostFormatted} in replacement costs the moment they resign. Right now they're still showing up. Still productive. Still on payroll.`;
@@ -1563,7 +1563,7 @@
                     y += 5.5;
                 });
 
-                y += 4;
+                y += 2;
 
                 const narrative2 = 'The question isn\'t whether they\'re leaving. It\'s whether you can see them before they resign.';
                 const narrative2Lines = doc.splitTextToSize(narrative2, contentWidth - 4);
@@ -1573,42 +1573,42 @@
                 });
 
                 // === Section 5: CTA Box ===
-                y += 8;
-                const ctaBoxHeight = 58;
+                y += 6;
+                const ctaBoxHeight = 50;
                 doc.setFillColor('#4A9B9B');
                 doc.roundedRect(margin, y, contentWidth, ctaBoxHeight, 4, 4, 'F');
 
                 // CTA Heading
-                doc.setFontSize(16);
+                doc.setFontSize(15);
                 doc.setTextColor('#FFFFFF');
                 doc.setFont('helvetica', 'bold');
-                doc.text('SCHEDULE YOUR FREE TURNOVER ANALYSIS', pageWidth / 2, y + 14, { align: 'center' });
+                doc.text('SCHEDULE YOUR FREE TURNOVER ANALYSIS', pageWidth / 2, y + 11, { align: 'center' });
 
                 // CTA Subheading
-                doc.setFontSize(12);
+                doc.setFontSize(11);
                 doc.setFont('helvetica', 'normal');
-                doc.text('15 minutes. Your specific patterns.', pageWidth / 2, y + 23, { align: 'center' });
+                doc.text('15 minutes. Your specific patterns.', pageWidth / 2, y + 19, { align: 'center' });
 
                 // CTA Button
                 const btnWidth = 80;
-                const btnHeight = 14;
+                const btnHeight = 12;
                 const btnX = (pageWidth - btnWidth) / 2;
-                const btnY = y + 29;
+                const btnY = y + 24;
                 doc.setFillColor('#FFFFFF');
                 doc.roundedRect(btnX, btnY, btnWidth, btnHeight, 4, 4, 'F');
-                doc.setFontSize(12);
+                doc.setFontSize(11);
                 doc.setTextColor('#4A9B9B');
                 doc.setFont('helvetica', 'bold');
-                doc.text('Schedule Your Analysis', pageWidth / 2, btnY + 9.5, { align: 'center' });
+                doc.text('Schedule Your Analysis', pageWidth / 2, btnY + 8.5, { align: 'center' });
                 const calendlyUrl = 'https://calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era-clone';
                 doc.link(btnX, btnY, btnWidth, btnHeight, { url: calendlyUrl });
 
                 // Calendly URL text as backup
-                doc.setFontSize(8);
+                doc.setFontSize(7);
                 doc.setTextColor('#FFFFFF');
                 doc.setFont('helvetica', 'normal');
-                doc.text('calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era-clone', pageWidth / 2, y + 52, { align: 'center' });
-                doc.link(margin, y + 48, contentWidth, 8, { url: calendlyUrl });
+                doc.text('calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era-clone', pageWidth / 2, y + 44, { align: 'center' });
+                doc.link(margin, y + 40, contentWidth, 8, { url: calendlyUrl });
 
                 // === Section 6: Footer ===
                 addFooter();
