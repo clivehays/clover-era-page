@@ -1531,7 +1531,7 @@
                 updateLogRow(index, 2, 'active', 'Uploading PDF...');
                 const pdfBlob = generatePDFBlob(reportData);
                 const pdfFilename = `${row.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
-                const storagePath = `batch/${campaignId}/${prospectId}_${pdfFilename}`;
+                const storagePath = `${prospectId}_${pdfFilename}`;
 
                 const { error: uploadErr } = await supabaseClient.storage
                     .from('outreach-attachments')
