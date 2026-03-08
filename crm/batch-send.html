@@ -1591,23 +1591,35 @@
                     body: JSON.stringify({ campaign_prospect_id: cpId })
                 });
 
+                if (!emailResponse.ok) {
+                    const errText = await emailResponse.text();
+                    throw new Error(`Generate emails HTTP ${emailResponse.status}: ${errText.substring(0, 200)}`);
+                }
                 const emailResult = await emailResponse.json();
-                if (!emailResult.success) throw new Error(`Generate emails: ${emailResult.error || 'Failed'}`);
+                console.log('generate-emails response:', JSON.stringify(emailResult));
+                if (!emailResult.success) throw new Error(`Generate emails: ${emailResult.error || emailResult.message || JSON.stringify(emailResult)}`);
 
                 updateLogRow(index, 3, 'done', 'Attaching PDF...');
 
                 // Step 7: Attach PDF to Email 1
                 updateLogRow(index, 4, 'active', 'Attaching PDF...');
 
-                // Find Email 1 for this campaign_prospect
-                const { data: email1, error: email1Err } = await supabaseClient
-                    .from('outreach_emails')
-                    .select('id, personalization_notes')
-                    .eq('campaign_prospect_id', cpId)
-                    .eq('position', 1)
-                    .single();
+                // Find Email 1 for this campaign_prospect (retry up to 3 times with delay)
+                let email1 = null;
+                for (let attempt = 0; attempt < 3; attempt++) {
+                    const { data, error: e1Err } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('id, personalization_notes')
+                        .eq('campaign_prospect_id', cpId)
+                        .eq('position', 1)
+                        .maybeSingle();
 
-                if (email1Err || !email1) throw new Error('Could not find Email 1');
+                    if (data) { email1 = data; break; }
+                    console.log(`Email 1 lookup attempt ${attempt + 1} failed:`, e1Err?.message || 'no rows');
+                    if (attempt < 2) await new Promise(r => setTimeout(r, 2000));
+                }
+
+                if (!email1) throw new Error('Could not find Email 1 after generate-emails completed. Check campaign sequence configuration.');
 
                 // Update personalization_notes with attachment URL
                 let notes = {};
