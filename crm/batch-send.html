@@ -1580,12 +1580,18 @@
                         }
                     }
 
-                    // Clean up ALL existing emails for this campaign_prospect to allow re-processing
-                    await supabaseClient
+                    // Clean up ALL existing emails for this campaign_prospect (no status filter)
+                    const { error: delErr, count: delCount } = await supabaseClient
                         .from('outreach_emails')
-                        .delete()
-                        .eq('campaign_prospect_id', cpId)
-                        .in('status', ['draft', 'pending_followup', 'approved', 'failed', 'sent', 'scheduled']);
+                        .delete({ count: 'exact' })
+                        .eq('campaign_prospect_id', cpId);
+                    console.log(`Deleted ${delCount} existing emails for cp ${cpId}`, delErr?.message || 'ok');
+
+                    // Reset campaign_prospect status so generate-emails works cleanly
+                    await supabaseClient
+                        .from('campaign_prospects')
+                        .update({ status: 'pending', current_step: 0 })
+                        .eq('id', cpId);
                 } else {
                     const { data: newCp, error: cpErr } = await supabaseClient
                         .from('campaign_prospects')
@@ -1622,6 +1628,7 @@
                 const emailResult = await emailResponse.json();
                 console.log('generate-emails response:', JSON.stringify(emailResult));
                 if (!emailResult.success) throw new Error(`Generate emails: ${emailResult.error || emailResult.message || JSON.stringify(emailResult)}`);
+                if (!emailResult.count || emailResult.count === 0) throw new Error(`Generate emails returned 0 emails. Sequence type: ${emailResult.sequence_type || 'unknown'}. Check campaign sequence has templates.`);
 
                 updateLogRow(index, 3, 'done', 'Attaching PDF...');
 
