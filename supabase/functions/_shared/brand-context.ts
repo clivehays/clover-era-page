@@ -140,7 +140,7 @@ export function getCompanySizeContext(employeeCount: number): string {
 }
 
 // Calendar link for Turnover Analysis scheduling
-export const CALENDAR_LINK = 'https://calendly.com/clive-hays-cloverera/20-mins-with-clive-clover-era-clone';
+export const CALENDAR_LINK = 'https://calendly.com/clive-hays-cloverera/15-mins-what-s-driving-it';
 
 // Self-serve funnel context for LinkedIn commenter sequence
 export const SELF_SERVE_CONTEXT = `
