@@ -489,7 +489,10 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const INTERVAL_MS = 120000; // 2 minutes between each prospect
+        // Randomized interval between prospects (60-150 seconds) to avoid robotic patterns
+        function getRandomInterval() {
+            return Math.floor(Math.random() * (150000 - 60000 + 1)) + 60000;
+        }
 
         // Industry benchmarks (same as turnover-analysis)
         const industryBenchmarks = {
@@ -503,11 +506,23 @@
             'other': { rate: 41, name: 'All Industries Average' }
         };
 
-        const AVG_SALARIES = {
-            technology: 85000, finance: 75000, healthcare: 65000,
-            professional_services: 70000, manufacturing: 55000,
-            retail: 35000, hospitality: 32000, other: 50000
+        // Industry-default salary levels (entry/mid/senior) for full calculation
+        const SALARY_LEVELS = {
+            technology:            { entry: 55000, mid: 85000, senior: 130000 },
+            finance:               { entry: 50000, mid: 75000, senior: 115000 },
+            healthcare:            { entry: 42000, mid: 65000, senior: 95000 },
+            professional_services: { entry: 45000, mid: 70000, senior: 110000 },
+            manufacturing:         { entry: 35000, mid: 55000, senior: 80000 },
+            retail:                { entry: 25000, mid: 35000, senior: 52000 },
+            hospitality:           { entry: 22000, mid: 32000, senior: 48000 },
+            other:                 { entry: 32000, mid: 50000, senior: 75000 }
         };
+
+        // Default workforce composition (same as turnover-analysis defaults)
+        const DEFAULT_PERCENTAGES = { entry: 45, mid: 35, senior: 20 };
+
+        // Replacement cost multipliers (SHRM methodology - same as turnover-analysis)
+        const replacementMultipliers = { entry: 0.5, mid: 1.25, senior: 1.75 };
 
         // Industry mapping - fuzzy match CSV values to our keys
         const INDUSTRY_ALIASES = {
@@ -789,23 +804,47 @@
 
         function calculateBatchTurnover(companyName, employees, csvIndustry, contactName, email) {
             const industry = mapIndustry(csvIndustry);
-            const avgSalary = AVG_SALARIES[industry] || AVG_SALARIES.other;
-            const turnoverRate = industryBenchmarks[industry]?.rate || 12;
+            const salaries = SALARY_LEVELS[industry] || SALARY_LEVELS.other;
+            const turnoverRate = industryBenchmarks[industry]?.rate || 41;
+            const industryAverage = industryBenchmarks[industry]?.rate || 41;
             const managers = Math.max(1, Math.round(employees / 17));
-            const departures = Math.round(employees * turnoverRate / 100);
-            const costPerDep = Math.round(avgSalary * 1.5);
-            const annualCost = departures * costPerDep;
-            const dailyCost = Math.round(annualCost / 365);
-            const in67Day = Math.round((67 / 365) * departures);
-            const managerRatio = Math.round(employees / managers);
 
-            // Pricing tiers
+            // Full 3-tier calculation (same as turnover-analysis page)
+            const entryPercent = DEFAULT_PERCENTAGES.entry;
+            const midPercent = DEFAULT_PERCENTAGES.mid;
+            const seniorPercent = DEFAULT_PERCENTAGES.senior;
+
+            const weightedAvgSalary =
+                (salaries.entry * entryPercent / 100) +
+                (salaries.mid * midPercent / 100) +
+                (salaries.senior * seniorPercent / 100);
+
+            const annualDepartures = Math.round(employees * turnoverRate / 100);
+
+            const entryDepartures = Math.round(annualDepartures * entryPercent / 100);
+            const midDepartures = Math.round(annualDepartures * midPercent / 100);
+            const seniorDepartures = Math.round(annualDepartures * seniorPercent / 100);
+
+            const entryCost = entryDepartures * salaries.entry * replacementMultipliers.entry;
+            const midCost = midDepartures * salaries.mid * replacementMultipliers.mid;
+            const seniorCost = seniorDepartures * salaries.senior * replacementMultipliers.senior;
+
+            const totalAnnualCost = entryCost + midCost + seniorCost;
+            const dailyCost = Math.round(totalAnnualCost / 365);
+            const in67Day = Math.round((67 / 365) * annualDepartures);
+            const managerRatio = Math.round(employees / managers);
+            const costPerDeparture = annualDepartures > 0 ? totalAnnualCost / annualDepartures : 0;
+
+            const vsIndustry = turnoverRate - industryAverage;
+            const vsIndustryPercent = Math.round((vsIndustry / industryAverage) * 100);
+
+            // Pricing tiers (same as turnover-analysis)
             const allTiers = [
-                { name: 'Single Team', teams: 1, annual: 2950 },
-                { name: '5 Teams', teams: 5, annual: 12500 },
-                { name: '10 Teams', teams: 10, annual: 21000 },
-                { name: '25 Teams', teams: 25, annual: 45000 },
-                { name: '26+ Teams', teams: 26, annual: null, custom: true }
+                { name: 'Single Team', teams: 1, maxPeople: 20, annual: 2950 },
+                { name: '5 Teams', teams: 5, maxPeople: 100, annual: 12500 },
+                { name: '10 Teams', teams: 10, maxPeople: 200, annual: 21000 },
+                { name: '25 Teams', teams: 25, maxPeople: 500, annual: 45000 },
+                { name: '26+ Teams', teams: 26, maxPeople: null, annual: null, custom: true }
             ];
 
             let selectedTiers = [];
@@ -823,7 +862,7 @@
             }
             selectedTiers = selectedTiers.map(tier => ({
                 ...tier,
-                breakeven: (!tier.custom && costPerDep > 0) ? Math.ceil(tier.annual / costPerDep) : 0
+                breakeven: (!tier.custom && costPerDeparture > 0) ? Math.ceil(tier.annual / costPerDeparture) : 0
             }));
 
             return {
@@ -836,27 +875,27 @@
                 numberOfManagers: managers,
                 managerRatio,
                 turnoverRate,
-                industryAverage: turnoverRate,
-                vsIndustry: 0,
-                vsIndustryPercent: 0,
-                annualDepartures: departures,
-                totalAnnualCost: annualCost,
+                industryAverage,
+                vsIndustry,
+                vsIndustryPercent,
+                annualDepartures,
+                totalAnnualCost,
                 dailyCost,
                 costBreakdown: {
-                    directRecruiting: Math.round(annualCost * 0.20),
-                    onboardingTraining: Math.round(annualCost * 0.25),
-                    lostProductivity: Math.round(annualCost * 0.35),
-                    knowledgeLoss: Math.round(annualCost * 0.10),
-                    managerTime: Math.round(annualCost * 0.10),
+                    directRecruiting: Math.round(totalAnnualCost * 0.20),
+                    onboardingTraining: Math.round(totalAnnualCost * 0.25),
+                    lostProductivity: Math.round(totalAnnualCost * 0.35),
+                    knowledgeLoss: Math.round(totalAnnualCost * 0.10),
+                    managerTime: Math.round(totalAnnualCost * 0.10),
                 },
                 inThe67DayWindow: in67Day,
                 recentRestructure: false,
                 savings: {
-                    prevent10: { departures: Math.round(departures * 0.1), amount: Math.round(annualCost * 0.1) },
-                    prevent20: { departures: Math.round(departures * 0.2), amount: Math.round(annualCost * 0.2) },
-                    prevent30: { departures: Math.round(departures * 0.3), amount: Math.round(annualCost * 0.3) },
+                    prevent10: { departures: Math.round(annualDepartures * 0.10), amount: Math.round(totalAnnualCost * 0.10) },
+                    prevent20: { departures: Math.round(annualDepartures * 0.20), amount: Math.round(totalAnnualCost * 0.20) },
+                    prevent30: { departures: Math.round(annualDepartures * 0.30), amount: Math.round(totalAnnualCost * 0.30) },
                 },
-                costPerDeparture: costPerDep,
+                costPerDeparture,
                 estimatedTeams: managers,
                 selectedTiers,
                 generatedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -939,8 +978,24 @@
                 doc.text(stat.value, x + statBoxWidth/2, y + 22, { align: 'center' });
             });
 
+            // Verdict bar (same as turnover-analysis)
+            y += statBoxHeight + 6;
+            const verdictColor = reportData.vsIndustry > 0 ? '#DC2626' : '#059669';
+            const verdictBg = reportData.vsIndustry > 0 ? '#FEE2E2' : '#D1FAE5';
+            const verdictText = reportData.vsIndustry > 0
+                ? `${Math.abs(reportData.vsIndustryPercent)}% above industry average`
+                : reportData.vsIndustry < 0
+                    ? `${Math.abs(reportData.vsIndustryPercent)}% below industry average`
+                    : 'At industry average';
+            doc.setFillColor(verdictBg);
+            doc.roundedRect(margin, y, contentWidth, 10, 2, 2, 'F');
+            doc.setFontSize(10);
+            doc.setTextColor(verdictColor);
+            doc.setFont('helvetica', 'bold');
+            doc.text(verdictText, pageWidth / 2, y + 7, { align: 'center' });
+
             // Hidden Cost Breakdown
-            y += statBoxHeight + 16;
+            y += 22;
             doc.setFontSize(14);
             doc.setTextColor('#2C3E50');
             doc.setFont('helvetica', 'bold');
@@ -970,7 +1025,7 @@
             doc.setFontSize(7);
             doc.setTextColor('#9CA3AF');
             doc.setFont('helvetica', 'italic');
-            doc.text('Cost model based on SHRM replacement cost research and Clover ERA\u2019s methodology', margin, y);
+            doc.text('Cost model based on SHRM replacement cost research and Clover ERA\u2019s 4X Rule methodology', margin, y);
             addFooter();
 
             // ===== PAGE 2: 67-Day Reality + Savings =====
@@ -1271,9 +1326,9 @@
                 document.getElementById('progressText').textContent = `Sent ${sentCount} | Failed ${failed} | ${total - processed} remaining`;
                 document.getElementById('progressCount').textContent = `${processed} / ${total}`;
 
-                // Wait 2 minutes before next (unless last or stopped)
+                // Wait random interval before next (unless last or stopped)
                 if (i < total - 1 && !stopRequested) {
-                    await showCountdown(INTERVAL_MS);
+                    await showCountdown(getRandomInterval());
                 }
             }
 
