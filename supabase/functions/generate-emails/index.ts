@@ -413,7 +413,7 @@ serve(async (req) => {
 
     if (sequence.sequence_type === 'self_serve') {
       generatedEmailContents = await generateSelfServeSequence(templates, context);
-    } else if (sequence.sequence_type === 'operational' && sequence.name.includes('Operational Buyer')) {
+    } else if (sequence.sequence_type === 'operational') {
       generatedEmailContents = await generateOperationalSequence(templates, context, supabase);
     } else {
       // Legacy or other sequences - use existing generation logic
