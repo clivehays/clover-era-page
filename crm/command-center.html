@@ -635,7 +635,7 @@
                 .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, company_id, companies(id, name, industry, employee_count, website)')
                 .order('updated_at', { ascending: false }),
             sb.from('outreach_prospects')
-                .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, created_at, converted_contact_id, turnover_report_id')
+                .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, created_at, converted_contact_id, turnover_report_id, next_action, next_action_date')
                 .not('status', 'in', '(converted,bounced,invalid,unsubscribed)'),
             sb.from('outreach_emails')
                 .select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))')
@@ -724,7 +724,7 @@
             source: 'outbound',
             status: p.status,
             lifecycle_stage: null,
-            next_action: null, next_action_date: null,
+            next_action: p.next_action || null, next_action_date: p.next_action_date || null,
             created_at: p.created_at,
             updated_at: p.created_at,
             _hasBookSent: bookSentProspects.has(p.id),

@@ -129,6 +129,18 @@ serve(async (req) => {
           .update({ status: 'replied' })
           .eq('id', cp.id);
 
+        // Set action on prospect so it appears in Command Center "Due Today"
+        const today = new Date().toISOString().split('T')[0];
+        await supabase
+          .from('outreach_prospects')
+          .update({
+            next_action: `Reply received — check inbox and respond to ${prospect.first_name} ${prospect.last_name} (${prospect.company_name})`,
+            next_action_date: today,
+          })
+          .eq('id', prospect.id);
+
+        console.log(`Set Due Today action for prospect ${prospect.id}`);
+
         repliesFound++;
       }
     }
