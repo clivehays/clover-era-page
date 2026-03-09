@@ -909,6 +909,9 @@ async function sendViaResend(params: {
       subject: params.subject,
       html: htmlBody,
       text: params.body,
+      headers: {
+        'List-Unsubscribe': `<mailto:${params.replyTo}?subject=Unsubscribe%20${encodeURIComponent(params.to)}>`,
+      },
       tags: [
         { name: 'outreach_email_id', value: params.emailId },
         { name: 'type', value: 'outreach' },
@@ -920,17 +923,32 @@ async function sendViaResend(params: {
       emailPayload.attachments = params.attachments;
     }
 
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(emailPayload),
-    });
+    // Retry up to 3 times for rate limit (429) errors
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailPayload),
+      });
 
-    if (!response.ok) {
+      if (response.ok) {
+        const data = await response.json();
+        return { success: true, messageId: data.id || '' };
+      }
+
       const errorText = await response.text();
+
+      // Retry on rate limit (429) with exponential backoff
+      if (response.status === 429 && attempt < 2) {
+        const waitMs = (attempt + 1) * 3000; // 3s, 6s
+        console.log(`Resend rate limited (attempt ${attempt + 1}/3), retrying in ${waitMs}ms...`);
+        await new Promise(r => setTimeout(r, waitMs));
+        continue;
+      }
+
       console.error('Resend error:', response.status, errorText);
       let errorDetail = `Resend error: ${response.status}`;
       try {
@@ -946,10 +964,7 @@ async function sendViaResend(params: {
       return { success: false, error: errorDetail };
     }
 
-    const data = await response.json();
-    const messageId = data.id || '';
-
-    return { success: true, messageId };
+    return { success: false, error: 'Resend: max retries exceeded' };
   } catch (error) {
     console.error('Resend request failed:', error);
     return { success: false, error: error.message };
@@ -1040,8 +1055,8 @@ async function scheduleFollowUpEmails(
     const scheduledAt = new Date(sent_at);
     scheduledAt.setDate(scheduledAt.getDate() + daysDelay);
 
-    // Set to a reasonable send time (9 AM in the scheduled day)
-    scheduledAt.setHours(9, 0, 0, 0);
+    // Match original Email 1 send time + 5 seconds (avoid Resend rate limits)
+    scheduledAt.setSeconds(scheduledAt.getSeconds() + 5);
 
     await supabase
       .from('outreach_emails')
