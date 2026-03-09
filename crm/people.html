@@ -221,6 +221,7 @@ body.panel-open .container { margin-right: var(--panel-w); }
             <input type="text" id="searchInput" class="ob-search" placeholder="Search name, company, email...">
             <div class="ob-result-count" id="resultCount"></div>
             <button class="btn btn-green" onclick="showQuickAddModal()">+ Add Person</button>
+            <button class="btn btn-white" id="btnExportBooks" onclick="exportBookOrders()">Export Book Orders</button>
         </div>
         <div class="ob-filters-row">
             <div class="ob-filter-group">
@@ -368,9 +369,27 @@ body.panel-open .container { margin-right: var(--panel-w); }
     </div>
 </div>
 
+<!-- EXPORT BOOK ORDERS MODAL -->
+<div class="modal-overlay" id="exportModal">
+    <div class="modal" style="max-width:480px;">
+        <h3 id="exportTitle">Export Book Orders</h3>
+        <div id="exportProgress" style="margin:1rem 0;">
+            <div style="font-size:0.85rem; color:var(--text2); margin-bottom:0.5rem;" id="exportStatus">Preparing...</div>
+            <div style="background:var(--border); border-radius:6px; height:8px; overflow:hidden;">
+                <div id="exportBar" style="background:var(--green); height:100%; width:0%; transition:width 0.3s;"></div>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text3); margin-top:0.4rem;" id="exportDetail"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-white" id="btnExportCancel" onclick="cancelExport()">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 </div>
 
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
@@ -1481,6 +1500,153 @@ async function executeDelete() {
 // Logout
 document.getElementById('btnLogout').addEventListener('click', async () => { await sb.auth.signOut(); window.location.href = 'login.html'; });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+
+// =============================================
+// EXPORT BOOK ORDERS
+// =============================================
+let exportCancelled = false;
+
+async function exportBookOrders() {
+    if (filteredPeople.length === 0) {
+        showToast('No people to export. Apply a filter first.', 'error');
+        return;
+    }
+
+    // Only export people with email addresses
+    const exportable = filteredPeople.filter(p => p.email);
+    if (exportable.length === 0) {
+        showToast('No people with email addresses in current filter.', 'error');
+        return;
+    }
+
+    exportCancelled = false;
+    document.getElementById('exportModal').classList.add('active');
+    document.getElementById('exportTitle').textContent = `Export Book Orders (${exportable.length} people)`;
+    document.getElementById('exportStatus').textContent = 'Enriching addresses from Apollo...';
+    document.getElementById('exportBar').style.width = '0%';
+    document.getElementById('exportDetail').textContent = '';
+    document.getElementById('btnExportCancel').textContent = 'Cancel';
+    document.getElementById('btnExportCancel').onclick = cancelExport;
+
+    try {
+        // Collect emails for enrichment
+        const emails = exportable.map(p => p.email);
+
+        // Call edge function in batches of 50 (to stay within timeout)
+        const BATCH_SIZE = 50;
+        const allResults = {};
+        let processed = 0;
+        let enrichedTotal = 0;
+        let notFoundTotal = 0;
+
+        for (let i = 0; i < emails.length; i += BATCH_SIZE) {
+            if (exportCancelled) {
+                showToast('Export cancelled');
+                document.getElementById('exportModal').classList.remove('active');
+                return;
+            }
+
+            const batch = emails.slice(i, i + BATCH_SIZE);
+            document.getElementById('exportDetail').textContent = `Batch ${Math.floor(i / BATCH_SIZE) + 1} of ${Math.ceil(emails.length / BATCH_SIZE)} (${batch.length} emails)`;
+
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/enrich-addresses`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                },
+                body: JSON.stringify({ emails: batch }),
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Enrichment failed: ${errText}`);
+            }
+
+            const data = await response.json();
+            if (data.results) {
+                Object.assign(allResults, data.results);
+            }
+            enrichedTotal += data.enriched || 0;
+            notFoundTotal += data.not_found || 0;
+            processed += batch.length;
+
+            const pct = Math.round((processed / emails.length) * 90);
+            document.getElementById('exportBar').style.width = pct + '%';
+            document.getElementById('exportStatus').textContent = `Enriched ${processed} of ${emails.length} people...`;
+        }
+
+        if (exportCancelled) {
+            document.getElementById('exportModal').classList.remove('active');
+            return;
+        }
+
+        // Generate XLSX
+        document.getElementById('exportStatus').textContent = 'Generating spreadsheet...';
+        document.getElementById('exportBar').style.width = '95%';
+
+        const rows = exportable.map(p => {
+            const fullName = (p.first_name + ' ' + p.last_name).trim();
+            const addr = allResults[(p.email || '').toLowerCase()] || {};
+
+            return {
+                'Your Reference': fullName,
+                "Customer's Reference": fullName,
+                'ISBN': '',
+                'Quantity': 1,
+                'Company': p.company_name || '',
+                'Name': fullName,
+                'Address Line 1': addr.address_line_1 || '',
+                'Address Line 2': '',
+                'Address Line 3': '',
+                'Address Line 4': '',
+                'Town': addr.city || '',
+                'County': addr.state || '',
+                'Postal Code': addr.postal_code || '',
+                'Country': addr.country || '',
+                'Telephone': addr.phone || '',
+                'Email': p.email || '',
+                'DispatchLevel': 'Cheapest',
+                'Declared Value': 5,
+            };
+        });
+
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Order Data');
+
+        // Also add the DispatchLevel dropdown sheet (matching template)
+        const ws2 = XLSX.utils.aoa_to_sheet([['Quickest'], ['Cheapest'], ['Tracked']]);
+        XLSX.utils.book_append_sheet(wb, ws2, 'Sheet1');
+
+        const today = new Date().toISOString().split('T')[0];
+        XLSX.writeFile(wb, `BookOrders-${today}.xlsx`);
+
+        document.getElementById('exportBar').style.width = '100%';
+        document.getElementById('exportStatus').textContent = 'Download complete!';
+        document.getElementById('exportDetail').textContent = `${enrichedTotal} addresses found, ${notFoundTotal} not found${notFoundTotal > 0 ? ' (address columns left blank)' : ''}`;
+        document.getElementById('btnExportCancel').textContent = 'Close';
+        document.getElementById('btnExportCancel').onclick = () => document.getElementById('exportModal').classList.remove('active');
+
+        showToast(`Book orders exported: ${exportable.length} people`);
+
+    } catch (err) {
+        console.error('Export error:', err);
+        document.getElementById('exportStatus').textContent = 'Export failed: ' + err.message;
+        document.getElementById('exportStatus').style.color = 'var(--red)';
+        document.getElementById('exportBar').style.width = '0%';
+        document.getElementById('btnExportCancel').textContent = 'Close';
+        document.getElementById('btnExportCancel').onclick = () => {
+            document.getElementById('exportModal').classList.remove('active');
+            document.getElementById('exportStatus').style.color = '';
+        };
+    }
+}
+
+function cancelExport() {
+    exportCancelled = true;
+    document.getElementById('exportModal').classList.remove('active');
+}
 
 init();
 </script>
