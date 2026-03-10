@@ -2795,8 +2795,22 @@
 
                 document.getElementById('emailQueueLoading').style.display = 'none';
 
+                if (error) {
+                    console.error('Email queue query error:', error);
+                    document.getElementById('emailQueueList').innerHTML = `<p style="color: var(--danger-red); padding: 1rem;">Query error: ${error.message}</p>`;
+                    return;
+                }
+
+                console.log('Email queue loaded:', emails?.length, 'emails');
+
                 if (!emails || emails.length === 0) {
-                    document.getElementById('emailQueueList').innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No emails pending review.</p>';
+                    // Debug: also try a simple count query without joins
+                    const { count, error: countErr } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('*', { count: 'exact', head: true })
+                        .in('status', ['draft', 'pending_followup', 'failed', 'approved']);
+                    const msg = countErr ? `Count error: ${countErr.message}` : `Raw count: ${count}`;
+                    document.getElementById('emailQueueList').innerHTML = `<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">No emails pending review. (${msg})</p>`;
                     return;
                 }
 
