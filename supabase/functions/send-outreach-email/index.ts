@@ -890,17 +890,28 @@ async function sendViaResend(params: {
 
   try {
     // Convert plain text to simple HTML for Resend open/click tracking
-    // 1. Convert URLs to <a> tags so Resend can track clicks
-    // 2. Wrap paragraphs in <p> tags
+    // 1. Convert URLs to <a> tags so Resend can track clicks (preserving existing HTML tags)
+    // 2. Wrap paragraphs in <p> tags (skip block-level HTML like <img>, <div>)
     const linkify = (text: string) => text.replace(
-      /(https?:\/\/[^\s<]+)/g,
-      '<a href="$1" style="color:#2563eb;">$1</a>'
+      /(<[^>]+>)|(https?:\/\/[^\s<>"']+)/g,
+      (match, tag, url) => {
+        if (tag) return tag; // Preserve HTML tags as-is
+        return `<a href="${url}" style="color:#2563eb;">${url}</a>`;
+      }
     );
+    const pStyle = 'margin:0 0 1em 0;font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#333;';
     const bodyParagraphs = params.body
       .split('\n\n')
-      .map((para: string) => `<p style="margin:0 0 1em 0;font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#333;">${linkify(para.replace(/\n/g, '<br>'))}</p>`)
+      .map((para: string) => {
+        const trimmed = para.trim();
+        // Don't wrap block-level HTML elements in <p> tags
+        if (/^<(div|img|table|hr|blockquote)\b/i.test(trimmed)) {
+          return linkify(trimmed);
+        }
+        return `<p style="${pStyle}">${linkify(para.replace(/\n/g, '<br>'))}</p>`;
+      })
       .join('');
-    const htmlBody = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${bodyParagraphs}</body></html>`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="max-width:680px;margin:0 auto;">${bodyParagraphs}</body></html>`;
 
     const emailPayload: Record<string, any> = {
       from: `${params.fromName} <${params.from}>`,
