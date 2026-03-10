@@ -1261,29 +1261,8 @@ async function getGlobalCapacity(supabase: any) {
 }
 
 // Parse personalization_notes for attachment info
-// Returns Resend-compatible attachment array (uses URL path for remote files)
+// DISABLED: PDF attachments removed from all outreach emails
+// Returns empty array - attachments no longer sent
 function parseAttachments(personalizationNotes: string | null): Array<{ filename: string; path: string }> {
-  if (!personalizationNotes) return [];
-
-  try {
-    const notes = JSON.parse(personalizationNotes);
-    // New format: uploaded to Supabase Storage with full URL
-    if (notes.attachment_url) {
-      return [{
-        filename: notes.attachment_name || 'attachment.pdf',
-        path: notes.attachment_url,
-      }];
-    }
-    // Legacy format: filename in downloads folder
-    if (notes.attachment) {
-      return [{
-        filename: notes.attachment,
-        path: `https://cloverera.com/downloads/${notes.attachment}`,
-      }];
-    }
-  } catch {
-    // Not JSON or no attachment field - that's fine
-  }
-
   return [];
 }
