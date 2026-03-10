@@ -600,9 +600,16 @@ async function generateOperationalSequence(
     '{{cost_per_departure_short}}': formatCurrency(turnover.cost_per_departure),
     '{{calculated_departures}}': String(turnover.calculated_departures),
     '{{67_day_number}}': String(turnover.sixty7_day_number),
+    '{{67_day_employees}}': String(turnover.sixty7_day_number), // Alias
     '{{67_day_total_formatted}}': formatDollar(turnover.sixty7_day_total),
     '{{calendar_link}}': CALENDAR_LINK,
     '{{custom_company_reference}}': '', // Will be filled by Claude
+    // Aliases and derived variables for Nuc 003 Cold sequence
+    '{{total_annual_cost_short}}': formatCurrency(turnover.annual_turnover_cost),
+    '{{cost_per_departure_senior_short}}': formatCurrency(turnover.cost_per_departure * 2),
+    '{{cost_three_departures_short}}': formatCurrency(turnover.cost_per_departure * 3),
+    '{{cascade_count_step2}}': String(Math.round(turnover.sixty7_day_number * 1.375)),
+    '{{cascade_annual_cost_short}}': formatCurrency(turnover.annual_turnover_cost * 1.38),
   };
 
   // Generate custom_company_reference via Claude
