@@ -42,7 +42,7 @@ I can''t tell you which specific person. Clover ERA is anonymous, that''s the on
 
 But I can show you this:
 
-<div style="text-align:center;margin:24px 0;"><img src="https://drugebiitlcjkknjfxeh.supabase.co/storage/v1/object/public/outreach-attachments/email-images/team-member-withdrawing.jpg" alt="Clover ERA behavioral insight showing team member withdrawal pattern" style="max-width:100%;width:600px;border-radius:8px;" /></div>
+<div style="margin:24px 0;"><img src="https://drugebiitlcjkknjfxeh.supabase.co/storage/v1/object/public/outreach-attachments/email-images/team-member-withdrawing.jpg" alt="Clover ERA behavioral insight showing team member withdrawal pattern" style="max-width:100%;width:600px;border-radius:8px;" /></div>
 
 This is what Clover ERA found in a 12-person team last week. The manager had no idea.
 
