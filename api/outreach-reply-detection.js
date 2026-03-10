@@ -83,7 +83,7 @@ async function findProspectByEmail(email) {
             status
         `)
         .eq('email', email.toLowerCase())
-        .in('status', ['active', 'completed', 'ready', 'pending'])
+        .not('status', 'in', '("converted","replied")')
         .single();
 
     if (error && error.code !== 'PGRST116') {
