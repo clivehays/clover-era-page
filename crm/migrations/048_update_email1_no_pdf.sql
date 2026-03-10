@@ -53,13 +53,33 @@ WHERE sequence_id = (SELECT id FROM outreach_sequences WHERE name = 'C-Suite Col
   AND position = 1;
 
 
+-- UPDATE: C-Suite Cold Email 2 - remove report reference
+UPDATE sequence_templates
+SET body_template = '{{first_name}},
+
+Following up on the {{currency_symbol}}{{annual_turnover_cost_short}} I mentioned last week.
+
+Most CFOs have one of two reactions when they see that number:
+
+(1) It''s inflated. (2) It''s worse than they thought.
+
+Which was it?
+
+The {{currency_symbol}}{{annual_turnover_cost_short}} shows what turnover cost you last year. The {{67_day_number}} employees in the 67-day window show what''s costing you right now. The difference: last year''s number is a receipt. This year''s number is a forecast you can still change.
+
+If the numbers are in the ballpark, let''s talk about which departments are highest risk. 15 minutes: {{calendar_link}}
+
+Clive'
+WHERE sequence_id = (SELECT id FROM outreach_sequences WHERE name = 'C-Suite Cold - Report Turnover Cost')
+  AND position = 2;
+
+
 -- =============================================
--- Verify both sequences
+-- Verify all C-Suite Cold templates
 -- =============================================
 SELECT s.name, t.position,
        LEFT(t.body_template, 120) as body_preview
 FROM sequence_templates t
 JOIN outreach_sequences s ON s.id = t.sequence_id
-WHERE (s.name = 'Operational Buyer - Turnover Cost' OR s.name = 'C-Suite Cold - Report Turnover Cost')
-  AND t.position = 1
-ORDER BY s.name;
+WHERE s.name = 'C-Suite Cold - Report Turnover Cost'
+ORDER BY t.position;
