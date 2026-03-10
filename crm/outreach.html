@@ -2339,6 +2339,7 @@
             const total = campaignProspects.length;
             let processed = 0;
             let errors = 0;
+            let errorMessages = [];
 
             // Show progress notification
             const progressDiv = document.createElement('div');
@@ -2361,6 +2362,7 @@
 
                 try {
                     // Step 1: Update status to researching
+                    document.getElementById('progressText').textContent = `Researching ${processed}/${total}...`;
                     await supabaseClient
                         .from('campaign_prospects')
                         .update({ status: 'researching' })
@@ -2378,12 +2380,16 @@
 
                     const researchResult = await researchResponse.json();
                     if (!researchResult.success) {
-                        console.error('Research failed:', researchResult.error);
+                        const errMsg = researchResult.error || 'Unknown research error';
+                        console.error('Research failed:', errMsg);
+                        document.getElementById('progressText').textContent = `Research failed: ${errMsg}`;
                         errors++;
+                        errorMessages.push(`Research: ${errMsg}`);
                         continue;
                     }
 
                     // Step 3: Generate emails
+                    document.getElementById('progressText').textContent = `Generating emails ${processed}/${total}...`;
                     const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
                         method: 'POST',
                         headers: {
@@ -2395,8 +2401,11 @@
 
                     const emailResult = await emailResponse.json();
                     if (!emailResult.success) {
-                        console.error('Email generation failed:', emailResult.error);
+                        const errMsg = emailResult.error || 'Unknown email generation error';
+                        console.error('Email generation failed:', errMsg);
+                        document.getElementById('progressText').textContent = `Email gen failed: ${errMsg}`;
                         errors++;
+                        errorMessages.push(`Emails: ${errMsg}`);
                         continue;
                     }
 
@@ -2409,15 +2418,24 @@
                 } catch (err) {
                     console.error('Error processing prospect:', err);
                     errors++;
+                    errorMessages.push(err.message || String(err));
                 }
             }
 
             // Update progress to complete
-            document.getElementById('progressText').textContent = errors > 0
-                ? `Done! ${total - errors} ready, ${errors} errors`
-                : `Done! ${total} prospects ready for review`;
             document.getElementById('progressFill').style.width = '100%';
-            document.getElementById('progressFill').style.background = errors > 0 ? 'var(--warning-color)' : 'var(--success-color)';
+
+            if (errors > 0) {
+                document.getElementById('progressFill').style.background = 'var(--warning-color)';
+                document.getElementById('progressText').innerHTML = `Failed: ${errorMessages.join('<br>')}`;
+                // Keep error visible longer and show alert
+                alert(`Processing failed:\n\n${errorMessages.join('\n')}`);
+                setTimeout(() => { progressDiv.remove(); }, 30000);
+            } else {
+                document.getElementById('progressFill').style.background = 'var(--success-color)';
+                document.getElementById('progressText').textContent = `Done! ${total} prospects ready for review`;
+                setTimeout(() => { progressDiv.remove(); }, 5000);
+            }
 
             // Refresh campaigns list and capacity
             loadCampaigns();
@@ -2425,11 +2443,6 @@
 
             // Switch to Email Queue tab and refresh it so user sees the generated emails
             switchTab('emails');
-
-            // Remove progress after delay
-            setTimeout(() => {
-                progressDiv.remove();
-            }, 5000);
         }
 
         // Prospects Queue
