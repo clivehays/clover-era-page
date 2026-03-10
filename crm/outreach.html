@@ -2109,9 +2109,11 @@
                 loadGlobalCapacity();
 
                 // Offer to generate emails
-                const confirmed = confirm(`Added ${firstName} ${lastName} to campaign.\n\nGenerate emails now?`);
+                const confirmed = confirm(`Added ${firstName} ${lastName} to campaign (cp: ${cpId}).\n\nGenerate emails now?`);
                 if (confirmed) {
+                    alert(`Starting research + email generation for cp: ${cpId}`);
                     await processNewProspects([{ id: cpId, prospect_id: prospectId }]);
+                    alert('processNewProspects finished');
                 }
             } catch (err) {
                 console.error('Quick add error:', err);
