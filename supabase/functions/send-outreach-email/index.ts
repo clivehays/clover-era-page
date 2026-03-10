@@ -1048,10 +1048,10 @@ async function scheduleFollowUpEmails(
     return;
   }
 
-  // Schedule each follow-up email with 4-day intervals from Email 1 send date
-  // Position 2 = 4 days after Email 1, Position 3 = 8 days after Email 1
+  // Schedule each follow-up email using days_delay from sequence_templates
   for (const email of followUpEmails) {
-    const daysDelay = (email.position - 1) * 4; // 4 days per step
+    const template = templates.find((t: any) => t.position === email.position);
+    const daysDelay = template?.days_delay ?? (email.position - 1) * 4; // Use template delay, fallback to 4-day intervals
     const scheduledAt = new Date(sent_at);
     scheduledAt.setDate(scheduledAt.getDate() + daysDelay);
 
