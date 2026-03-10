@@ -223,7 +223,7 @@ serve(async (req) => {
 
   try {
     // Support both contact-based and prospect-based email generation
-    const { campaign_contact_id, campaign_prospect_id, sequence_id } = await req.json();
+    const { campaign_contact_id, campaign_prospect_id, sequence_id, start_position } = await req.json();
 
     if (!campaign_contact_id && !campaign_prospect_id) {
       throw new Error('campaign_contact_id or campaign_prospect_id is required');
@@ -385,6 +385,15 @@ serve(async (req) => {
       throw new Error(`No templates found for sequence: ${templatesError?.message}`);
     }
 
+    // If start_position specified, only generate from that position onwards (for backfill)
+    const filteredTemplates = start_position
+      ? templates.filter((t: any) => t.position >= start_position)
+      : templates;
+
+    if (filteredTemplates.length === 0) {
+      throw new Error(`No templates found at or after position ${start_position}`);
+    }
+
     // Prepare context
     const context = {
       first_name: targetFirstName,
@@ -412,28 +421,28 @@ serve(async (req) => {
     let generatedEmailContents: Array<{ subject: string; body: string; notes: string }>;
 
     if (sequence.sequence_type === 'self_serve') {
-      generatedEmailContents = await generateSelfServeSequence(templates, context);
+      generatedEmailContents = await generateSelfServeSequence(filteredTemplates, context);
     } else if (sequence.sequence_type === 'operational') {
-      generatedEmailContents = await generateOperationalSequence(templates, context, supabase);
+      generatedEmailContents = await generateOperationalSequence(filteredTemplates, context, supabase);
     } else {
       // Legacy or other sequences - use existing generation logic
       if (!research) {
         throw new Error('Research not found. Run research-prospect first.');
       }
-      generatedEmailContents = await generateLegacySequence(templates, context);
+      generatedEmailContents = await generateLegacySequence(filteredTemplates, context);
     }
 
     // Build email records with appropriate IDs
     // Email 1 = draft (for approval), subsequent emails = pending_followup
     const generatedEmails = generatedEmailContents.map((email, index) => {
-      const position = templates[index].position;
+      const position = filteredTemplates[index].position;
       const emailRecord: Record<string, any> = {
         sequence_id: seqId,
         position: position,
         subject: email.subject,
         body: email.body,
         personalization_notes: email.notes,
-        status: position === 1 ? 'draft' : 'pending_followup',
+        status: (position === 1 && !start_position) ? 'draft' : 'pending_followup',
       };
 
       if (isProspectBased) {
@@ -448,18 +457,21 @@ serve(async (req) => {
     });
 
     // Delete any existing draft/pending emails for this campaign target (when regenerating)
-    if (isProspectBased) {
-      await supabase
-        .from('outreach_emails')
-        .delete()
-        .eq('campaign_prospect_id', campaign_prospect_id)
-        .in('status', ['draft', 'pending_followup']);
-    } else {
-      await supabase
-        .from('outreach_emails')
-        .delete()
-        .eq('campaign_contact_id', campaign_contact_id)
-        .in('status', ['draft', 'pending_followup']);
+    // Skip delete when backfilling (start_position set) to preserve existing emails
+    if (!start_position) {
+      if (isProspectBased) {
+        await supabase
+          .from('outreach_emails')
+          .delete()
+          .eq('campaign_prospect_id', campaign_prospect_id)
+          .in('status', ['draft', 'pending_followup']);
+      } else {
+        await supabase
+          .from('outreach_emails')
+          .delete()
+          .eq('campaign_contact_id', campaign_contact_id)
+          .in('status', ['draft', 'pending_followup']);
+      }
     }
 
     // Insert new emails
@@ -531,10 +543,12 @@ async function generateOperationalSequence(
   // Try to find a turnover report: by direct link, then by email, then by company name
   let report: any = null;
 
+  const reportFields = 'annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window, total_employees, company_name, contact_name';
+
   if (context.turnover_report_id) {
     const { data } = await supabase
       .from('turnover_reports')
-      .select('annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window')
+      .select(reportFields)
       .eq('id', context.turnover_report_id)
       .single();
     report = data;
@@ -544,7 +558,7 @@ async function generateOperationalSequence(
   if (!report && context.email) {
     const { data } = await supabase
       .from('turnover_reports')
-      .select('id, annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window')
+      .select(reportFields)
       .eq('email', context.email)
       .order('created_at', { ascending: false })
       .limit(1)
@@ -556,7 +570,7 @@ async function generateOperationalSequence(
   if (!report && context.company_name) {
     const { data } = await supabase
       .from('turnover_reports')
-      .select('id, annual_cost, daily_cost, cost_per_departure, annual_departures, in_67_day_window')
+      .select(reportFields)
       .ilike('company_name', context.company_name)
       .order('created_at', { ascending: false })
       .limit(1)
@@ -574,6 +588,24 @@ async function generateOperationalSequence(
       sixty7_day_number: report.in_67_day_window,
       sixty7_day_total: report.in_67_day_window * report.cost_per_departure,
     };
+    // Override context with report data (report is freshest source of truth)
+    if (report.total_employees) {
+      console.log(`Overriding employee_count: ${context.employee_count} → ${report.total_employees}`);
+      context.employee_count = report.total_employees;
+    }
+    if (report.company_name) {
+      console.log(`Overriding company_name: ${context.company_name} → ${report.company_name}`);
+      context.company_name = report.company_name;
+    }
+    if (report.contact_name) {
+      const parts = report.contact_name.trim().split(/\s+/);
+      if (parts.length >= 1 && parts[0]) {
+        console.log(`Overriding first_name: ${context.first_name} → ${parts[0]}`);
+        context.first_name = parts[0];
+        if (parts.length >= 2) context.last_name = parts.slice(1).join(' ');
+        context.full_name = report.contact_name.trim();
+      }
+    }
     console.log('Using turnover report data for email generation');
   } else {
     console.log('No turnover report found, using formula calculation');
@@ -610,6 +642,7 @@ async function generateOperationalSequence(
     '{{cost_three_departures_short}}': formatCurrency(turnover.cost_per_departure * 3),
     '{{cascade_count_step2}}': String(Math.round(turnover.sixty7_day_number * 1.375)),
     '{{cascade_annual_cost_short}}': formatCurrency(turnover.annual_turnover_cost * 1.38),
+    '{{daily_cost_short}}': formatCurrency(turnover.daily_cost),
   };
 
   // Generate custom_company_reference via Claude

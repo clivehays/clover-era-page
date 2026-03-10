@@ -1164,6 +1164,7 @@
                                 <button class="btn btn-success btn-sm" onclick="event.stopPropagation(); resumeCampaign('${campaign.id}')">Resume</button>
                             ` : ''}
                             <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); showAddProspectsModal('${campaign.id}')">+ Add</button>
+                            <button class="btn btn-sm" style="background:#7c3aed;color:white;border-color:#7c3aed;" onclick="event.stopPropagation(); backfillEmails('${campaign.id}', 4)">Backfill 4-6</button>
                             <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteCampaign('${campaign.id}', '${campaign.name.replace(/'/g, "\\'")}')">Delete</button>
                         </div>
                     </div>
@@ -1802,6 +1803,77 @@
                     }
                 }
             }
+        }
+
+        async function backfillEmails(campaignId, startPosition) {
+            // Find all campaign_prospects in this campaign
+            const { data: cps, error: cpErr } = await supabaseClient
+                .from('campaign_prospects')
+                .select('id, prospect_id, status')
+                .eq('campaign_id', campaignId)
+                .not('status', 'in', '(unsubscribed,bounced)');
+
+            if (cpErr || !cps || cps.length === 0) {
+                alert('No prospects found in this campaign.');
+                return;
+            }
+
+            // Check which ones already have emails at the start position
+            const cpIds = cps.map(cp => cp.id);
+            const { data: existingEmails } = await supabaseClient
+                .from('outreach_emails')
+                .select('campaign_prospect_id')
+                .in('campaign_prospect_id', cpIds)
+                .eq('position', startPosition);
+
+            const alreadyHave = new Set((existingEmails || []).map(e => e.campaign_prospect_id));
+            const toBackfill = cps.filter(cp => !alreadyHave.has(cp.id));
+
+            if (toBackfill.length === 0) {
+                alert('All prospects already have emails at position ' + startPosition + '+. Nothing to backfill.');
+                return;
+            }
+
+            if (!confirm(`Backfill emails ${startPosition}-6 for ${toBackfill.length} prospects?\n\n(${alreadyHave.size} already have these emails and will be skipped)`)) {
+                return;
+            }
+
+            const statusEl = document.createElement('div');
+            statusEl.style.cssText = 'position:fixed;top:20px;right:20px;background:#7c3aed;color:white;padding:12px 20px;border-radius:8px;z-index:9999;font-size:0.9rem;';
+            document.body.appendChild(statusEl);
+
+            let success = 0, failed = 0;
+            for (let i = 0; i < toBackfill.length; i++) {
+                const cp = toBackfill[i];
+                statusEl.textContent = `Backfilling ${i + 1}/${toBackfill.length}...`;
+                try {
+                    const resp = await fetch(`${SUPABASE_URL}/functions/v1/generate-emails`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({
+                            campaign_prospect_id: cp.id,
+                            start_position: startPosition
+                        })
+                    });
+                    const result = await resp.json();
+                    if (result.success) {
+                        success++;
+                    } else {
+                        console.error(`Backfill failed for CP ${cp.id}:`, result.error);
+                        failed++;
+                    }
+                } catch (err) {
+                    console.error(`Backfill error for CP ${cp.id}:`, err);
+                    failed++;
+                }
+            }
+
+            statusEl.textContent = `Done! ${success} backfilled, ${failed} failed.`;
+            setTimeout(() => statusEl.remove(), 5000);
+            loadCampaigns();
         }
 
         async function deleteCampaign(id, name) {
@@ -2850,6 +2922,7 @@
                                         <button class="btn btn-secondary btn-sm" onclick="previewEmail('${email.id}')">Preview</button>
                                         <button class="btn btn-success btn-sm" onclick="approveSingleEmail('${email.id}')">Approve</button>
                                         <button class="btn btn-danger btn-sm" onclick="deleteEmail('${email.id}')">Delete</button>
+                                        <button class="btn btn-sm" style="background:#fbbf24;color:#000;font-size:0.75rem;" onclick="unsubscribeProspect('${email.id}')">Unsub</button>
                                     </td>
                                 </tr>
                             `}).join('')}
@@ -2960,6 +3033,7 @@
                                     ${['sent','delivered','opened','clicked','scheduled'].includes(email.status)
                                         ? `<button class="btn btn-success btn-sm" onclick="markAsReplied('${email.id}')">Mark Replied</button>`
                                         : ''}
+                                    <button class="btn btn-sm" style="background:#fbbf24;color:#000;font-size:0.75rem;" onclick="unsubscribeProspect('${email.id}')">Unsub</button>
                                 </td>
                             </tr>
                         `}).join('')}
@@ -3241,6 +3315,76 @@
                 loadEmailQueue();
             } catch (error) {
                 alert('Error deleting email: ' + error.message);
+            }
+        }
+
+        async function unsubscribeProspect(emailId) {
+            // Get the email to find the prospect
+            const { data: email } = await supabaseClient
+                .from('outreach_emails')
+                .select('prospect_id, campaign_prospect_id, contact_id, campaign_contact_id')
+                .eq('id', emailId)
+                .single();
+
+            if (!email) { alert('Email not found'); return; }
+
+            const prospectId = email.prospect_id;
+            const contactId = email.contact_id;
+            const name = prospectId ? 'prospect' : 'contact';
+
+            if (!confirm(`Unsubscribe this ${name}?\n\nThis will:\n- Cancel all pending/scheduled emails\n- Mark them as unsubscribed\n- They will never receive emails again`)) return;
+
+            try {
+                if (prospectId) {
+                    // 1. Cancel all pending/scheduled/draft emails for this prospect
+                    await supabaseClient
+                        .from('outreach_emails')
+                        .update({ status: 'cancelled' })
+                        .eq('prospect_id', prospectId)
+                        .in('status', ['draft', 'approved', 'pending_followup', 'scheduled']);
+
+                    // 2. Mark prospect as unsubscribed
+                    await supabaseClient
+                        .from('outreach_prospects')
+                        .update({ status: 'unsubscribed', updated_at: new Date().toISOString() })
+                        .eq('id', prospectId);
+
+                    // 3. Mark all campaign_prospects as unsubscribed
+                    const { data: cps } = await supabaseClient
+                        .from('campaign_prospects')
+                        .select('id')
+                        .eq('prospect_id', prospectId);
+                    if (cps && cps.length > 0) {
+                        await supabaseClient
+                            .from('campaign_prospects')
+                            .update({ status: 'unsubscribed' })
+                            .in('id', cps.map(cp => cp.id));
+                    }
+                } else if (contactId) {
+                    // Contact-based (legacy)
+                    await supabaseClient
+                        .from('outreach_emails')
+                        .update({ status: 'cancelled' })
+                        .eq('contact_id', contactId)
+                        .in('status', ['draft', 'approved', 'pending_followup', 'scheduled']);
+
+                    const { data: ccs } = await supabaseClient
+                        .from('campaign_contacts')
+                        .select('id')
+                        .eq('contact_id', contactId);
+                    if (ccs && ccs.length > 0) {
+                        await supabaseClient
+                            .from('campaign_contacts')
+                            .update({ status: 'unsubscribed' })
+                            .in('id', ccs.map(cc => cc.id));
+                    }
+                }
+
+                alert('Unsubscribed. All pending emails cancelled.');
+                loadEmailQueue();
+                loadActiveEmails();
+            } catch (error) {
+                alert('Error unsubscribing: ' + error.message);
             }
         }
 
