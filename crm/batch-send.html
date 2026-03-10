@@ -1207,6 +1207,14 @@
             const campaignId = document.getElementById('campaignSelect').value;
             if (!campaignId) { alert('Please select a campaign.'); return; }
 
+            // Look up the campaign's sequence name (used to skip PDF for certain sequences)
+            const { data: campaignSeq } = await supabaseClient
+                .from('outreach_campaigns')
+                .select('sequence:outreach_sequences(name)')
+                .eq('id', campaignId)
+                .single();
+            const sequenceName = campaignSeq?.sequence?.name || '';
+
             const validRows = parsedData.filter(r => r._status === 'valid');
             if (validRows.length === 0) { alert('No valid prospects to process.'); return; }
 
@@ -1255,7 +1263,7 @@
             for (let i = 0; i < total; i++) {
                 if (stopRequested) break;
 
-                const result = await processOneProspect(validRows[i], i, campaignId);
+                const result = await processOneProspect(validRows[i], i, campaignId, sequenceName);
                 processed++;
 
                 if (result.success) {
@@ -1376,7 +1384,7 @@
             row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        async function processOneProspect(row, index, campaignId) {
+        async function processOneProspect(row, index, campaignId, sequenceName) {
             try {
                 // Step 0: Mark as active
                 updateLogRow(index, 0, 'active', 'Creating prospect...');
@@ -1473,28 +1481,34 @@
 
                 updateLogRow(index, 1, 'done', 'Generating PDF...');
 
-                // Step 4: Generate PDF and upload
-                updateLogRow(index, 2, 'active', 'Uploading PDF...');
-                const pdfBlob = generatePDFBlob(reportData);
-                const pdfFilename = `${row.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
-                const storagePath = `${prospectId}_${pdfFilename}`;
+                // Step 4: Generate PDF and upload (skip for Nuc 003 Cold - uses inline image instead)
+                const skipPdf = sequenceName === 'Nuc 003 Cold';
+                let pdfUrl = null;
+                if (skipPdf) {
+                    updateLogRow(index, 2, 'skip', 'No PDF (inline image)');
+                } else {
+                    updateLogRow(index, 2, 'active', 'Uploading PDF...');
+                    const pdfBlob = generatePDFBlob(reportData);
+                    const pdfFilename = `${row.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
+                    const storagePath = `${prospectId}_${pdfFilename}`;
 
-                const { error: uploadErr } = await supabaseClient.storage
-                    .from('outreach-attachments')
-                    .upload(storagePath, pdfBlob, {
-                        contentType: 'application/pdf',
-                        upsert: true
-                    });
+                    const { error: uploadErr } = await supabaseClient.storage
+                        .from('outreach-attachments')
+                        .upload(storagePath, pdfBlob, {
+                            contentType: 'application/pdf',
+                            upsert: true
+                        });
 
-                if (uploadErr) throw new Error(`Upload PDF: ${uploadErr.message}`);
+                    if (uploadErr) throw new Error(`Upload PDF: ${uploadErr.message}`);
 
-                const { data: urlData } = supabaseClient.storage
-                    .from('outreach-attachments')
-                    .getPublicUrl(storagePath);
+                    const { data: urlData } = supabaseClient.storage
+                        .from('outreach-attachments')
+                        .getPublicUrl(storagePath);
 
-                const pdfUrl = urlData.publicUrl;
+                    pdfUrl = urlData.publicUrl;
+                }
 
-                updateLogRow(index, 2, 'done', 'Generating emails...');
+                updateLogRow(index, 2, 'done', skipPdf ? 'Generating emails...' : 'Generating emails...');
 
                 // Step 5: Add to campaign
                 // Check if already in campaign
@@ -1576,11 +1590,9 @@
                 if (!emailResult.success) throw new Error(`Generate emails: ${emailResult.error || emailResult.message || JSON.stringify(emailResult)}`);
                 if (!emailResult.count || emailResult.count === 0) throw new Error(`Generate emails returned 0 emails. Sequence type: ${emailResult.sequence_type || 'unknown'}. Check campaign sequence has templates.`);
 
-                updateLogRow(index, 3, 'done', 'Attaching PDF...');
+                updateLogRow(index, 3, 'done', skipPdf ? 'Finding Email 1...' : 'Attaching PDF...');
 
-                // Step 7: Attach PDF to Email 1
-                updateLogRow(index, 4, 'active', 'Attaching PDF...');
-
+                // Step 7: Find Email 1 + attach PDF (skip attach for Nuc 003 Cold)
                 // Find Email 1 for this campaign_prospect (retry up to 3 times with delay)
                 let email1 = null;
                 for (let attempt = 0; attempt < 3; attempt++) {
@@ -1598,16 +1610,21 @@
 
                 if (!email1) throw new Error('Could not find Email 1 after generate-emails completed. Check campaign sequence configuration.');
 
-                // Update personalization_notes with attachment URL
-                let notes = {};
-                try { notes = JSON.parse(email1.personalization_notes || '{}'); } catch {}
-                notes.attachment_url = pdfUrl;
-                notes.attachment_name = pdfFilename;
+                if (skipPdf) {
+                    updateLogRow(index, 4, 'skip', 'No attachment');
+                } else {
+                    updateLogRow(index, 4, 'active', 'Attaching PDF...');
+                    // Update personalization_notes with attachment URL
+                    let notes = {};
+                    try { notes = JSON.parse(email1.personalization_notes || '{}'); } catch {}
+                    notes.attachment_url = pdfUrl;
+                    notes.attachment_name = `${row.companyName.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
 
-                await supabaseClient
-                    .from('outreach_emails')
-                    .update({ personalization_notes: JSON.stringify(notes) })
-                    .eq('id', email1.id);
+                    await supabaseClient
+                        .from('outreach_emails')
+                        .update({ personalization_notes: JSON.stringify(notes) })
+                        .eq('id', email1.id);
+                }
 
                 updateLogRow(index, 4, 'done', 'Approving...');
 
