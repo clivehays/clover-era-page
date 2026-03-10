@@ -15,7 +15,7 @@ SET personalization_notes = (
   - 'attachment'
 )::text
 WHERE position = 1
-  AND status IN ('draft', 'pending', 'pending_followup')
+  AND status NOT IN ('sent', 'failed')
   AND sequence_id = (SELECT id FROM outreach_sequences WHERE name = 'C-Suite Cold - Report Turnover Cost')
   AND personalization_notes IS NOT NULL
   AND (
@@ -31,7 +31,7 @@ SELECT id, position, status,
 FROM outreach_emails
 WHERE position = 1
   AND sequence_id = (SELECT id FROM outreach_sequences WHERE name = 'C-Suite Cold - Report Turnover Cost')
-  AND status IN ('draft', 'pending', 'pending_followup')
+  AND status NOT IN ('sent', 'failed')
   AND (
     personalization_notes::jsonb ? 'attachment_url'
     OR personalization_notes::jsonb ? 'attachment_name'
