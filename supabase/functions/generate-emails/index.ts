@@ -581,7 +581,6 @@ async function generateOperationalSequence(
   }
 
   const currencySymbol = getCurrencySymbol(context.country);
-  const pdfFilename = `${context.company_name.replace(/[^a-zA-Z0-9]/g, '-')}-Turnover-Intelligence-Report.pdf`;
 
   // Build replacement map
   const replacements: Record<string, string> = {
@@ -613,20 +612,16 @@ async function generateOperationalSequence(
   }
 
   // Merge all templates
-  return templates.map((template, idx) => {
+  return templates.map((template) => {
     const subject = replaceAllVariables(template.subject_template, replacements);
     const body = replaceAllVariables(template.body_template, replacements);
 
-    // For Email 1: store attachment info in personalization_notes for send function
+    // Store context in personalization_notes for send function
     const notesObj: Record<string, any> = {
       turnover: `${currencySymbol}${formatDollar(turnover.annual_turnover_cost)}/yr`,
       daily_cost: `${currencySymbol}${formatDollar(turnover.daily_cost)}/day`,
       sixty7_day: `${turnover.sixty7_day_number} people`,
     };
-    if (idx === 0) {
-      notesObj.attachment_name = pdfFilename;
-      // PDF will be attached manually via the UI before sending
-    }
 
     return {
       subject,
