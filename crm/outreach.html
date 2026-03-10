@@ -2111,9 +2111,14 @@
                 // Offer to generate emails
                 const confirmed = confirm(`Added ${firstName} ${lastName} to campaign (cp: ${cpId}).\n\nGenerate emails now?`);
                 if (confirmed) {
-                    alert(`Starting research + email generation for cp: ${cpId}`);
                     await processNewProspects([{ id: cpId, prospect_id: prospectId }]);
-                    alert('processNewProspects finished');
+
+                    // Debug: check what emails exist for this campaign_prospect
+                    const { data: debugEmails, error: debugErr } = await supabaseClient
+                        .from('outreach_emails')
+                        .select('id, status, position, subject')
+                        .eq('campaign_prospect_id', cpId);
+                    alert(`Emails found for cp ${cpId}: ${debugEmails?.length || 0}\n\n${debugErr ? 'Error: ' + debugErr.message : debugEmails?.map(e => `Pos ${e.position} [${e.status}]: ${e.subject}`).join('\n') || 'NONE'}`);
                 }
             } catch (err) {
                 console.error('Quick add error:', err);
