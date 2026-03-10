@@ -2111,7 +2111,7 @@
                 // Offer to generate emails
                 const confirmed = confirm(`Added ${firstName} ${lastName} to campaign.\n\nGenerate emails now?`);
                 if (confirmed) {
-                    processNewProspects([{ id: cpId, prospect_id: prospectId }]);
+                    await processNewProspects([{ id: cpId, prospect_id: prospectId }]);
                 }
             } catch (err) {
                 console.error('Quick add error:', err);
@@ -2422,6 +2422,9 @@
             // Refresh campaigns list and capacity
             loadCampaigns();
             loadGlobalCapacity();
+
+            // Switch to Email Queue tab and refresh it so user sees the generated emails
+            switchTab('emails');
 
             // Remove progress after delay
             setTimeout(() => {
