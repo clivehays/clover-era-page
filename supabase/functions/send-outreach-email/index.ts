@@ -911,7 +911,7 @@ async function sendViaResend(params: {
         return `<p style="${pStyle}">${linkify(para.replace(/\n/g, '<br>'))}</p>`;
       })
       .join('');
-    const htmlBody = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="max-width:680px;margin:0 auto;">${bodyParagraphs}</body></html>`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="max-width:680px;margin:0;padding:0;">${bodyParagraphs}</body></html>`;
 
     const emailPayload: Record<string, any> = {
       from: `${params.fromName} <${params.from}>`,
