@@ -9,25 +9,51 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
     <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PL5KTHRGLW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PL5KTHRGLW');
+    </script>
+
+    <!-- LinkedIn Insight Tag -->
+    <script>
+      (function(){
+        window._linkedin_partner_id = "9495801";
+        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+        window._linkedin_data_partner_ids.push(window._linkedin_partner_id);
+        (function(l){
+          if (!l) { window.lintrk = function(a, b){ window.lintrk.q.push([a, b]); }; window.lintrk.q = []; }
+          var s = document.getElementsByTagName("script")[0];
+          var b = document.createElement("script");
+          b.type = "text/javascript"; b.async = true;
+          b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+          s.parentNode.insertBefore(b, s);
+        })(window.lintrk);
+      })();
+    </script>
+    <noscript><img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9495801&fmt=gif" /></noscript>
+
+    <!-- Apollo Website Tracker -->
+    <script>
+      (function(){
+        var n = Math.random().toString(36).substring(7);
+        var o = document.createElement("script");
+        o.src = "https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=" + n;
+        o.async = true; o.defer = true;
+        o.onload = function(){ window.trackingFunctions.onLoad({ appId: "68067e03d73060000d4c0840" }); };
+        document.head.appendChild(o);
+      })();
+    </script>
+
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-
-        :root {
-            --primary-teal: #46AEB8;
-            --deep-teal: #0D7C88;
-            --charcoal: #1F2937;
-            --bronze: #C9A667;
-            --white: #FFFFFF;
-            --off-white: #FAFBFC;
-            --light-gray: #F8F9FA;
-            --medium-gray: #E5E7EB;
-            --dark-gray: #6B7280;
-            --text-primary: #111827;
-            --text-secondary: #4B5563;
         }
 
         html {
@@ -36,39 +62,27 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            color: var(--text-primary);
+            color: #4a4a4a;
             line-height: 1.7;
-            background: var(--white);
+            background: #ffffff;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         /* ---- Logo Bar ---- */
         .logo-bar {
-            padding: 0 0 32px;
-        }
-
-        .logo-bar a {
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-bar img {
-            height: 36px;
-            width: auto;
+            padding: 24px 0 40px;
         }
 
         .logo-text {
             font-size: 22px;
             font-weight: 700;
-            color: var(--charcoal);
+            color: #1a1a1a;
             letter-spacing: -0.02em;
         }
 
         .logo-text span {
-            color: var(--primary-teal);
+            color: #17A2B8;
         }
 
         /* ---- Shared ---- */
@@ -78,347 +92,200 @@
             padding: 0 28px;
         }
 
-        .section {
-            padding: 96px 0;
-        }
-
-        .section-alt {
-            background: var(--off-white);
-        }
-
-        h1, h2, h3 {
-            color: var(--charcoal);
-            line-height: 1.2;
+        h1, h2 {
+            color: #1a1a1a;
             letter-spacing: -0.02em;
         }
 
         h1 {
             font-size: 52px;
-            font-weight: 800;
+            font-weight: 700;
+            line-height: 1.1;
         }
 
         h2 {
-            font-size: 38px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            font-size: 26px;
-            font-weight: 700;
+            font-size: 40px;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 24px;
         }
 
         p {
             font-size: 19px;
-            color: var(--text-secondary);
+            color: #4a4a4a;
+            line-height: 1.7;
             margin-bottom: 20px;
+        }
+
+        p strong {
+            color: #1a1a1a;
         }
 
         .cta-btn {
             display: inline-block;
-            background: var(--deep-teal);
-            color: var(--white);
+            background: #17A2B8;
+            color: #ffffff;
             font-size: 18px;
             font-weight: 600;
-            padding: 18px 40px;
-            border-radius: 10px;
+            padding: 18px 36px;
+            border-radius: 8px;
             text-decoration: none;
-            transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            transition: background 0.2s ease, transform 0.15s ease;
             cursor: pointer;
             border: none;
-            box-shadow: 0 2px 8px rgba(13, 124, 136, 0.2);
         }
 
         .cta-btn:hover {
-            background: #0a6a74;
+            background: #138496;
             transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(13, 124, 136, 0.3);
         }
 
         .cta-btn:active {
             transform: translateY(0);
         }
 
-        /* ---- Hero ---- */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-alt {
+            background: #f9fafb;
+        }
+
+        /* ---- Section 1: Hero ---- */
         .hero {
-            padding: 80px 0 100px;
-            position: relative;
+            padding: 0 0 100px;
         }
 
         .hero h1 {
-            margin-bottom: 20px;
-            max-width: 700px;
-        }
-
-        .hero-sub {
-            font-size: 22px;
-            color: var(--text-secondary);
-            max-width: 620px;
-            margin-bottom: 40px;
-            line-height: 1.6;
+            max-width: 720px;
         }
 
         .hero-image-wrap {
-            margin-top: 56px;
+            margin: 40px 0;
+            max-width: 700px;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .hero-image-placeholder {
-            background: var(--light-gray);
-            width: 100%;
-            padding: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .hero-image-placeholder img {
-            max-width: 600px;
+        .hero-image-wrap img {
+            display: block;
             width: 100%;
             height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         }
 
         .hero-caption {
-            text-align: center;
-            font-size: 15px;
-            color: var(--dark-gray);
-            margin-top: 14px;
+            font-size: 16px;
+            color: #666666;
             font-style: italic;
-        }
-
-        /* ---- Credibility Section ---- */
-        .credibility p:last-of-type {
+            max-width: 700px;
             margin-bottom: 0;
         }
 
-        .logo-strip {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 48px;
-            margin-top: 48px;
-            padding-top: 40px;
-            border-top: 1px solid var(--medium-gray);
-        }
-
-        .logo-strip img {
-            height: 32px;
-            opacity: 0.45;
-            filter: grayscale(100%);
-            transition: opacity 0.2s ease;
-        }
-
-        .logo-strip img:hover {
-            opacity: 0.7;
-        }
-
-        /* ---- CLOVER Framework ---- */
-        .clover-grid {
-            margin-top: 40px;
-            display: grid;
-            gap: 0;
-        }
-
-        .clover-item {
-            padding: 28px 0;
-            border-bottom: 1px solid var(--medium-gray);
-        }
-
-        .clover-item:last-child {
-            border-bottom: none;
-        }
-
-        .clover-letter {
-            display: inline-block;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--deep-teal);
-            background: rgba(70, 174, 184, 0.1);
-            width: 36px;
-            height: 36px;
-            line-height: 36px;
-            text-align: center;
-            border-radius: 8px;
-            margin-right: 14px;
-            vertical-align: middle;
-        }
-
-        .clover-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--charcoal);
-            vertical-align: middle;
-        }
-
-        .clover-desc {
-            font-size: 17px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            margin-left: 50px;
-            margin-bottom: 0;
-        }
-
-        .mechanism-closer {
-            margin-top: 36px;
-            font-size: 19px;
-            font-weight: 600;
-            color: var(--charcoal);
+        .hero-context {
+            font-size: 18px;
+            color: #4a4a4a;
+            margin-top: 20px;
+            max-width: 700px;
             line-height: 1.6;
+            margin-bottom: 0;
         }
 
-        /* ---- Testimonial ---- */
+        /* ---- Section 2: Credibility ---- */
+        .credibility-section .cta-wrap {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        /* ---- Section 4: Testimonial ---- */
         .testimonial-card {
-            background: var(--white);
-            border-left: 4px solid var(--primary-teal);
-            border-radius: 0 12px 12px 0;
-            padding: 40px 44px;
-            margin-top: 32px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            background: #f8f9fa;
+            border-left: 4px solid #17A2B8;
+            border-radius: 8px;
+            padding: 40px;
+            max-width: 750px;
+            margin: 0 auto;
         }
 
         .testimonial-card p {
-            font-size: 20px;
-            line-height: 1.75;
-            color: var(--text-primary);
+            font-size: 18px;
+            line-height: 1.7;
+            color: #1a1a1a;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+
+        .testimonial-card p:last-of-type {
             margin-bottom: 0;
         }
 
         .testimonial-attribution {
-            margin-top: 24px;
+            margin-top: 28px;
             font-size: 16px;
-            font-weight: 600;
-            color: var(--dark-gray);
+            color: #666666;
         }
 
-        /* ---- Calendar Section ---- */
+        .testimonial-sub {
+            font-size: 16px;
+            color: #666666;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* ---- Section 5: Calendar ---- */
         .calendar-section {
-            text-align: center;
-            background: var(--charcoal);
-            color: var(--white);
-            padding: 96px 0;
+            padding: 100px 0;
         }
 
-        .calendar-section h2 {
-            color: var(--white);
-        }
-
-        .calendar-section .cal-sub {
+        .cal-sub {
             font-size: 20px;
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 580px;
-            margin: 0 auto 40px;
+            color: #4a4a4a;
+            max-width: 640px;
+            margin-bottom: 40px;
         }
 
-        .call-points {
-            list-style: none;
-            max-width: 560px;
-            margin: 0 auto 48px;
-            text-align: left;
-        }
-
-        .call-points li {
+        .call-detail {
             font-size: 18px;
-            color: rgba(255, 255, 255, 0.85);
-            padding: 10px 0;
-            padding-left: 28px;
-            position: relative;
-        }
-
-        .call-points li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 18px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--primary-teal);
+            color: #4a4a4a;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            max-width: 640px;
         }
 
         .calendar-embed {
-            max-width: 700px;
-            margin: 0 auto;
+            margin-top: 60px;
+            max-width: 100%;
             min-height: 700px;
-            background: var(--white);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #e5e7eb;
         }
 
-        .calendar-placeholder {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 700px;
-            color: var(--dark-gray);
-            font-size: 16px;
-        }
-
-        /* ---- Objection Killer ---- */
-        .math-block {
-            background: var(--white);
-            border-radius: 10px;
-            padding: 32px 36px;
-            margin: 28px 0 32px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--medium-gray);
-        }
-
-        .math-line {
-            font-size: 17px;
-            color: var(--text-secondary);
-            padding: 8px 0;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .math-line:last-child {
-            border-bottom: none;
-        }
-
-        .math-line strong {
-            color: var(--text-primary);
-        }
-
-        .math-total {
+        .booking-details {
             margin-top: 16px;
-            padding-top: 16px;
-            border-top: 2px solid var(--charcoal);
-            font-size: 19px;
-            font-weight: 700;
-            color: var(--charcoal);
+            font-size: 14px;
+            color: #666666;
+            text-align: center;
         }
 
         /* ---- Footer ---- */
         .footer {
-            padding: 40px 0;
+            margin-top: 80px;
+            padding: 0 0 40px;
             text-align: center;
-            border-top: 1px solid var(--medium-gray);
         }
 
         .footer p {
             font-size: 14px;
-            color: var(--dark-gray);
+            color: #999999;
             margin-bottom: 0;
         }
 
-        .footer a {
-            color: var(--dark-gray);
-            text-decoration: none;
-            margin: 0 12px;
-        }
-
-        .footer a:hover {
-            color: var(--deep-teal);
-        }
-
-        /* ---- Mobile ---- */
+        /* ---- Mobile: 768px ---- */
         @media (max-width: 768px) {
             .logo-bar {
-                padding: 18px 20px;
+                padding: 18px 0 32px;
             }
 
             .logo-text {
@@ -426,23 +293,15 @@
             }
 
             .hero {
-                padding: 60px 0 72px;
+                padding: 0 0 60px;
             }
 
             h1 {
-                font-size: 34px;
+                font-size: 38px;
             }
 
             h2 {
-                font-size: 28px;
-            }
-
-            h3 {
-                font-size: 22px;
-            }
-
-            .hero-sub {
-                font-size: 18px;
+                font-size: 30px;
             }
 
             p {
@@ -450,22 +309,22 @@
             }
 
             .section {
-                padding: 64px 0;
+                padding: 60px 0;
             }
 
             .calendar-section {
-                padding: 64px 0;
+                padding: 60px 0;
             }
 
             .cta-btn {
                 display: block;
                 text-align: center;
                 font-size: 17px;
-                padding: 16px 32px;
+                padding: 18px 36px;
             }
 
             .hero-image-wrap {
-                margin-top: 40px;
+                margin: 32px 0;
             }
 
             .testimonial-card {
@@ -473,194 +332,154 @@
             }
 
             .testimonial-card p {
+                font-size: 17px;
+            }
+
+            .cal-sub {
                 font-size: 18px;
             }
 
-            .math-block {
-                padding: 24px 20px;
-            }
-
-            .clover-desc {
-                margin-left: 0;
-                margin-top: 12px;
-            }
-
-            .logo-strip {
-                flex-wrap: wrap;
-                gap: 28px;
+            .call-detail {
+                font-size: 17px;
             }
 
             .calendar-embed {
                 border-radius: 8px;
+                margin-top: 40px;
+            }
+
+            .credibility-section .cta-wrap {
+                margin-top: 48px;
             }
         }
 
+        /* ---- Mobile: 480px ---- */
         @media (max-width: 480px) {
             h1 {
-                font-size: 28px;
+                font-size: 32px;
             }
 
             h2 {
-                font-size: 24px;
+                font-size: 26px;
             }
 
             .hero {
-                padding: 50px 0 56px;
+                padding: 0 0 48px;
             }
 
             .container {
                 padding: 0 20px;
             }
+
+            .hero-image-wrap {
+                margin-left: -20px;
+                margin-right: -20px;
+                border-radius: 0;
+                max-width: calc(100% + 40px);
+            }
         }
     </style>
-    <script src="/js/header.js"></script>
 </head>
 <body>
 
-    <!-- Hero -->
+    <!-- SECTION 1: HERO -->
     <section class="hero">
         <div class="container">
-            <!-- Logo -->
+            <!-- Logo: "Clover" in dark, "ERA" in teal. Not clickable. -->
             <div class="logo-bar">
-                <a href="https://cloverera.com">
-                    <span class="logo-text">Clover <span>ERA</span></span>
-                </a>
+                <span class="logo-text">Clover <span>ERA</span></span>
             </div>
+
             <h1>Someone on Your Team Has Already Decided to Leave.</h1>
-            <p class="hero-sub">You won't see it for 67 days. That's how long between the decision and the resignation letter.</p>
-            <a href="#book" class="cta-btn">Schedule Your Free Turnover Analysis</a>
 
+            <!-- Screenshot image. TODO: Update src path if image filename changes -->
             <div class="hero-image-wrap">
-                <div class="hero-image-placeholder">
-                    <img src="../images/team-member-withdrawing.jpg?v=2" alt="Actual Clover ERA alert showing employee withdrawal pattern">
-                </div>
+                <img src="../images/team-member-withdrawing.jpg" alt="Clover ERA withdrawal alert showing team member who resigned 39 days later">
             </div>
-            <p class="hero-caption">Actual Clover ERA alert. This person resigned 39 days later.</p>
+            <p class="hero-caption">This person was getting ready to resign. Their manager had no idea.</p>
+            <p class="hero-context">This is an example of what Clover ERA shows managers everyday on their dashboard.</p>
         </div>
     </section>
 
-    <!-- Section 1: Credibility Bridge -->
+    <!-- SECTION 2: CREDIBILITY BRIDGE -->
     <section class="section section-alt">
-        <div class="container credibility">
-            <h2>This Isn't Marketing. This Is What 47 Companies Use to See Resignations Before They Happen.</h2>
+        <div class="container credibility-section">
+            <h2>What 47 Companies Use Clover ERA For</h2>
 
-            <p>Most CEOs and CFOs track turnover rate. That's a percentage. The problem is turnover cost. That's dollars. Most companies underestimate by 4x.</p>
+            <p>Your managers are reading behavior backward.</p>
 
-            <p>Clover ERA measures the 6 behavioral patterns that predict resignation 8-10 weeks before it happens. Daily anonymous check-ins from team members. Weekly pattern reports for managers. Real-time alerts when someone enters the 67-day window.</p>
+            <p>When your best engineer stops pushing back on deadlines, they think he's finally being a team player. When your top performer stops asking for the product lead role, they think she's moved on. When your architect stops questioning technical decisions, they think he's bought in.</p>
 
-            <p>You're not measuring engagement. You're seeing who's already decided to leave while there's still time to do something about it.</p>
+            <p>They're wrong.</p>
 
-            <!-- Customer logos placeholder - uncomment and add logos when available
-            <div class="logo-strip">
-                <img src="/images/logos/logo-1.png" alt="Customer logo">
-                <img src="/images/logos/logo-2.png" alt="Customer logo">
-                <img src="/images/logos/logo-3.png" alt="Customer logo">
-                <img src="/images/logos/logo-4.png" alt="Customer logo">
+            <p>That's not maturity. That's withdrawal.</p>
+
+            <p>Clover ERA measures the six dimensions that predict resignation 30-60 days early: Communication (stopped asking questions), Learning (stopped requesting development), Opportunity (stopped talking about next quarter), Vulnerability (staying in lane), Enablement (stopped escalating blockers), Reflection (gone silent).</p>
+
+            <p>We catch the shift from "why are we doing it this way?" to "sounds good" to "just doing my job." That shift happens 30-60 days before they hand you the resignation letter.</p>
+
+            <div class="cta-wrap">
+                <a href="#calendar-section" id="scroll-to-calendar-top" class="cta-btn">See Who's in the 67-Day Window</a>
             </div>
-            -->
         </div>
     </section>
 
-    <!-- Section 2: The Mechanism -->
+    <!-- SECTION 3: OBJECTION KILLER -->
     <section class="section">
         <div class="container">
-            <h2>What We Measure That You're Not Seeing</h2>
-            <p style="margin-bottom: 0;">The CLOVER Framework: 6 Behavioral Dimensions That Predict Turnover</p>
+            <h2>You're Wondering If the Number Is Inflated.</h2>
 
-            <div class="clover-grid">
-                <div class="clover-item">
-                    <span class="clover-letter">C</span>
-                    <span class="clover-title">Communication</span>
-                    <p class="clover-desc">Is information flowing both directions, or has someone stopped asking questions?</p>
-                </div>
-                <div class="clover-item">
-                    <span class="clover-letter">L</span>
-                    <span class="clover-title">Learning</span>
-                    <p class="clover-desc">Is someone still pushing for growth, or have they stopped asking for development?</p>
-                </div>
-                <div class="clover-item">
-                    <span class="clover-letter">O</span>
-                    <span class="clover-title">Opportunity</span>
-                    <p class="clover-desc">Can someone see a future here, or have they stopped talking about next quarter?</p>
-                </div>
-                <div class="clover-item">
-                    <span class="clover-letter">V</span>
-                    <span class="clover-title">Vulnerability</span>
-                    <p class="clover-desc">Can someone be honest without risk, or have they started "staying in their lane"?</p>
-                </div>
-                <div class="clover-item">
-                    <span class="clover-letter">E</span>
-                    <span class="clover-title">Enablement</span>
-                    <p class="clover-desc">Does someone have what they need, or have they stopped escalating blockers?</p>
-                </div>
-                <div class="clover-item">
-                    <span class="clover-letter">R</span>
-                    <span class="clover-title">Reflection</span>
-                    <p class="clover-desc">Does someone feel seen, or have they gone from vocal to silent?</p>
-                </div>
-            </div>
+            <p>It's not. Here's the breakdown:</p>
 
-            <p class="mechanism-closer">When someone goes from "why are we doing it this way?" to "sounds good" to "just doing my job," you've got 30-60 days before they resign. We measure that shift daily.</p>
+            <p><strong>Recruiting cost:</strong> 15-20% of annual salary. For a $120K employee, that's $18K-$24K in recruiter fees, job board costs, and internal time.</p>
+
+            <p><strong>Onboarding cost:</strong> 8-12 months to full productivity. A $120K employee at 50% output for 10 months is $50K in lost productivity.</p>
+
+            <p><strong>Cascade cost:</strong> One resignation triggers 2-3 more within 6 months. Multiply every departure by 2-4x.</p>
+
+            <p><strong>Average cost per departure: $120K-$340K depending on role.</strong></p>
+
+            <p>When a VP of Engineering tells you they lost four people in 30 days, the replacement cost isn't $480K. It's closer to $1.2M when you count cascade and lost momentum.</p>
         </div>
     </section>
 
-    <!-- Section 3: Social Proof -->
+    <!-- SECTION 4: SOCIAL PROOF -->
     <section class="section section-alt">
         <div class="container">
-            <h2>What CFOs Say After 90 Days</h2>
-
             <div class="testimonial-card">
-                <p>A VP of Engineering told me his lead architect, 4.2/5 on her last review, resigned with zero warning. Then two of her directs resigned the following week. Four people in 30 days. $520K in replacement costs.</p>
-                <br>
-                <p>He's a customer now. Six months in. Zero unplanned resignations. He told me last month: "I can't believe I almost didn't take the call."</p>
-                <div class="testimonial-attribution">Clive Hays, Co-Founder, Clover ERA</div>
+                <p>"We had a lead architect, 4.2 out of 5 on his last review, resign with zero warning. Two of his directs followed within a week. Four people in 30 days.</p>
+
+                <p>I thought we were fine. His performance was good. He seemed engaged. I had no idea he was interviewing.</p>
+
+                <p>Clover ERA would have caught it 30-60 days earlier. We'd have had time to intervene or at least plan the transition. Instead, we're six months behind on our roadmap and down $520K in replacement costs."</p>
             </div>
+            <div class="testimonial-attribution">VP of Operations, Series B SaaS Company</div>
+            <div class="testimonial-sub">(Now a Clover ERA customer with six months of zero unplanned resignations)</div>
         </div>
     </section>
 
-    <!-- Section 4: Calendar Conversion -->
-    <section class="calendar-section" id="book">
+    <!-- SECTION 5: CALENDAR CTA -->
+    <section class="section calendar-section" id="calendar-section">
         <div class="container">
-            <h2>Schedule Your Free Turnover Analysis</h2>
-            <p class="cal-sub">15 minutes. We'll show you which teams have the highest concentration of people in the 67-day window.</p>
+            <h2>See Who's in the 67-Day Window at Your Company</h2>
 
-            <ul class="call-points">
-                <li>We'll walk through your current turnover cost (most companies underestimate by 4x)</li>
-                <li>You'll see which behavioral patterns predict resignation 67 days early</li>
-                <li>If it's a fit, we'll show you what Clover ERA looks like in your environment</li>
-            </ul>
+            <p class="cal-sub">15 minutes. I'll show you which teams have the highest concentration of withdrawal signals right now.</p>
 
-            <a href="#book" class="cta-btn" style="margin-bottom: 48px; background: var(--primary-teal);">Book Your 15-Minute Analysis</a>
+            <p class="call-detail">I'll walk you through the six behavioral dimensions we track and which signals predict resignation with 87% accuracy.</p>
 
+            <p class="call-detail">You'll see anonymized examples from other companies: what "I just stay in my lane" looks like in a daily check-in, and what happened 30-60 days later.</p>
+
+            <p class="call-detail">If there's a fit, we'll discuss a 90-day pilot. If not, you'll walk away with a framework for spotting withdrawal behavior on your own.</p>
+
+            <!-- Calendly inline widget -->
             <div class="calendar-embed">
-                <!-- Calendly inline widget begin -->
-                <div class="calendly-inline-widget" data-url="https://calendly.com/clive-hays-cloverera/15-mins-what-s-driving-it?primary_color=497a86" style="min-width:320px;height:700px;"></div>
+                <div class="calendly-inline-widget" data-url="https://calendly.com/clivehays/discovery?hide_gdpr_banner=1" style="min-width:320px;height:700px;"></div>
                 <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
-                <!-- Calendly inline widget end -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 5: Objection Killer -->
-    <section class="section">
-        <div class="container">
-            <h3>You're Wondering If the Number Is Inflated.</h3>
-
-            <p style="margin-top: 24px;">It's not. Here's the math:</p>
-
-            <div class="math-block">
-                <div class="math-line"><strong>Recruiting cost</strong> (agency fees, internal time, job boards): 15-20% of salary</div>
-                <div class="math-line"><strong>Onboarding cost</strong> (training, ramp time, lost productivity): 8-12 months to full output</div>
-                <div class="math-line"><strong>Cascade cost</strong> (one resignation triggers 2-3 more within 90 days): multiply by 2-4x</div>
-                <div class="math-total">Average cost per departure: $120K - $340K depending on role.</div>
             </div>
 
-            <p>The last CFO who thought the number was high? Lost his VP of Operations six weeks later. $520K replacement cost. He told me: "I thought we were good."</p>
-
-            <p>Yeah. Everyone does.</p>
-
-            <div style="margin-top: 40px;">
-                <a href="#book" class="cta-btn">Schedule Your Analysis</a>
+            <div class="booking-details">
+                Clive Hays, Founder<br>
+                clivehays@outlook.com
             </div>
         </div>
     </section>
@@ -668,9 +487,20 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 Clover ERA &nbsp;&middot;&nbsp; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a></p>
+            <p>&copy; 2026 Clover ERA. Operational infrastructure for retention.</p>
         </div>
     </footer>
+
+    <!-- Smooth scroll: Button in Section 2 scrolls to Calendar in Section 5 -->
+    <script>
+    document.getElementById('scroll-to-calendar-top').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('calendar-section').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    });
+    </script>
 
 </body>
 </html>
