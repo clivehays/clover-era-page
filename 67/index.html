@@ -338,6 +338,126 @@
             .testimonial-subtext {
                 font-size: 13px;
             }
+
+            .newsletter-section {
+                padding: 48px 20px;
+            }
+
+            .newsletter-headline {
+                font-size: 26px;
+            }
+
+            .newsletter-subhead {
+                font-size: 16px;
+                margin-bottom: 24px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .newsletter-button {
+                width: 100%;
+                padding: 14px 24px;
+            }
+        }
+
+        /* ---- Newsletter Section ---- */
+        .newsletter-section {
+            background: #FFFFFF;
+            padding: 64px 40px;
+            border-top: 1px solid #E5E7EB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .newsletter-headline {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .newsletter-subhead {
+            font-size: 18px;
+            font-weight: 400;
+            color: #4B5563;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 16px;
+            border: 2px solid #D1D5DB;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .newsletter-input:focus {
+            border-color: #17A2B8;
+        }
+
+        .newsletter-input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .newsletter-button {
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #FFFFFF;
+            background: #17A2B8;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .newsletter-button:hover {
+            background: #138496;
+        }
+
+        .newsletter-button:active {
+            background: #117A8B;
+        }
+
+        .newsletter-privacy {
+            font-size: 14px;
+            font-weight: 400;
+            color: #6B7280;
+            font-style: italic;
+            margin: 0;
+        }
+
+        .newsletter-success {
+            font-size: 18px;
+            font-weight: 600;
+            color: #17A2B8;
+            margin-bottom: 12px;
+        }
+
+        .newsletter-success-sub {
+            font-size: 15px;
+            font-weight: 400;
+            color: #4B5563;
+            margin: 0;
         }
 
         /* ---- Section 5: Calendar ---- */
@@ -584,6 +704,29 @@
         </div>
     </section>
 
+    <!-- SECTION 5: NEWSLETTER SIGNUP -->
+    <section class="newsletter-section">
+        <div class="newsletter-container">
+            <h3 class="newsletter-headline">Not Ready to Talk Yet?</h3>
+            <p class="newsletter-subhead">Join 1,000+ operational leaders getting the weekly turnover intelligence report. 1.7M people see this content on LinkedIn each month. You're getting the unfiltered version with the breakdowns that don't fit in a post.</p>
+
+            <form class="newsletter-form" action="https://clivehays.substack.com/api/v1/free?nojs=true" method="post">
+                <input type="hidden" name="first_url" value="https://cloverera.com/67" />
+                <input type="hidden" name="first_referrer" value="https://cloverera.com/67" />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Your email address"
+                    class="newsletter-input"
+                    required
+                />
+                <button type="submit" class="newsletter-button">Subscribe to the Newsletter</button>
+            </form>
+
+            <p class="newsletter-privacy">No spam. Unsubscribe anytime. Same privacy policy as our clients.</p>
+        </div>
+    </section>
+
     <!-- SECTION 6: CALENDAR CTA -->
     <section class="section calendar-section" id="calendar-section">
         <div class="container">
@@ -631,6 +774,36 @@
             behavior: 'smooth',
             block: 'start'
         });
+    });
+    </script>
+
+    <!-- Newsletter form: submit via fetch, stay on page -->
+    <script>
+    document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var form = this;
+        var button = form.querySelector('.newsletter-button');
+        var email = form.querySelector('.newsletter-input').value;
+        button.textContent = 'Subscribing...';
+        button.disabled = true;
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'email=' + encodeURIComponent(email) + '&first_url=' + encodeURIComponent('https://cloverera.com/67') + '&first_referrer=' + encodeURIComponent('https://cloverera.com/67'),
+            mode: 'no-cors'
+        }).then(function() {
+            form.parentNode.innerHTML = '<p class="newsletter-success">You\'re in. Check your inbox.</p><p class="newsletter-success-sub">Substack will send you a confirmation email. Click the link to confirm your subscription.</p>';
+        }).catch(function() {
+            form.parentNode.innerHTML = '<p class="newsletter-success">You\'re in. Check your inbox.</p><p class="newsletter-success-sub">Substack will send you a confirmation email. Click the link to confirm your subscription.</p>';
+        });
+
+        if (window.gtag) {
+            gtag('event', 'newsletter_signup', {
+                event_category: '67_landing_page',
+                event_label: 'substack_subscribe'
+            });
+        }
     });
     </script>
 
