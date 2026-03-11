@@ -201,8 +201,31 @@
         }
 
         /* ---- Section 2: Credibility ---- */
+        .credibility-section .dashboard-wrap {
+            margin-top: 48px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .credibility-section .dashboard-wrap img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .credibility-section .dashboard-caption {
+            font-size: 16px;
+            color: #666666;
+            font-style: italic;
+            line-height: 1.6;
+            margin-top: 14px;
+            margin-bottom: 0;
+        }
+
         .credibility-section .cta-wrap {
-            margin-top: 60px;
+            margin-top: 48px;
             text-align: center;
         }
 
@@ -426,6 +449,11 @@
 
             <p>We catch the shift from <strong>"why are we doing it this way?"</strong> to <strong>"sounds good"</strong> to <strong>"just doing my job."</strong> That shift happens <strong>30-60 days</strong> before they hand you the resignation letter.</p>
 
+            <div class="dashboard-wrap">
+                <img src="../images/Dashboard-Landing-1.png" alt="Clover ERA dashboard showing 60.48% team health score across six CLOVER dimensions">
+            </div>
+            <p class="dashboard-caption">60.48% overall score. 453 responses. Six dimensions measured daily. Your managers see "team player." The data sees "preparing to leave."</p>
+
             <div class="cta-wrap">
                 <a href="#calendar-section" id="scroll-to-calendar-top" class="cta-btn">See Who's in the 67-Day Window</a>
             </div>
@@ -505,6 +533,10 @@
     <script>
     document.getElementById('scroll-to-calendar-top').addEventListener('click', function(e) {
         e.preventDefault();
+        gtag('event', 'cta_click', {
+            event_category: '67_landing_page',
+            event_label: 'see_67_day_window'
+        });
         document.getElementById('calendar-section').scrollIntoView({
             behavior: 'smooth',
             block: 'start'
