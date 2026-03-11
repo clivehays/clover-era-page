@@ -1142,14 +1142,21 @@
       return;
     }
 
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'newsletter_subscribe', {
+        event_category: 'engagement',
+        event_label: 'Subscribe to the Newsletter'
+      });
+    }
+
     const btn = this;
     btn.textContent = 'Subscribing...';
     btn.disabled = true;
 
     const formData = new FormData();
     formData.append('email', email);
-    formData.append('first_url', 'https://cloverera.com/67-day-test1');
-    formData.append('first_referrer', 'https://cloverera.com/67-day-test1');
+    formData.append('first_url', 'https://cloverera.com/67');
+    formData.append('first_referrer', 'https://cloverera.com/67');
 
     fetch('https://clivehays.substack.com/api/v1/free?nojs=true', {
       method: 'POST',
