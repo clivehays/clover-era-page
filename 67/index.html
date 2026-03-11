@@ -264,6 +264,143 @@
             font-style: italic;
         }
 
+        /* ---- Social Proof Stats Section ---- */
+        .social-proof-section {
+            background: #F9FAFB;
+            padding: 80px 40px;
+        }
+
+        .social-proof-section .section-headline {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1F2937;
+            text-align: center;
+            margin-bottom: 48px;
+            line-height: 1.2;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 56px;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border-radius: 8px;
+            padding: 40px 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .primary-stat {
+            font-size: 48px;
+            font-weight: 700;
+            color: #17A2B8;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .stat-description {
+            font-size: 16px;
+            font-weight: 400;
+            color: #6B7280;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .result-line {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+            line-height: 1.4;
+        }
+
+        .quote-container {
+            max-width: 800px;
+            margin: 56px auto 0;
+            padding: 32px 40px;
+            background: #FFFFFF;
+            border-left: 4px solid #17A2B8;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .quote-text {
+            font-size: 20px;
+            font-weight: 400;
+            font-style: italic;
+            color: #374151;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .quote-attribution {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6B7280;
+            margin: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .social-proof-section {
+                padding: 64px 32px;
+            }
+
+            .social-proof-section .section-headline {
+                font-size: 32px;
+                margin-bottom: 40px;
+            }
+
+            .stat-grid {
+                gap: 32px;
+            }
+
+            .primary-stat {
+                font-size: 42px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .social-proof-section {
+                padding: 48px 20px;
+            }
+
+            .social-proof-section .section-headline {
+                font-size: 28px;
+                margin-bottom: 32px;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                margin-bottom: 40px;
+            }
+
+            .stat-card {
+                padding: 32px 24px;
+            }
+
+            .primary-stat {
+                font-size: 40px;
+            }
+
+            .quote-container {
+                margin-top: 40px;
+                padding: 24px 20px;
+            }
+
+            .quote-text {
+                font-size: 18px;
+            }
+        }
+
         /* ---- Section 5: Calendar ---- */
         .calendar-section {
             padding: 100px 0;
@@ -497,7 +634,39 @@
         </div>
     </section>
 
-    <!-- SECTION 5: CALENDAR CTA -->
+    <!-- SECTION 5: TRIPLE STAT BAR SOCIAL PROOF -->
+    <section class="social-proof-section">
+        <div class="container">
+            <h2 class="section-headline">What Companies See After Installing Clover ERA</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card" role="article">
+                    <div class="primary-stat">25% &rarr; 15%</div>
+                    <div class="stat-description">Developer turnover in 6 months</div>
+                    <div class="result-line">$1M in departures prevented</div>
+                </div>
+
+                <div class="stat-card" role="article">
+                    <div class="primary-stat">29% &rarr; 55%</div>
+                    <div class="stat-description">Learning dimension in 3 months</div>
+                    <div class="result-line">Zero cost intervention</div>
+                </div>
+
+                <div class="stat-card" role="article">
+                    <div class="primary-stat">46% &rarr; 76%</div>
+                    <div class="stat-description">Team health in 10 weeks</div>
+                    <div class="result-line">C-suite requested expansion</div>
+                </div>
+            </div>
+
+            <div class="quote-container" role="blockquote">
+                <p class="quote-text" id="rotating-quote"></p>
+                <p class="quote-attribution" id="rotating-attribution"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: CALENDAR CTA -->
     <section class="section calendar-section" id="calendar-section">
         <div class="container">
             <h2>See Who's in the 67-Day Window at Your Company</h2>
@@ -532,7 +701,34 @@
         </div>
     </footer>
 
-    <!-- Smooth scroll: Button in Section 2 scrolls to Calendar in Section 5 -->
+    <!-- Rotating quote randomization -->
+    <script>
+    (function() {
+        var quotes = [
+            {
+                text: 'He had assumed his teams understood the direction and had what they needed. CLOVER showed him that both assumptions were wrong.',
+                attribution: 'VP Technology, Fortune 500 Insurance'
+            },
+            {
+                text: 'The system surfaced in two weeks what would typically take months of observation and conversation to diagnose.',
+                attribution: 'Healthcare Operations Team Lead'
+            },
+            {
+                text: 'He found it enlightening because he was now able to help his staff in a way he couldn\'t before.',
+                attribution: 'Head Teacher, UK Private School (300 staff)'
+            },
+            {
+                text: 'We had a lead architect, 4.2 out of 5 on his last review, resign with zero warning. Two of his directs followed within a week. Four people in 30 days. Clover ERA would have caught it 30-60 days earlier.',
+                attribution: 'VP Operations, Series B SaaS Company'
+            }
+        ];
+        var pick = quotes[Math.floor(Math.random() * quotes.length)];
+        document.getElementById('rotating-quote').textContent = '"' + pick.text + '"';
+        document.getElementById('rotating-attribution').textContent = pick.attribution;
+    })();
+    </script>
+
+    <!-- Smooth scroll: Button in Section 2 scrolls to Calendar in Section 6 -->
     <script>
     document.getElementById('scroll-to-calendar-top').addEventListener('click', function(e) {
         e.preventDefault();
