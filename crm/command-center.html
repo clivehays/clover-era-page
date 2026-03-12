@@ -646,15 +646,26 @@
                 .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
         ]);
 
-        // Also fetch prospect-level email engagement (includes sent_at for weekly history)
-        // Supabase defaults to 1000 rows - we need all emails for accurate stats
-        const emailEngRes = await sb.from('outreach_emails')
-            .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
-            .not('prospect_id', 'is', null)
-            .limit(50000);
+        // Fetch ALL email engagement data using pagination (Supabase caps at ~1000 rows per request)
+        async function fetchAllEngagement() {
+            const pageSize = 1000;
+            let allRows = [];
+            let from = 0;
+            while (true) {
+                const { data } = await sb.from('outreach_emails')
+                    .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
+                    .not('prospect_id', 'is', null)
+                    .range(from, from + pageSize - 1);
+                if (!data || data.length === 0) break;
+                allRows = allRows.concat(data);
+                if (data.length < pageSize) break;
+                from += pageSize;
+            }
+            return allRows;
+        }
 
         allEmails = emailsRes.data || [];
-        allEmailEngagement = emailEngRes.data || [];
+        allEmailEngagement = await fetchAllEngagement();
 
         // Build email engagement maps
         const sentSet = new Set();
