@@ -533,30 +533,22 @@ async function loadAllPeople() {
             .limit(50000)
     ]);
 
-    // Fetch all email engagement via parallel pagination (Supabase caps ~1000 rows per request)
-    async function fetchAllEmails() {
-        const pageSize = 1000;
-        // Fire first 10 pages in parallel to cover up to 10K emails fast
-        const pages = Array.from({ length: 10 }, (_, i) => i);
-        const results = await Promise.all(pages.map(i =>
-            sb.from('outreach_emails')
-                .select('prospect_id, position, sent_at, opened_at, clicked_at, replied_at')
-                .not('prospect_id', 'is', null)
-                .range(i * pageSize, (i + 1) * pageSize - 1)
-        ));
+    // Paginated fetch helper (parallel first N pages, then sequential overflow)
+    async function fetchAllRows(queryFn, pageSize = 1000, parallelPages = 20) {
+        const results = await Promise.all(
+            Array.from({ length: parallelPages }, (_, i) =>
+                queryFn().range(i * pageSize, (i + 1) * pageSize - 1)
+            )
+        );
         let allRows = [];
         for (const res of results) {
             if (res.data) allRows = allRows.concat(res.data);
         }
-        // If last page was full, keep fetching sequentially
         const lastPage = results[results.length - 1];
         if (lastPage.data && lastPage.data.length === pageSize) {
-            let from = pages.length * pageSize;
+            let from = parallelPages * pageSize;
             while (true) {
-                const { data } = await sb.from('outreach_emails')
-                    .select('prospect_id, position, sent_at, opened_at, clicked_at, replied_at')
-                    .not('prospect_id', 'is', null)
-                    .range(from, from + pageSize - 1);
+                const { data } = await queryFn().range(from, from + pageSize - 1);
                 if (!data || data.length === 0) break;
                 allRows = allRows.concat(data);
                 if (data.length < pageSize) break;
@@ -565,7 +557,9 @@ async function loadAllPeople() {
         }
         return allRows;
     }
-    const allEmailData = await fetchAllEmails();
+    const allEmailData = await fetchAllRows(() => sb.from('outreach_emails')
+        .select('prospect_id, position, sent_at, opened_at, clicked_at, replied_at')
+        .not('prospect_id', 'is', null), 1000, 20);
 
     // Build email engagement maps
     const sentSet = new Set();

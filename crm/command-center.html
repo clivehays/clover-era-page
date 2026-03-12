@@ -646,28 +646,22 @@
                 .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
         ]);
 
-        // Fetch ALL email engagement data using parallel pagination (Supabase caps ~1000 rows per request)
-        async function fetchAllEngagement() {
-            const pageSize = 1000;
-            const pages = Array.from({ length: 10 }, (_, i) => i);
-            const results = await Promise.all(pages.map(i =>
-                sb.from('outreach_emails')
-                    .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
-                    .not('prospect_id', 'is', null)
-                    .range(i * pageSize, (i + 1) * pageSize - 1)
-            ));
+        // Paginated fetch helper (parallel first N pages, then sequential overflow)
+        async function fetchAllRows(query, pageSize = 1000, parallelPages = 10) {
+            const results = await Promise.all(
+                Array.from({ length: parallelPages }, (_, i) =>
+                    query().range(i * pageSize, (i + 1) * pageSize - 1)
+                )
+            );
             let allRows = [];
             for (const res of results) {
                 if (res.data) allRows = allRows.concat(res.data);
             }
             const lastPage = results[results.length - 1];
             if (lastPage.data && lastPage.data.length === pageSize) {
-                let from = pages.length * pageSize;
+                let from = parallelPages * pageSize;
                 while (true) {
-                    const { data } = await sb.from('outreach_emails')
-                        .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
-                        .not('prospect_id', 'is', null)
-                        .range(from, from + pageSize - 1);
+                    const { data } = await query().range(from, from + pageSize - 1);
                     if (!data || data.length === 0) break;
                     allRows = allRows.concat(data);
                     if (data.length < pageSize) break;
@@ -677,23 +671,34 @@
             return allRows;
         }
 
-        allEmails = emailsRes.data || [];
-        allEmailEngagement = await fetchAllEngagement();
+        // Fetch Email 1s and all-position engagement in parallel
+        const [email1Data, engagementData] = await Promise.all([
+            // Email 1s only (for weekly stats / daily grid) - ~3K rows
+            fetchAllRows(() => sb.from('outreach_emails')
+                .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
+                .not('prospect_id', 'is', null)
+                .eq('position', 1), 1000, 5),
+            // All positions (for engagement maps: sent/opened/clicked per prospect) - ~18K+ rows
+            fetchAllRows(() => sb.from('outreach_emails')
+                .select('prospect_id, opened_at, clicked_at')
+                .not('prospect_id', 'is', null), 1000, 20),
+        ]);
 
-        // Build email engagement maps
+        allEmails = emailsRes.data || [];
+        allEmailEngagement = email1Data;
+
+        // Build email engagement maps from all-position data
         const sentSet = new Set();
         const openedSet = new Set();
         const clickedSet = new Set();
-        const email1Set = new Set();
-        allEmailEngagement.forEach(e => {
+        engagementData.forEach(e => {
             if (e.prospect_id) {
                 sentSet.add(e.prospect_id);
-                if (e.position === 1) email1Set.add(e.prospect_id);
                 if (e.opened_at) openedSet.add(e.prospect_id);
                 if (e.clicked_at) clickedSet.add(e.prospect_id);
             }
         });
-        totalEmail1s = email1Set.size;
+        totalEmail1s = email1Data.length;
 
         // Build action sets from person_notes (book_sent, li_con_req, li_dm)
         const bookSentContacts = new Set();
