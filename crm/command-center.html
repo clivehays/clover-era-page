@@ -640,16 +640,18 @@
             sb.from('outreach_emails')
                 .select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))')
                 .order('created_at', { ascending: false })
-                .limit(1000),
+                .limit(10000),
             sb.from('person_notes')
                 .select('contact_id, prospect_id, note_type')
                 .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
         ]);
 
         // Also fetch prospect-level email engagement (includes sent_at for weekly history)
+        // Supabase defaults to 1000 rows - we need all emails for accurate stats
         const emailEngRes = await sb.from('outreach_emails')
             .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
-            .not('prospect_id', 'is', null);
+            .not('prospect_id', 'is', null)
+            .limit(50000);
 
         allEmails = emailsRes.data || [];
         allEmailEngagement = emailEngRes.data || [];
