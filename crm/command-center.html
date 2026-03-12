@@ -639,8 +639,9 @@
                 .not('status', 'in', '(converted,bounced,invalid,unsubscribed)'),
             sb.from('outreach_emails')
                 .select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))')
+                .eq('position', 1)
                 .order('created_at', { ascending: false })
-                .limit(10000),
+                .limit(3000),
             sb.from('person_notes')
                 .select('contact_id, prospect_id, note_type')
                 .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
@@ -671,33 +672,33 @@
             return allRows;
         }
 
-        // Fetch Email 1s and all-position engagement in parallel
-        const [email1Data, engagementData] = await Promise.all([
-            // Email 1s only (for weekly stats / daily grid) - no prospect_id filter
+        // Fetch Email 1s for stats, plus opened/clicked prospect IDs (lightweight)
+        const [email1Data, openedProspects, clickedProspects] = await Promise.all([
+            // Email 1s only (for weekly stats / daily grid)
             fetchAllRows(() => sb.from('outreach_emails')
                 .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
                 .eq('position', 1)
                 .not('sent_at', 'is', null), 1000, 5),
-            // All positions (for engagement maps: sent/opened/clicked per prospect)
+            // Opened prospect IDs only (much smaller than all emails)
             fetchAllRows(() => sb.from('outreach_emails')
-                .select('prospect_id, opened_at, clicked_at')
-                .not('prospect_id', 'is', null), 1000, 20),
+                .select('prospect_id')
+                .not('prospect_id', 'is', null)
+                .not('opened_at', 'is', null), 1000, 5),
+            // Clicked prospect IDs only
+            fetchAllRows(() => sb.from('outreach_emails')
+                .select('prospect_id')
+                .not('prospect_id', 'is', null)
+                .not('clicked_at', 'is', null), 1000, 5),
         ]);
 
         allEmails = emailsRes.data || [];
         allEmailEngagement = email1Data;
 
-        // Build email engagement maps from all-position data
+        // Build engagement maps: sent from Email 1 data, opened/clicked from dedicated queries
         const sentSet = new Set();
-        const openedSet = new Set();
-        const clickedSet = new Set();
-        engagementData.forEach(e => {
-            if (e.prospect_id) {
-                sentSet.add(e.prospect_id);
-                if (e.opened_at) openedSet.add(e.prospect_id);
-                if (e.clicked_at) clickedSet.add(e.prospect_id);
-            }
-        });
+        email1Data.forEach(e => { if (e.prospect_id) sentSet.add(e.prospect_id); });
+        const openedSet = new Set(openedProspects.map(e => e.prospect_id).filter(Boolean));
+        const clickedSet = new Set(clickedProspects.map(e => e.prospect_id).filter(Boolean));
         totalEmail1s = email1Data.length;
 
         // Build action sets from person_notes (book_sent, li_con_req, li_dm)
