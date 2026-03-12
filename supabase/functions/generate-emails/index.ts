@@ -119,7 +119,7 @@ WRITING RULES FOR SELF-SERVE:
 - No "I'd love to," "curious," "happy to help," "reaching out," "just wanted to"
 `.trim();
 
-const CALENDAR_LINK = 'https://calendly.com/clive-hays-cloverera/15-mins-what-s-driving-it';
+const CALENDAR_LINK = 'https://cloverera.com/67';
 
 function getCompanySizeContext(employeeCount: number): string {
   if (employeeCount >= 5000) {
