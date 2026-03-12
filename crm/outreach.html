@@ -1061,19 +1061,24 @@
                     .eq('status', 'active');
                 document.getElementById('activeCampaigns').textContent = activeCampaigns?.length || 0;
 
-                // Get all campaign stats
-                const { data: campaigns } = await supabaseClient
-                    .from('outreach_campaigns')
-                    .select('emails_sent, emails_opened, emails_clicked');
+                // Compute live stats from outreach_emails (not stale denormalized values)
+                const [sentRes, openedRes, clickedRes] = await Promise.all([
+                    supabaseClient.from('outreach_emails')
+                        .select('*', { count: 'exact', head: true })
+                        .in('status', ['sent', 'delivered', 'opened', 'clicked', 'replied']),
+                    supabaseClient.from('outreach_emails')
+                        .select('*', { count: 'exact', head: true })
+                        .not('opened_at', 'is', null),
+                    supabaseClient.from('outreach_emails')
+                        .select('*', { count: 'exact', head: true })
+                        .not('clicked_at', 'is', null),
+                ]);
 
-                let totalSent = 0, totalOpened = 0, totalClicked = 0;
-                campaigns?.forEach(c => {
-                    totalSent += c.emails_sent || 0;
-                    totalOpened += c.emails_opened || 0;
-                    totalClicked += c.emails_clicked || 0;
-                });
+                const totalSent = sentRes.count || 0;
+                const totalOpened = openedRes.count || 0;
+                const totalClicked = clickedRes.count || 0;
 
-                document.getElementById('emailsSent').textContent = totalSent;
+                document.getElementById('emailsSent').textContent = totalSent.toLocaleString();
                 document.getElementById('openRate').textContent = totalSent > 0
                     ? Math.round((totalOpened / totalSent) * 100) + '%'
                     : '0%';
@@ -1098,6 +1103,30 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
+
+                // Refresh denormalized stats for each campaign via server-side RPC
+                if (campaigns && campaigns.length > 0) {
+                    await Promise.all(campaigns.map(c =>
+                        supabaseClient.rpc('update_campaign_stats', { p_campaign_id: c.id })
+                    ));
+                    // Re-fetch campaigns with updated stats
+                    const { data: refreshed } = await supabaseClient
+                        .from('outreach_campaigns')
+                        .select('id, emails_sent, emails_opened, emails_clicked, total_prospects')
+                        .order('created_at', { ascending: false });
+                    if (refreshed) {
+                        const statsMap = {};
+                        refreshed.forEach(r => { statsMap[r.id] = r; });
+                        campaigns.forEach(c => {
+                            if (statsMap[c.id]) {
+                                c.emails_sent = statsMap[c.id].emails_sent;
+                                c.emails_opened = statsMap[c.id].emails_opened;
+                                c.emails_clicked = statsMap[c.id].emails_clicked;
+                                c.total_prospects = statsMap[c.id].total_prospects;
+                            }
+                        });
+                    }
+                }
 
                 document.getElementById('campaignsLoading').style.display = 'none';
 
