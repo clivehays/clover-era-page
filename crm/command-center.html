@@ -673,12 +673,12 @@
 
         // Fetch Email 1s and all-position engagement in parallel
         const [email1Data, engagementData] = await Promise.all([
-            // Email 1s only (for weekly stats / daily grid) - ~3K rows
+            // Email 1s only (for weekly stats / daily grid) - no prospect_id filter
             fetchAllRows(() => sb.from('outreach_emails')
                 .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
-                .not('prospect_id', 'is', null)
-                .eq('position', 1), 1000, 5),
-            // All positions (for engagement maps: sent/opened/clicked per prospect) - ~18K+ rows
+                .eq('position', 1)
+                .not('sent_at', 'is', null), 1000, 5),
+            // All positions (for engagement maps: sent/opened/clicked per prospect)
             fetchAllRows(() => sb.from('outreach_emails')
                 .select('prospect_id, opened_at, clicked_at')
                 .not('prospect_id', 'is', null), 1000, 20),
