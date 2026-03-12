@@ -1176,5 +1176,29 @@
     });
   });
 </script>
+
+<script>
+  (function() {
+    var thresholds = [25, 50, 75, 90];
+    var fired = new Set();
+    window.addEventListener('scroll', function() {
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+      var pct = Math.round((scrollTop / docHeight) * 100);
+      thresholds.forEach(function(t) {
+        if (pct >= t && !fired.has(t)) {
+          fired.add(t);
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'scroll_depth', {
+              event_category: 'engagement',
+              percent: t
+            });
+          }
+        }
+      });
+    }, { passive: true });
+  })();
+</script>
 </body>
 </html>
