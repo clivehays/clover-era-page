@@ -520,10 +520,8 @@ async function loadAllPeople() {
         sb.from('opportunities')
             .select('id, contact_id, company_id, name, stage, value, close_date, created_at')
             .limit(10000),
-        sb.from('outreach_emails')
-            .select('prospect_id, position, sent_at, opened_at, clicked_at, replied_at')
-            .not('prospect_id', 'is', null)
-            .limit(50000),
+        // Placeholder - emails loaded separately via pagination below
+        Promise.resolve({ data: [] }),
         sb.from('person_notes')
             .select('contact_id, prospect_id, note_type')
             .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
@@ -535,13 +533,47 @@ async function loadAllPeople() {
             .limit(50000)
     ]);
 
+    // Fetch all email engagement via parallel pagination (Supabase caps ~1000 rows per request)
+    async function fetchAllEmails() {
+        const pageSize = 1000;
+        // Fire first 10 pages in parallel to cover up to 10K emails fast
+        const pages = Array.from({ length: 10 }, (_, i) => i);
+        const results = await Promise.all(pages.map(i =>
+            sb.from('outreach_emails')
+                .select('prospect_id, position, sent_at, opened_at, clicked_at, replied_at')
+                .not('prospect_id', 'is', null)
+                .range(i * pageSize, (i + 1) * pageSize - 1)
+        ));
+        let allRows = [];
+        for (const res of results) {
+            if (res.data) allRows = allRows.concat(res.data);
+        }
+        // If last page was full, keep fetching sequentially
+        const lastPage = results[results.length - 1];
+        if (lastPage.data && lastPage.data.length === pageSize) {
+            let from = pages.length * pageSize;
+            while (true) {
+                const { data } = await sb.from('outreach_emails')
+                    .select('prospect_id, position, sent_at, opened_at, clicked_at, replied_at')
+                    .not('prospect_id', 'is', null)
+                    .range(from, from + pageSize - 1);
+                if (!data || data.length === 0) break;
+                allRows = allRows.concat(data);
+                if (data.length < pageSize) break;
+                from += pageSize;
+            }
+        }
+        return allRows;
+    }
+    const allEmailData = await fetchAllEmails();
+
     // Build email engagement maps
     const sentSet = new Set();
     const openedSet = new Set();
     const clickedSet = new Set();
     const openedCountMap = new Map(); // prospect_id -> count of distinct opened emails
     const clickedCountMap = new Map(); // prospect_id -> count of distinct clicked emails
-    (emailsRes.data || []).forEach(e => {
+    allEmailData.forEach(e => {
         if (e.prospect_id) {
             sentSet.add(e.prospect_id);
             if (e.opened_at) {
