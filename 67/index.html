@@ -843,11 +843,14 @@
 <!-- SECTION 1: HERO -->
 <section class="hero">
   <div class="container">
-    <div class="hero-eyebrow">THIS ISN'T THEORY. IT'S HAPPENING RIGHT NOW.</div>
     <h1>Someone on your team has already decided to leave.</h1>
     <p class="hero-sub">
-      You won't see it for 67 days. That's how long most managers operate between the decision and the resignation letter. By the time you're reading this, the countdown has already started.
+      You won't see it for 67 days. That's how long the average manager operates between the decision and the resignation letter.
     </p>
+    <div class="dashboard-img-wrap reveal" style="margin-top: 40px;">
+      <img src="../images/Dashboard-Landing-1.png" alt="Clover ERA dashboard showing team health score and CLOVER dimensions" />
+    </div>
+    <p class="dashboard-caption reveal" style="margin-top: 16px;">This is what a manager sees in their daily Clover ERA report. Anonymous check-in response from one team member. The resignation signal was detected 39 days before the letter arrived. Their manager had no idea.</p>
   </div>
 </section>
 
@@ -944,8 +947,9 @@
   </div>
 </section>
 
+
 <!-- SECTION 5: DASHBOARD ALERT SCREENSHOT -->
-<section class="section">
+<section class="section section-alt">
   <div class="container">
     <div class="section-label">The Signal Your Manager Missed</div>
     <h2 class="reveal">This is what Clover ERA shows managers every day on their dashboard.</h2>
@@ -957,27 +961,11 @@
       <span class="overlay-label">Days to resignation</span>
     </div>
     <p class="dashboard-caption reveal">This manager had no idea. The system flagged withdrawal behavior. The employee resigned 11 days later.</p>
-    <p class="dashboard-caption reveal" style="margin-top: 12px;">This is what a manager sees in their daily Clover ERA report. Anonymous check-in response from one team member. Resignation signal detected 39 days before the letter arrived.</p>
+    <p class="dashboard-caption reveal" style="margin-top: 12px;">Anonymous check-in response from one team member. Resignation signal detected 39 days before the letter arrived.</p>
   </div>
 </section>
 
-<!-- SECTION 6: TEAM HEALTH SCORE SCREENSHOT -->
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-label">What the Data Actually Sees</div>
-    <h2 class="reveal">453 responses. Six dimensions measured daily.</h2>
-    <div class="dashboard-img-wrap reveal">
-      <img src="../images/Dashboard-Landing-1.png" alt="Clover ERA dashboard showing 60.48% team health score" />
-    </div>
-    <div class="dashboard-overlay-stat reveal">
-      <span class="overlay-number">60%</span>
-      <span class="overlay-label">Team health score</span>
-    </div>
-    <p class="dashboard-caption reveal">453 responses. Six dimensions measured daily. Communication, Learning, Opportunity, Vulnerability, Enablement, Reflection.</p>
-  </div>
-</section>
-
-<!-- SECTION 7: VP OPERATIONS CASCADE STORY -->
+<!-- SECTION 6: VP OPERATIONS CASCADE STORY -->
 <section class="section">
   <div class="container">
     <div class="section-label">What Happened When They Waited</div>
@@ -1237,12 +1225,19 @@
     sessionStorage.setItem('_cv_vid', visitorId);
   }
 
+  // Capture UTM params from URL
+  var params = new URLSearchParams(window.location.search);
+  var utmSource = params.get('utm_source') || null;
+  var utmCampaign = params.get('utm_campaign') || null;
+
   // Create initial visit record
   sb.from('page_visits').insert({
     page_path: '/67',
     visitor_id: visitorId,
     referrer: document.referrer || null,
-    user_agent: navigator.userAgent
+    user_agent: navigator.userAgent,
+    utm_source: utmSource,
+    utm_campaign: utmCampaign
   }).select('id').single().then(function(res) {
     if (res.data) visitId = res.data.id;
   });
