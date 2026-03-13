@@ -520,6 +520,10 @@
                         <option value="Calculator">Calculator</option>
                         <option value="Assessment">Assessment</option>
                     </select>
+                    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text2);margin-left:0.5rem;cursor:pointer">
+                        <input type="checkbox" id="analyticsHumansOnly" checked onchange="filterAndRenderTable()">
+                        Humans only
+                    </label>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
@@ -2169,12 +2173,15 @@
         const visits = window._analyticsVisits;
         if (!visits) return;
 
-        const search    = (document.getElementById('analyticsSearch')?.value || '').toLowerCase().trim();
-        const minScroll = parseInt(document.getElementById('analyticsScroll')?.value) || 0;
-        const minTime   = parseInt(document.getElementById('analyticsTime')?.value) || 0;
-        const btnFilter = document.getElementById('analyticsBtn')?.value || '';
+        const search      = (document.getElementById('analyticsSearch')?.value || '').toLowerCase().trim();
+        const minScroll   = parseInt(document.getElementById('analyticsScroll')?.value) || 0;
+        const minTime     = parseInt(document.getElementById('analyticsTime')?.value) || 0;
+        const btnFilter   = document.getElementById('analyticsBtn')?.value || '';
+        const humansOnly  = document.getElementById('analyticsHumansOnly')?.checked !== false;
 
         let filtered = visits;
+
+        if (humansOnly) filtered = filtered.filter(v => v.is_human);
 
         if (search) {
             filtered = filtered.filter(v =>

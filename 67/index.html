@@ -792,6 +792,10 @@
   var HDRS    = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Prefer': 'return=representation' };
   var PATCH_HDRS = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON };
 
+  // Block known bots/crawlers/email prefetchers from creating rows
+  var BOT_UA = /bot|crawl|spider|slurp|facebot|ia_archiver|prerender|headlesschrome|phantom|selenium|puppeteer|outlook|safelinks|office|msnbot|linkscanner|mailtrack|preview|netseer|wget|curl|python|java\/|apache-http/i;
+  if (BOT_UA.test(navigator.userAgent)) return;
+
   var visitId   = null;
   var maxScroll = 0;
   var startTs   = Date.now();
@@ -845,15 +849,19 @@
     }).catch(function() {});
   };
 
-  // Scroll: mark human, track max depth
+  // Mark human on scroll, mouse move, or touch
+  function markHuman() { if (!isHuman) { isHuman = true; update(); } }
   window.addEventListener('scroll', function() {
-    isHuman = true;
+    markHuman();
     var dh = document.documentElement.scrollHeight - window.innerHeight;
     if (dh > 0) {
       var pct = Math.round(((window.scrollY || document.documentElement.scrollTop) / dh) * 100);
       if (pct > maxScroll) { maxScroll = pct; update(); }
     }
   }, { passive: true });
+  window.addEventListener('mousemove', markHuman, { once: true, passive: true });
+  window.addEventListener('touchstart', markHuman, { once: true, passive: true });
+  window.addEventListener('keydown', markHuman, { once: true });
 
   // Button click tracking
   var clickedBtns = [];
