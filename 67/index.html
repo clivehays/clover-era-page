@@ -4,8 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow">
-<title>Someone on Your Team Has Already Decided to Leave | Clover ERA</title>
-<meta name="description" content="Someone on your team has already decided to leave. You won't see it for 67 days. See which teams are at risk before the resignation letter lands.">
+<title>Turnover Analysis | Clover ERA</title>
 
 <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
@@ -38,7 +37,7 @@
 </script>
 <noscript><img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9495801&fmt=gif" /></noscript>
 
-<!-- Apollo Website Tracker -->
+<!-- Apollo -->
 <script>
   (function(){
     var n = Math.random().toString(36).substring(7);
@@ -51,106 +50,176 @@
 </script>
 
 <style>
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  :root {
+    --teal:   #17A2B8;
+    --teal-d: #138496;
+    --coral:  #D94F3D;
+    --coral-d:#BF3F2E;
+    --dark:   #0f1923;
+    --ink:    #1a1a1a;
+    --body:   #4a4a4a;
+    --muted:  #6B7280;
+    --rule:   #E5E7EB;
+    --bg-alt: #f9fafb;
   }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    color: #4a4a4a;
+    color: var(--body);
     line-height: 1.7;
-    background: #ffffff;
+    background: #fff;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
   }
 
-  /* ---- Shared ---- */
-  .container {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 28px;
-  }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 28px; }
 
-  h1, h2, h3 {
-    color: #1a1a1a;
-    letter-spacing: -0.02em;
-  }
+  h1, h2, h3, h4 { color: var(--ink); letter-spacing: -0.02em; }
+  h1 { font-size: 48px; font-weight: 700; line-height: 1.1; }
+  h2 { font-size: 38px; font-weight: 600; line-height: 1.2; margin-bottom: 20px; }
+  h3 { font-size: 24px; font-weight: 600; line-height: 1.3; margin-bottom: 12px; }
+  p  { font-size: 18px; color: var(--body); line-height: 1.7; margin-bottom: 18px; }
+  p strong { color: var(--ink); }
+  p:last-child { margin-bottom: 0; }
 
-  h1 {
-    font-size: 52px;
-    font-weight: 700;
-    line-height: 1.1;
-  }
+  /* ---- Reveal ---- */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
 
-  h2 {
-    font-size: 40px;
-    font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 24px;
-  }
-
-  p {
-    font-size: 19px;
-    color: #4a4a4a;
-    line-height: 1.7;
-    margin-bottom: 20px;
-  }
-
-  p strong { color: #1a1a1a; }
-
-  .cta-btn {
+  /* ---- Buttons ---- */
+  .btn-coral {
     display: inline-block;
-    background: #17A2B8;
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: 600;
+    background: var(--coral);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
     padding: 18px 36px;
     border-radius: 8px;
     text-decoration: none;
-    transition: background 0.2s ease, transform 0.15s ease;
-    cursor: pointer;
     border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: -0.01em;
+  }
+  .btn-coral:hover { background: var(--coral-d); transform: translateY(-1px); }
+  .btn-coral.full { display: block; text-align: center; width: 100%; }
+
+  .btn-teal {
+    display: inline-block;
+    background: var(--teal);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-teal:hover { background: var(--teal-d); }
+
+  .btn-outline {
+    display: inline-block;
+    background: transparent;
+    color: var(--teal);
+    font-size: 16px;
+    font-weight: 600;
+    padding: 13px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 2px solid var(--teal);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { background: var(--teal); color: #fff; }
+
+  .btn-sub {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 10px;
+    display: block;
+    text-align: center;
   }
 
-  .cta-btn:hover {
-    background: #138496;
-    transform: translateY(-1px);
-  }
+  /* ---- Section scaffolding ---- */
+  .section      { padding: 80px 0; }
+  .section-alt  { background: var(--bg-alt); }
+  .section-dark { background: var(--dark); }
 
-  /* ---- Logo / Nav bar ---- */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+  /* ============================================================
+     SECTION 1 — PERSONALISED TOP BAR
+     ============================================================ */
+  .p-bar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: var(--dark);
+    padding: 14px 0;
+    display: none; /* shown by JS when token present */
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .p-bar-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .p-bar-left { display: flex; flex-direction: column; gap: 3px; }
+  .p-bar-company {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .p-bar-company span { color: var(--teal); }
+  .p-bar-meta { font-size: 12px; color: rgba(255,255,255,0.55); }
+  .p-bar-meta .highlight { color: var(--coral); font-weight: 700; }
+
+  /* fallback logo bar — shown when no token */
   .logo-bar {
     padding: 20px 0 0;
     position: sticky;
     top: 0;
-    background: #ffffff;
+    background: #fff;
     z-index: 100;
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid var(--rule);
   }
-
   .logo-bar-inner {
-    max-width: 860px;
+    max-width: 880px;
     margin: 0 auto;
     padding: 0 28px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-
-  .logo-bar img {
-    height: 32px;
-    width: auto;
-    vertical-align: middle;
-  }
-
+  .logo-bar img { height: 32px; width: auto; }
   .nav-cta {
     display: inline-block;
-    background: #17A2B8;
-    color: #ffffff;
+    background: var(--teal);
+    color: #fff;
     font-size: 14px;
     font-weight: 600;
     padding: 10px 22px;
@@ -158,16 +227,10 @@
     text-decoration: none;
     transition: background 0.2s;
   }
-
-  .nav-cta:hover { background: #138496; }
+  .nav-cta:hover { background: var(--teal-d); }
 
   /* ---- Alert ticker ---- */
-  .alert-bar {
-    background: #17A2B8;
-    padding: 10px 0;
-    overflow: hidden;
-  }
-
+  .alert-bar { background: var(--teal); padding: 10px 0; overflow: hidden; }
   .alert-bar-inner {
     display: flex;
     gap: 60px;
@@ -179,637 +242,564 @@
     text-transform: uppercase;
     color: rgba(255,255,255,0.95);
   }
-
   .ticker-item { flex-shrink: 0; font-size: 13px; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-  @keyframes ticker {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+  /* ============================================================
+     SECTION 2 — PATTERN INTERRUPT HERO
+     ============================================================ */
+  .hero-counter {
+    padding: 52px 0 72px;
+    background: #fff;
   }
 
-  /* ---- Hero ---- */
-  .hero {
-    padding: 72px 0 80px;
+  .counter-wrap {
+    margin-bottom: 32px;
   }
 
-  .hero h1 {
-    max-width: 720px;
-    margin-bottom: 24px;
-  }
-
-  .hero-eyebrow {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+  .counter-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #17A2B8;
-    margin-bottom: 20px;
+    color: var(--muted);
+    margin-bottom: 8px;
   }
 
-  .hero-sub {
-    font-size: 21px;
-    color: #4a4a4a;
-    line-height: 1.65;
-    max-width: 640px;
-    margin-bottom: 36px;
+  .counter-number {
+    font-size: 76px;
+    font-weight: 800;
+    color: var(--coral);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
   }
 
-  .hero-ghost {
-    font-size: 15px;
-    color: #888;
-    margin-top: 16px;
+  .counter-sub {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-top: 12px;
     margin-bottom: 0;
   }
 
-  /* ---- Section ---- */
-  .section {
-    padding: 80px 0;
+  .counter-daily {
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 10px;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+  .counter-daily .daily-amt { color: var(--coral); font-weight: 700; }
+
+  .hero-counter h1 {
+    max-width: 780px;
+    margin: 32px 0 20px;
   }
 
-  .section-alt {
-    background: #f9fafb;
+  .hero-counter .body-para {
+    font-size: 20px;
+    color: var(--body);
+    max-width: 660px;
+    line-height: 1.65;
+    margin-bottom: 32px;
   }
 
-  .section-label {
-    font-size: 12px;
+  .paranoia-box {
+    display: block;
+    background: #fdf0ee;
+    border-left: 5px solid var(--coral);
+    border-radius: 0 10px 10px 0;
+    padding: 24px 28px;
+    max-width: 680px;
+    margin-top: 32px;
+  }
+  .paranoia-box p {
+    font-size: 21px;
     font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #17A2B8;
+    color: var(--coral);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .scroll-prompt {
+    font-size: 30px;
+    color: var(--teal);
+    font-weight: 700;
+    margin-top: 22px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ============================================================
+     SECTION 3 — VISUAL PROOF
+     ============================================================ */
+  .proof-subhead {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
     margin-bottom: 20px;
+    margin-top: 48px;
+  }
+  .proof-subhead:first-of-type { margin-top: 0; }
+
+  .dashboard-img-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+  }
+  .dashboard-img-wrap img { width: 100%; display: block; height: auto; }
+
+  .img-caption {
+    font-size: 15px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.6;
+    border-left: 3px solid var(--rule);
+    padding-left: 16px;
+    margin-bottom: 0;
+  }
+
+  /* ============================================================
+     SECTION 4 — PERSONALISED COST BREAKDOWN
+     ============================================================ */
+  .cost-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .cost-col {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .cost-col-left { border-top: 4px solid var(--teal); }
+  .cost-col-right { border-top: 4px solid var(--coral); }
+
+  .cost-col h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .cost-list { list-style: none; width: 100%; }
+  .cost-list li {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--body);
+    gap: 16px;
+  }
+  .cost-list li:last-child { border-bottom: none; }
+  .cost-list li .amt {
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cost-list li.total-row {
+    border-top: 2px solid var(--ink);
+    border-bottom: none;
+    margin-top: 4px;
+    padding-top: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 16px;
+  }
+  .cost-list li.total-row .amt {
+    color: var(--teal);
+    font-size: 20px;
   }
 
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #E5E7EB;
+  .cost-col-right p {
+    font-size: 16px;
+    color: var(--body);
+    line-height: 1.7;
+    margin-bottom: 16px;
   }
 
-  /* ---- Withdrawal phrases ---- */
+  .exposure-callout {
+    background: #fdf0ee;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+  .exposure-callout .exposure-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--coral);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .exposure-callout p {
+    font-size: 14px;
+    color: var(--body);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ============================================================
+     SECTION 5 — WITHDRAWAL RECOGNITION
+     ============================================================ */
   .phrases-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    margin-top: 40px;
+    margin-top: 36px;
+    margin-bottom: 36px;
   }
-
   .phrase-card {
-    background: #ffffff;
-    border: 1px solid #E5E7EB;
-    border-left: 4px solid #17A2B8;
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--teal);
     border-radius: 8px;
-    padding: 28px;
+    padding: 24px;
     transition: box-shadow 0.2s;
   }
-
-  .phrase-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  }
-
+  .phrase-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
   .phrase-card-text {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     font-style: italic;
-    color: #1a1a1a;
-    margin-bottom: 12px;
+    color: var(--ink);
+    margin-bottom: 10px;
     line-height: 1.4;
   }
-
   .phrase-card-decode {
-    font-size: 15px;
-    color: #4a4a4a;
+    font-size: 14px;
+    color: var(--body);
     line-height: 1.6;
     display: flex;
     gap: 8px;
     align-items: flex-start;
   }
+  .decode-arrow { color: var(--teal); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
 
-  .decode-arrow {
-    color: #17A2B8;
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  /* ---- Dashboard image ---- */
-  .dashboard-img-wrap {
-    margin: 32px 0 0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  }
-
-  .dashboard-img-wrap img {
-    width: 100%;
-    display: block;
-    height: auto;
-  }
-
-  .dashboard-overlay-stat {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    background: #17A2B8;
-    border-radius: 8px;
-    padding: 12px 20px;
-    margin-top: 16px;
-  }
-
-  .overlay-number {
-    font-size: 32px;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1;
-  }
-
-  .overlay-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.85);
-    display: block;
-    margin-top: 4px;
-  }
-
-  .dashboard-caption {
-    font-size: 16px;
-    color: #666;
-    font-style: italic;
-    line-height: 1.6;
-    margin-bottom: 0;
-  }
-
-  /* ---- Story stats ---- */
-  .story-stat-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin: 40px 0;
-  }
-
-  .stat-box {
-    background: #f9fafb;
-    border: 1px solid #E5E7EB;
-    border-top: 4px solid #17A2B8;
-    border-radius: 8px;
-    padding: 28px;
-    text-align: center;
-  }
-
-  .stat-number {
-    font-size: 42px;
-    font-weight: 700;
-    color: #17A2B8;
-    display: block;
-    line-height: 1;
-    letter-spacing: -0.02em;
-  }
-
-  .stat-label {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: #6B7280;
-    display: block;
+  .withdrawal-callout {
+    background: #fdf0ee;
+    border-left: 4px solid var(--coral);
+    border-radius: 0 8px 8px 0;
+    padding: 28px 32px;
     margin-top: 8px;
   }
+  .withdrawal-callout p {
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+  .withdrawal-callout p:last-child { margin-bottom: 0; }
 
-  /* ---- Testimonial cards ---- */
-  .testimonials-secondary {
+  /* ============================================================
+     SECTION 6 — THREE-PATH CONVERSION
+     ============================================================ */
+  .three-paths {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "primary  primary"
+      "secondary tertiary";
     gap: 24px;
     margin-top: 40px;
   }
+  .path-card-primary   { grid-area: primary; }
+  .path-card-secondary { grid-area: secondary; }
+  .path-card-tertiary  { grid-area: tertiary; }
 
-  .testimonial-secondary {
-    background: #ffffff;
-    border: 1px solid #E5E7EB;
-    border-left: 4px solid #17A2B8;
-    border-radius: 8px;
-    padding: 32px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  .path-card {
+    border-radius: 12px;
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
   }
 
-  .t-sec-quote {
-    font-size: 17px;
-    line-height: 1.7;
-    color: #374151;
-    font-style: italic;
+  .path-card-primary {
+    background: #fdf0ee;
+    border: 2px solid var(--coral);
+  }
+  .path-card-secondary, .path-card-tertiary {
+    background: var(--bg-alt);
+    border: 1px solid var(--rule);
+  }
+
+  .path-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
     margin-bottom: 20px;
+    display: inline-block;
+    width: fit-content;
   }
+  .path-badge-primary { background: var(--coral); color: #fff; }
+  .path-badge-secondary, .path-badge-tertiary { background: var(--teal); color: #fff; }
 
-  .t-sec-result {
+  .path-card h3 { font-size: 20px; margin-bottom: 12px; }
+  .path-card .path-sub { font-size: 14px; color: var(--muted); font-weight: 600; margin-bottom: 16px; font-style: italic; }
+  .path-card p { font-size: 15px; color: var(--body); line-height: 1.65; flex: 1; }
+
+  .path-card .path-minutes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .path-minute {
+    display: flex;
+    gap: 12px;
     font-size: 14px;
-    font-weight: 600;
-    color: #17A2B8;
-    letter-spacing: 0.02em;
+    color: var(--body);
+    line-height: 1.55;
+    align-items: flex-start;
+  }
+  .path-minute-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--coral);
+    background: #fdf0ee;
+    border-radius: 4px;
+    padding: 3px 7px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+  .path-card-secondary .path-minute-num,
+  .path-card-tertiary .path-minute-num {
+    color: var(--teal);
+    background: #e8f7fa;
   }
 
-  /* ---- Quote block ---- */
-  .quote-block {
-    background: #f9fafb;
-    border-left: 4px solid #17A2B8;
-    border-radius: 0 8px 8px 0;
-    padding: 36px 40px;
-    margin: 40px 0;
-  }
+  .path-cta-wrap { margin-top: 24px; }
 
-  .quote-block p {
-    font-size: 20px;
-    font-style: italic;
-    color: #374151;
-    line-height: 1.7;
-    margin-bottom: 16px;
+  /* ============================================================
+     SECTION 7 — TESTIMONIALS
+     ============================================================ */
+  .testimonial-section { background: var(--bg-alt); padding: 80px 40px; }
+  .testimonial-container { max-width: 880px; margin: 0 auto; }
+  .testimonial-headline {
+    font-size: 34px; font-weight: 700; color: #1F2937;
+    text-align: center; margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.02em;
   }
+  .privacy-note {
+    font-size: 15px; font-weight: 500; font-style: italic; color: #374151;
+    text-align: center; margin-bottom: 48px;
+  }
+  .t-card {
+    background: #fff;
+    border-left: 4px solid var(--teal);
+    border-radius: 8px;
+    padding: 36px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    margin-bottom: 28px;
+  }
+  .t-card:last-child { margin-bottom: 0; }
+  .testimonial-quote { font-size: 19px; font-style: italic; color: #374151; line-height: 1.7; margin-bottom: 20px; }
+  .testimonial-result { font-size: 20px; font-weight: 700; color: var(--teal); margin-bottom: 10px; line-height: 1.3; }
+  .t-attribution { font-size: 14px; font-weight: 600; color: var(--muted); margin: 0; }
+  .testimonial-subtext { font-size: 13px; font-style: italic; color: #9CA3AF; margin-top: 6px; margin-bottom: 0; }
 
-  .quote-attribution {
+  /* ============================================================
+     SECTION 8 — CLOVER FRAMEWORK
+     ============================================================ */
+  .clover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .clover-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 28px;
+  }
+  .clover-letter {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .clover-dimension {
     font-size: 14px;
-    font-weight: 600;
-    color: #6B7280;
-    margin-bottom: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 10px;
   }
+  .clover-card p { font-size: 15px; color: var(--body); line-height: 1.6; }
 
-  .quote-outcome {
-    font-size: 14px;
-    font-weight: 600;
-    color: #17A2B8;
-    margin-bottom: 0;
+  .clover-close {
+    margin-top: 40px;
+    padding: 28px 32px;
+    background: var(--bg-alt);
+    border-radius: 10px;
+    border-left: 4px solid var(--teal);
   }
+  .clover-close p { font-size: 18px; color: var(--ink); font-weight: 500; line-height: 1.7; }
 
-  /* ---- Cost table ---- */
+  /* ============================================================
+     SECTION 9 — FINAL COST PROSECUTION
+     ============================================================ */
+  .prosecution-story {
+    background: var(--bg-alt);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 10px 10px 0;
+    padding: 32px 36px;
+    margin: 36px 0;
+  }
+  .prosecution-story p { font-size: 18px; font-style: italic; color: #374151; line-height: 1.7; margin-bottom: 12px; }
+  .prosecution-story p:last-child { margin-bottom: 0; }
+  .prosecution-story .attribution { font-size: 14px; font-weight: 600; color: var(--muted); font-style: normal; }
+
   .cost-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 17px;
-    margin: 32px 0;
+    font-size: 16px;
+    margin: 28px 0;
   }
-
-  .cost-table tr {
-    border-bottom: 1px solid #E5E7EB;
-  }
-
+  .cost-table tr { border-bottom: 1px solid var(--rule); }
   .cost-table tr:last-child { border-bottom: none; }
+  .cost-table td { padding: 16px 0; vertical-align: top; color: var(--body); }
+  .cost-table td:last-child { text-align: right; font-weight: 600; color: var(--ink); }
+  .cost-table tr.total td { padding-top: 20px; border-top: 2px solid var(--ink); font-weight: 700; color: var(--ink); }
+  .cost-table tr.total td:last-child { color: var(--teal); font-size: 20px; }
 
-  .cost-table td {
-    padding: 18px 0;
-    vertical-align: top;
-    color: #4a4a4a;
-  }
-
-  .cost-table td:last-child {
-    text-align: right;
-    font-weight: 600;
-    color: #1a1a1a;
-  }
-
-  .cost-table tr.total td {
-    padding-top: 24px;
-    border-top: 2px solid #1a1a1a;
-    font-weight: 700;
-    color: #1a1a1a;
-  }
-
-  .cost-table tr.total td:last-child {
-    color: #17A2B8;
-    font-size: 22px;
-  }
-
-  .cost-footnote {
-    font-size: 16px;
-    color: #666;
-    line-height: 1.7;
-    border-left: 3px solid #E5E7EB;
-    padding-left: 20px;
-    margin-bottom: 0;
-  }
-
-  /* ---- Testimonial stack ---- */
-  .testimonial-section {
-    background: #F9FAFB;
-    padding: 80px 40px;
-  }
-
-  .testimonial-container {
-    max-width: 860px;
-    margin: 0 auto;
-  }
-
-  .testimonial-headline {
-    font-size: 36px;
-    font-weight: 700;
-    color: #1F2937;
-    text-align: center;
-    margin-bottom: 16px;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-  }
-
-  .privacy-note {
-    font-size: 16px;
-    font-weight: 500;
-    font-style: italic;
-    color: #374151;
-    text-align: center;
-    line-height: 1.5;
-    margin-top: 0;
-    margin-bottom: 48px;
-  }
-
-  .testimonial-section .t-card {
-    background: #FFFFFF;
-    border-left: 4px solid #17A2B8;
-    border-radius: 8px;
-    padding: 40px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    margin-bottom: 32px;
-  }
-
-  .testimonial-section .t-card:last-child {
-    margin-bottom: 0;
-  }
-
-  .testimonial-quote {
-    font-size: 20px;
-    font-weight: 400;
-    font-style: italic;
-    color: #374151;
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-
-  .testimonial-result {
-    font-size: 22px;
-    font-weight: 700;
-    color: #17A2B8;
-    margin-bottom: 12px;
-    line-height: 1.3;
-  }
-
-  .t-attribution {
-    font-size: 15px;
-    font-weight: 600;
-    color: #6B7280;
-    margin: 0;
-  }
-
-  .testimonial-subtext {
-    font-size: 14px;
-    font-weight: 400;
-    font-style: italic;
-    color: #9CA3AF;
-    margin-top: 8px;
-    margin-bottom: 0;
-  }
-
-  @media (max-width: 768px) {
-    .alert-bar-inner { animation-duration: 8s; width: max-content; }
-    .testimonial-section { padding: 48px 20px; }
-    .testimonial-headline { font-size: 28px; margin-bottom: 12px; }
-    .testimonial-section .t-card { padding: 28px 20px; margin-bottom: 20px; }
-    .testimonial-quote { font-size: 18px; }
-    .testimonial-result { font-size: 18px; }
-  }
-
-  /* ---- Or don't box ---- */
-  .or-dont {
-    background: #f9fafb;
-    border: 1px solid #E5E7EB;
-    border-left: 4px solid #1a1a1a;
-    border-radius: 8px;
-    padding: 36px 40px;
-    max-width: 700px;
-    margin: 48px auto 0;
-  }
-
-  .or-dont-label {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #6B7280;
-    margin-bottom: 14px;
-  }
-
-  .or-dont p {
-    font-size: 17px;
-    color: #374151;
-    line-height: 1.75;
-    margin-bottom: 0;
-  }
-
-  /* ---- Newsletter ---- */
-  .newsletter-section {
-    background: #ffffff;
-    padding: 80px 0;
-    border-top: 1px solid #E5E7EB;
-    border-bottom: 1px solid #E5E7EB;
-  }
-
-  .newsletter-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 0 28px;
-    text-align: center;
-  }
-
-  .newsletter-headline {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 16px;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-  }
-
-  .newsletter-subhead {
-    font-size: 18px;
-    color: #4a4a4a;
-    line-height: 1.6;
-    margin-bottom: 32px;
-  }
-
-  .newsletter-form {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
+  /* ============================================================
+     SECTION 10 — NEWSLETTER
+     ============================================================ */
+  .newsletter-section { background: #fff; padding: 80px 0; border-top: 1px solid var(--rule); }
+  .newsletter-container { max-width: 580px; margin: 0 auto; padding: 0 28px; text-align: center; }
+  .newsletter-headline { font-size: 30px; font-weight: 700; color: var(--ink); margin-bottom: 14px; line-height: 1.2; letter-spacing: -0.02em; }
+  .newsletter-subhead { font-size: 17px; color: var(--body); line-height: 1.6; margin-bottom: 28px; }
+  .newsletter-form { display: flex; gap: 10px; margin-bottom: 14px; }
   .newsletter-input {
-    flex: 1;
-    padding: 14px 20px;
-    font-size: 16px;
-    border: 2px solid #D1D5DB;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.2s;
-    font-family: inherit;
+    flex: 1; padding: 14px 18px; font-size: 15px; border: 2px solid #D1D5DB;
+    border-radius: 6px; outline: none; transition: border-color 0.2s; font-family: inherit;
   }
-
-  .newsletter-input:focus { border-color: #17A2B8; }
+  .newsletter-input:focus { border-color: var(--teal); }
   .newsletter-input::placeholder { color: #9CA3AF; }
-
   .newsletter-button {
-    padding: 14px 28px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #ffffff;
-    background: #17A2B8;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-    white-space: nowrap;
-    font-family: inherit;
+    padding: 14px 24px; font-size: 15px; font-weight: 600; color: #fff;
+    background: var(--teal); border: none; border-radius: 6px; cursor: pointer;
+    transition: background 0.2s; white-space: nowrap; font-family: inherit;
   }
+  .newsletter-button:hover { background: var(--teal-d); }
+  .newsletter-privacy { font-size: 13px; color: var(--muted); font-style: italic; margin: 0; }
+  .newsletter-success { display: none; font-size: 17px; font-weight: 600; color: var(--teal); margin-bottom: 8px; }
+  .newsletter-success-sub { display: none; font-size: 14px; color: var(--body); margin: 0; }
 
-  .newsletter-button:hover { background: #138496; }
-  .newsletter-button:active { background: #117A8B; }
-
-  .newsletter-privacy {
-    font-size: 14px;
-    color: #6B7280;
-    font-style: italic;
-    margin: 0;
-  }
-
-  .newsletter-success {
-    display: none;
-    font-size: 18px;
-    font-weight: 600;
-    color: #17A2B8;
-    margin-bottom: 8px;
-  }
-
-  .newsletter-success-sub {
-    display: none;
-    font-size: 15px;
-    color: #4a4a4a;
-    margin: 0;
-  }
-
-  /* ---- Calendar ---- */
-  .calendar-section {
-    padding: 80px 0;
-  }
-
-  .cal-sub {
-    font-size: 20px;
-    color: #4a4a4a;
-    max-width: 640px;
-    margin-bottom: 40px;
-  }
-
-  .calendar-agenda {
-    max-width: 640px;
-    margin-bottom: 48px;
-  }
-
-  .agenda-item {
-    display: flex;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid #E5E7EB;
-    font-size: 17px;
-    color: #4a4a4a;
-    line-height: 1.6;
-  }
-
-  .agenda-item:last-child { border-bottom: none; }
-
-  .agenda-num {
-    font-size: 13px;
-    font-weight: 700;
-    color: #17A2B8;
-    flex-shrink: 0;
-    padding-top: 2px;
-    min-width: 24px;
-  }
-
+  /* ============================================================
+     SECTION 11 — FINAL CALENDAR
+     ============================================================ */
+  .calendar-section { padding: 80px 0; background: var(--bg-alt); }
+  .cal-sub { font-size: 19px; color: var(--body); max-width: 620px; margin-bottom: 36px; }
   .calendar-embed {
-    margin-top: 40px;
-    max-width: 100%;
-    min-height: 700px;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #E5E7EB;
+    margin-top: 36px; max-width: 100%; min-height: 700px;
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--rule);
   }
 
-  /* ---- Footer ---- */
-  footer {
-    padding: 40px 0;
-    border-top: 1px solid #E5E7EB;
-  }
-
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer { padding: 40px 0; border-top: 1px solid var(--rule); }
   .footer-inner {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
+    max-width: 880px; margin: 0 auto; padding: 0 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
   }
+  .footer-logo img { height: 26px; width: auto; opacity: 0.7; }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { font-size: 13px; color: #888; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--ink); }
 
-  .footer-logo img {
-    height: 26px;
-    width: auto;
-    opacity: 0.7;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 28px;
-  }
-
-  .footer-links a {
-    font-size: 14px;
-    color: #888;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: #1a1a1a; }
-
-  /* ---- Reveal animation ---- */
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.55s ease, transform 0.55s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* ---- Mobile ---- */
+  /* ============================================================
+     MOBILE
+     ============================================================ */
   @media (max-width: 768px) {
-    h1 { font-size: 36px; }
-    h2 { font-size: 28px; }
-    .hero { padding: 48px 0 60px; }
-    .section { padding: 60px 0; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 26px; }
+    .section { padding: 56px 0; }
+
+    /* Top bar mobile */
+    .p-bar-inner { gap: 10px; }
+    .p-bar-meta { font-size: 11px; }
+    .p-bar .btn-teal { font-size: 13px; padding: 9px 16px; }
+
+    /* Counter */
+    .counter-number { font-size: 48px; }
+    .hero-counter { padding: 56px 0 48px; }
+
+    /* Cost columns — stack */
+    .cost-cols { grid-template-columns: 1fr; gap: 20px; }
+
+    /* Phrases grid — stack */
     .phrases-grid { grid-template-columns: 1fr; }
-    .story-stat-row { grid-template-columns: 1fr; }
-    .testimonials-secondary { grid-template-columns: 1fr; }
+
+    /* Three paths — stack */
+    .three-paths {
+      grid-template-columns: 1fr;
+      grid-template-areas: "primary" "secondary" "tertiary";
+    }
+
+    /* Testimonials */
+    .testimonial-section { padding: 48px 20px; }
+    .testimonial-headline { font-size: 24px; }
+    .t-card { padding: 24px 18px; }
+    .testimonial-quote { font-size: 16px; }
+    .testimonial-result { font-size: 16px; }
+
+    /* CLOVER grid — stack */
+    .clover-grid { grid-template-columns: 1fr; }
+
+    /* Newsletter */
     .newsletter-form { flex-direction: column; }
     .newsletter-button { width: 100%; }
-    .logo-bar-inner { flex-wrap: wrap; gap: 12px; }
-    .footer-inner { flex-direction: column; gap: 16px; }
+
+    /* Footer */
+    .footer-inner { flex-direction: column; gap: 12px; }
+
+    /* Alert ticker */
+    .alert-bar-inner { animation-duration: 8s; width: max-content; }
   }
 </style>
 </head>
 <body>
 
-<!-- LOGO BAR / NAV -->
-<div class="logo-bar">
+<!-- ============================================================
+     SECTION 1: PERSONALISED TOP BAR (replaces logo bar when token present)
+     ============================================================ -->
+<div class="p-bar" id="p-bar">
+  <div class="p-bar-inner">
+    <div class="p-bar-left">
+      <div class="p-bar-company">PREPARED FOR <span data-p="company"></span></div>
+      <div class="p-bar-meta">
+        <span data-p="employees"></span> employees &bull;
+        <span data-p="industry"></span> &bull;
+        Est. annual turnover exposure: <span class="highlight" data-p="annual-exposure"></span>
+      </div>
+    </div>
+    <a href="#calendar-section" class="btn-teal" id="p-bar-cta">Book 15 Minutes</a>
+  </div>
+</div>
+
+<!-- Fallback logo bar — hidden when token present -->
+<div class="logo-bar" id="logo-bar">
   <div class="logo-bar-inner">
     <a href="https://cloverera.com">
       <img src="../images/Clover-era-new-logo-1.png" alt="Clover ERA" />
@@ -818,55 +808,101 @@
   </div>
 </div>
 
-<!-- ALERT TICKER -->
-<div class="alert-bar">
-  <div class="alert-bar-inner">
-    <span class="ticker-item">Average resignation decision: made 67 days before the letter</span>
-    <span class="ticker-item">&bull;</span>
-    <span class="ticker-item">87% prediction accuracy across six behavioral dimensions</span>
-    <span class="ticker-item">&bull;</span>
-    <span class="ticker-item">One departure triggers 2&ndash;4 more within 90 days</span>
-    <span class="ticker-item">&bull;</span>
-    <span class="ticker-item">Average cost per departure: $120K&ndash;$340K</span>
-    <span class="ticker-item">&bull;</span>
-    <span class="ticker-item">Average resignation decision: made 67 days before the letter</span>
-    <span class="ticker-item">&bull;</span>
-    <span class="ticker-item">87% prediction accuracy across six behavioral dimensions</span>
-    <span class="ticker-item">&bull;</span>
-    <span class="ticker-item">One departure triggers 2&ndash;4 more within 90 days</span>
-    <span class="ticker-item">&bull;</span>
-    <span class="ticker-item">Average cost per departure: $120K&ndash;$340K</span>
-    <span class="ticker-item">&bull;</span>
-  </div>
-</div>
 
-<!-- SECTION 1: HERO -->
-<section class="hero">
+<!-- ============================================================
+     SECTION 2: PATTERN INTERRUPT HERO
+     ============================================================ -->
+<section class="hero-counter">
   <div class="container">
-    <h1>They already have the offer. They're deciding whether to take it.</h1>
-    <p class="hero-sub">
-      And the signal is showing up in your daily operations right now. You're reading it as cooperation. It's actually withdrawal.
+
+    <div class="counter-wrap reveal">
+      <div class="counter-label" id="counter-label">Estimated annual turnover exposure</div>
+      <div class="counter-number" id="counter-display">—</div>
+      <p class="counter-sub" id="counter-sub">Loading your analysis...</p>
+      <p class="counter-daily" id="counter-daily"></p>
+    </div>
+
+    <h1 class="reveal" id="hero-headline">Someone on your team has already decided to leave.</h1>
+
+    <p class="body-para reveal" id="hero-body">
+      They've already made the decision. The resignation letters are coming. Your managers can't see it because they're not looking at the right data.
     </p>
-    <div class="dashboard-img-wrap reveal" style="margin-top: 40px;">
-      <img src="../images/team-member-withdrawing.jpg" alt="Clover ERA alert — I just stay in my lane withdrawal signal" />
+
+    <div class="paranoia-box reveal">
+      <p id="paranoia-q">Which of your teams has someone in this window right now?</p>
     </div>
-    <p class="dashboard-caption reveal" style="margin-top: 16px;">This check-in response came from a senior team member 39 days before they resigned. Their manager thought they'd "finally stopped being difficult." They'd stopped fighting because they'd stopped caring.</p>
-    <div class="dashboard-img-wrap reveal" style="margin-top: 40px;">
-      <img src="../images/Dashboard-Landing-1.png" alt="Clover ERA dashboard showing team health score and CLOVER dimensions" />
+
+    <p class="scroll-prompt reveal" id="scroll-prompt">Here's the proof ↓</p>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 3: VISUAL PROOF
+     ============================================================ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-label">The Evidence</div>
+
+    <p class="proof-subhead reveal">Here's an example alert a manager received 39 days before a regrettable resignation</p>
+
+    <div class="dashboard-img-wrap reveal">
+      <img src="../images/team-member-withdrawing.jpg" alt="Clover ERA withdrawal alert — I just stay in my lane" />
     </div>
-    <p class="dashboard-caption reveal" style="margin-top: 16px;">This is what their manager's Clover ERA dashboard showed that morning. One anonymous response. One resignation signal. 39 days to intervene. Manager never looked.</p>
-    <div class="reveal" style="margin-top: 40px;">
-      <a href="#calendar-section" class="cta-btn">Which of your teams has someone in this window right now?</a>
+    <p class="img-caption reveal">"A Team Member Is Withdrawing. One respondent answered the voice question with: 'I just stay in my lane and do my work.' That's not neutrality — that's someone who has already given up trying. Combined with others feeling distracted or ignored, disengagement is becoming the path of least resistance."</p>
+
+    <p class="proof-subhead reveal" style="margin-top: 48px;">This is what a manager sees on their real time Team Health dashboard</p>
+
+    <div class="dashboard-img-wrap reveal">
+      <img src="../images/Dashboard-Landing-1.png" alt="Clover ERA dashboard — 60.48% team health score, 453 responses, CLOVER breakdown" />
+    </div>
+    <p class="img-caption reveal">"Anonymous check-in response from one team member. The resignation signal was detected 39 days before the letter arrived. Their manager had no idea."</p>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4: PERSONALISED COST BREAKDOWN
+     ============================================================ -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Your Numbers</div>
+    <h2 class="reveal" id="cost-headline">Here's What One Departure Costs</h2>
+
+    <div class="cost-cols reveal">
+
+      <div class="cost-col cost-col-left">
+        <h4 id="cost-col-left-title">Replacing one mid-level employee:</h4>
+        <ul class="cost-list">
+          <li><span>Recruitment</span>                           <span class="amt" id="c-recruiting">$18K–$24K</span></li>
+          <li><span>Onboarding &amp; ramp time</span>            <span class="amt" id="c-onboarding">$48K–$60K</span></li>
+          <li><span>Lost productivity (90 days)</span>           <span class="amt" id="c-productivity">$28K–$45K</span></li>
+          <li><span>Knowledge loss</span>                        <span class="amt" id="c-knowledge">$12K–$30K</span></li>
+          <li class="total-row"><span>Total per departure</span> <span class="amt" id="c-total">$86K–$130K</span></li>
+        </ul>
+      </div>
+
+      <div class="cost-col cost-col-right">
+        <h4>But it's never just one person.</h4>
+        <p id="cascade-para">When someone senior leaves, 2–3 people follow within 90 days. That's not $130K. That's $260K–$390K.</p>
+        <p id="blind-para">That's the cost of operating blind.</p>
+        <div class="exposure-callout">
+          <span class="exposure-number" id="exposure-number-large">—</span>
+          <p id="exposure-callout-text">Estimated annual turnover exposure based on your headcount and industry.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- SECTION 2: WITHDRAWAL SIGNALS -->
+<!-- ============================================================
+     SECTION 5: WITHDRAWAL RECOGNITION
+     ============================================================ -->
 <section class="section section-alt">
   <div class="container">
-    <div class="section-label">What Withdrawal Sounds Like</div>
+    <div class="section-label">What It Sounds Like</div>
     <h2 class="reveal">You've heard these sentences. You thought they meant different things.</h2>
-    <p class="reveal">Each one is a signal. Clover ERA tracks when your team stops saying the hard things and starts saying these.</p>
 
     <div class="phrases-grid reveal">
       <div class="phrase-card">
@@ -875,7 +911,7 @@
       </div>
       <div class="phrase-card">
         <div class="phrase-card-text">"Sounds good to me."</div>
-        <div class="phrase-card-decode"><span class="decode-arrow">&rarr;</span> Your best engineers stop pushing back on bad decisions when they've decided the decisions no longer affect their future.</div>
+        <div class="phrase-card-decode"><span class="decode-arrow">&rarr;</span> Your best people stop pushing back on bad decisions when they've decided the decisions no longer affect their future.</div>
       </div>
       <div class="phrase-card">
         <div class="phrase-card-text">"I'm not really focused on next steps right now."</div>
@@ -894,158 +930,86 @@
         <div class="phrase-card-decode"><span class="decode-arrow">&rarr;</span> Learning dimension crash. Disengaged from the future of this role. Already mentally checked out.</div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- SECTION 3: THE OFFER -->
-<section class="section">
-  <div class="container" style="text-align: center;">
-    <h2 class="reveal">15 Minutes. That's What It Costs to Find Out.</h2>
-    <p class="reveal" style="max-width: 580px; margin: 0 auto 20px; font-size: 20px; font-weight: 500; color: #1a1a1a;">Here's what happens on the call:</p>
-    <div class="reveal" style="max-width: 560px; margin: 0 auto 32px; text-align: left;">
-      <div style="display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start;">
-        <span style="color: #17A2B8; font-weight: 700; font-size: 20px; flex-shrink: 0; line-height: 1.6;">&rarr;</span>
-        <p style="margin: 0; font-size: 18px; color: #4a4a4a; line-height: 1.65;">I'll show you what withdrawal looks like in your teams using real data from companies your size (anonymized, no names)</p>
-      </div>
-      <div style="display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start;">
-        <span style="color: #17A2B8; font-weight: 700; font-size: 20px; flex-shrink: 0; line-height: 1.6;">&rarr;</span>
-        <p style="margin: 0; font-size: 18px; color: #4a4a4a; line-height: 1.65;">You'll see which behavioral patterns statistically predict resignation 67 days early and why managers miss them</p>
-      </div>
-      <div style="display: flex; gap: 14px; align-items: flex-start;">
-        <span style="color: #17A2B8; font-weight: 700; font-size: 20px; flex-shrink: 0; line-height: 1.6;">&rarr;</span>
-        <p style="margin: 0; font-size: 18px; color: #4a4a4a; line-height: 1.65;">If there's a fit, we'll talk about a 90-day pilot. If not, you'll walk away with the framework for reading these signals yourself.</p>
-      </div>
+    <p class="reveal" style="font-size: 17px; color: var(--body); max-width: 700px;">Each one is a signal. Clover ERA tracks when your team stops saying the hard things and starts saying these. That's not neutrality — that's someone who has already given up trying.</p>
+
+    <div class="withdrawal-callout reveal">
+      <p id="withdrawal-callout-1">Your managers are hearing these statements right now from someone on their team. They're interpreting them as cooperation, maturity, focus, professionalism.</p>
+      <p><strong>They're actually withdrawal signals. The decision has already been made.</strong></p>
     </div>
-    <p class="reveal" style="max-width: 580px; margin: 0 auto 10px;"><strong>No pitch. No pressure. Just the data.</strong></p>
-    <p class="reveal" style="max-width: 580px; margin: 0 auto 36px; font-size: 15px; color: #6b7280;">All check-ins are anonymous. No surveillance. No names. Just patterns.</p>
-    <a href="#calendar-section" class="cta-btn reveal">Schedule Your Free Turnover Analysis</a>
-    <p class="hero-ghost reveal" style="margin-top: 16px;">15 minutes &middot; Anonymous data &middot; No hard sell</p>
+
   </div>
 </section>
 
-<!-- SECTION 4: CALENDAR -->
-<section class="calendar-section" id="calendar-section">
+<!-- ============================================================
+     SECTION 6: THREE-PATH CONVERSION
+     ============================================================ -->
+<section class="section" id="calendar-section">
   <div class="container">
-    <div class="section-label">Schedule Your Free Turnover Analysis</div>
-    <h2 class="reveal">See What Your Dashboard Will Show You Two Weeks After Going Live</h2>
-    <p class="cal-sub reveal">What happens on the call. No surprises.</p>
+    <div class="section-label">Here's What Happens Next</div>
+    <h2 class="reveal">Three ways to move forward.</h2>
 
-    <div class="calendar-agenda reveal">
-      <div class="agenda-item">
-        <span class="agenda-num">01</span>
-        <span>Real withdrawal signals from companies your size (anonymized) &mdash; what they look like in daily check-ins and what happened 30&ndash;60 days later.</span>
+    <div class="three-paths reveal">
+
+      <!-- PATH 1: PRIMARY -->
+      <div class="path-card path-card-primary">
+        <span class="path-badge path-badge-primary">Primary</span>
+        <h3>Book Your Free Turnover Analysis</h3>
+        <p class="path-sub">15 minutes. Here's what we'll cover:</p>
+        <div class="path-minutes">
+          <div class="path-minute">
+            <span class="path-minute-num">1–5 min</span>
+            <span id="path-min-1">We'll run your live team health assessment. You'll see your risk profile in real time.</span>
+          </div>
+          <div class="path-minute">
+            <span class="path-minute-num">6–10 min</span>
+            <span id="path-min-2">We'll show you sample alerts and dashboard views for companies your size and industry. You'll see what withdrawal looks like 39 days before resignation.</span>
+          </div>
+          <div class="path-minute">
+            <span class="path-minute-num">11–15 min</span>
+            <span id="path-min-3">We'll calculate what 1–2 resignations actually cost you — not the generic number, but the real number with cascade effects and knowledge transfer failure.</span>
+          </div>
+        </div>
+        <div class="path-cta-wrap">
+          <a href="#final-calendar" class="btn-coral full" id="path1-cta">Schedule Your Free Turnover Analysis</a>
+          <span class="btn-sub">15 minutes &middot; No pitch &middot; Just your data. All check-ins are anonymous.</span>
+        </div>
       </div>
-      <div class="agenda-item">
-        <span class="agenda-num">02</span>
-        <span>Which teams statistically carry the highest concentration of departure risk and why.</span>
+
+      <!-- PATH 2: SECONDARY -->
+      <div class="path-card path-card-secondary">
+        <span class="path-badge path-badge-secondary">Secondary</span>
+        <h3>Calculate Your Turnover Cost</h3>
+        <p class="path-sub">Not ready to book? Run the numbers yourself first.</p>
+        <p>Enter your headcount, average salary, and industry. Get your estimated annual turnover cost in 60 seconds. Then decide if 15 minutes is worth it.</p>
+        <div class="path-cta-wrap" style="margin-top: auto; padding-top: 24px;">
+          <a href="https://cloverera.com/turnover-analysis" class="btn-outline">Calculate Your Turnover Cost</a>
+          <span class="btn-sub" style="text-align:center; display:block;">No email required. Instant results.</span>
+        </div>
       </div>
-      <div class="agenda-item">
-        <span class="agenda-num">03</span>
-        <span>If it's a fit, we'll discuss a 90-day pilot. If not, you'll have the framework to read signals on your own.</span>
+
+      <!-- PATH 3: TERTIARY -->
+      <div class="path-card path-card-tertiary">
+        <span class="path-badge path-badge-tertiary">Tertiary</span>
+        <h3>Take The Team Health Assessment</h3>
+        <p class="path-sub">Want to see your team's risk profile first?</p>
+        <p>Take the 5-minute team health assessment. Get your CLOVER score breakdown and see where your team stands compared to 450+ organisations.</p>
+        <div class="path-cta-wrap" style="margin-top: auto; padding-top: 24px;">
+          <a href="https://cloverera.com/assessment/" class="btn-outline">Take The Team Health Assessment</a>
+          <span class="btn-sub">5 minutes. Free. Anonymous responses.</span>
+        </div>
       </div>
-    </div>
 
-    <div class="calendar-embed reveal">
-      <!-- Calendly inline widget begin -->
-      <div class="calendly-inline-widget" data-url="https://calendly.com/clive-hays-cloverera/15-mins-what-s-driving-it?primary_color=497a86" style="min-width:320px;height:700px;"></div>
-      <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
-      <!-- Calendly inline widget end -->
-    </div>
-  </div>
-</section>
-
-
-<!-- SECTION 5: DASHBOARD ALERT SCREENSHOT -->
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-label">The Signal Your Manager Missed</div>
-    <h2 class="reveal">This is what Clover ERA shows managers every day on their dashboard.</h2>
-    <div class="dashboard-img-wrap reveal">
-      <img src="../images/team-member-withdrawing.jpg" alt="Clover ERA withdrawal alert — team member preparing to resign" />
-    </div>
-    <div class="dashboard-overlay-stat reveal">
-      <span class="overlay-number">39</span>
-      <span class="overlay-label">Days to resignation</span>
-    </div>
-    <p class="dashboard-caption reveal">This manager had no idea. The system flagged withdrawal behavior. The employee resigned 11 days later.</p>
-    <p class="dashboard-caption reveal" style="margin-top: 12px;">Anonymous check-in response from one team member. Resignation signal detected 39 days before the letter arrived.</p>
-  </div>
-</section>
-
-<!-- SECTION 6: VP OPERATIONS CASCADE STORY -->
-<section class="section">
-  <div class="container">
-    <div class="section-label">What Happened When They Waited</div>
-    <h2 class="reveal">"I thought we were fine. His performance was good. He seemed engaged."</h2>
-
-    <p class="reveal">A VP of Operations at a Series B SaaS company. Lead architect. 4.2 out of 5 on his last review. No warnings. No complaints. No signals anyone could see.</p>
-    <p class="reveal">He had been interviewing for weeks. <strong>No one knew.</strong></p>
-    <p class="reveal">He resigned on a Tuesday. Two of his directs followed within a week. A third left 30 days later. The roadmap was six months behind before they'd even posted the first job description.</p>
-
-    <div class="story-stat-row reveal">
-      <div class="stat-box">
-        <span class="stat-number">4</span>
-        <span class="stat-label">Resignations in 30 days</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-number">$520K</span>
-        <span class="stat-label">Replacement cost</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-number">6 mo.</span>
-        <span class="stat-label">Roadmap delay</span>
-      </div>
-    </div>
-
-    <div class="quote-block reveal">
-      <p>"Clover ERA would have caught it 30&ndash;60 days earlier. We'd have had time to intervene or at least plan the transition. Instead we're six months behind on our roadmap and down $520K in replacement costs."</p>
-      <p class="quote-attribution">VP of Operations, Series B SaaS Company</p>
-      <p class="quote-outcome">(Now a Clover ERA customer with six months of zero unplanned resignations)</p>
     </div>
   </div>
 </section>
 
-<!-- SECTION 8: COST BREAKDOWN -->
-<section class="section section-alt">
-  <div class="container">
-    <div class="section-label">The Numbers Behind the Number</div>
-    <h2 class="reveal">You're Wondering If the Number Is Inflated.</h2>
-    <p class="reveal">One $120K employee. One resignation. No cascade.</p>
-
-    <table class="cost-table reveal">
-      <tr>
-        <td>Recruiting (15&ndash;20% annual salary)</td>
-        <td>$18K&ndash;$24K</td>
-      </tr>
-      <tr>
-        <td>Onboarding &amp; ramp time (8&ndash;12 months at ~50% output)</td>
-        <td>$48K&ndash;$60K</td>
-      </tr>
-      <tr>
-        <td>Lost institutional knowledge &amp; project momentum</td>
-        <td>$12K&ndash;$30K</td>
-      </tr>
-      <tr>
-        <td>Management time diverted</td>
-        <td>$8K&ndash;$16K</td>
-      </tr>
-      <tr class="total">
-        <td>One departure. No cascade.</td>
-        <td>$86K&ndash;$130K</td>
-      </tr>
-    </table>
-
-    <p class="cost-footnote reveal">
-      Cascade cost: one resignation triggers 2&ndash;4 more within 90 days. Every departure multiplies. When a VP of Engineering leaves and two directs follow, you're not looking at $360K. You're looking at $900K&ndash;$1.2M when you count cascade and momentum loss.<br><br>
-      Last year this cost mid-market tech companies an average of $8M in total turnover exposure. Most of it invisible on the P&amp;L. All of it preventable.
-    </p>
-  </div>
-</section>
-
-<!-- SECTION 9: TESTIMONIAL CARDS -->
+<!-- ============================================================
+     SECTION 7: TESTIMONIALS
+     ============================================================ -->
 <section class="testimonial-section">
   <div class="testimonial-container">
-    <h2 class="testimonial-headline">What Companies See After Installing Clover ERA</h2>
+    <h2 class="testimonial-headline">What Leaders Say After Using Clover ERA</h2>
     <p class="privacy-note">We never name our clients publicly. You'll receive the same protection.</p>
 
     <div class="t-card">
@@ -1072,32 +1036,116 @@
       <p class="t-attribution">VP of Operations, Series B SaaS (280 employees)</p>
       <p class="testimonial-subtext">(Now a Clover ERA customer with six months of zero unplanned resignations)</p>
     </div>
+
   </div>
 </section>
 
-<!-- SECTION 10: OR DON'T -->
+<!-- ============================================================
+     SECTION 8: CLOVER FRAMEWORK
+     ============================================================ -->
 <section class="section">
-  <div class="container" style="text-align: center;">
-    <div class="or-dont reveal">
-      <div class="or-dont-label">Or don't.</div>
-      <p>When someone resigns next week, and someone will, you'll spend three months and $150K trying to fix a problem that cost nothing to prevent. You'll say you didn't see it coming. <strong>You didn't see it coming because you weren't looking.</strong> That's a choice. This 15-minute call is also a choice.</p>
+  <div class="container">
+    <div class="section-label">The Mechanism</div>
+    <h2 class="reveal">What We Measure That You're Not Seeing</h2>
+
+    <div class="clover-grid reveal">
+      <div class="clover-card">
+        <div class="clover-letter">C</div>
+        <div class="clover-dimension">Communication</div>
+        <p>Is information flowing both directions, or has someone stopped asking questions?</p>
+      </div>
+      <div class="clover-card">
+        <div class="clover-letter">L</div>
+        <div class="clover-dimension">Learning</div>
+        <p>Is someone still pushing for growth, or have they stopped asking for development?</p>
+      </div>
+      <div class="clover-card">
+        <div class="clover-letter">O</div>
+        <div class="clover-dimension">Opportunity</div>
+        <p>Can someone see a future here, or have they stopped talking about next quarter?</p>
+      </div>
+      <div class="clover-card">
+        <div class="clover-letter">V</div>
+        <div class="clover-dimension">Vulnerability</div>
+        <p>Can someone be honest without risk, or have they started "staying in their lane"?</p>
+      </div>
+      <div class="clover-card">
+        <div class="clover-letter">E</div>
+        <div class="clover-dimension">Enablement</div>
+        <p>Does someone have what they need, or have they stopped escalating blockers?</p>
+      </div>
+      <div class="clover-card">
+        <div class="clover-letter">R</div>
+        <div class="clover-dimension">Reflection</div>
+        <p>Does someone feel seen, or have they gone from vocal to silent?</p>
+      </div>
     </div>
+
+    <div class="clover-close reveal">
+      <p>When someone goes from <em>"why are we doing it this way?"</em> to <em>"sounds good"</em> to <em>"just doing my job,"</em> you've got 30–60 days before they resign. We measure that shift daily.</p>
+    </div>
+
   </div>
 </section>
 
-<!-- SECTION 11: NEWSLETTER -->
+<!-- ============================================================
+     SECTION 9: FINAL COST PROSECUTION
+     ============================================================ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-label">The Prosecution</div>
+    <h2 class="reveal" id="prosecution-headline">You're Wondering If the Number Is Inflated.</h2>
+    <p class="reveal">It's not.</p>
+
+    <table class="cost-table reveal">
+      <tr><td>Recruiting (15–20% annual salary)</td>           <td id="p-recruiting">$18K–$24K</td></tr>
+      <tr><td>Onboarding &amp; ramp time (8–12 months)</td>    <td id="p-onboarding">$48K–$60K</td></tr>
+      <tr><td>Lost institutional knowledge &amp; momentum</td> <td id="p-knowledge">$12K–$30K</td></tr>
+      <tr><td>Management time diverted</td>                    <td id="p-management">$8K–$16K</td></tr>
+      <tr class="total"><td id="p-total-label">One departure. No cascade.</td><td id="p-total">$86K–$130K</td></tr>
+    </table>
+
+    <div class="prosecution-story reveal">
+      <p id="prosecution-story-text">"A Series B SaaS company with 280 employees lost 4 people in 30 days. Lead architect, 4.2 out of 5 on his last performance review. Zero warning. Clover ERA showed the signal had existed for 67 days. Replacement cost: $520K. The roadmap was 6 months behind before they'd posted the first job description."</p>
+      <p class="attribution">"Clover ERA would have caught it 30–60 days earlier. We'd have had time to intervene or at least plan the transition."<br>— VP of Operations, Series B SaaS Company</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 48px;">
+      <a href="#final-calendar" class="btn-coral" id="prosecution-cta">Schedule Your Analysis — Or Wait Until Someone Resigns Next Week</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 10: NEWSLETTER FALLBACK
+     ============================================================ -->
 <section class="newsletter-section">
   <div class="newsletter-container">
     <h3 class="newsletter-headline">Not Ready to Talk Yet?</h3>
     <p class="newsletter-subhead">Join 1,000+ operational leaders getting the weekly turnover intelligence report. 1.7M people see this content on LinkedIn each month. You're getting the unfiltered version with the breakdowns that don't fit in a post.</p>
-
     <div class="newsletter-form" id="newsletter-form">
       <input type="email" class="newsletter-input" id="newsletter-email" placeholder="Your email address" required />
-      <button type="button" class="newsletter-button" id="newsletter-btn">Subscribe to the Newsletter</button>
+      <button type="button" class="newsletter-button" id="newsletter-btn">Subscribe</button>
     </div>
-    <p class="newsletter-success" id="newsletter-success">Check your inbox &mdash; a confirmation email from Substack is on its way.</p>
+    <p class="newsletter-success" id="newsletter-success">Check your inbox — a confirmation email from Substack is on its way.</p>
     <p class="newsletter-success-sub" id="newsletter-success-sub">No spam. Unsubscribe anytime.</p>
     <p class="newsletter-privacy" id="newsletter-privacy">No spam. Unsubscribe anytime. Same privacy policy as our clients.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 11: FINAL CALENDAR
+     ============================================================ -->
+<section class="calendar-section" id="final-calendar">
+  <div class="container">
+    <div class="section-label" id="final-cal-label">Schedule Your Free Turnover Analysis</div>
+    <h2 class="reveal" id="final-cal-headline">Which of your people are in this window today?</h2>
+    <p class="cal-sub reveal">15 minutes. No pitch. Just your data.</p>
+    <div class="calendar-embed reveal">
+      <div class="calendly-inline-widget" data-url="https://calendly.com/clive-hays-cloverera/15-mins-what-s-driving-it?primary_color=497a86" style="min-width:320px;height:700px;"></div>
+      <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+    </div>
   </div>
 </section>
 
@@ -1115,182 +1163,409 @@
   </div>
 </footer>
 
+<!-- ============================================================
+     DEMO LEAD DATA
+     Preview with: ?ref=james-richmond | ?ref=sarah-techcorp | ?ref=marcus-health
+     ============================================================ -->
 <script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-  reveals.forEach(el => observer.observe(el));
-
-  // Stagger grid children
-  document.querySelectorAll('.phrases-grid, .story-stat-row, .testimonials-secondary').forEach(grid => {
-    Array.from(grid.children).forEach((child, i) => {
-      child.style.transitionDelay = `${i * 0.07}s`;
-    });
-  });
-
-  // CTA click tracking
-  document.querySelectorAll('a[href="#calendar-section"], .cta-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'cta_click', {
-          event_category: 'engagement',
-          event_label: this.textContent.trim()
-        });
-      }
-    });
-  });
-
-  // Newsletter — stay on page
-  document.getElementById('newsletter-btn').addEventListener('click', function() {
-    const email = document.getElementById('newsletter-email').value.trim();
-    if (!email || !email.includes('@')) {
-      document.getElementById('newsletter-email').focus();
-      return;
-    }
-
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'newsletter_subscribe', {
-        event_category: 'engagement',
-        event_label: 'Subscribe to the Newsletter'
-      });
-    }
-
-    const btn = this;
-    btn.textContent = 'Subscribing...';
-    btn.disabled = true;
-
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('first_url', 'https://cloverera.com/67');
-    formData.append('first_referrer', 'https://cloverera.com/67');
-
-    fetch('https://clivehays.substack.com/api/v1/free?nojs=true', {
-      method: 'POST',
-      body: formData,
-      mode: 'no-cors'
-    }).then(() => {
-      document.getElementById('newsletter-form').style.display = 'none';
-      document.getElementById('newsletter-privacy').style.display = 'none';
-      document.getElementById('newsletter-success').style.display = 'block';
-      document.getElementById('newsletter-success-sub').style.display = 'block';
-    }).catch(() => {
-      document.getElementById('newsletter-form').style.display = 'none';
-      document.getElementById('newsletter-privacy').style.display = 'none';
-      document.getElementById('newsletter-success').style.display = 'block';
-      document.getElementById('newsletter-success-sub').style.display = 'block';
-    });
-  });
+var DEMO_LEADS = {
+  'james-richmond': {
+    firstName: 'James',
+    company: 'The Richmond Group',
+    employees: 450,
+    industry: 'Financial Services',
+    currency: '£',
+    avgSalary: '£85K',
+    annualExposure: '£9.2M',
+    annualExposureRaw: 9200000,
+    inWindowLow: 4,
+    inWindowHigh: 6,
+    // Cost breakdown
+    recruiting:   '£13K–£17K',
+    onboarding:   '£22K–£34K',
+    productivity: '£20K–£32K',
+    knowledge:    '£10K–£26K',
+    totalPerDep:  '£65K–£109K',
+    cascadeRange: '£130K–£327K',
+    // Section 9
+    prosecutionHeadline: "You're Wondering If the £9.2M Number Is Inflated.",
+    p_recruiting:  '£13K–£17K',
+    p_onboarding:  '£34K–£43K',
+    p_knowledge:   '£10K–£26K',
+    p_management:  '£7K–£14K',
+    p_total_label: 'One departure from The Richmond Group. No cascade.',
+    p_total:       '£64K–£100K',
+    storyText: '"A Financial Services firm with 420 employees — similar in size to The Richmond Group — lost 4 people in 30 days. A senior relationship manager, 4.2 out of 5 on their last review. Zero warning. Clover ERA showed the signal had existed for 67 days. Replacement cost: £340K. The client book had to be redistributed and two key relationships were lost in the transition."'
+  },
+  'sarah-techcorp': {
+    firstName: 'Sarah',
+    company: 'TechCorp',
+    employees: 280,
+    industry: 'SaaS / Technology',
+    currency: '$',
+    avgSalary: '$130K',
+    annualExposure: '$6.1M',
+    annualExposureRaw: 6100000,
+    inWindowLow: 3,
+    inWindowHigh: 4,
+    recruiting:   '$20K–$26K',
+    onboarding:   '$38K–$52K',
+    productivity: '$28K–$45K',
+    knowledge:    '$15K–$33K',
+    totalPerDep:  '$101K–$156K',
+    cascadeRange: '$202K–$468K',
+    prosecutionHeadline: "You're Wondering If the $6.1M Number Is Inflated.",
+    p_recruiting:  '$20K–$26K',
+    p_onboarding:  '$52K–$65K',
+    p_knowledge:   '$15K–$33K',
+    p_management:  '$9K–$17K',
+    p_total_label: 'One departure from TechCorp. No cascade.',
+    p_total:       '$96K–$141K',
+    storyText: '"A Series B SaaS company with 280 employees lost 4 people in 30 days. Lead architect, 4.2 out of 5 on his last performance review. Zero warning. Clover ERA showed the signal had existed for 67 days. Replacement cost: $520K. The roadmap was 6 months behind before they\'d posted the first job description."'
+  },
+  'marcus-health': {
+    firstName: 'Marcus',
+    company: 'Meridian Health',
+    employees: 620,
+    industry: 'Healthcare',
+    currency: '$',
+    avgSalary: '$95K',
+    annualExposure: '$11.4M',
+    annualExposureRaw: 11400000,
+    inWindowLow: 6,
+    inWindowHigh: 8,
+    recruiting:   '$14K–$19K',
+    onboarding:   '$28K–$38K',
+    productivity: '$24K–$38K',
+    knowledge:    '$12K–$29K',
+    totalPerDep:  '$78K–$124K',
+    cascadeRange: '$156K–$372K',
+    prosecutionHeadline: "You're Wondering If the $11.4M Number Is Inflated.",
+    p_recruiting:  '$14K–$19K',
+    p_onboarding:  '$38K–$48K',
+    p_knowledge:   '$12K–$29K',
+    p_management:  '$8K–$15K',
+    p_total_label: 'One departure from Meridian Health. No cascade.',
+    p_total:       '$72K–$111K',
+    storyText: '"A healthcare network with 580 employees lost a Head of Nursing and two senior nurses within 45 days. The Head of Nursing had a 4.0 performance score and zero warnings on file. Clover ERA showed withdrawal signals had existed for 52 days. Replacement cost: $340K. The department ran understaffed for 14 weeks."'
+  }
+};
 </script>
 
+<!-- ============================================================
+     PERSONALISATION ENGINE
+     ============================================================ -->
 <script>
+(function() {
+
+  // ---- Supabase config (anon key — read-only RPC only) ----
+  var SUPABASE_URL  = 'https://drugebiitlcjkknjfxeh.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+  var params = new URLSearchParams(window.location.search);
+  var ref    = params.get('ref');
+  var lead   = ref ? DEMO_LEADS[ref] : null;
+
+  // Helper: fill all [data-p] elements
+  function fill(attr, val) {
+    document.querySelectorAll('[data-p="' + attr + '"]').forEach(function(el) {
+      el.textContent = val;
+    });
+  }
+
+  // ---- Animated counter ----
+  function animateCounter(target, currency, el) {
+    var duration  = 2400;
+    var startTime = null;
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+    function fmt(n) { return currency + Math.round(n).toLocaleString(); }
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      el.textContent = fmt(Math.round(easeOut(progress) * target));
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = fmt(target);
+    }
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { requestAnimationFrame(step); obs.disconnect(); }
+    });
+    obs.observe(el);
+  }
+
+  // ---- Generic fallback (no token or fetch failure) ----
+  function showGenericFallback() {
+    document.getElementById('counter-display').textContent = '$8M+';
+    document.getElementById('counter-sub').textContent     = 'Average annual turnover exposure — mid-market company, 200–500 employees.';
+    document.getElementById('counter-daily').innerHTML     = '$8,000,000 \u00f7 365 days = <span class="daily-amt">$21,918 per day</span>';
+    document.getElementById('hero-headline').textContent   = 'Someone on your team has already decided to leave.';
+    document.getElementById('hero-body').textContent       = 'They\u2019ve already made the decision. The resignation letters are coming. Your managers can\u2019t see it because they\u2019re not looking at the right data.';
+  }
+
+  // ---- Helpers to build a lead object from raw Supabase data ----
+  function getCurrency(country) {
+    if (!country) return '$';
+    var c = (country + '').toUpperCase();
+    if (c === 'GB' || c === 'UK' || c.indexOf('UNITED KINGDOM') !== -1 ||
+        c.indexOf('SCOTLAND') !== -1 || c.indexOf('ENGLAND') !== -1 || c.indexOf('WALES') !== -1) return '\u00a3';
+    if (c === 'EU' || c === 'DE' || c === 'FR' || c === 'ES' || c === 'IT' || c === 'NL' || c === 'BE') return '\u20ac';
+    return '$';
+  }
+
+  function fmtK(n, cur) { return cur + Math.round(n / 1000) + 'K'; }
+  function fmtRange(lo, hi, cur) { return fmtK(lo, cur) + '\u2013' + fmtK(hi, cur); }
+  function fmtMillion(n, cur) {
+    if (n >= 1000000) return cur + (n / 1000000).toFixed(1) + 'M';
+    return fmtK(n, cur);
+  }
+
+  function buildLeadFromSupabase(d) {
+    var cur  = getCurrency(d.country);
+    var s    = d.avg_salary    || 90000;
+    var cpd  = d.cost_per_departure || Math.round(s * 1.1);
+    var ac   = d.annual_cost   || Math.round(cpd * Math.max(1, Math.ceil((d.employee_count || 200) * 0.12)));
+    var win  = d.in_67_day_window || Math.max(1, Math.ceil((d.employee_count || 200) * 0.01));
+    var emp  = d.employee_count   || 200;
+    var ind  = d.industry || 'your sector';
+    var co   = d.company_name || 'your company';
+
+    // Cost component ranges derived from avg salary
+    var recLo = s * 0.15, recHi = s * 0.22;
+    var onbLo = s * 0.35, onbHi = s * 0.50;
+    var proLo = s * 0.25, proHi = s * 0.35;
+    var knwLo = s * 0.10, knwHi = s * 0.18;
+    var totLo = recLo + onbLo + proLo + knwLo;
+    var totHi = recHi + onbHi + proHi + knwHi;
+
+    var annualExposure = fmtMillion(ac, cur);
+
+    return {
+      firstName:           d.first_name || '',
+      company:             co,
+      employees:           emp,
+      industry:            ind,
+      currency:            cur,
+      avgSalary:           fmtK(s, cur),
+      annualExposure:      annualExposure,
+      annualExposureRaw:   Math.round(ac),
+      inWindowLow:         Math.max(1, win - 1),
+      inWindowHigh:        win + 2,
+      recruiting:          fmtRange(recLo, recHi, cur),
+      onboarding:          fmtRange(onbLo, onbHi, cur),
+      productivity:        fmtRange(proLo, proHi, cur),
+      knowledge:           fmtRange(knwLo, knwHi, cur),
+      totalPerDep:         fmtRange(totLo, totHi, cur),
+      cascadeRange:        fmtRange(totLo * 2, totHi * 3, cur),
+      prosecutionHeadline: 'You\u2019re Wondering If the ' + annualExposure + ' Number Is Inflated.',
+      p_recruiting:        fmtRange(recLo, recHi, cur),
+      p_onboarding:        fmtRange(onbLo, onbHi, cur),
+      p_knowledge:         fmtRange(knwLo, knwHi, cur),
+      p_management:        fmtRange(s * 0.08, s * 0.15, cur),
+      p_total_label:       'One departure from ' + co + '. No cascade.',
+      p_total:             fmtRange(totLo, totHi, cur),
+      storyText:           '"A ' + ind + ' company with ' + emp + ' employees lost 4 people in 30 days. A senior team member, 4.2 out of 5 on their last performance review. Zero warning. Clover ERA showed the signal had existed for 67 days. Replacement cost: ' + fmtK(cpd * 2.8, cur) + '. The team ran understaffed for 14 weeks."'
+    };
+  }
+
+  // ---- Main personalise function ----
+  function personalize(lead) {
+
+  // ---- Show personalised top bar, hide logo bar ----
+  document.getElementById('p-bar').style.display    = 'block';
+  document.getElementById('logo-bar').style.display = 'none';
+
+  // ---- Fill data-p tokens ----
+  fill('company',         lead.company);
+  fill('employees',       lead.employees.toLocaleString());
+  fill('industry',        lead.industry);
+  fill('annual-exposure', lead.annualExposure);
+
+  // Top bar CTA
+  document.getElementById('p-bar-cta').textContent = lead.company + ' \u2014 Book 15 Minutes';
+
+  // ---- Hero counter ----
+  document.getElementById('counter-label').textContent = lead.company + '\u2019s estimated annual turnover exposure';
+  document.getElementById('counter-sub').textContent   = 'This is ' + lead.company + '\u2019s estimated annual turnover exposure.';
+  var dailyCost = Math.round(lead.annualExposureRaw / 365).toLocaleString();
+  document.getElementById('counter-daily').innerHTML =
+    lead.annualExposure + ' \u00f7 365 days = <span class="daily-amt">' + lead.currency + dailyCost + ' per day</span>';
+  animateCounter(lead.annualExposureRaw, lead.currency, document.getElementById('counter-display'));
+
+  // ---- Hero headline + body ----
+  document.getElementById('hero-headline').textContent =
+    lead.inWindowLow + '\u2013' + lead.inWindowHigh + ' of your ' + lead.employees +
+    ' employees are in the resignation window right now.';
+
+  document.getElementById('hero-body').textContent =
+    'They\u2019ve already made the decision. The resignation letters are coming. Your managers can\u2019t see it because they\u2019re not looking at the right data.';
+
+  document.getElementById('paranoia-q').textContent =
+    'Which of your teams has someone in this window right now?';
+
+  // ---- Cost section ----
+  document.getElementById('cost-headline').textContent =
+    'Here\u2019s What One Departure Costs ' + lead.company;
+  document.getElementById('cost-col-left-title').textContent =
+    'Replacing one mid-level employee in ' + lead.industry + ':';
+  document.getElementById('c-recruiting').textContent  = lead.recruiting;
+  document.getElementById('c-onboarding').textContent  = lead.onboarding;
+  document.getElementById('c-productivity').textContent = lead.productivity;
+  document.getElementById('c-knowledge').textContent   = lead.knowledge;
+  document.getElementById('c-total').textContent       = lead.totalPerDep;
+
+  document.getElementById('cascade-para').textContent =
+    'When someone senior leaves, 2\u20133 people follow within 90 days. That\u2019s not ' +
+    lead.totalPerDep.split('\u2013')[1] + '. That\u2019s ' + lead.cascadeRange + '.';
+
+  document.getElementById('blind-para').innerHTML =
+    'Based on <strong>' + lead.employees + ' employees</strong> in <strong>' + lead.industry +
+    '</strong>, your estimated annual turnover exposure is <strong>' + lead.annualExposure +
+    '</strong>.<br><br>That\u2019s the cost of operating blind.';
+
+  document.getElementById('exposure-number-large').textContent = lead.annualExposure;
+  document.getElementById('exposure-callout-text').textContent =
+    'Estimated annual turnover exposure for ' + lead.company + '.';
+
+  // ---- Withdrawal callout ----
+  document.getElementById('withdrawal-callout-1').textContent =
+    'Your managers at ' + lead.company + ' are hearing these statements right now from someone on their team. They\u2019re interpreting them as cooperation, maturity, focus, professionalism.';
+
+  // ---- Three-path section ----
+  document.getElementById('path-min-1').textContent =
+    'We\u2019ll run ' + lead.company + '\u2019s live team health assessment. You\u2019ll see your risk profile in real time.';
+  document.getElementById('path-min-2').textContent =
+    'We\u2019ll show you sample alerts and dashboard views for ' + lead.industry +
+    ' companies with ' + lead.employees + ' employees. You\u2019ll see what withdrawal looks like 39 days before resignation.';
+  document.getElementById('path-min-3').textContent =
+    'We\u2019ll calculate what 1\u20132 resignations actually cost ' + lead.company +
+    ' \u2014 not a generic figure, but the real number with cascade effects and knowledge transfer failure.';
+  document.getElementById('path1-cta').textContent =
+    'Schedule ' + lead.company + '\u2019s Free Turnover Analysis';
+
+  // ---- Section 9 prosecution ----
+  document.getElementById('prosecution-headline').textContent = lead.prosecutionHeadline;
+  document.getElementById('p-recruiting').textContent  = lead.p_recruiting;
+  document.getElementById('p-onboarding').textContent  = lead.p_onboarding;
+  document.getElementById('p-knowledge').textContent   = lead.p_knowledge;
+  document.getElementById('p-management').textContent  = lead.p_management;
+  document.getElementById('p-total-label').textContent = lead.p_total_label;
+  document.getElementById('p-total').textContent       = lead.p_total;
+  document.getElementById('prosecution-story-text').textContent = lead.storyText;
+  document.getElementById('prosecution-cta').textContent =
+    'Schedule ' + lead.company + '\u2019s Analysis \u2014 Or Wait Until Someone Resigns Next Week';
+
+  // ---- Final calendar ----
+  document.getElementById('final-cal-label').textContent =
+    lead.company + '\u2019s Free Turnover Analysis';
+  document.getElementById('final-cal-headline').textContent =
+    'Which of your ' + lead.inWindowLow + '\u2013' + lead.inWindowHigh + ' people are in this window today?';
+
+  // ---- GA4 ----
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'personalised_page_view', {
+      event_category: 'personalisation',
+      event_label: lead.company,
+      employees: lead.employees,
+      industry: lead.industry
+    });
+  }
+
+  } // end personalize()
+
+  // ---- Route: demo token → sync, real token → Supabase fetch, none → fallback ----
+  if (lead) {
+    personalize(lead);
+  } else if (ref) {
+    fetch(SUPABASE_URL + '/rest/v1/rpc/get_landing_page_data', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON
+      },
+      body: JSON.stringify({ p_token: ref })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data && data.company_name) {
+        personalize(buildLeadFromSupabase(data));
+      } else {
+        showGenericFallback();
+      }
+    })
+    .catch(function() { showGenericFallback(); });
+  } else {
+    showGenericFallback();
+  }
+
+})();
+</script>
+
+<!-- ============================================================
+     PAGE BEHAVIOUR
+     ============================================================ -->
+<script>
+  // Scroll reveal
+  var reveals = document.querySelectorAll('.reveal');
+  var revealObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(function(el) { revealObs.observe(el); });
+
+  // Stagger grids
+  document.querySelectorAll('.phrases-grid, .clover-grid, .three-paths').forEach(function(grid) {
+    Array.from(grid.children).forEach(function(child, i) { child.style.transitionDelay = (i * 0.06) + 's'; });
+  });
+
+  // CTA tracking
+  document.querySelectorAll('.btn-coral, .btn-teal, .btn-outline').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'cta_click', { event_category: 'engagement', event_label: this.textContent.trim() });
+      }
+    });
+  });
+
+  // Newsletter
+  document.getElementById('newsletter-btn').addEventListener('click', function() {
+    var email = document.getElementById('newsletter-email').value.trim();
+    if (!email || !email.includes('@')) { document.getElementById('newsletter-email').focus(); return; }
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'newsletter_subscribe', { event_category: 'engagement' });
+    }
+    var btn = this; btn.textContent = 'Subscribing...'; btn.disabled = true;
+    var fd = new FormData();
+    fd.append('email', email);
+    fd.append('first_url', 'https://cloverera.com/67');
+    fd.append('first_referrer', 'https://cloverera.com/67');
+    fetch('https://clivehays.substack.com/api/v1/free?nojs=true', { method: 'POST', body: fd, mode: 'no-cors' })
+      .then(function() { showSuccess(); }).catch(function() { showSuccess(); });
+    function showSuccess() {
+      document.getElementById('newsletter-form').style.display    = 'none';
+      document.getElementById('newsletter-privacy').style.display = 'none';
+      document.getElementById('newsletter-success').style.display = 'block';
+      document.getElementById('newsletter-success-sub').style.display = 'block';
+    }
+  });
+
+  // Scroll depth
   (function() {
-    var thresholds = [25, 50, 75, 90];
-    var fired = new Set();
+    var thresholds = [25, 50, 75, 90]; var fired = new Set();
     window.addEventListener('scroll', function() {
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
-      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight <= 0) return;
-      var pct = Math.round((scrollTop / docHeight) * 100);
+      var st = window.scrollY || document.documentElement.scrollTop;
+      var dh = document.documentElement.scrollHeight - window.innerHeight;
+      if (dh <= 0) return;
+      var pct = Math.round((st / dh) * 100);
       thresholds.forEach(function(t) {
         if (pct >= t && !fired.has(t)) {
           fired.add(t);
-          if (typeof gtag !== 'undefined') {
-            gtag('event', 'scroll_depth_' + t, {
-              page_path: '/67',
-              scroll_percent: String(t)
-            });
-          }
+          if (typeof gtag !== 'undefined') { gtag('event', 'scroll_depth', { event_category: 'engagement', percent: t }); }
         }
       });
     }, { passive: true });
   })();
 </script>
 
-<!-- Bot-proof page analytics (Supabase direct) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-(function() {
-  var SB_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
-  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
-
-  var sb = window.supabase.createClient(SB_URL, SB_KEY);
-  var visitId = null;
-  var isHuman = false;
-  var maxScroll = 0;
-  var startTime = Date.now();
-  var visitorId = sessionStorage.getItem('_cv_vid');
-  if (!visitorId) {
-    visitorId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    sessionStorage.setItem('_cv_vid', visitorId);
-  }
-
-  // Capture UTM params from URL
-  var params = new URLSearchParams(window.location.search);
-  var utmSource = params.get('utm_source') || null;
-  var utmCampaign = params.get('utm_campaign') || null;
-
-  // Create initial visit record
-  sb.from('page_visits').insert({
-    page_path: '/67',
-    visitor_id: visitorId,
-    referrer: document.referrer || null,
-    user_agent: navigator.userAgent,
-    utm_source: utmSource,
-    utm_campaign: utmCampaign
-  }).select('id').single().then(function(res) {
-    if (res.data) visitId = res.data.id;
-  });
-
-  // Detect human interaction
-  function markHuman() {
-    if (isHuman) return;
-    isHuman = true;
-    if (visitId) {
-      sb.from('page_visits').update({ is_human: true }).eq('id', visitId).then(function(){});
-    }
-  }
-
-  ['mousemove', 'touchstart', 'keydown'].forEach(function(evt) {
-    document.addEventListener(evt, markHuman, { once: true, passive: true });
-  });
-
-  // Track scroll depth
-  window.addEventListener('scroll', function() {
-    var scrollTop = window.scrollY || document.documentElement.scrollTop;
-    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    if (docHeight <= 0) return;
-    var pct = Math.round((scrollTop / docHeight) * 100);
-    if (pct > maxScroll) maxScroll = pct;
-  }, { passive: true });
-
-  // Send update
-  function sendUpdate() {
-    if (!visitId) return;
-    var secs = Math.round((Date.now() - startTime) / 1000);
-    sb.from('page_visits').update({
-      max_scroll_pct: maxScroll,
-      time_on_page_secs: secs,
-      is_human: isHuman,
-      updated_at: new Date().toISOString()
-    }).eq('id', visitId).then(function(){});
-  }
-
-  // Periodic update every 15s
-  setInterval(sendUpdate, 15000);
-
-  // Final update on page leave
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') sendUpdate();
-  });
-})();
-</script>
 </body>
 </html>
