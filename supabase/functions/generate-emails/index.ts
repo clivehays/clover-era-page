@@ -119,7 +119,7 @@ WRITING RULES FOR SELF-SERVE:
 - No "I'd love to," "curious," "happy to help," "reaching out," "just wanted to"
 `.trim();
 
-const CALENDAR_LINK = 'https://cloverera.com/67';
+const CALENDAR_LINK = 'https://cloverera.com/67-v3';
 
 function getCompanySizeContext(employeeCount: number): string {
   if (employeeCount >= 5000) {
@@ -250,6 +250,7 @@ serve(async (req) => {
     let commentText: string;
     let country: string;
     let turnoverReportId: string | null;
+    let pageToken: string | null = null;
 
     if (isProspectBased) {
       // PROSPECT-BASED EMAIL GENERATION
@@ -284,6 +285,7 @@ serve(async (req) => {
       commentText = prospect.comment_text || '';
       country = prospect.country || '';
       turnoverReportId = prospect.turnover_report_id || null;
+      pageToken = prospect.page_token || null;
 
       // Get research by prospect_id (optional for self-serve sequence)
       const { data: prospectResearch } = await supabase
@@ -634,7 +636,7 @@ async function generateOperationalSequence(
     '{{67_day_number}}': String(turnover.sixty7_day_number),
     '{{67_day_employees}}': String(turnover.sixty7_day_number), // Alias
     '{{67_day_total_formatted}}': formatDollar(turnover.sixty7_day_total),
-    '{{calendar_link}}': CALENDAR_LINK,
+    '{{calendar_link}}': pageToken ? `${CALENDAR_LINK}?ref=${pageToken}` : CALENDAR_LINK,
     '{{custom_company_reference}}': '', // Will be filled by Claude
     // Aliases and derived variables for Nuc 003 Cold sequence
     '{{total_annual_cost_short}}': formatCurrency(turnover.annual_turnover_cost),
