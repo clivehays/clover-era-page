@@ -885,6 +885,9 @@
     }
   });
 
+  // Heartbeat — updates time on page every 30s even if no scroll/tab switch
+  setInterval(function() { if (visitId) update(); }, 30000);
+
   // Final update on exit
   document.addEventListener('visibilitychange', function() { if (document.visibilityState === 'hidden') update(); });
   window.addEventListener('beforeunload', update);
