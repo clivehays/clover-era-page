@@ -890,7 +890,8 @@
     }
   });
 
-  // Human signals — INSERT on first fire, update scroll on subsequent scrolls
+  // Scroll is the only INSERT trigger — security scanners fire synthetic mouse/touch
+  // events but never simulate directional scroll input, so this filters them out
   window.addEventListener('scroll', function() {
     insertVisit();
     var dh = document.documentElement.scrollHeight - window.innerHeight;
@@ -899,9 +900,6 @@
       if (pct > maxScroll) { maxScroll = pct; update(); }
     }
   }, { passive: true });
-  window.addEventListener('mousemove', insertVisit, { once: true, passive: true });
-  window.addEventListener('touchstart', insertVisit, { once: true, passive: true });
-  window.addEventListener('keydown', insertVisit, { once: true });
 
   // Heartbeat — updates time on page every 30s after insert
   setInterval(function() { if (visitId) update(); }, 30000);
