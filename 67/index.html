@@ -782,6 +782,86 @@
 <body>
 
 <!-- ============================================================
+     PAGE VISIT TRACKING → Supabase page_visits → command-center.html
+     ============================================================ -->
+<script>
+(function() {
+  var SB_URL  = 'https://drugebiitlcjkknjfxeh.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+  var API     = SB_URL + '/rest/v1/page_visits';
+  var HDRS    = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Prefer': 'return=representation' };
+  var PATCH_HDRS = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON };
+
+  var visitId   = null;
+  var maxScroll = 0;
+  var startTs   = Date.now();
+  var isHuman   = false;
+  var params    = new URLSearchParams(window.location.search);
+  var ref       = params.get('ref') || '';
+
+  // Insert initial visit row
+  fetch(API, {
+    method: 'POST',
+    headers: HDRS,
+    body: JSON.stringify({
+      page_path:         '/67',
+      visitor_id:        ref || ('anon-' + Math.random().toString(36).substr(2, 9)),
+      is_human:          false,
+      max_scroll_pct:    0,
+      time_on_page_secs: 0,
+      referrer:          document.referrer || '',
+      user_agent:        navigator.userAgent,
+      utm_source:        params.get('utm_source') || (ref ? 'email' : ''),
+      utm_campaign:      params.get('utm_campaign') || ''
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) { if (d && d[0] && d[0].id) visitId = d[0].id; })
+  .catch(function() {});
+
+  // Patch the visit row with latest engagement data
+  function update() {
+    if (!visitId) return;
+    fetch(API + '?id=eq.' + visitId, {
+      method: 'PATCH',
+      headers: PATCH_HDRS,
+      body: JSON.stringify({
+        is_human:          isHuman,
+        max_scroll_pct:    maxScroll,
+        time_on_page_secs: Math.round((Date.now() - startTs) / 1000),
+        updated_at:        new Date().toISOString()
+      })
+    }).catch(function() {});
+  }
+
+  // Called by personalize() once company name is known — patches utm_campaign
+  // Retries until visitId is available (handles async token fetch path)
+  window._patchVisitCompany = function(companyName) {
+    if (!visitId) { setTimeout(function() { window._patchVisitCompany(companyName); }, 400); return; }
+    fetch(API + '?id=eq.' + visitId, {
+      method: 'PATCH',
+      headers: PATCH_HDRS,
+      body: JSON.stringify({ utm_campaign: companyName, is_human: true })
+    }).catch(function() {});
+  };
+
+  // Scroll: mark human, track max depth
+  window.addEventListener('scroll', function() {
+    isHuman = true;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (dh > 0) {
+      var pct = Math.round(((window.scrollY || document.documentElement.scrollTop) / dh) * 100);
+      if (pct > maxScroll) { maxScroll = pct; update(); }
+    }
+  }, { passive: true });
+
+  // Final update on exit
+  document.addEventListener('visibilitychange', function() { if (document.visibilityState === 'hidden') update(); });
+  window.addEventListener('beforeunload', update);
+})();
+</script>
+
+<!-- ============================================================
      SECTION 1: PERSONALISED TOP BAR (replaces logo bar when token present)
      ============================================================ -->
 <div class="p-bar" id="p-bar">
@@ -1368,6 +1448,9 @@ var DEMO_LEADS = {
 
   // ---- Main personalise function ----
   function personalize(lead) {
+
+  // ---- Report company name to command-center analytics ----
+  if (typeof window._patchVisitCompany === 'function') window._patchVisitCompany(lead.company);
 
   // ---- Show personalised top bar, hide logo bar ----
   document.getElementById('p-bar').style.display    = 'block';
