@@ -856,5 +856,77 @@
     </section>
 
     <script src="/js/footer.js"></script>
+
+<!-- Bot-proof page analytics (Supabase direct) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function() {
+  var SB_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+  var sb = window.supabase.createClient(SB_URL, SB_KEY);
+  var visitId = null;
+  var isHuman = false;
+  var maxScroll = 0;
+  var startTime = Date.now();
+  var visitorId = sessionStorage.getItem('_cv_vid');
+  if (!visitorId) {
+    visitorId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    sessionStorage.setItem('_cv_vid', visitorId);
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var utmSource = params.get('utm_source') || null;
+  var utmCampaign = params.get('utm_campaign') || null;
+
+  sb.from('page_visits').insert({
+    page_path: '/',
+    visitor_id: visitorId,
+    referrer: document.referrer || null,
+    user_agent: navigator.userAgent,
+    utm_source: utmSource,
+    utm_campaign: utmCampaign
+  }).select('id').single().then(function(res) {
+    if (res.data) visitId = res.data.id;
+  });
+
+  function markHuman() {
+    if (isHuman) return;
+    isHuman = true;
+    if (visitId) {
+      sb.from('page_visits').update({ is_human: true }).eq('id', visitId).then(function(){});
+    }
+  }
+
+  ['mousemove', 'touchstart', 'keydown'].forEach(function(evt) {
+    document.addEventListener(evt, markHuman, { once: true, passive: true });
+  });
+
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight <= 0) return;
+    var pct = Math.round((scrollTop / docHeight) * 100);
+    if (pct > maxScroll) maxScroll = pct;
+  }, { passive: true });
+
+  function sendUpdate() {
+    if (!visitId) return;
+    var secs = Math.round((Date.now() - startTime) / 1000);
+    sb.from('page_visits').update({
+      max_scroll_pct: maxScroll,
+      time_on_page_secs: secs,
+      is_human: isHuman,
+      updated_at: new Date().toISOString()
+    }).eq('id', visitId).then(function(){});
+  }
+
+  setInterval(sendUpdate, 15000);
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') sendUpdate();
+  });
+})();
+</script>
 </body>
 </html>

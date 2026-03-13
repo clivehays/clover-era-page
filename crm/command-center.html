@@ -475,6 +475,8 @@
                 <div style="display:flex;gap:0.75rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
                     <label style="font-size:0.8rem;color:var(--text2)">Page:</label>
                     <select id="analyticsPage" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="renderAnalytics()">
+                        <option value="all">All Pages</option>
+                        <option value="/">/ (Home)</option>
                         <option value="/67">/67</option>
                     </select>
                     <label style="font-size:0.8rem;color:var(--text2);margin-left:0.5rem">Range:</label>
@@ -2043,8 +2045,9 @@
         // Fetch all visits for this page/range
         let query = sb.from('page_visits')
             .select('*')
-            .eq('page_path', pagePath)
             .order('created_at', { ascending: false });
+
+        if (pagePath !== 'all') query = query.eq('page_path', pagePath);
 
         if (dateFilter) query = query.gte('created_at', dateFilter);
 
