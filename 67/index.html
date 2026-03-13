@@ -855,6 +855,28 @@
     }
   }, { passive: true });
 
+  // Button click tracking
+  var clickedBtns = [];
+  var BTN_LABELS = {
+    'p-bar-cta':       'Top Bar',
+    'path1-cta':       'Book Call',
+    'prosecution-cta': 'Prosecution CTA'
+  };
+  document.addEventListener('click', function(e) {
+    var el = e.target.closest('.btn-coral, .btn-teal, .btn-outline');
+    if (!el) return;
+    var label = BTN_LABELS[el.id] || (el.textContent.trim().substring(0, 22));
+    if (clickedBtns.indexOf(label) === -1) {
+      clickedBtns.push(label);
+      if (!visitId) return;
+      fetch(API + '?id=eq.' + visitId, {
+        method: 'PATCH',
+        headers: PATCH_HDRS,
+        body: JSON.stringify({ buttons_clicked: clickedBtns.join(', '), is_human: true })
+      }).catch(function() {});
+    }
+  });
+
   // Final update on exit
   document.addEventListener('visibilitychange', function() { if (document.visibilityState === 'hidden') update(); });
   window.addEventListener('beforeunload', update);

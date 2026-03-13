@@ -514,7 +514,7 @@
                         <th>Source</th>
                         <th>Scroll %</th>
                         <th>Time on Page</th>
-                        <th>Referrer</th>
+                        <th>Buttons Clicked</th>
                     </tr></thead>
                     <tbody></tbody>
                 </table>
@@ -2140,14 +2140,14 @@
             const source = v.utm_source
                 ? `<span class="pill pill-blue">${escHtml(v.utm_source)}</span>${v.utm_campaign ? ' <span style="font-size:0.7rem;color:var(--text3)">' + escHtml(v.utm_campaign) + '</span>' : ''}`
                 : (v.referrer ? '<span class="pill pill-cyan">Referral</span>' : '<span style="color:var(--text3)">Direct</span>');
-            const ref = v.referrer ? escHtml(shortenUrl(v.referrer)) : '';
+            const btns = v.buttons_clicked ? escHtml(v.buttons_clicked) : '<span style="color:var(--text3)">—</span>';
             return `<tr>
                 <td>${time}</td>
                 <td>${humanPill}</td>
                 <td style="font-size:0.78rem">${source}</td>
                 <td>${v.max_scroll_pct || 0}%</td>
                 <td>${formatDuration(v.time_on_page_secs || 0)}</td>
-                <td style="font-size:0.78rem;color:var(--text2)">${ref}</td>
+                <td style="font-size:0.78rem;color:var(--text2)">${btns}</td>
             </tr>`;
         }).join('');
     }
