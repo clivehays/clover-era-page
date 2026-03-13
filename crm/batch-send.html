@@ -489,9 +489,9 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Randomized interval between prospects (40-60 seconds) to avoid robotic patterns
+        // Randomized interval between prospects (20-35 seconds) to avoid robotic patterns
         function getRandomInterval() {
-            return Math.floor(Math.random() * (60000 - 40000 + 1)) + 40000;
+            return Math.floor(Math.random() * (35000 - 20000 + 1)) + 20000;
         }
 
         // Industry benchmarks (same as turnover-analysis)
@@ -1401,8 +1401,8 @@
 
                 if (existing) {
                     prospectId = existing.id;
-                    // Update with any new data
-                    await supabaseClient
+                    // Update with any new data from CSV (overwrite old values)
+                    const { error: updateErr } = await supabaseClient
                         .from('outreach_prospects')
                         .update({
                             first_name: row.firstName,
@@ -1411,9 +1411,34 @@
                             company_name: row.companyName,
                             company_employee_count: row.employees,
                             company_industry: row.industry,
+                            country: row.country || null,
                             updated_at: new Date().toISOString(),
                         })
                         .eq('id', prospectId);
+
+                    if (updateErr) {
+                        console.warn(`Prospect update failed (RLS?): ${updateErr.message}. Deleting and re-inserting.`);
+                        // If update fails (e.g., RLS), delete and re-insert
+                        await supabaseClient.from('outreach_prospects').delete().eq('id', prospectId);
+                        const { data: reInserted, error: reInsertErr } = await supabaseClient
+                            .from('outreach_prospects')
+                            .insert({
+                                email: row.email.toLowerCase(),
+                                first_name: row.firstName,
+                                last_name: row.lastName,
+                                title: row.title || null,
+                                company_name: row.companyName,
+                                company_employee_count: row.employees,
+                                company_industry: row.industry,
+                                country: row.country || null,
+                                status: 'imported',
+                                import_batch: 'batch-send',
+                            })
+                            .select('id')
+                            .single();
+                        if (reInsertErr) throw new Error(`Re-insert prospect: ${reInsertErr.message}`);
+                        prospectId = reInserted.id;
+                    }
                 } else {
                     const { data: newProspect, error: insertErr } = await supabaseClient
                         .from('outreach_prospects')
