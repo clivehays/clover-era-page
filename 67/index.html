@@ -792,40 +792,65 @@
   var HDRS    = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Prefer': 'return=representation' };
   var PATCH_HDRS = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON };
 
-  // Block known bots/crawlers/email prefetchers from creating rows
+  // Block known bots/crawlers/email prefetchers
   var BOT_UA = /bot|crawl|spider|slurp|facebot|ia_archiver|prerender|headlesschrome|phantom|selenium|puppeteer|outlook|safelinks|office|msnbot|linkscanner|mailtrack|preview|netseer|wget|curl|python|java\/|apache-http/i;
   if (BOT_UA.test(navigator.userAgent)) return;
 
-  // Block background pre-renders (iOS Mail, Chrome pre-render, etc.)
-  // document.hidden = true means the page is not actually visible to the user yet
-  if (document.hidden) return;
+  var visitId      = null;
+  var maxScroll    = 0;
+  var startTs      = Date.now();
+  var inserted     = false;
+  var pendingCompany = null;
+  var params       = new URLSearchParams(window.location.search);
+  var ref          = params.get('ref') || '';
 
-  var visitId   = null;
-  var maxScroll = 0;
-  var startTs   = Date.now();
-  var isHuman   = false;
-  var params    = new URLSearchParams(window.location.search);
-  var ref       = params.get('ref') || '';
+  // Called by personalize() once company name is known.
+  // If the row hasn't been inserted yet, store it and apply after insert.
+  window._patchVisitCompany = function(companyName) {
+    if (!inserted) { pendingCompany = companyName; return; }
+    if (!visitId) { setTimeout(function() { window._patchVisitCompany(companyName); }, 400); return; }
+    fetch(API + '?id=eq.' + visitId, {
+      method: 'PATCH',
+      headers: PATCH_HDRS,
+      body: JSON.stringify({ utm_campaign: companyName })
+    }).catch(function() {});
+  };
 
-  // Insert initial visit row
-  fetch(API, {
-    method: 'POST',
-    headers: HDRS,
-    body: JSON.stringify({
-      page_path:         '/67',
-      visitor_id:        ref || ('anon-' + Math.random().toString(36).substr(2, 9)),
-      is_human:          false,
-      max_scroll_pct:    0,
-      time_on_page_secs: 0,
-      referrer:          document.referrer || '',
-      user_agent:        navigator.userAgent,
-      utm_source:        params.get('utm_source') || (ref ? 'email' : ''),
-      utm_campaign:      params.get('utm_campaign') || ''
+  // Create the visit row — called only on first confirmed human signal
+  function insertVisit() {
+    if (inserted) return;
+    inserted = true;
+    fetch(API, {
+      method: 'POST',
+      headers: HDRS,
+      body: JSON.stringify({
+        page_path:         '/67',
+        visitor_id:        ref || ('anon-' + Math.random().toString(36).substr(2, 9)),
+        is_human:          true,
+        max_scroll_pct:    maxScroll,
+        time_on_page_secs: Math.round((Date.now() - startTs) / 1000),
+        referrer:          document.referrer || '',
+        user_agent:        navigator.userAgent,
+        utm_source:        params.get('utm_source') || (ref ? 'email' : ''),
+        utm_campaign:      params.get('utm_campaign') || (pendingCompany || '')
+      })
     })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(d) { if (d && d[0] && d[0].id) visitId = d[0].id; })
-  .catch(function() {});
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d[0] && d[0].id) {
+        visitId = d[0].id;
+        // Apply company name if it arrived before insert completed
+        if (pendingCompany) {
+          fetch(API + '?id=eq.' + visitId, {
+            method: 'PATCH',
+            headers: PATCH_HDRS,
+            body: JSON.stringify({ utm_campaign: pendingCompany })
+          }).catch(function() {});
+        }
+      }
+    })
+    .catch(function() {});
+  }
 
   // Patch the visit row with latest engagement data
   function update() {
@@ -834,38 +859,13 @@
       method: 'PATCH',
       headers: PATCH_HDRS,
       body: JSON.stringify({
-        is_human:          isHuman,
+        is_human:          true,
         max_scroll_pct:    maxScroll,
         time_on_page_secs: Math.round((Date.now() - startTs) / 1000),
         updated_at:        new Date().toISOString()
       })
     }).catch(function() {});
   }
-
-  // Called by personalize() once company name is known — patches utm_campaign
-  // Retries until visitId is available (handles async token fetch path)
-  window._patchVisitCompany = function(companyName) {
-    if (!visitId) { setTimeout(function() { window._patchVisitCompany(companyName); }, 400); return; }
-    fetch(API + '?id=eq.' + visitId, {
-      method: 'PATCH',
-      headers: PATCH_HDRS,
-      body: JSON.stringify({ utm_campaign: companyName, is_human: true })
-    }).catch(function() {});
-  };
-
-  // Mark human on scroll, mouse move, or touch
-  function markHuman() { if (!isHuman) { isHuman = true; update(); } }
-  window.addEventListener('scroll', function() {
-    markHuman();
-    var dh = document.documentElement.scrollHeight - window.innerHeight;
-    if (dh > 0) {
-      var pct = Math.round(((window.scrollY || document.documentElement.scrollTop) / dh) * 100);
-      if (pct > maxScroll) { maxScroll = pct; update(); }
-    }
-  }, { passive: true });
-  window.addEventListener('mousemove', markHuman, { once: true, passive: true });
-  window.addEventListener('touchstart', markHuman, { once: true, passive: true });
-  window.addEventListener('keydown', markHuman, { once: true });
 
   // Button click tracking
   var clickedBtns = [];
@@ -880,16 +880,30 @@
     var label = BTN_LABELS[el.id] || (el.textContent.trim().substring(0, 22));
     if (clickedBtns.indexOf(label) === -1) {
       clickedBtns.push(label);
+      insertVisit();
       if (!visitId) return;
       fetch(API + '?id=eq.' + visitId, {
         method: 'PATCH',
         headers: PATCH_HDRS,
-        body: JSON.stringify({ buttons_clicked: clickedBtns.join(', '), is_human: true })
+        body: JSON.stringify({ buttons_clicked: clickedBtns.join(', ') })
       }).catch(function() {});
     }
   });
 
-  // Heartbeat — updates time on page every 30s even if no scroll/tab switch
+  // Human signals — INSERT on first fire, update scroll on subsequent scrolls
+  window.addEventListener('scroll', function() {
+    insertVisit();
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (dh > 0) {
+      var pct = Math.round(((window.scrollY || document.documentElement.scrollTop) / dh) * 100);
+      if (pct > maxScroll) { maxScroll = pct; update(); }
+    }
+  }, { passive: true });
+  window.addEventListener('mousemove', insertVisit, { once: true, passive: true });
+  window.addEventListener('touchstart', insertVisit, { once: true, passive: true });
+  window.addEventListener('keydown', insertVisit, { once: true });
+
+  // Heartbeat — updates time on page every 30s after insert
   setInterval(function() { if (visitId) update(); }, 30000);
 
   // Final update on exit
