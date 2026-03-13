@@ -119,7 +119,7 @@ WRITING RULES FOR SELF-SERVE:
 - No "I'd love to," "curious," "happy to help," "reaching out," "just wanted to"
 `.trim();
 
-const CALENDAR_LINK = 'https://cloverera.com/67-v3';
+const CALENDAR_LINK = 'https://cloverera.com/67';
 
 function getCompanySizeContext(employeeCount: number): string {
   if (employeeCount >= 5000) {
@@ -417,6 +417,7 @@ serve(async (req) => {
       comment_text: commentText,
       country: country,
       turnover_report_id: turnoverReportId,
+      page_token: pageToken,
     };
 
     // Route to appropriate generator based on sequence type
@@ -636,7 +637,7 @@ async function generateOperationalSequence(
     '{{67_day_number}}': String(turnover.sixty7_day_number),
     '{{67_day_employees}}': String(turnover.sixty7_day_number), // Alias
     '{{67_day_total_formatted}}': formatDollar(turnover.sixty7_day_total),
-    '{{calendar_link}}': pageToken ? `${CALENDAR_LINK}?ref=${pageToken}` : CALENDAR_LINK,
+    '{{calendar_link}}': context.page_token ? `${CALENDAR_LINK}?ref=${context.page_token}` : CALENDAR_LINK,
     '{{custom_company_reference}}': '', // Will be filled by Claude
     // Aliases and derived variables for Nuc 003 Cold sequence
     '{{total_annual_cost_short}}': formatCurrency(turnover.annual_turnover_cost),
@@ -645,6 +646,7 @@ async function generateOperationalSequence(
     '{{cascade_count_step2}}': String(Math.round(turnover.sixty7_day_number * 1.375)),
     '{{cascade_annual_cost_short}}': formatCurrency(turnover.annual_turnover_cost * 1.38),
     '{{daily_cost_short}}': formatCurrency(turnover.daily_cost),
+    '{{annual_departures}}': String(Math.round(turnover.calculated_departures)),
   };
 
   // Generate custom_company_reference via Claude
