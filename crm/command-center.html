@@ -472,7 +472,7 @@
             <div id="tab-analytics" class="tab-content">
                 <div class="stats-bar" id="analyticsStats"></div>
 
-                <div style="display:flex;gap:0.75rem;margin-bottom:1rem;align-items:center">
+                <div style="display:flex;gap:0.75rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
                     <label style="font-size:0.8rem;color:var(--text2)">Page:</label>
                     <select id="analyticsPage" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="renderAnalytics()">
                         <option value="/67">/67</option>
@@ -484,6 +484,7 @@
                         <option value="30d">Last 30 Days</option>
                         <option value="all">All Time</option>
                     </select>
+                    <span style="margin-left:auto;font-size:0.72rem;color:var(--text3)" id="analyticsLastUpdate">Auto-refreshes every 30s</span>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
@@ -572,6 +573,7 @@
     const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let analyticsInterval = null;
 
     const STAGES = [
         { id: 'cold', name: 'Cold' },
@@ -838,11 +840,12 @@
             btn.classList.add('active');
             const tab = btn.dataset.tab;
             document.getElementById('tab-' + tab).classList.add('active');
+            if (analyticsInterval) { clearInterval(analyticsInterval); analyticsInterval = null; }
             if (tab === 'today') renderToday();
             else if (tab === 'pipeline') renderPipeline();
             else if (tab === 'outbound') renderOutbound();
             else if (tab === 'report') renderReport();
-            else if (tab === 'analytics') renderAnalytics();
+            else if (tab === 'analytics') { renderAnalytics(); analyticsInterval = setInterval(renderAnalytics, 30000); }
         });
     });
 
@@ -2046,6 +2049,9 @@
 
         const { data: visits } = await query.limit(1000);
         if (!visits) return;
+
+        document.getElementById('analyticsLastUpdate').textContent =
+            'Updated ' + new Date().toLocaleTimeString() + ' · Auto-refreshes every 30s';
 
         const totalVisits = visits.length;
         const humanVisits = visits.filter(v => v.is_human);
