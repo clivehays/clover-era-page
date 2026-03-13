@@ -796,6 +796,10 @@
   var BOT_UA = /bot|crawl|spider|slurp|facebot|ia_archiver|prerender|headlesschrome|phantom|selenium|puppeteer|outlook|safelinks|office|msnbot|linkscanner|mailtrack|preview|netseer|wget|curl|python|java\/|apache-http/i;
   if (BOT_UA.test(navigator.userAgent)) return;
 
+  // Block background pre-renders (iOS Mail, Chrome pre-render, etc.)
+  // document.hidden = true means the page is not actually visible to the user yet
+  if (document.hidden) return;
+
   var visitId   = null;
   var maxScroll = 0;
   var startTs   = Date.now();
