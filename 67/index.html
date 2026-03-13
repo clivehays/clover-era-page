@@ -1218,5 +1218,77 @@
     }, { passive: true });
   })();
 </script>
+
+<!-- Bot-proof page analytics (Supabase direct) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function() {
+  var SB_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+
+  var sb = window.supabase.createClient(SB_URL, SB_KEY);
+  var visitId = null;
+  var isHuman = false;
+  var maxScroll = 0;
+  var startTime = Date.now();
+  var visitorId = sessionStorage.getItem('_cv_vid');
+  if (!visitorId) {
+    visitorId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    sessionStorage.setItem('_cv_vid', visitorId);
+  }
+
+  // Create initial visit record
+  sb.from('page_visits').insert({
+    page_path: '/67',
+    visitor_id: visitorId,
+    referrer: document.referrer || null,
+    user_agent: navigator.userAgent
+  }).select('id').single().then(function(res) {
+    if (res.data) visitId = res.data.id;
+  });
+
+  // Detect human interaction
+  function markHuman() {
+    if (isHuman) return;
+    isHuman = true;
+    if (visitId) {
+      sb.from('page_visits').update({ is_human: true }).eq('id', visitId).then(function(){});
+    }
+  }
+
+  ['mousemove', 'touchstart', 'keydown'].forEach(function(evt) {
+    document.addEventListener(evt, markHuman, { once: true, passive: true });
+  });
+
+  // Track scroll depth
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight <= 0) return;
+    var pct = Math.round((scrollTop / docHeight) * 100);
+    if (pct > maxScroll) maxScroll = pct;
+  }, { passive: true });
+
+  // Send update
+  function sendUpdate() {
+    if (!visitId) return;
+    var secs = Math.round((Date.now() - startTime) / 1000);
+    sb.from('page_visits').update({
+      max_scroll_pct: maxScroll,
+      time_on_page_secs: secs,
+      is_human: isHuman,
+      updated_at: new Date().toISOString()
+    }).eq('id', visitId).then(function(){});
+  }
+
+  // Periodic update every 15s
+  setInterval(sendUpdate, 15000);
+
+  // Final update on page leave
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') sendUpdate();
+  });
+})();
+</script>
 </body>
 </html>
