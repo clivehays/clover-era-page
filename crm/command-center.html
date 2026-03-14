@@ -899,8 +899,8 @@
 
         // Active people = not cold, not churned, not customer
         const activePeople = allPeople.filter(p => !['cold', 'churned', 'customer'].includes(p._lifecycle));
-        const overduePeople = allPeople.filter(p => p.next_action_date && p.next_action_date < today && !TERMINAL_STAGES.includes(p._lifecycle));
-        const dueTodayPeople = allPeople.filter(p => p.next_action_date && p.next_action_date.startsWith(today));
+        const overduePeople = allPeople.filter(p => p.next_action_date && p.next_action_date < today && !TERMINAL_STAGES.includes(p._lifecycle) && p.status !== 'unsubscribed');
+        const dueTodayPeople = allPeople.filter(p => p.next_action_date && p.next_action_date.startsWith(today) && p.status !== 'unsubscribed');
 
         // Recently replied: people at 'replied' stage updated in last 48h
         const ago48h = new Date(now.getTime() - 48 * 3600000).toISOString();
@@ -2114,6 +2114,7 @@
 
             selectedPerson.status = 'unsubscribed';
             showToast(`${name} unsubscribed`);
+            renderToday();
             openPerson(selectedPerson._id); // Refresh panel
         } catch (err) {
             showToast('Unsubscribe failed: ' + err.message, 'error');
