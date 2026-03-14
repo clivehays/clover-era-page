@@ -2104,9 +2104,9 @@
                 .eq('prospect_id', prospectId)
                 .in('status', ['draft', 'approved', 'pending_followup', 'scheduled']);
 
-            // 2. Mark prospect as unsubscribed
+            // 2. Mark prospect as unsubscribed and clear next action date
             await sb.from('outreach_prospects')
-                .update({ status: 'unsubscribed', updated_at: new Date().toISOString() })
+                .update({ status: 'unsubscribed', next_action: null, next_action_date: null, updated_at: new Date().toISOString() })
                 .eq('id', prospectId);
 
             // 3. Mark all campaign_prospects as unsubscribed
@@ -2118,7 +2118,16 @@
                     .in('id', cps.map(cp => cp.id));
             }
 
+            // 4. If person is also a CRM contact, clear their next action date
+            if (selectedPerson._contactId) {
+                await sb.from('contacts')
+                    .update({ next_action: null, next_action_date: null, updated_at: new Date().toISOString() })
+                    .eq('id', selectedPerson._contactId);
+            }
+
             selectedPerson.status = 'unsubscribed';
+            selectedPerson.next_action = null;
+            selectedPerson.next_action_date = null;
             showToast(`${name} unsubscribed`);
             renderToday();
             openPerson(selectedPerson._id); // Refresh panel
