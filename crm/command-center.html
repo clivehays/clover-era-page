@@ -882,7 +882,7 @@
             const tab = btn.dataset.tab;
             document.getElementById('tab-' + tab).classList.add('active');
             if (analyticsInterval) { clearInterval(analyticsInterval); analyticsInterval = null; }
-            if (tab === 'today') renderToday();
+            if (tab === 'today') loadData().then(() => renderToday());
             else if (tab === 'pipeline') renderPipeline();
             else if (tab === 'outbound') renderOutbound();
             else if (tab === 'report') renderReport();
@@ -1810,6 +1810,7 @@
             }
         }
 
+        selectedPerson.updated_at = new Date().toISOString();
         hideActivityLogger();
         showToast(currentActivityType === 'task' ? 'Task created' : 'Activity saved');
         document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
@@ -1903,16 +1904,21 @@
             const earlyStages = ['cold', 'emailed', 'opened', 'clicked'];
             if (earlyStages.includes(selectedPerson._lifecycle)) {
                 await sb.from('contacts').update({ lifecycle_stage: 'book_sent', updated_at: new Date().toISOString() }).eq('id', selectedPerson._contactId);
+                selectedPerson._lifecycle = 'book_sent';
+                selectedPerson.lifecycle_stage = 'book_sent';
             }
         }
 
+        const now = new Date().toISOString();
         if (selectedPerson._contactId) {
             await sb.from('contacts').update({
-                last_activity_date: new Date().toISOString(), updated_at: new Date().toISOString()
+                last_activity_date: now, updated_at: now
             }).eq('id', selectedPerson._contactId);
         }
+        selectedPerson.updated_at = now;
 
         document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
+        renderToday();
     }
 
     // ── Lifecycle Stage Change ──
