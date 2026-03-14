@@ -1564,6 +1564,11 @@
         if (person._type === 'prospect') {
             html += '<button class="qa-btn" style="background:var(--green); color:white; border-color:var(--green);" onclick="showPromoteModal()">Promote to CRM</button>';
         }
+        if (person.status === 'unsubscribed') {
+            html += '<span style="font-size:0.78rem; color:var(--red); font-weight:600; padding:0.3rem 0.6rem; background:#fef2f2; border-radius:4px;">Unsubscribed</span>';
+        } else {
+            html += '<button class="qa-btn" style="background:#fbbf24; color:#000; border-color:#fbbf24;" onclick="unsubscribePerson()">Unsubscribe</button>';
+        }
         html += '<button class="qa-btn" style="border-color:var(--red); color:var(--red);" onclick="showDeleteModal()">Delete</button>';
         html += '</div>';
 
@@ -2047,6 +2052,54 @@
             showToast('Delete failed: ' + err.message, 'error');
         } finally {
             btn.disabled = false; btn.textContent = 'Delete Person';
+        }
+    }
+
+    // ── Unsubscribe Person ──
+    async function unsubscribePerson() {
+        if (!selectedPerson) return;
+        const name = `${selectedPerson.first_name || ''} ${selectedPerson.last_name || ''}`.trim() || selectedPerson.email;
+
+        // Find prospect ID - either directly or by email lookup
+        let prospectId = selectedPerson._prospectId;
+        if (!prospectId && selectedPerson.email) {
+            const { data: found } = await sb.from('outreach_prospects')
+                .select('id').eq('email', selectedPerson.email).limit(1).single();
+            if (found) prospectId = found.id;
+        }
+        if (!prospectId) {
+            showToast('No outreach prospect record found for this person', 'error');
+            return;
+        }
+
+        if (!confirm(`Unsubscribe ${name}?\n\nThis will cancel all pending/scheduled emails and prevent future sends.`)) return;
+
+        try {
+            // 1. Cancel all pending/scheduled/draft emails
+            await sb.from('outreach_emails')
+                .update({ status: 'cancelled' })
+                .eq('prospect_id', prospectId)
+                .in('status', ['draft', 'approved', 'pending_followup', 'scheduled']);
+
+            // 2. Mark prospect as unsubscribed
+            await sb.from('outreach_prospects')
+                .update({ status: 'unsubscribed', updated_at: new Date().toISOString() })
+                .eq('id', prospectId);
+
+            // 3. Mark all campaign_prospects as unsubscribed
+            const { data: cps } = await sb.from('campaign_prospects')
+                .select('id').eq('prospect_id', prospectId);
+            if (cps && cps.length > 0) {
+                await sb.from('campaign_prospects')
+                    .update({ status: 'unsubscribed' })
+                    .in('id', cps.map(cp => cp.id));
+            }
+
+            selectedPerson.status = 'unsubscribed';
+            showToast(`${name} unsubscribed`);
+            openPerson(selectedPerson._id); // Refresh panel
+        } catch (err) {
+            showToast('Unsubscribe failed: ' + err.message, 'error');
         }
     }
 
