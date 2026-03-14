@@ -668,6 +668,7 @@
     let allEmails = [];
     let allEmailEngagement = []; // full email data for weekly history
     let totalEmail1s = 0;
+    let unsubscribedEmails = new Set(); // emails of unsubscribed prospects
     let currentUser = null;
     let selectedPerson = null;
     let currentActivityType = 'note';
@@ -869,6 +870,11 @@
 
         allPeople = Array.from(emailMap.values());
         allPeople.forEach(p => { p._lifecycle = computeLifecycle(p); });
+
+        // Fetch unsubscribed prospect emails for cross-referencing contacts
+        const { data: unsubData } = await sb.from('outreach_prospects')
+            .select('email').eq('status', 'unsubscribed');
+        unsubscribedEmails = new Set((unsubData || []).map(r => (r.email || '').toLowerCase()));
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -899,8 +905,9 @@
 
         // Active people = not cold, not churned, not customer
         const activePeople = allPeople.filter(p => !['cold', 'churned', 'customer'].includes(p._lifecycle));
-        const overduePeople = allPeople.filter(p => p.next_action_date && p.next_action_date < today && !TERMINAL_STAGES.includes(p._lifecycle) && p.status !== 'unsubscribed');
-        const dueTodayPeople = allPeople.filter(p => p.next_action_date && p.next_action_date.startsWith(today) && p.status !== 'unsubscribed');
+        const isUnsub = p => p.status === 'unsubscribed' || unsubscribedEmails.has((p.email || '').toLowerCase());
+        const overduePeople = allPeople.filter(p => p.next_action_date && p.next_action_date < today && !TERMINAL_STAGES.includes(p._lifecycle) && !isUnsub(p));
+        const dueTodayPeople = allPeople.filter(p => p.next_action_date && p.next_action_date.startsWith(today) && !isUnsub(p));
 
         // Recently replied: people at 'replied' stage updated in last 48h
         const ago48h = new Date(now.getTime() - 48 * 3600000).toISOString();
@@ -2128,6 +2135,7 @@
             selectedPerson.status = 'unsubscribed';
             selectedPerson.next_action = null;
             selectedPerson.next_action_date = null;
+            if (selectedPerson.email) unsubscribedEmails.add(selectedPerson.email.toLowerCase());
             showToast(`${name} unsubscribed`);
             renderToday();
             openPerson(selectedPerson._id); // Refresh panel
