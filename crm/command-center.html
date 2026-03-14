@@ -723,7 +723,7 @@
     }
 
     async function loadData() {
-        const [contactsRes, prospectsRes, emailsRes, notesRes] = await Promise.all([
+        const [contactsRes, prospectsRes, emailsRes, notesRes, unsubRes] = await Promise.all([
             sb.from('contacts')
                 .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, company_id, companies(id, name, industry, employee_count, website)')
                 .order('updated_at', { ascending: false }),
@@ -737,8 +737,12 @@
                 .limit(3000),
             sb.from('person_notes')
                 .select('contact_id, prospect_id, note_type')
-                .in('note_type', ['book_sent', 'li_con_req', 'li_dm'])
+                .in('note_type', ['book_sent', 'li_con_req', 'li_dm']),
+            sb.from('outreach_prospects')
+                .select('email')
+                .eq('status', 'unsubscribed')
         ]);
+        unsubscribedEmails = new Set((unsubRes.data || []).map(r => (r.email || '').toLowerCase()));
 
         // Paginated fetch helper (parallel first N pages, then sequential overflow)
         async function fetchAllRows(query, pageSize = 1000, parallelPages = 10) {
@@ -860,9 +864,13 @@
             _hasClicked: clickedSet.has(p.id)
         }));
 
-        // Merge, deduplicate by email (contacts win)
+        // Merge, deduplicate by email (contacts win; skip contacts whose email is unsubscribed)
         const emailMap = new Map();
-        contacts.forEach(c => { if (c.email) emailMap.set(c.email.toLowerCase(), c); });
+        contacts.forEach(c => {
+            if (c.email && !unsubscribedEmails.has(c.email.toLowerCase())) {
+                emailMap.set(c.email.toLowerCase(), c);
+            }
+        });
         prospects.forEach(p => {
             const key = (p.email || '').toLowerCase();
             if (key && !emailMap.has(key)) emailMap.set(key, p);
@@ -870,11 +878,6 @@
 
         allPeople = Array.from(emailMap.values());
         allPeople.forEach(p => { p._lifecycle = computeLifecycle(p); });
-
-        // Fetch unsubscribed prospect emails for cross-referencing contacts
-        const { data: unsubData } = await sb.from('outreach_prospects')
-            .select('email').eq('status', 'unsubscribed');
-        unsubscribedEmails = new Set((unsubData || []).map(r => (r.email || '').toLowerCase()));
     }
 
     // ═══════════════════════════════════════════════════════════════════════
