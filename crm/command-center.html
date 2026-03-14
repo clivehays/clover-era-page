@@ -2135,13 +2135,10 @@
                     .eq('id', selectedPerson._contactId);
             }
 
-            selectedPerson.status = 'unsubscribed';
-            selectedPerson.next_action = null;
-            selectedPerson.next_action_date = null;
-            if (selectedPerson.email) unsubscribedEmails.add(selectedPerson.email.toLowerCase());
             showToast(`${name} unsubscribed`);
+            closePanel();
+            await loadData();
             renderToday();
-            openPerson(selectedPerson._id); // Refresh panel
         } catch (err) {
             showToast('Unsubscribe failed: ' + err.message, 'error');
         }
