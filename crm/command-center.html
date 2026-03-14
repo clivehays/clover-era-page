@@ -1539,16 +1539,14 @@
             </div>`;
         }
 
-        // Next action (contacts only)
-        if (person._type === 'contact') {
-            html += `<div class="panel-section">
-                <label>Next Action</label>
-                <input type="text" class="panel-input" id="panelNextAction" value="${escHtml(person.next_action || '')}" placeholder="What's next?">
-                <div style="margin-top:0.4rem;"><label>Due Date</label>
-                <input type="date" class="panel-input" id="panelNextDate" value="${person.next_action_date || ''}"></div>
-                <button class="btn btn-green btn-sm" style="margin-top:0.5rem;" onclick="saveNextAction()">Save</button>
-            </div>`;
-        }
+        // Next action (all person types)
+        html += `<div class="panel-section">
+            <label>Next Action</label>
+            <input type="text" class="panel-input" id="panelNextAction" value="${escHtml(person.next_action || '')}" placeholder="What's next?">
+            <div style="margin-top:0.4rem;"><label>Due Date</label>
+            <input type="date" class="panel-input" id="panelNextDate" value="${person.next_action_date || ''}"></div>
+            <button class="btn btn-green btn-sm" style="margin-top:0.5rem;" onclick="saveNextAction()">Save</button>
+        </div>`;
 
         // Quick actions
         html += '<div class="quick-actions">';
@@ -1797,10 +1795,16 @@
 
         if (currentActivityType === 'task' && !document.getElementById('taskCompleted').checked) {
             const dueDate = document.getElementById('taskDueDate').value;
-            if (selectedPerson._contactId && dueDate) {
-                await sb.from('contacts').update({
-                    next_action: text.substring(0, 100), next_action_date: dueDate, updated_at: new Date().toISOString()
-                }).eq('id', selectedPerson._contactId);
+            if (dueDate) {
+                if (selectedPerson._contactId) {
+                    await sb.from('contacts').update({
+                        next_action: text.substring(0, 100), next_action_date: dueDate, updated_at: new Date().toISOString()
+                    }).eq('id', selectedPerson._contactId);
+                } else if (selectedPerson._prospectId) {
+                    await sb.from('outreach_prospects').update({
+                        next_action: text.substring(0, 100), next_action_date: dueDate, updated_at: new Date().toISOString()
+                    }).eq('id', selectedPerson._prospectId);
+                }
                 selectedPerson.next_action = text.substring(0, 100);
                 selectedPerson.next_action_date = dueDate;
             }
@@ -1930,19 +1934,29 @@
 
     // ── Next Action ──
     async function saveNextAction() {
-        if (!selectedPerson || selectedPerson._type !== 'contact') return;
+        if (!selectedPerson) return;
         const action = document.getElementById('panelNextAction').value.trim();
         const date = document.getElementById('panelNextDate').value;
-        const { error } = await sb.from('contacts').update({
-            next_action: action || null, next_action_date: date || null, updated_at: new Date().toISOString()
-        }).eq('id', selectedPerson._contactId);
+
+        let error;
+        if (selectedPerson._type === 'contact' && selectedPerson._contactId) {
+            ({ error } = await sb.from('contacts').update({
+                next_action: action || null, next_action_date: date || null, updated_at: new Date().toISOString()
+            }).eq('id', selectedPerson._contactId));
+        } else if (selectedPerson._type === 'prospect' && selectedPerson._prospectId) {
+            ({ error } = await sb.from('outreach_prospects').update({
+                next_action: action || null, next_action_date: date || null, updated_at: new Date().toISOString()
+            }).eq('id', selectedPerson._prospectId));
+        }
         if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-        selectedPerson.next_action = action;
-        selectedPerson.next_action_date = date;
+
+        selectedPerson.next_action = action || null;
+        selectedPerson.next_action_date = date || null;
         showToast('Next action saved');
         if (action) {
             await sb.from('person_notes').insert({
-                contact_id: selectedPerson._contactId, note_type: 'system',
+                contact_id: selectedPerson._contactId, prospect_id: selectedPerson._prospectId,
+                note_type: 'system',
                 content: `Next action: ${action}${date ? ' (due ' + fmtDate(date) + ')' : ''}`, created_by: currentUser?.id
             });
         }
