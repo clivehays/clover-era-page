@@ -1579,76 +1579,132 @@
 
     <script src="/js/footer.js"></script>
 
-<!-- Bot-proof page analytics (Supabase direct) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<!-- ============================================================
+     PAGE VISIT TRACKING → Supabase page_visits → command-center.html
+     ============================================================ -->
 <script>
 (function() {
-  var SB_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
-  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+  var SB_URL  = 'https://drugebiitlcjkknjfxeh.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
+  var API     = SB_URL + '/rest/v1/page_visits';
+  var HDRS    = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Prefer': 'return=representation' };
+  var PATCH_HDRS = { 'Content-Type': 'application/json', 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON };
 
-  var sb = window.supabase.createClient(SB_URL, SB_KEY);
-  var visitId = null;
-  var isHuman = false;
-  var maxScroll = 0;
-  var startTime = Date.now();
-  var visitorId = sessionStorage.getItem('_cv_vid');
-  if (!visitorId) {
-    visitorId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    sessionStorage.setItem('_cv_vid', visitorId);
+  // Block known bots/crawlers/email prefetchers
+  var BOT_UA = /bot|crawl|spider|slurp|facebot|ia_archiver|prerender|headlesschrome|phantom|selenium|puppeteer|outlook|safelinks|office|msnbot|linkscanner|mailtrack|preview|netseer|wget|curl|python|java\/|apache-http/i;
+  if (BOT_UA.test(navigator.userAgent)) return;
+
+  var visitId      = null;
+  var maxScroll    = 0;
+  var startTs      = Date.now();
+  var inserted     = false;
+  var params       = new URLSearchParams(window.location.search);
+
+  // Create the visit row - called only on first confirmed human signal (scroll)
+  function insertVisit() {
+    if (inserted) return;
+    inserted = true;
+    fetch(API, {
+      method: 'POST',
+      headers: HDRS,
+      body: JSON.stringify({
+        page_path:         '/flying-blind',
+        visitor_id:        'anon-' + Math.random().toString(36).substr(2, 9),
+        is_human:          true,
+        max_scroll_pct:    maxScroll,
+        time_on_page_secs: Math.round((Date.now() - startTs) / 1000),
+        referrer:          document.referrer || '',
+        user_agent:        navigator.userAgent,
+        utm_source:        params.get('utm_source') || '',
+        utm_campaign:      params.get('utm_campaign') || ''
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d[0] && d[0].id) { visitId = d[0].id; }
+    })
+    .catch(function() {});
   }
 
-  var params = new URLSearchParams(window.location.search);
-  var utmSource = params.get('utm_source') || null;
-  var utmCampaign = params.get('utm_campaign') || null;
+  // Patch the visit row with latest engagement data
+  function update() {
+    if (!visitId) return;
+    fetch(API + '?id=eq.' + visitId, {
+      method: 'PATCH',
+      headers: PATCH_HDRS,
+      body: JSON.stringify({
+        is_human:          true,
+        max_scroll_pct:    maxScroll,
+        time_on_page_secs: Math.round((Date.now() - startTs) / 1000),
+        updated_at:        new Date().toISOString()
+      })
+    }).catch(function() {});
+  }
 
-  sb.from('page_visits').insert({
-    page_path: '/flying-blind/',
-    visitor_id: visitorId,
-    referrer: document.referrer || null,
-    user_agent: navigator.userAgent,
-    utm_source: utmSource,
-    utm_campaign: utmCampaign
-  }).select('id').single().then(function(res) {
-    if (res.data) visitId = res.data.id;
-  });
-
-  function markHuman() {
-    if (isHuman) return;
-    isHuman = true;
-    if (visitId) {
-      sb.from('page_visits').update({ is_human: true }).eq('id', visitId).then(function(){});
+  // Button click tracking
+  var clickedBtns = [];
+  document.addEventListener('click', function(e) {
+    var el = e.target.closest('.btn-primary, .btn-card, .btn-coral, .secondary-link');
+    if (!el) return;
+    var label = el.textContent.trim().substring(0, 40);
+    if (clickedBtns.indexOf(label) === -1) {
+      clickedBtns.push(label);
+      insertVisit();
+      if (!visitId) return;
+      fetch(API + '?id=eq.' + visitId, {
+        method: 'PATCH',
+        headers: PATCH_HDRS,
+        body: JSON.stringify({ buttons_clicked: clickedBtns.join(', ') })
+      }).catch(function() {});
     }
-  }
-
-  ['mousemove', 'touchstart', 'keydown'].forEach(function(evt) {
-    document.addEventListener(evt, markHuman, { once: true, passive: true });
   });
 
+  // Scroll is the only INSERT trigger - filters out bots that fire synthetic events
   window.addEventListener('scroll', function() {
-    var scrollTop = window.scrollY || document.documentElement.scrollTop;
-    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    if (docHeight <= 0) return;
-    var pct = Math.round((scrollTop / docHeight) * 100);
-    if (pct > maxScroll) maxScroll = pct;
+    insertVisit();
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    if (dh > 0) {
+      var pct = Math.round(((window.scrollY || document.documentElement.scrollTop) / dh) * 100);
+      if (pct > maxScroll) { maxScroll = pct; update(); }
+    }
   }, { passive: true });
 
-  function sendUpdate() {
-    if (!visitId) return;
-    var secs = Math.round((Date.now() - startTime) / 1000);
-    sb.from('page_visits').update({
-      max_scroll_pct: maxScroll,
-      time_on_page_secs: secs,
-      is_human: isHuman,
-      updated_at: new Date().toISOString()
-    }).eq('id', visitId).then(function(){});
-  }
+  // Heartbeat - updates time on page every 30s after insert
+  setInterval(function() { if (visitId) update(); }, 30000);
 
-  setInterval(sendUpdate, 15000);
-
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') sendUpdate();
-  });
+  // Final update on exit
+  document.addEventListener('visibilitychange', function() { if (document.visibilityState === 'hidden') update(); });
+  window.addEventListener('beforeunload', update);
 })();
+</script>
+
+<!-- CTA click tracking (GA4) + Scroll depth tracking -->
+<script>
+  // CTA tracking
+  document.querySelectorAll('.btn-primary, .btn-card, .btn-coral').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'cta_click', { event_category: 'engagement', event_label: this.textContent.trim() });
+      }
+    });
+  });
+
+  // Scroll depth
+  (function() {
+    var thresholds = [25, 50, 75, 90]; var fired = new Set();
+    window.addEventListener('scroll', function() {
+      var st = window.scrollY || document.documentElement.scrollTop;
+      var dh = document.documentElement.scrollHeight - window.innerHeight;
+      if (dh <= 0) return;
+      var pct = Math.round((st / dh) * 100);
+      thresholds.forEach(function(t) {
+        if (pct >= t && !fired.has(t)) {
+          fired.add(t);
+          if (typeof gtag !== 'undefined') { gtag('event', 'scroll_depth', { event_category: 'engagement', percent: t }); }
+        }
+      });
+    }, { passive: true });
+  })();
 </script>
 </body>
 </html>
