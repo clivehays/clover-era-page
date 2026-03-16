@@ -1643,6 +1643,14 @@
 
   // Button click tracking
   var clickedBtns = [];
+  function patchButtons() {
+    if (!visitId) return;
+    fetch(API + '?id=eq.' + visitId, {
+      method: 'PATCH',
+      headers: PATCH_HDRS,
+      body: JSON.stringify({ buttons_clicked: clickedBtns.join(', ') })
+    }).catch(function() {});
+  }
   document.addEventListener('click', function(e) {
     var el = e.target.closest('.btn-primary, .btn-card, .btn-coral, .secondary-link');
     if (!el) return;
@@ -1650,12 +1658,9 @@
     if (clickedBtns.indexOf(label) === -1) {
       clickedBtns.push(label);
       insertVisit();
-      if (!visitId) return;
-      fetch(API + '?id=eq.' + visitId, {
-        method: 'PATCH',
-        headers: PATCH_HDRS,
-        body: JSON.stringify({ buttons_clicked: clickedBtns.join(', ') })
-      }).catch(function() {});
+      // visitId may not exist yet if this is the first interaction, retry after insert completes
+      if (visitId) { patchButtons(); }
+      else { setTimeout(patchButtons, 1500); setTimeout(patchButtons, 4000); }
     }
   });
 
