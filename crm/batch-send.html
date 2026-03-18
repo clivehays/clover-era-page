@@ -432,6 +432,7 @@
             <div class="progress-header">
                 <h2 id="processingTitle">Processing...</h2>
                 <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" id="pauseBtn" onclick="togglePause()" style="background:#f59e0b;color:#fff;">Pause</button>
                     <button class="btn btn-danger" id="stopBtn" onclick="stopProcessing()">Stop</button>
                 </div>
             </div>
@@ -555,6 +556,8 @@
         let existingEmails = new Set();
         let campaigns = [];
         let stopRequested = false;
+        let pauseRequested = false;
+        let pauseResolve = null; // resolved when user clicks Resume
         let countdownResolve = null; // to skip the countdown
 
         // ============ INIT ============
@@ -1225,6 +1228,11 @@
             document.getElementById('processingSection').classList.remove('hidden');
 
             stopRequested = false;
+            pauseRequested = false;
+            pauseResolve = null;
+            document.getElementById('pauseBtn').textContent = 'Pause';
+            document.getElementById('pauseBtn').style.background = '#f59e0b';
+            document.getElementById('pauseBtn').classList.remove('hidden');
             const log = document.getElementById('processLog');
             log.innerHTML = '';
 
@@ -1280,9 +1288,15 @@
                 document.getElementById('progressText').textContent = `Sent ${sentCount} | Failed ${failed} | ${total - processed} remaining`;
                 document.getElementById('progressCount').textContent = `${processed} / ${total}`;
 
+                // Wait if paused
+                await waitIfPaused();
+                if (stopRequested) break;
+
                 // Wait random interval before next (skip delay for skipped/failed prospects)
                 if (i < total - 1 && !stopRequested && result.sent) {
                     await showCountdown(getRandomInterval());
+                    // Check pause again after countdown
+                    await waitIfPaused();
                 }
             }
 
@@ -1292,6 +1306,7 @@
             // Done
             document.getElementById('processingTitle').textContent = stopRequested ? 'Stopped' : 'Complete';
             document.getElementById('stopBtn').classList.add('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
 
             // Show summary
             document.getElementById('processingSection').classList.add('hidden');
@@ -1317,6 +1332,33 @@
             stopRequested = true;
             document.getElementById('stopBtn').textContent = 'Stopping...';
             document.getElementById('stopBtn').disabled = true;
+            document.getElementById('pauseBtn').classList.add('hidden');
+            // If paused, unpause so the loop can exit
+            if (pauseResolve) { pauseResolve(); pauseResolve = null; }
+        }
+
+        function togglePause() {
+            const btn = document.getElementById('pauseBtn');
+            if (!pauseRequested) {
+                // Pause
+                pauseRequested = true;
+                btn.textContent = 'Resume';
+                btn.style.background = '#22c55e';
+                document.getElementById('processingTitle').textContent = 'Paused';
+            } else {
+                // Resume
+                pauseRequested = false;
+                btn.textContent = 'Pause';
+                btn.style.background = '#f59e0b';
+                document.getElementById('processingTitle').textContent = 'Processing...';
+                if (pauseResolve) { pauseResolve(); pauseResolve = null; }
+            }
+        }
+
+        async function waitIfPaused() {
+            if (pauseRequested && !stopRequested) {
+                return new Promise(resolve => { pauseResolve = resolve; });
+            }
         }
 
         function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
