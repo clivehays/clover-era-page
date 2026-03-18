@@ -1210,13 +1210,15 @@
             const campaignId = document.getElementById('campaignSelect').value;
             if (!campaignId) { alert('Please select a campaign.'); return; }
 
-            // Look up the campaign's sequence name (used to skip PDF for certain sequences)
+            // Look up the campaign's sequence name and send delay settings
             const { data: campaignSeq } = await supabaseClient
                 .from('outreach_campaigns')
-                .select('sequence:outreach_sequences(name)')
+                .select('sequence:outreach_sequences(name), send_delay_min_seconds, send_delay_max_seconds')
                 .eq('id', campaignId)
                 .single();
             const sequenceName = campaignSeq?.sequence?.name || '';
+            const campaignDelayMin = campaignSeq?.send_delay_min_seconds || null;
+            const campaignDelayMax = campaignSeq?.send_delay_max_seconds || null;
 
             const validRows = parsedData.filter(r => r._status === 'valid');
             if (validRows.length === 0) { alert('No valid prospects to process.'); return; }
@@ -1264,8 +1266,11 @@
             const total = validRows.length;
 
             // Estimate total time
-            const estMinutes = Math.round((total * 2));
-            document.getElementById('progressText').textContent = `Estimated time: ~${estMinutes} minutes (${total} prospects x 2 min each)`;
+            const avgDelaySec = campaignDelayMin ? Math.round((campaignDelayMin + (campaignDelayMax || campaignDelayMin)) / 2) : 120;
+            const estMinutes = Math.max(1, Math.round((total * avgDelaySec) / 60));
+            document.getElementById('progressText').textContent = campaignDelayMin
+                ? `Estimated time: ~${estMinutes} minutes (${total} prospects x ~${avgDelaySec}s each)`
+                : `Estimated time: ~${estMinutes} minutes (${total} prospects x 2 min each)`;
 
             // Process one at a time, send each, wait 2 minutes
             for (let i = 0; i < total; i++) {
@@ -1294,7 +1299,10 @@
 
                 // Wait random interval before next (skip delay for skipped/failed prospects)
                 if (i < total - 1 && !stopRequested && result.sent) {
-                    await showCountdown(getRandomInterval());
+                    const interval = campaignDelayMin
+                        ? (campaignDelayMin * 1000 + Math.floor(Math.random() * ((campaignDelayMax || campaignDelayMin) - campaignDelayMin + 1) * 1000))
+                        : getRandomInterval();
+                    await showCountdown(interval);
                     // Check pause again after countdown
                     await waitIfPaused();
                 }
