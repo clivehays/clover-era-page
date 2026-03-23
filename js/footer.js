@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <li><a href="/book/">Already Gone</a></li>
                         <li><a href="/clover-framework/">CLOVER Framework</a></li>
                         <li><a href="/calculator/">Calculator</a></li>
+                        <li><a href="/insights/">Insights</a></li>
                     </ul>
                 </div>
             </div>
