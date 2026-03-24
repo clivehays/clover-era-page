@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Gap Index | Clover ERA</title>
+    <meta name="description" content="Calculate your Manager Gap Index score. Find out how wide the gap is between what your managers can see and what their teams are actually experiencing.">
+    <link rel="canonical" href="https://cloverera.com/mgi/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0A0A0A;
+            color: #FFFFFF;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== COLOURS ===== */
+        :root {
+            --dark: #0A0A0A;
+            --green: #00C896;
+            --white: #FFFFFF;
+            --light-grey: #F5F5F5;
+            --mid-grey: #6B6B6B;
+            --amber: #F5A623;
+            --red: #E84040;
+            --card-bg: #111111;
+            --border: #222222;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        .serif { font-family: 'DM Serif Display', Georgia, serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 18px;
+            color: var(--green);
+            letter-spacing: -0.02em;
+        }
+        .header-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+        }
+        .header-tool-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--mid-grey);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .header-section-indicator {
+            font-size: 13px;
+            color: var(--mid-grey);
+        }
+
+        /* ===== SCREENS ===== */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* ===== SCREEN 1 - LANDING ===== */
+        .landing {
+            min-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 0;
+        }
+        .landing h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(32px, 5vw, 48px);
+            line-height: 1.15;
+            color: var(--white);
+            margin-bottom: 24px;
+        }
+        .landing .subhead {
+            font-size: 17px;
+            line-height: 1.65;
+            color: var(--mid-grey);
+            max-width: 640px;
+            margin-bottom: 40px;
+        }
+        .benchmark-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--green);
+            padding: 20px 24px;
+            border-radius: 6px;
+            margin-bottom: 40px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #CCCCCC;
+        }
+        .benchmark-box strong {
+            color: var(--white);
+        }
+        .time-indicator {
+            font-size: 14px;
+            color: var(--mid-grey);
+            margin-bottom: 24px;
+        }
+        .footer-note {
+            font-size: 13px;
+            color: var(--mid-grey);
+            margin-top: 16px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-primary {
+            display: inline-block;
+            padding: 16px 40px;
+            background: var(--green);
+            color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            text-decoration: none;
+        }
+        .btn-primary:hover { background: #00b587; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+        .btn-primary:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-primary.full-width { width: 100%; text-align: center; }
+        .btn-outline {
+            display: inline-block;
+            padding: 14px 36px;
+            background: transparent;
+            color: var(--green);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid var(--green);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+        .btn-outline:hover { background: var(--green); color: var(--dark); }
+        .btn-outline:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+        /* ===== PROGRESS DOTS ===== */
+        .progress-dots {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 48px;
+            padding-top: 48px;
+        }
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .progress-dot.active { background: var(--green); transform: scale(1.2); }
+        .progress-dot.completed { background: #005e46; }
+
+        /* ===== ASSESSMENT SECTIONS ===== */
+        .assessment-section { padding-bottom: 60px; }
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(24px, 3.5vw, 32px);
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .section-desc {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--mid-grey);
+            margin-bottom: 36px;
+            max-width: 640px;
+        }
+
+        /* ===== TOGGLE QUESTIONS ===== */
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: border-color 0.2s;
+        }
+        .question-card:hover { border-color: #333; }
+        .question-text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #DDD;
+            flex: 1;
+        }
+
+        /* Toggle switch */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--mid-grey);
+            user-select: none;
+            min-width: 24px;
+            text-align: center;
+        }
+        .toggle-label.active-yes { color: var(--green); }
+        .toggle-label.active-no { color: var(--red); }
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: #333;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.25s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            left: 3px;
+            top: 3px;
+            background: #888;
+            border-radius: 50%;
+            transition: transform 0.25s, background 0.25s;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background: #004d38;
+        }
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(24px);
+            background: var(--green);
+        }
+        .toggle-switch input:focus-visible + .toggle-slider {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        /* ===== NUMBER INPUTS (Section 5) ===== */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #CCC;
+            margin-bottom: 8px;
+        }
+        .input-group input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            -moz-appearance: textfield;
+        }
+        .input-group input[type="number"]::-webkit-outer-spin-button,
+        .input-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-group input[type="number"]:focus {
+            border-color: var(--green);
+        }
+        .input-group input[type="number"].error {
+            border-color: var(--red);
+        }
+        .input-error {
+            font-size: 13px;
+            color: var(--red);
+            margin-top: 4px;
+            display: none;
+        }
+        .input-error.visible { display: block; }
+        .helper-text {
+            font-size: 13px;
+            color: var(--mid-grey);
+            line-height: 1.5;
+            margin-top: 24px;
+            padding: 16px;
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        /* ===== SCREEN 3 - SCORE REVEAL ===== */
+        .score-reveal {
+            min-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 24px;
+            background: var(--dark);
+        }
+        .score-reveal-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--mid-grey);
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        .score-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 120px;
+            font-weight: 700;
+            line-height: 1;
+            margin: 24px 0 16px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 0.4s forwards;
+        }
+        .score-classification {
+            font-family: 'DM Serif Display', serif;
+            font-size: 36px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 0.8s forwards;
+        }
+        .score-interpretation {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--mid-grey);
+            max-width: 520px;
+            margin-top: 16px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 1.2s forwards;
+        }
+        .score-reveal .btn-outline {
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 1.6s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .score-reveal-label,
+            .score-number,
+            .score-classification,
+            .score-interpretation,
+            .score-reveal .btn-outline {
+                animation: none;
+                opacity: 1;
+            }
+        }
+
+        /* ===== SCREEN 4 - RESULTS ===== */
+        .results { background: var(--light-grey); color: var(--dark); padding: 48px 0 0; }
+
+        /* Score bar */
+        .score-bar-container { margin-bottom: 40px; }
+        .score-bar-track {
+            position: relative;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(to right,
+                var(--green) 0%, var(--green) 20%,
+                var(--green) 20%, var(--green) 40%,
+                var(--amber) 40%, var(--amber) 60%,
+                var(--red) 60%, var(--red) 80%,
+                var(--red) 80%, var(--red) 100%
+            );
+            margin-bottom: 8px;
+        }
+        .score-bar-marker {
+            position: absolute;
+            top: -6px;
+            width: 24px;
+            height: 24px;
+            background: var(--white);
+            border: 3px solid var(--dark);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .score-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--mid-grey);
+            font-weight: 500;
+        }
+
+        /* Summary boxes */
+        .summary-boxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+        .summary-box {
+            background: var(--dark);
+            border-radius: 8px;
+            padding: 28px 24px;
+            text-align: center;
+        }
+        .summary-box-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--mid-grey);
+            margin-bottom: 12px;
+        }
+        .summary-box-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .summary-box-sub {
+            font-size: 14px;
+            color: var(--mid-grey);
+        }
+
+        /* Dimension breakdown */
+        .dimension-section { margin-bottom: 48px; }
+        .dimension-section h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 24px;
+            color: var(--dark);
+            margin-bottom: 24px;
+        }
+        .dimension-row {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #DDD;
+        }
+        .dimension-row:last-child { border-bottom: none; }
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .dimension-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .dimension-score-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--mid-grey);
+        }
+        .dimension-bar {
+            height: 8px;
+            background: #DDD;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .dimension-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        .dimension-interpretation {
+            font-size: 13px;
+            color: var(--mid-grey);
+            line-height: 1.5;
+        }
+
+        /* What closes the gap */
+        .closes-gap { margin-bottom: 48px; }
+        .closes-gap h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 24px;
+            color: var(--dark);
+            margin-bottom: 24px;
+        }
+        .closes-gap-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .closes-gap-card {
+            background: var(--white);
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        .closes-gap-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 16px;
+            color: var(--green);
+        }
+        .closes-gap-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        .closes-gap-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--mid-grey);
+        }
+
+        /* CTA block */
+        .cta-block {
+            background: var(--dark);
+            padding: 60px 24px;
+            text-align: center;
+        }
+        .cta-block h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(24px, 3.5vw, 32px);
+            color: var(--white);
+            margin-bottom: 16px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta-block .subtext {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--mid-grey);
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+        .cta-block .btn-primary { margin-bottom: 20px; }
+        .share-link {
+            display: inline-block;
+            font-size: 14px;
+            color: var(--mid-grey);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: 'Inter', sans-serif;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s;
+        }
+        .share-link:hover { color: var(--white); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--green);
+            color: var(--dark);
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 200;
+        }
+        .toast.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Results footer */
+        .results-footer {
+            text-align: center;
+            padding: 32px 24px;
+            background: var(--light-grey);
+            border-top: 1px solid #DDD;
+        }
+        .results-footer p {
+            font-size: 12px;
+            color: var(--mid-grey);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .print-link {
+            font-size: 13px;
+            color: var(--mid-grey);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: 'Inter', sans-serif;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .print-link:hover { color: var(--dark); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .score-number { font-size: 80px; }
+            .score-classification { font-size: 28px; }
+            .summary-boxes { grid-template-columns: 1fr; }
+            .summary-box-value { font-size: 32px; }
+            .closes-gap-grid { grid-template-columns: 1fr; }
+            .question-card { flex-direction: column; align-items: flex-start; gap: 14px; }
+            .toggle-wrap { align-self: flex-end; }
+            .btn-primary { width: 100%; text-align: center; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container { max-width: 680px; }
+            .score-number { font-size: 100px; }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            .header, .progress-dots, .cta-block, .closes-gap, .results-footer .print-link, .share-link { display: none !important; }
+            body { background: white; color: black; }
+            .results { background: white; padding-top: 0; }
+            .summary-box { border: 1px solid #CCC; }
+            .dimension-bar { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            .score-bar-track { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            .dimension-bar-fill { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            .results-footer { border-top: 1px solid #CCC; }
+            .results-footer::after {
+                content: "Clover ERA Manager Gap Index | cloverera.com | contact@cloverera.com";
+                display: block;
+                font-size: 11px;
+                color: #999;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header" role="banner">
+    <div class="header-inner">
+        <div class="header-brand">
+            <span class="header-logo">Clover ERA</span>
+            <span class="header-divider"></span>
+            <span class="header-tool-name">Manager Gap Index</span>
+        </div>
+        <span class="header-section-indicator" id="headerIndicator"></span>
+    </div>
+</header>
+
+<!-- ===== SCREEN 1 - LANDING ===== -->
+<div class="screen active" id="screen-landing">
+    <div class="container">
+        <div class="landing">
+            <h1 class="serif">Find out how wide your Manager Gap is.</h1>
+            <p class="subhead">The Manager Gap Index scores your organisation across five dimensions: visibility, action, accountability, strain, and cost exposure. The result is a single number that tells you exactly where your retention risk is concentrated and what it is costing you.</p>
+            <div class="benchmark-box">
+                <strong>Most mid-market companies score between 58 and 74.</strong><br>
+                That range costs an average of $2.3M per year in preventable attrition.
+            </div>
+            <p class="time-indicator">Takes 4 minutes.</p>
+            <button class="btn-primary" onclick="startAssessment()" aria-label="Start the Manager Gap Index assessment">Calculate My MGI Score</button>
+            <p class="footer-note">No email required. Results are generated instantly and stay in your browser.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCREEN 2 - ASSESSMENT ===== -->
+<div class="screen" id="screen-assessment">
+    <div class="container">
+        <div class="progress-dots" id="progressDots" role="progressbar" aria-label="Assessment progress">
+            <div class="progress-dot active" data-section="1"></div>
+            <div class="progress-dot" data-section="2"></div>
+            <div class="progress-dot" data-section="3"></div>
+            <div class="progress-dot" data-section="4"></div>
+            <div class="progress-dot" data-section="5"></div>
+        </div>
+
+        <!-- Section 1: Visibility -->
+        <div class="assessment-section" id="section-1">
+            <h2 class="section-title serif">What can your managers currently see?</h2>
+            <p class="section-desc">These questions assess how much real-time signal your managers receive about their team's actual experience.</p>
+            <div id="questions-1"></div>
+            <button class="btn-primary full-width" style="margin-top:24px" onclick="nextSection(1)">Next Section</button>
+        </div>
+
+        <!-- Section 2: Action -->
+        <div class="assessment-section" id="section-2" style="display:none">
+            <h2 class="section-title serif">When managers see a problem, do they know what to do?</h2>
+            <p class="section-desc">These questions assess whether your managers have specific, timely, contextual guidance to act on the signal their teams are sending.</p>
+            <div id="questions-2"></div>
+            <button class="btn-primary full-width" style="margin-top:24px" onclick="nextSection(2)">Next Section</button>
+        </div>
+
+        <!-- Section 3: Accountability -->
+        <div class="assessment-section" id="section-3" style="display:none">
+            <h2 class="section-title serif">Is anyone tracking whether managers actually do anything?</h2>
+            <p class="section-desc">These questions assess whether action is logged, followed up, and connected to outcome.</p>
+            <div id="questions-3"></div>
+            <button class="btn-primary full-width" style="margin-top:24px" onclick="nextSection(3)">Next Section</button>
+        </div>
+
+        <!-- Section 4: Strain -->
+        <div class="assessment-section" id="section-4" style="display:none">
+            <h2 class="section-title serif">How much pressure is already on the system?</h2>
+            <p class="section-desc">These questions assess whether your organisation is operating under conditions that widen the Manager Gap, regardless of what systems you have in place.</p>
+            <div id="questions-4"></div>
+            <button class="btn-primary full-width" style="margin-top:24px" onclick="nextSection(4)">Next Section</button>
+        </div>
+
+        <!-- Section 5: Cost Exposure -->
+        <div class="assessment-section" id="section-5" style="display:none">
+            <h2 class="section-title serif">What is the gap actually costing you?</h2>
+            <p class="section-desc">Enter your organisation's numbers. These are used to calculate your cost exposure and are not stored or transmitted anywhere.</p>
+
+            <div class="input-group">
+                <label for="input-headcount">Total number of employees</label>
+                <input type="number" id="input-headcount" aria-label="Total number of employees" placeholder="e.g. 350" min="1">
+                <div class="input-error" id="error-headcount">Enter a positive number.</div>
+            </div>
+            <div class="input-group">
+                <label for="input-salary">Average annual salary (USD)</label>
+                <input type="number" id="input-salary" aria-label="Average annual salary in USD" placeholder="e.g. 85000" min="1">
+                <div class="input-error" id="error-salary">Enter a positive number.</div>
+            </div>
+            <div class="input-group">
+                <label for="input-turnover">Current voluntary turnover rate (%)</label>
+                <input type="number" id="input-turnover" aria-label="Current voluntary turnover rate percentage" placeholder="e.g. 14" min="1" max="100">
+                <div class="input-error" id="error-turnover">Enter a number between 1 and 100.</div>
+            </div>
+            <div class="input-group">
+                <label for="input-regrettable">Of those who left, what percentage were regrettable? (%)</label>
+                <input type="number" id="input-regrettable" aria-label="Of your voluntary departures, what percentage were people you would have preferred to keep" placeholder="e.g. 60" min="1" max="100">
+                <div class="input-error" id="error-regrettable">Enter a number between 1 and 100.</div>
+            </div>
+            <div class="helper-text">Of all the people who left voluntarily, what percentage were people you would have preferred to keep? Most organisations land between 55% and 65%. If you are unsure, use 60%.</div>
+
+            <button class="btn-primary full-width" style="margin-top:24px" onclick="calculateScore()">Calculate My Score</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCREEN 3 - SCORE REVEAL ===== -->
+<div class="screen" id="screen-reveal">
+    <div class="score-reveal">
+        <p class="score-reveal-label">Your Manager Gap Index Score</p>
+        <div class="score-number mono" id="scoreDisplay">0</div>
+        <div class="score-classification serif" id="classificationDisplay"></div>
+        <p class="score-interpretation" id="interpretationDisplay"></p>
+        <button class="btn-outline" onclick="showResults()">See full breakdown</button>
+    </div>
+</div>
+
+<!-- ===== SCREEN 4 - RESULTS ===== -->
+<div class="screen" id="screen-results">
+    <div class="results">
+        <div class="container">
+            <!-- 4a: Score summary bar -->
+            <div class="score-bar-container" style="padding-top:48px">
+                <div class="score-bar-track">
+                    <div class="score-bar-marker" id="scoreBarMarker"></div>
+                </div>
+                <div class="score-bar-labels">
+                    <span>0 Closed</span>
+                    <span>20</span>
+                    <span>40</span>
+                    <span>60</span>
+                    <span>80</span>
+                    <span>100 Exposed</span>
+                </div>
+            </div>
+
+            <div class="summary-boxes">
+                <div class="summary-box">
+                    <div class="summary-box-label">Your MGI Score</div>
+                    <div class="summary-box-value mono" id="resultScore" style="color:var(--green)">0</div>
+                    <div class="summary-box-sub" id="resultClassification"></div>
+                </div>
+                <div class="summary-box">
+                    <div class="summary-box-label">Estimated Annual Cost</div>
+                    <div class="summary-box-value mono" id="resultCost" style="color:var(--amber)">$0</div>
+                    <div class="summary-box-sub">in preventable voluntary attrition</div>
+                </div>
+            </div>
+
+            <!-- 4b: Dimension breakdown -->
+            <div class="dimension-section">
+                <h2 class="serif">Dimension Breakdown</h2>
+                <div id="dimensionBreakdown"></div>
+            </div>
+
+            <!-- 4c: What closes the gap -->
+            <div class="closes-gap">
+                <h2 class="serif">What Closes The Gap</h2>
+                <div class="closes-gap-grid">
+                    <div class="closes-gap-card">
+                        <svg class="closes-gap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <h3>See</h3>
+                        <p>Clover ERA surfaces anonymous team-level signals across six behavioural dimensions. Daily. In real time.</p>
+                    </div>
+                    <div class="closes-gap-card">
+                        <svg class="closes-gap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        <h3>Act</h3>
+                        <p>Every signal triggers a specific recommendation. A micro-action for this week. A mini-action for this month. A worksheet for the conversation that needs to happen.</p>
+                    </div>
+                    <div class="closes-gap-card">
+                        <svg class="closes-gap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <h3>Track</h3>
+                        <p>Every action is logged. Every recommendation is followed up. Thirty days later, sixty days later, you can see whether the signal shifted.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4d: CTA block -->
+        <div class="cta-block">
+            <div class="container">
+                <h2 class="serif" id="ctaHeadline">Your Manager Gap costs you every year.</h2>
+                <p class="subtext">A 15-minute Turnover Analysis call with a Clover ERA founder will show you exactly where in your management layer the cost is concentrated, and what it would take to close the gap.</p>
+                <a href="https://cloverera.com/talk/" class="btn-primary" target="_blank" rel="noopener">Schedule Your Free Turnover Analysis</a><br><br>
+                <button class="share-link" onclick="shareResults()">Share these results</button>
+            </div>
+        </div>
+
+        <!-- 4e: Footer -->
+        <div class="results-footer">
+            <p>Manager Gap Index is a proprietary scoring model developed by Clover ERA. Results are calculated locally in your browser. No data is stored or transmitted. &copy; Clover ERA 2026.</p>
+            <button class="print-link" onclick="window.print()">Print / Save as PDF</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">Link copied</div>
+
+<!-- ===== FUTURE VERSION NOTES =====
+    v2 planned features (do not build in v1):
+    - Email capture before showing results (with opt-out option)
+    - Backend submission of anonymised aggregate data to build the MGI benchmark dataset
+    - Comparison to industry benchmark (e.g. "Your score of 67 is above the SaaS average of 61")
+    - PDF export using a headless browser (server-side)
+    - Embeddable widget version (iframe-safe, reduced header)
+    - Multi-language support (English only in v1)
+-->
+
+<script>
+(function() {
+    'use strict';
+
+    // ===== STATE =====
+    const mgiState = {
+        currentSection: 0,
+        answers: {
+            visibility: [],
+            action: [],
+            accountability: [],
+            strain: [],
+            cost: { headcount: null, avgSalary: null, turnoverRate: null, regrettablePercent: null }
+        },
+        scores: { visibility: 0, action: 0, accountability: 0, strain: 0, costExposure: 0, total: 0 },
+        calculated: { regrettableDepartures: 0, annualCost: 0, classification: '', classificationColour: '' }
+    };
+
+    // ===== QUESTION DATA =====
+    const sections = {
+        1: {
+            name: 'Visibility',
+            questions: [
+                'Do your managers receive structured anonymous feedback from their teams more than once per quarter?',
+                'Is that feedback broken down by behavioural dimension, not just a single satisfaction score?',
+                'Do managers receive team feedback within 7 days of it being collected?',
+                'Can managers see trend data: how the signal has changed over time?',
+                'In your current feedback system, can employees be identified?'
+            ],
+            questionHelpers: { 4: 'Consider team sizes, how results are segmented, and whether managers see department-level breakdowns.' },
+            invertedQuestions: [4],
+            yesScore: 0, noScore: 4
+        },
+        2: {
+            name: 'Action',
+            questions: [
+                'Do managers receive a specific recommended action tied to the team signal, not a generic management tip?',
+                'Are those actions delivered in the flow of work rather than requiring managers to seek them out?',
+                'Do managers have structured support for difficult conversations: worksheets, frameworks, prompts?',
+                'Is the action system differentiated by dimension? Different actions for a communication gap versus an enablement gap?'
+            ],
+            yesScore: 0, noScore: 5
+        },
+        3: {
+            name: 'Accountability',
+            questions: [
+                'Are manager actions logged and tracked by the organisation?',
+                'Does the manager\'s manager have visibility of whether actions were taken?',
+                'Is there a feedback loop that connects the action taken to the team signal that follows?',
+                'Are managers held accountable for team health outcomes, not just business performance metrics?'
+            ],
+            yesScore: 0, noScore: 5
+        },
+        4: {
+            name: 'Strain Multiplier',
+            questions: [
+                'Has your organisation gone through a restructure or layoff in the last 18 months?',
+                'Has headcount grown more than 20% in the last 24 months?',
+                'Have more than 30% of your current managers been promoted from individual contributor roles in the last 3 years?',
+                'Is voluntary turnover currently running above 12% annually?'
+            ],
+            yesScore: 5, noScore: 0
+        }
+    };
+
+    // ===== BUILD TOGGLE QUESTIONS =====
+    function buildQuestions() {
+        Object.keys(sections).forEach(function(sNum) {
+            var sec = sections[sNum];
+            var container = document.getElementById('questions-' + sNum);
+            sec.questions.forEach(function(q, i) {
+                var id = 'q' + sNum + '-' + i;
+                var card = document.createElement('div');
+                card.className = 'question-card';
+                var helperHtml = (sec.questionHelpers && sec.questionHelpers[i]) ? '<div style="font-size:13px;color:#888;margin-top:4px;line-height:1.5">' + sec.questionHelpers[i] + '</div>' : '';
+                card.innerHTML =
+                    '<div class="question-text">' + q + '</div>' + helperHtml +
+                    '<div class="toggle-wrap">' +
+                        '<span class="toggle-label" id="' + id + '-no-label">No</span>' +
+                        '<label class="toggle-switch">' +
+                            '<input type="checkbox" id="' + id + '" aria-label="' + q + '">' +
+                            '<span class="toggle-slider"></span>' +
+                        '</label>' +
+                        '<span class="toggle-label" id="' + id + '-yes-label">Yes</span>' +
+                    '</div>';
+                container.appendChild(card);
+
+                var checkbox = document.getElementById(id);
+                checkbox.addEventListener('change', function() {
+                    var yesLabel = document.getElementById(id + '-yes-label');
+                    var noLabel = document.getElementById(id + '-no-label');
+                    if (checkbox.checked) {
+                        yesLabel.classList.add('active-yes');
+                        noLabel.classList.remove('active-no');
+                    } else {
+                        yesLabel.classList.remove('active-yes');
+                        noLabel.classList.remove('active-no');
+                    }
+                });
+            });
+        });
+    }
+
+    // ===== SCREEN MANAGEMENT =====
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function updateHeader() {
+        var indicator = document.getElementById('headerIndicator');
+        if (mgiState.currentSection >= 1 && mgiState.currentSection <= 5) {
+            indicator.textContent = 'Section ' + mgiState.currentSection + ' of 5';
+        } else {
+            indicator.textContent = '';
+        }
+    }
+
+    function updateDots() {
+        document.querySelectorAll('.progress-dot').forEach(function(dot, i) {
+            dot.classList.remove('active', 'completed');
+            if (i + 1 === mgiState.currentSection) {
+                dot.classList.add('active');
+            } else if (i + 1 < mgiState.currentSection) {
+                dot.classList.add('completed');
+            }
+        });
+    }
+
+    // ===== START =====
+    window.startAssessment = function() {
+        mgiState.currentSection = 1;
+        showScreen('screen-assessment');
+        document.getElementById('section-1').style.display = 'block';
+        updateHeader();
+        updateDots();
+        // Push state to prevent back button from navigating backwards through sections
+        history.pushState({ screen: 'assessment' }, '', '');
+    };
+
+    // ===== NEXT SECTION =====
+    window.nextSection = function(current) {
+        // Collect answers
+        var sec = sections[current];
+        var key = ['', 'visibility', 'action', 'accountability', 'strain'][current];
+        mgiState.answers[key] = [];
+        for (var i = 0; i < sec.questions.length; i++) {
+            var checked = document.getElementById('q' + current + '-' + i).checked;
+            mgiState.answers[key].push(checked);
+        }
+
+        // Hide current, show next
+        document.getElementById('section-' + current).style.display = 'none';
+        var next = current + 1;
+        document.getElementById('section-' + next).style.display = 'block';
+        mgiState.currentSection = next;
+        updateHeader();
+        updateDots();
+        window.scrollTo(0, 0);
+    };
+
+    // ===== VALIDATE & CALCULATE =====
+    window.calculateScore = function() {
+        // Validate cost inputs
+        var valid = true;
+        var fields = [
+            { id: 'headcount', min: 1, max: Infinity },
+            { id: 'salary', min: 1, max: Infinity },
+            { id: 'turnover', min: 1, max: 100 },
+            { id: 'regrettable', min: 1, max: 100 }
+        ];
+        fields.forEach(function(f) {
+            var input = document.getElementById('input-' + f.id);
+            var error = document.getElementById('error-' + f.id);
+            var val = parseFloat(input.value);
+            if (!input.value || isNaN(val) || val < f.min || val > f.max) {
+                input.classList.add('error');
+                error.classList.add('visible');
+                valid = false;
+            } else {
+                input.classList.remove('error');
+                error.classList.remove('visible');
+            }
+        });
+        if (!valid) return;
+
+        // Store cost inputs
+        mgiState.answers.cost.headcount = parseFloat(document.getElementById('input-headcount').value);
+        mgiState.answers.cost.avgSalary = parseFloat(document.getElementById('input-salary').value);
+        mgiState.answers.cost.turnoverRate = parseFloat(document.getElementById('input-turnover').value);
+        mgiState.answers.cost.regrettablePercent = parseFloat(document.getElementById('input-regrettable').value);
+
+        // Calculate section scores
+        // Sections 1-3: No = points, Yes = 0
+        mgiState.scores.visibility = mgiState.answers.visibility.reduce(function(sum, yes, i) { return sum + (i === 4 ? (yes ? 4 : 0) : (yes ? 0 : 4)); }, 0);
+        mgiState.scores.action = mgiState.answers.action.reduce(function(sum, yes) { return sum + (yes ? 0 : 5); }, 0);
+        mgiState.scores.accountability = mgiState.answers.accountability.reduce(function(sum, yes) { return sum + (yes ? 0 : 5); }, 0);
+        // Section 4: Yes = points (inverted)
+        mgiState.scores.strain = mgiState.answers.strain.reduce(function(sum, yes) { return sum + (yes ? 5 : 0); }, 0);
+
+        // Cost exposure
+        var c = mgiState.answers.cost;
+        mgiState.calculated.regrettableDepartures = c.headcount * (c.turnoverRate / 100) * (c.regrettablePercent / 100);
+        mgiState.calculated.annualCost = mgiState.calculated.regrettableDepartures * c.avgSalary * 1.5;
+
+        var cost = mgiState.calculated.annualCost;
+        if (cost < 500000) mgiState.scores.costExposure = 4;
+        else if (cost < 1000000) mgiState.scores.costExposure = 8;
+        else if (cost < 2000000) mgiState.scores.costExposure = 12;
+        else if (cost < 4000000) mgiState.scores.costExposure = 16;
+        else mgiState.scores.costExposure = 20;
+
+        mgiState.scores.total = mgiState.scores.visibility + mgiState.scores.action + mgiState.scores.accountability + mgiState.scores.strain + mgiState.scores.costExposure;
+
+        // Classification
+        var total = mgiState.scores.total;
+        if (total <= 20) { mgiState.calculated.classification = 'Closed'; mgiState.calculated.classificationColour = '#00C896'; }
+        else if (total <= 40) { mgiState.calculated.classification = 'Narrow'; mgiState.calculated.classificationColour = '#00C896'; }
+        else if (total <= 60) { mgiState.calculated.classification = 'Open'; mgiState.calculated.classificationColour = '#F5A623'; }
+        else if (total <= 80) { mgiState.calculated.classification = 'Critical'; mgiState.calculated.classificationColour = '#E84040'; }
+        else { mgiState.calculated.classification = 'Exposed'; mgiState.calculated.classificationColour = '#E84040'; }
+
+        showReveal();
+    };
+
+    // ===== SCORE REVEAL =====
+    function showReveal() {
+        mgiState.currentSection = 6;
+        updateHeader();
+        showScreen('screen-reveal');
+
+        var scoreEl = document.getElementById('scoreDisplay');
+        var classEl = document.getElementById('classificationDisplay');
+        var interpEl = document.getElementById('interpretationDisplay');
+
+        scoreEl.style.color = mgiState.calculated.classificationColour;
+        classEl.style.color = mgiState.calculated.classificationColour;
+        classEl.textContent = mgiState.calculated.classification;
+
+        // Interpretation text
+        var interp = {
+            'Closed': 'Your organisation has strong visibility infrastructure. The Manager Gap is narrow and your attrition risk is low.',
+            'Narrow': 'There are gaps in your management visibility layer, but they are addressable. Targeted intervention will close them quickly.',
+            'Open': 'Your managers are operating with significant blind spots. Regrettable attrition is occurring and it is under-measured.',
+            'Critical': 'Your Manager Gap is wide. The probability of accelerating voluntary turnover in the next 90 days is high.',
+            'Exposed': 'Your organisation is funding a retention crisis it cannot see. The cost exposure is significant and growing.'
+        };
+        interpEl.textContent = interp[mgiState.calculated.classification];
+
+        // Count-up animation
+        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced) {
+            scoreEl.textContent = mgiState.scores.total;
+        } else {
+            var target = mgiState.scores.total;
+            var duration = 1500;
+            var start = null;
+            function countUp(ts) {
+                if (!start) start = ts;
+                var progress = Math.min((ts - start) / duration, 1);
+                scoreEl.textContent = Math.round(progress * target);
+                if (progress < 1) requestAnimationFrame(countUp);
+            }
+            // Delay to match the fade-in animation
+            setTimeout(function() { requestAnimationFrame(countUp); }, 400);
+        }
+    }
+
+    // ===== RESULTS DETAIL =====
+    window.showResults = function() {
+        mgiState.currentSection = 7;
+        updateHeader();
+        showScreen('screen-results');
+        populateResults();
+    };
+
+    function formatCost(val) {
+        if (val >= 1000000) {
+            return '$' + (val / 1000000).toFixed(1) + 'M';
+        }
+        return '$' + Math.round(val).toLocaleString('en-US');
+    }
+
+    function populateResults() {
+        var total = mgiState.scores.total;
+        var colour = mgiState.calculated.classificationColour;
+        var cost = mgiState.calculated.annualCost;
+
+        // Score bar marker
+        document.getElementById('scoreBarMarker').style.left = Math.min(total, 100) + '%';
+
+        // Summary boxes
+        document.getElementById('resultScore').textContent = total;
+        document.getElementById('resultScore').style.color = colour;
+        document.getElementById('resultClassification').textContent = mgiState.calculated.classification;
+        document.getElementById('resultCost').textContent = formatCost(cost);
+        document.getElementById('resultCost').style.color = total > 60 ? '#E84040' : (total > 40 ? '#F5A623' : '#00C896');
+
+        // CTA headline
+        document.getElementById('ctaHeadline').textContent = 'Your Manager Gap costs you ' + formatCost(cost) + ' every year.';
+
+        // Dimension breakdown
+        var dims = [
+            { name: 'Visibility', score: mgiState.scores.visibility, max: 20, interp: getInterp('visibility', mgiState.scores.visibility) },
+            { name: 'Action', score: mgiState.scores.action, max: 20, interp: getInterp('action', mgiState.scores.action) },
+            { name: 'Accountability', score: mgiState.scores.accountability, max: 20, interp: getInterp('accountability', mgiState.scores.accountability) },
+            { name: 'Strain Multiplier', score: mgiState.scores.strain, max: 20, interp: getInterp('strain', mgiState.scores.strain) },
+            { name: 'Cost Exposure', score: mgiState.scores.costExposure, max: 20, interp: getInterp('costExposure', mgiState.scores.costExposure) }
+        ];
+
+        var container = document.getElementById('dimensionBreakdown');
+        container.innerHTML = '';
+        dims.forEach(function(d) {
+            var pct = (d.score / d.max) * 100;
+            var barColour = pct <= 25 ? '#00C896' : (pct <= 60 ? '#F5A623' : '#E84040');
+            var row = document.createElement('div');
+            row.className = 'dimension-row';
+            row.innerHTML =
+                '<div class="dimension-header">' +
+                    '<span class="dimension-name">' + d.name + '</span>' +
+                    '<span class="dimension-score-text">' + d.score + ' / ' + d.max + '</span>' +
+                '</div>' +
+                '<div class="dimension-bar"><div class="dimension-bar-fill" style="width:' + pct + '%;background:' + barColour + '"></div></div>' +
+                '<p class="dimension-interpretation">' + d.interp + '</p>';
+            container.appendChild(row);
+        });
+    }
+
+    function getInterp(dim, score) {
+        var interps = {
+            visibility: [
+                [4, 'Strong visibility. Your managers have real-time signal from their teams.'],
+                [12, 'Partial visibility. Some signal exists but it is delayed, aggregated, or incomplete.'],
+                [20, 'Low visibility. Your managers are largely operating without team signal.']
+            ],
+            action: [
+                [5, 'Strong action infrastructure. Managers receive specific, contextual guidance.'],
+                [14, 'Partial action support. Some guidance exists but it is generic or delayed.'],
+                [20, 'Low action support. Managers are left to determine their own response to problems they cannot see.']
+            ],
+            accountability: [
+                [5, 'Strong accountability loop. Actions are tracked and connected to outcome.'],
+                [14, 'Partial accountability. Some tracking exists but the loop is incomplete.'],
+                [20, 'No accountability loop. Actions taken, or not taken, are invisible to the organisation.']
+            ],
+            strain: [
+                [5, 'Low strain. Your organisation is not operating under acute people pressure right now.'],
+                [14, 'Moderate strain. One or more structural factors are widening the gap.'],
+                [20, 'High strain. Multiple factors are compressing your management layer simultaneously.']
+            ],
+            costExposure: [
+                [4, 'Cost exposure is under $500K annually. Still material but manageable.'],
+                [8, 'Cost exposure is between $500K and $1M annually.'],
+                [12, 'Cost exposure is between $1M and $2M annually.'],
+                [16, 'Cost exposure is between $2M and $4M annually. This is a board-level number.'],
+                [20, 'Cost exposure exceeds $4M annually. This is the most common range we see in organisations that have not measured this before.']
+            ]
+        };
+
+        var ranges = interps[dim];
+        if (dim === 'costExposure') {
+            // Exact match for cost exposure
+            for (var i = 0; i < ranges.length; i++) {
+                if (score <= ranges[i][0]) return ranges[i][1];
+            }
+            return ranges[ranges.length - 1][1];
+        }
+        for (var j = 0; j < ranges.length; j++) {
+            if (score <= ranges[j][0]) return ranges[j][1];
+        }
+        return ranges[ranges.length - 1][1];
+    }
+
+    // ===== SHARE =====
+    window.shareResults = function() {
+        var hash = '#score=' + mgiState.scores.total +
+            '&class=' + encodeURIComponent(mgiState.calculated.classification) +
+            '&cost=' + Math.round(mgiState.calculated.annualCost) +
+            '&v=' + mgiState.scores.visibility +
+            '&a=' + mgiState.scores.action +
+            '&ac=' + mgiState.scores.accountability +
+            '&s=' + mgiState.scores.strain +
+            '&ce=' + mgiState.scores.costExposure;
+        window.location.hash = hash;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(window.location.href).then(function() {
+                showToast();
+            });
+        } else {
+            // Fallback
+            var ta = document.createElement('textarea');
+            ta.value = window.location.href;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast();
+        }
+    };
+
+    function showToast() {
+        var toast = document.getElementById('toast');
+        toast.classList.add('visible');
+        setTimeout(function() { toast.classList.remove('visible'); }, 2000);
+    }
+
+    // ===== HASH DECODE (load shared results) =====
+    function checkHash() {
+        var hash = window.location.hash;
+        if (!hash || hash.length < 2) return false;
+        var params = {};
+        hash.substring(1).split('&').forEach(function(pair) {
+            var kv = pair.split('=');
+            params[kv[0]] = decodeURIComponent(kv[1]);
+        });
+        if (!params.score) return false;
+
+        mgiState.scores.total = parseInt(params.score) || 0;
+        mgiState.scores.visibility = parseInt(params.v) || 0;
+        mgiState.scores.action = parseInt(params.a) || 0;
+        mgiState.scores.accountability = parseInt(params.ac) || 0;
+        mgiState.scores.strain = parseInt(params.s) || 0;
+        mgiState.scores.costExposure = parseInt(params.ce) || 0;
+        mgiState.calculated.annualCost = parseInt(params.cost) || 0;
+        mgiState.calculated.classification = params['class'] || '';
+
+        var total = mgiState.scores.total;
+        if (total <= 20) mgiState.calculated.classificationColour = '#00C896';
+        else if (total <= 40) mgiState.calculated.classificationColour = '#00C896';
+        else if (total <= 60) mgiState.calculated.classificationColour = '#F5A623';
+        else mgiState.calculated.classificationColour = '#E84040';
+
+        mgiState.currentSection = 7;
+        showScreen('screen-results');
+        populateResults();
+        return true;
+    }
+
+    // ===== BACK BUTTON HANDLING =====
+    window.addEventListener('popstate', function(e) {
+        // Prevent going back through assessment sections
+        if (mgiState.currentSection >= 1 && mgiState.currentSection <= 6) {
+            history.pushState({ screen: 'assessment' }, '', '');
+        }
+    });
+
+    // ===== INIT =====
+    buildQuestions();
+    if (!checkHash()) {
+        showScreen('screen-landing');
+    }
+})();
+</script>
+</body>
+</html>
