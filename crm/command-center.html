@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clover ERA CRM - Command Center</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -477,6 +484,7 @@
                     <select id="analyticsPage" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="renderAnalytics()">
                         <option value="all">All Pages</option>
                         <option value="/">/ (Home)</option>
+                        <option value="/audit">/audit</option>
                         <option value="/67">/67</option>
                     </select>
                     <label style="font-size:0.8rem;color:var(--text2);margin-left:0.5rem">Range:</label>
@@ -548,6 +556,7 @@
                 <table class="data-table" id="tableAnalytics">
                     <thead><tr>
                         <th>Time</th>
+                        <th>Visitor</th>
                         <th>Human</th>
                         <th>Source</th>
                         <th>Scroll %</th>
@@ -2280,8 +2289,11 @@
 
         if (search) {
             filtered = filtered.filter(v =>
-                (v.utm_campaign || '').toLowerCase().includes(search) ||
-                (v.visitor_id   || '').toLowerCase().includes(search)
+                (v.utm_campaign    || '').toLowerCase().includes(search) ||
+                (v.visitor_id      || '').toLowerCase().includes(search) ||
+                (v.visitor_name    || '').toLowerCase().includes(search) ||
+                (v.visitor_company || '').toLowerCase().includes(search) ||
+                (v.visitor_email   || '').toLowerCase().includes(search)
             );
         }
         if (minScroll > 0) filtered = filtered.filter(v => (v.max_scroll_pct    || 0) >= minScroll);
@@ -2306,8 +2318,25 @@
                 ? `<span class="pill pill-blue">${escHtml(v.utm_source)}</span>${v.utm_campaign ? ' <span style="font-size:0.7rem;color:var(--text3)">' + escHtml(v.utm_campaign) + '</span>' : ''}`
                 : (v.referrer ? '<span class="pill pill-cyan">Referral</span>' : '<span style="color:var(--text3)">Direct</span>');
             const btns = v.buttons_clicked ? escHtml(v.buttons_clicked) : '<span style="color:var(--text3)">—</span>';
+
+            // Visitor identity: name + company, or email, or anonymous
+            let visitorCell = '';
+            const name = (v.visitor_name || '').trim();
+            const company = (v.visitor_company || '').trim();
+            const vemail = (v.visitor_email || '').trim();
+            if (name || company) {
+                visitorCell = `<div class="company">${escHtml(name || 'Unknown')}</div><div class="sub">${escHtml(company)}</div>`;
+            } else if (vemail) {
+                visitorCell = `<div style="font-size:0.78rem">${escHtml(vemail)}</div>`;
+            } else if (v.visitor_id && !v.visitor_id.startsWith('anon-')) {
+                visitorCell = `<span class="pill pill-purple">Outreach</span> <span class="sub">${escHtml(v.visitor_id)}</span>`;
+            } else {
+                visitorCell = `<span style="color:var(--text3)">Anonymous</span>`;
+            }
+
             return `<tr>
                 <td>${time}</td>
+                <td style="font-size:0.82rem">${visitorCell}</td>
                 <td>${humanPill}</td>
                 <td style="font-size:0.78rem">${source}</td>
                 <td>${v.max_scroll_pct || 0}%</td>

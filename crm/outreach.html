@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outreach Agent - Clover ERA CRM</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/svg+xml" href="/images/clover-favicon.svg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -2884,7 +2891,8 @@
                         contact:contacts(first_name, last_name, email, company:companies(name)),
                         prospect:outreach_prospects(first_name, last_name, email, company_name)
                     `)
-                    .in('status', ['draft', 'pending_followup', 'failed', 'approved'])
+                    .in('status', ['draft', 'failed', 'approved'])
+                    .eq('position', 1)
                     .order('created_at', { ascending: true });
 
                 document.getElementById('emailQueueLoading').style.display = 'none';
