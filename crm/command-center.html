@@ -1,2369 +1,1370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clover ERA CRM - Command Center</title>
-    <meta name="robots" content="noindex, nofollow">
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48x48.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --green: #10b981;
-            --dark-green: #059669;
-            --light-green: #d1fae5;
-            --teal: #0D9488;
-            --charcoal: #1f2937;
-            --text: #1f2937;
-            --text2: #6b7280;
-            --text3: #9ca3af;
-            --bg: #f9fafb;
-            --white: #ffffff;
-            --border: #e5e7eb;
-            --red: #EF4444;
-            --amber: #F59E0B;
-            --blue: #3B82F6;
-            --purple: #7C3AED;
-            --indigo: #6366F1;
-            --panel-w: 420px;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: var(--text); background: var(--bg); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clover ERA Command Center</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* ── NAV ── */
-        .nav { background: var(--white); padding: 0.75rem 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .nav-brand { font-size: 1.25rem; font-weight: 700; color: var(--green); }
-        .nav-links { display: flex; gap: 1.25rem; align-items: center; }
-        .nav-links a { color: var(--text2); text-decoration: none; font-weight: 500; font-size: 0.85rem; }
-        .nav-links a:hover { color: var(--green); }
-        .btn-logout { padding: 0.4rem 0.8rem; background: var(--border); color: var(--text); border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.8rem; }
+:root {
+  --teal: #46AEB8;
+  --coral: #E07A5F;
+  --dark: #0A0A0A;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F7F2;
+  --border: rgba(0,0,0,0.08);
+  --text-primary: #0A0A0A;
+  --text-secondary: #6B7280;
+  --text-meta: #9CA3AF;
+  --blue: #3B82F6;
+  --amber: #F59E0B;
+  --green: #22C55E;
+  --radius: 12px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
 
-        /* ── TABS ── */
-        .tab-bar { display: flex; gap: 0; background: var(--white); border-bottom: 2px solid var(--border); padding: 0 1.5rem; overflow-x: auto; }
-        .tab-btn { padding: 0.75rem 1.25rem; font-size: 0.85rem; font-weight: 600; color: var(--text2); background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all 0.15s; }
-        .tab-btn:hover { color: var(--text); }
-        .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
-        .tab-btn .badge { display: inline-block; background: var(--red); color: white; font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 10px; margin-left: 0.35rem; font-weight: 700; }
+body {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
 
-        /* ── CONTAINER ── */
-        .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem; transition: margin-right 0.25s; }
-        body.panel-open .container { margin-right: var(--panel-w); }
+/* AUTH GATE */
+#auth-gate {
+  position: fixed; inset: 0;
+  background: var(--bg-primary);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+#auth-gate.hidden { display: none; }
+.auth-box {
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+  padding: 2rem;
+}
+.auth-box h1 {
+  font-size: 18px; font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+.auth-box p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-size: 13px;
+}
+.auth-box input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 0.75rem;
+}
+.auth-box input:focus { border-color: var(--teal); }
+.auth-box .auth-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.auth-box .auth-btn:hover { opacity: 0.9; }
+.auth-error {
+  color: var(--coral);
+  font-size: 12px;
+  margin-top: 0.5rem;
+  min-height: 1.2em;
+}
 
-        /* ── TAB CONTENT ── */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+/* MAIN APP */
+#app { display: none; }
+#app.visible { display: block; }
 
-        /* ── STATS BAR ── */
-        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
-        .stat-card { background: var(--white); padding: 0.85rem 1rem; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .stat-label { font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
-        .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--charcoal); margin-top: 0.15rem; }
-        .stat-sub { font-size: 0.75rem; color: var(--text2); margin-top: 0.1rem; }
+/* HEADER */
+header {
+  background: var(--bg-primary);
+  border-bottom: 0.5px solid var(--border);
+  padding: 0.75rem 1.25rem;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto;
+}
+.header-left h1 {
+  font-size: 18px; font-weight: 500; color: var(--text-primary);
+}
+.header-right {
+  display: flex; align-items: center; gap: 1rem;
+  font-size: 12px; color: var(--text-meta);
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+  margin-right: 4px;
+}
+.updated-label { color: var(--text-meta); font-size: 11px; }
 
-        /* ── SECTION HEADERS ── */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 1.25rem 0 0.75rem; }
-        .section-title { font-size: 0.9rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
-        .section-title .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        .dot-red { background: var(--red); }
-        .dot-amber { background: var(--amber); }
-        .dot-green { background: var(--green); }
-        .dot-blue { background: var(--blue); }
+/* NAV TABS */
+.nav-tabs {
+  background: var(--bg-primary);
+  border-bottom: 0.5px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-inner {
+  display: flex; gap: 0;
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 1.25rem;
+}
+.nav-tab {
+  padding: 0.625rem 1rem;
+  font-size: 13px; font-weight: 400;
+  color: var(--text-secondary);
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font);
+  transition: color 0.15s;
+}
+.nav-tab:hover { color: var(--text-primary); }
+.nav-tab.active {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+  font-weight: 500;
+}
+.nav-tab.disabled {
+  color: var(--text-meta);
+  cursor: default;
+  opacity: 0.5;
+}
+.nav-tab.disabled:hover { color: var(--text-meta); }
 
-        /* ── TABLE ── */
-        .data-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .data-table th { padding: 0.6rem 0.85rem; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; background: var(--bg); border-bottom: 1px solid var(--border); }
-        .data-table td { padding: 0.65rem 0.85rem; font-size: 0.85rem; border-bottom: 1px solid #f3f4f6; color: var(--text); }
-        .data-table tr { cursor: pointer; transition: background 0.1s; }
-        .data-table tbody tr:hover { background: #f0fdf4; }
-        .data-table .company { font-weight: 600; }
-        .data-table .sub { font-size: 0.75rem; color: var(--text2); }
+/* MAIN CONTENT */
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+}
 
-        /* ── PILLS & BADGES ── */
-        .pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
-        .pill-red { background: #FEE2E2; color: #DC2626; }
-        .pill-amber { background: #FEF3C7; color: #D97706; }
-        .pill-green { background: #D1FAE5; color: #047857; }
-        .pill-cyan { background: #CFFAFE; color: #0E7490; }
-        .pill-gray { background: #F3F4F6; color: #6B7280; }
-        .pill-blue { background: #DBEAFE; color: #1D4ED8; }
-        .pill-purple { background: #F3E8FF; color: #7C3AED; }
-        .pill-indigo { background: #EDE9FE; color: #4338CA; }
+/* METRICS ROW */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.metric-card {
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  transition: box-shadow 0.2s;
+}
+.metric-card.pulse {
+  animation: metric-pulse 0.6s ease-out;
+}
+@keyframes metric-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(70,174,184,0.3); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.metric-label {
+  font-size: 12px; color: var(--text-meta); font-weight: 400;
+  margin-bottom: 0.25rem;
+}
+.metric-value {
+  font-size: 24px; font-weight: 500; color: var(--text-primary);
+}
 
-        .stage-pill { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
-        .stage-cold { background: #F3F4F6; color: #6B7280; }
-        .stage-emailed { background: #DBEAFE; color: #1D4ED8; }
-        .stage-opened { background: #DBEAFE; color: #1D4ED8; }
-        .stage-clicked { background: #F3E8FF; color: #7C3AED; }
-        .stage-book_sent { background: #EDE9FE; color: #4338CA; }
-        .stage-li_con_req { background: #DBEAFE; color: #1D4ED8; }
-        .stage-li_dm { background: #DBEAFE; color: #1D4ED8; }
-        .stage-replied { background: #F3E8FF; color: #7C3AED; }
-        .stage-call { background: #FEF3C7; color: #D97706; }
-        .stage-pilot { background: #D1FAE5; color: #047857; }
-        .stage-customer { background: #D1FAE5; color: #047857; }
-        .stage-churned { background: #FEE2E2; color: #DC2626; }
+/* CARDS */
+.card {
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.625rem;
+  transition: box-shadow 0.15s;
+}
+.card:hover { box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.card.urgent { border-left: 2px solid var(--coral); }
 
-        /* ── PIPELINE FUNNEL ── */
-        .funnel-table { width: 100%; border-collapse: collapse; }
-        .funnel-row { cursor: pointer; transition: background 0.1s; }
-        .funnel-row:hover { background: #f9fafb; }
-        .funnel-row td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-        .funnel-stage { font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-        .funnel-bar { height: 6px; border-radius: 3px; background: var(--green); transition: width 0.3s; }
-        .funnel-count { font-weight: 800; font-size: 1.1rem; text-align: right; }
-        .funnel-conv { font-size: 0.78rem; color: var(--text2); text-align: right; }
-        .funnel-attn { font-size: 0.78rem; text-align: right; }
-        .funnel-expand { display: none; }
-        .funnel-expand.open { display: table-row; }
-        .funnel-expand td { padding: 0; background: #f9fafb; }
-        .funnel-people { padding: 0.5rem 1rem 0.75rem; }
-        .funnel-person { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: var(--white); border-radius: 6px; margin-bottom: 0.35rem; border-left: 3px solid var(--green); cursor: pointer; transition: background 0.1s; }
-        .funnel-person:hover { background: #f0fdf4; }
-        .funnel-person.stale { border-left-color: var(--amber); }
-        .fp-name { font-weight: 600; font-size: 0.82rem; }
-        .fp-company { font-size: 0.72rem; color: var(--text2); }
-        .fp-meta { font-size: 0.72rem; color: var(--text3); text-align: right; }
-        .fp-action { font-size: 0.72rem; color: var(--blue); }
+.card-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 0.375rem;
+}
+.card-badge {
+  font-size: 11px; font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.badge-reply { background: rgba(224,122,95,0.1); color: var(--coral); }
+.badge-linkedin { background: rgba(59,130,246,0.1); color: var(--blue); }
+.badge-outreach { background: rgba(70,174,184,0.1); color: var(--teal); }
+.badge-mgi { background: rgba(245,158,11,0.1); color: var(--amber); }
 
-        /* ── PROGRESS BAR ── */
-        .progress-bar { background: var(--border); border-radius: 8px; height: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 8px; transition: width 0.3s; }
-        .progress-green { background: var(--green); }
-        .progress-amber { background: var(--amber); }
-        .progress-red { background: var(--red); }
+.card-time { font-size: 12px; color: var(--text-meta); }
 
-        /* ── OUTBOUND DAILY GRID ── */
-        .daily-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
-        .daily-cell { background: var(--white); border-radius: 8px; padding: 0.6rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .daily-cell .day-label { font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; }
-        .daily-cell .day-count { font-size: 1.5rem; font-weight: 800; color: var(--charcoal); }
-        .daily-cell .day-target { font-size: 0.7rem; color: var(--text3); }
-        .weekly-history { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.5rem; margin-bottom: 1rem; }
-        .week-card { background: var(--white); border-radius: 8px; padding: 0.6rem 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .week-card .wc-label { font-size: 0.68rem; font-weight: 600; color: var(--text3); text-transform: uppercase; }
-        .week-card .wc-value { font-size: 1.2rem; font-weight: 800; margin-top: 0.1rem; }
-        .week-card .wc-dates { font-size: 0.65rem; color: var(--text3); }
-        .week-card.record { border: 2px solid var(--green); }
-        .week-card.record .wc-label { color: var(--green); }
+.card-title {
+  font-size: 14px; font-weight: 500; color: var(--text-primary);
+  margin-bottom: 0.125rem;
+}
+.card-desc {
+  font-size: 13px; color: var(--text-secondary);
+  margin-bottom: 0.375rem;
+}
+.card-preview {
+  font-size: 12px; color: var(--text-meta);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+.card-actions {
+  display: flex; gap: 0.5rem; justify-content: flex-end;
+  flex-wrap: wrap;
+}
 
-        /* ── REPORT SECTIONS ── */
-        .report-section { background: var(--white); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .report-section h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--charcoal); }
-        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; }
-        .report-metric { text-align: center; }
-        .report-metric .rm-value { font-size: 1.4rem; font-weight: 800; color: var(--charcoal); }
-        .report-metric .rm-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; }
+/* BUTTONS */
+.btn {
+  font-family: var(--font);
+  font-size: 13px; font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  min-height: 36px;
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  transition: opacity 0.15s, background 0.15s;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary {
+  background: var(--teal); color: white;
+}
+.btn-primary:hover:not(:disabled) { opacity: 0.9; }
+.btn-secondary {
+  background: var(--bg-secondary); color: var(--text-primary);
+  border: 0.5px solid var(--border);
+}
+.btn-secondary:hover:not(:disabled) { background: #EEEDE8; }
+.btn-danger {
+  background: rgba(224,122,95,0.1); color: var(--coral);
+}
+.btn-danger:hover:not(:disabled) { background: rgba(224,122,95,0.18); }
+.btn-sm { padding: 0.375rem 0.75rem; font-size: 12px; min-height: 30px; }
+.btn-icon {
+  background: none; border: none; cursor: pointer; padding: 0.25rem;
+  color: var(--text-meta); font-size: 16px;
+}
+.btn-icon:hover { color: var(--text-primary); }
 
-        /* ── SLIDE-OUT PANEL ── */
-        .panel-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.15); z-index: 200; }
-        .panel-overlay.active { display: block; }
-        .detail-panel { position: fixed; top: 0; right: -460px; width: var(--panel-w); height: 100vh; background: var(--white); box-shadow: -4px 0 20px rgba(0,0,0,0.1); z-index: 300; transition: right 0.25s ease; overflow-y: auto; }
-        .detail-panel.open { right: 0; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--white); z-index: 1; }
-        .panel-header h2 { font-size: 1rem; font-weight: 700; }
-        .panel-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text3); padding: 0.25rem; line-height: 1; }
-        .panel-close:hover { color: var(--text); }
-        .panel-body { padding: 1.25rem; }
-        .panel-section { margin-bottom: 1.25rem; }
-        .panel-section label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 0.3rem; }
-        .panel-section .pv { font-size: 0.9rem; color: var(--text); }
-        .panel-section .pv a { color: var(--blue); text-decoration: none; }
-        .panel-section .pv a:hover { text-decoration: underline; }
-        .panel-field { margin-bottom: 0.75rem; }
-        .panel-field textarea { width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 0.5rem; font-size: 0.82rem; font-family: inherit; resize: vertical; min-height: 60px; }
-        .panel-field textarea:focus { border-color: var(--green); outline: none; }
-        .panel-field input[type="text"], .panel-field input[type="date"], .panel-field select {
-            width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 0.45rem 0.6rem; font-size: 0.82rem; font-family: inherit;
-        }
-        .panel-field input:focus, .panel-field select:focus { border-color: var(--green); outline: none; }
-        .panel-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
-        .panel-input { width: 100%; padding: 0.45rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; }
-        .panel-input:focus { border-color: var(--green); outline: none; }
-        .panel-select { width: 100%; padding: 0.45rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; background: var(--white); }
-        .panel-select:focus { border-color: var(--green); outline: none; }
+/* EXPANDABLE SECTIONS */
+.expandable-toggle {
+  font-size: 12px; color: var(--teal); cursor: pointer;
+  background: none; border: none; font-family: var(--font);
+  padding: 0.25rem 0;
+  display: inline-flex; align-items: center; gap: 0.25rem;
+}
+.expandable-toggle:hover { text-decoration: underline; }
+.expandable-content { display: none; margin-top: 0.5rem; }
+.expandable-content.open { display: block; }
 
-        .quick-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
-        .qa-btn { padding: 0.4rem 0.7rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer; background: var(--white); color: var(--text); transition: all 0.15s; }
-        .qa-btn:hover { border-color: var(--green); color: var(--green); }
-        .qa-btn.primary { background: var(--green); color: white; border-color: var(--green); }
-        .qa-btn.primary:hover { background: var(--dark-green); border-color: var(--dark-green); }
+/* POST TEXT BOX */
+.post-text-box {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  cursor: pointer;
+  position: relative;
+}
+.post-text-box:hover::after {
+  content: 'Click to copy';
+  position: absolute; top: 4px; right: 8px;
+  font-size: 10px; color: var(--text-meta);
+  background: var(--bg-primary);
+  padding: 2px 6px; border-radius: 4px;
+}
 
-        .timeline { margin-top: 0.5rem; }
-        .timeline-item { display: flex; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }
-        .timeline-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 0.4rem; flex-shrink: 0; }
-        .timeline-dot.note { background: var(--text3); }
-        .timeline-dot.email { background: var(--blue); }
-        .timeline-dot.call { background: var(--green); }
-        .timeline-dot.meeting { background: var(--purple); }
-        .timeline-dot.system { background: var(--amber); }
-        .timeline-dot.book_sent { background: var(--indigo); }
-        .timeline-dot.report_sent { background: var(--teal); }
-        .timeline-dot.email_sent { background: var(--blue); }
-        .timeline-dot.task { background: var(--amber); }
-        .timeline-dot.activity { background: var(--text3); }
-        .timeline-dot.li_con_req { background: var(--blue); }
-        .timeline-dot.li_dm { background: var(--blue); }
-        .timeline-content { flex: 1; min-width: 0; }
-        .timeline-type-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text3); margin-bottom: 0.1rem; }
-        .timeline-text { font-size: 0.8rem; color: var(--text); }
-        .timeline-meta { font-size: 0.7rem; color: var(--text3); margin-top: 0.15rem; }
-        .timeline-extra { font-size: 0.75rem; color: var(--text2); margin-top: 0.15rem; }
-        .timeline-empty { text-align: center; padding: 1.5rem; color: var(--text3); font-size: 0.82rem; }
+.check-badges {
+  display: flex; gap: 0.5rem; margin: 0.5rem 0;
+  flex-wrap: wrap;
+}
+.check-badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px;
+}
+.check-pass { background: rgba(34,197,94,0.1); color: #16a34a; }
+.check-fail { background: rgba(224,122,95,0.1); color: var(--coral); }
+.check-neutral { background: var(--bg-secondary); color: var(--text-meta); }
 
-        .collapse-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 0.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
-        .collapse-header:hover { color: var(--green); }
-        .collapse-header h3 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text3); }
-        .collapse-arrow { font-size: 0.7rem; color: var(--text3); transition: transform 0.2s; }
-        .collapse-arrow.open { transform: rotate(180deg); }
-        .collapse-body { display: none; }
-        .collapse-body.open { display: block; }
+/* EMAIL ROW */
+.email-row {
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.625rem 0.75rem;
+  margin-bottom: 0.375rem;
+  display: flex; flex-direction: column; gap: 0.25rem;
+}
+.email-row-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.5rem;
+}
+.email-step-badge {
+  font-size: 10px; font-weight: 500;
+  padding: 1px 6px; border-radius: 3px;
+  background: var(--bg-secondary); color: var(--text-secondary);
+  min-width: 24px; text-align: center;
+}
+.email-subject { font-size: 13px; font-weight: 500; flex: 1; }
+.email-row-actions { display: flex; gap: 0.25rem; }
+.email-body-expand {
+  font-size: 12px; color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 0.25rem;
+  white-space: pre-wrap;
+}
 
-        .note-input-area { margin-bottom: 1rem; display: none; }
-        .note-input-area.visible { display: block; }
-        .note-input-area textarea { width: 100%; border: 2px solid var(--border); border-radius: 6px; padding: 0.5rem; font-size: 0.82rem; font-family: inherit; resize: vertical; min-height: 70px; }
-        .note-input-area textarea:focus { border-color: var(--green); outline: none; }
-        .note-input-actions { display: flex; gap: 0.5rem; margin-top: 0.4rem; justify-content: flex-end; }
+/* REPLY INBOX */
+.reply-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 0.75rem;
+  min-height: 500px;
+}
+.reply-list {
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  overflow-y: auto;
+  max-height: 70vh;
+}
+.reply-item {
+  padding: 0.75rem 1rem;
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.reply-item:hover { background: var(--bg-secondary); }
+.reply-item.active { background: rgba(70,174,184,0.06); border-left: 2px solid var(--teal); }
+.reply-item.unread .reply-item-name { font-weight: 500; }
+.reply-item-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.125rem;
+}
+.reply-item-name { font-size: 13px; font-weight: 400; }
+.reply-item-time { font-size: 11px; color: var(--text-meta); }
+.reply-item-company { font-size: 12px; color: var(--text-secondary); }
+.reply-item-snippet { font-size: 12px; color: var(--text-meta); margin-top: 0.25rem; }
+.intent-pill {
+  font-size: 10px; font-weight: 500;
+  padding: 1px 6px; border-radius: 10px;
+  display: inline-block; margin-left: 0.375rem;
+}
+.intent-high { background: rgba(34,197,94,0.12); color: #16a34a; }
+.intent-med { background: rgba(245,158,11,0.12); color: #d97706; }
+.intent-low { background: var(--bg-secondary); color: var(--text-meta); }
 
-        .source-badge { display: inline-block; padding: 0.1rem 0.45rem; border-radius: 6px; font-size: 0.65rem; font-weight: 600; }
-        .source-outbound { background: #DBEAFE; color: #1D4ED8; }
-        .source-inbound { background: #D1FAE5; color: #047857; }
-        .source-manual { background: #F3F4F6; color: #6B7280; }
-        .source-linkedin { background: #DBEAFE; color: #1D4ED8; }
-        .source-referral { background: #FEF3C7; color: #D97706; }
+.reply-detail {
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  padding: 1.25rem;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+.reply-detail-placeholder {
+  display: flex; align-items: center; justify-content: center;
+  height: 100%; color: var(--text-meta); font-size: 13px;
+}
+.reply-detail h3 {
+  font-size: 14px; font-weight: 500; margin-bottom: 0.125rem;
+}
+.reply-detail .detail-company {
+  font-size: 13px; color: var(--text-secondary); margin-bottom: 1rem;
+}
+.detail-section {
+  margin-bottom: 1rem;
+}
+.detail-section-title {
+  font-size: 12px; font-weight: 500; color: var(--text-meta);
+  text-transform: uppercase; letter-spacing: 0.03em;
+  margin-bottom: 0.375rem;
+}
+.detail-text {
+  font-size: 13px; line-height: 1.5;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  white-space: pre-wrap;
+}
+.detail-context {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.375rem;
+  font-size: 12px;
+}
+.detail-context dt { color: var(--text-meta); }
+.detail-context dd { color: var(--text-primary); font-weight: 500; }
 
-        .pill-cold { background: #F3F4F6; color: #6B7280; }
-        .pill-emailed { background: #DBEAFE; color: #1D4ED8; }
-        .pill-opened { background: #E0E7FF; color: #4338CA; }
-        .pill-clicked { background: #EDE9FE; color: #6D28D9; }
-        .pill-li_con_req { background: #DBEAFE; color: #1D4ED8; }
-        .pill-li_dm { background: #DBEAFE; color: #1D4ED8; }
-        .pill-book_sent { background: #E0E7FF; color: #4338CA; }
-        .pill-replied { background: #F3E8FF; color: #7C3AED; }
-        .pill-call { background: #FEF3C7; color: #D97706; }
-        .pill-pilot { background: #D1FAE5; color: #047857; }
-        .pill-customer { background: #D1FAE5; color: #047857; }
-        .pill-churned { background: #FEE2E2; color: #DC2626; }
+/* SKELETON */
+.skeleton-card {
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.625rem;
+}
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+.skeleton-line.w40 { width: 40%; }
+.skeleton-line.w60 { width: 60%; }
+.skeleton-line.w80 { width: 80%; }
+.skeleton-line.w100 { width: 100%; }
+.skeleton-line.h20 { height: 20px; }
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 400; align-items: center; justify-content: center; }
-        .modal-overlay.active { display: flex; }
-        .modal { background: var(--white); border-radius: 10px; padding: 1.5rem; max-width: 480px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto; }
-        .modal h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
-        .modal-field { margin-bottom: 0.75rem; }
-        .modal-field label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text3); text-transform: uppercase; margin-bottom: 0.25rem; }
-        .modal-field input, .modal-field select { width: 100%; padding: 0.45rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; }
-        .modal-field input:focus, .modal-field select:focus { border-color: var(--green); outline: none; }
-        .modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
-        .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-meta);
+}
+.empty-state svg { margin-bottom: 0.75rem; }
+.empty-state p { font-size: 13px; }
 
-        .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--charcoal); color: white; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; z-index: 500; opacity: 0; transform: translateY(10px); transition: all 0.3s; }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success { background: var(--green); }
-        .toast.error { background: var(--red); }
+/* ERROR PAGE */
+.error-page {
+  display: none;
+  position: fixed; inset: 0;
+  background: var(--bg-primary);
+  align-items: center; justify-content: center;
+  z-index: 9998;
+  flex-direction: column; gap: 1rem;
+  text-align: center; padding: 2rem;
+}
+.error-page.visible { display: flex; }
+.error-page p { color: var(--text-secondary); font-size: 14px; max-width: 400px; }
 
-        .loading { text-align: center; padding: 3rem; color: var(--text3); }
+/* TOASTS */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px;
+  display: flex; flex-direction: column-reverse; gap: 0.5rem;
+  z-index: 10000;
+  pointer-events: none;
+}
+.toast {
+  background: #1f2937; color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: var(--font);
+  pointer-events: auto;
+  animation: toast-in 0.2s ease-out;
+  max-width: 360px;
+}
+.toast.toast-error { background: #991b1b; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-        /* ── BUTTONS ── */
-        .btn { padding: 0.45rem 0.9rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.78rem; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.35rem; }
-        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.72rem; }
-        .btn-green { background: var(--green); color: white; }
-        .btn-green:hover { background: var(--dark-green); }
-        .btn-white { background: var(--white); color: var(--text); border: 2px solid var(--border); }
-        .btn-white:hover { background: var(--bg); }
-        .btn-red { background: #FEE2E2; color: var(--red); }
-        .btn-blue { background: #DBEAFE; color: #1D4ED8; }
-
-        /* ── EMPTY STATE ── */
-        .empty-state { text-align: center; padding: 3rem; color: var(--text3); font-size: 0.9rem; }
-
-        /* ── LOADING ── */
-        .loading { text-align: center; padding: 3rem; color: var(--text3); }
-
-        /* ── LOGIN WALL ── */
-        #loginWall { display: flex; align-items: center; justify-content: center; height: 100vh; }
-
-        /* ── OUTBOUND CONTROLS ── */
-        .ob-controls { background: var(--white); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .ob-search-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
-        .ob-search { flex: 1; padding: 0.5rem 0.75rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; outline: none; transition: border-color 0.15s; }
-        .ob-search:focus { border-color: var(--green); }
-        .ob-result-count { font-size: 0.75rem; color: var(--text3); white-space: nowrap; }
-        .ob-filters-row { display: flex; gap: 1.25rem; align-items: flex-end; flex-wrap: wrap; }
-        .ob-filter-group { display: flex; flex-direction: column; gap: 0.25rem; }
-        .ob-filter-label { font-size: 0.68rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; }
-        .ob-status-pills { display: flex; gap: 0; background: var(--bg); border-radius: 6px; overflow: hidden; border: 2px solid var(--border); }
-        .ob-pill { padding: 0.35rem 0.65rem; font-size: 0.72rem; font-weight: 600; border: none; background: none; cursor: pointer; color: var(--text2); transition: all 0.15s; }
-        .ob-pill:hover { color: var(--text); }
-        .ob-pill.active { background: var(--green); color: white; }
-        .ob-select { padding: 0.4rem 0.6rem; border: 2px solid var(--border); border-radius: 6px; font-size: 0.78rem; font-family: inherit; color: var(--text); background: var(--white); cursor: pointer; }
-        .ob-select:focus { border-color: var(--green); outline: none; }
-
-        /* ── SORTABLE COLUMNS ── */
-        .sortable { cursor: pointer; user-select: none; }
-        .sortable:hover { color: var(--text); }
-        .sort-arrow { font-size: 0.6rem; margin-left: 0.2rem; }
-        .sort-arrow.asc::after { content: '▲'; }
-        .sort-arrow.desc::after { content: '▼'; }
-
-        /* ── PAGINATION ── */
-        .ob-pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.75rem 0; margin-top: 0.5rem; }
-        .ob-page-info { font-size: 0.78rem; color: var(--text2); font-weight: 600; }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 768px) {
-            .container { padding: 0.75rem; }
-            .stats-bar { grid-template-columns: repeat(2, 1fr); }
-            .daily-grid { grid-template-columns: repeat(4, 1fr); }
-            .nav-links a { font-size: 0.75rem; }
-            .nav-links { gap: 0.75rem; }
-            body.panel-open .container { margin-right: 0; }
-            .detail-panel { width: 100vw; right: -100vw; }
-            .ob-filters-row { flex-direction: column; gap: 0.5rem; }
-            .ob-status-pills { flex-wrap: wrap; }
-            .ob-search-row { flex-direction: column; align-items: stretch; }
-        }
-    </style>
+/* MOBILE */
+@media (max-width: 700px) {
+  .metrics-row { grid-template-columns: 1fr 1fr; }
+  .reply-layout { grid-template-columns: 1fr; }
+  .reply-detail { max-height: none; }
+  .reply-list { max-height: 40vh; }
+  .btn { min-height: 44px; }
+  .card { padding: 0.875rem 1rem; }
+  header { padding: 0.625rem 1rem; }
+  .main-content { padding: 0.75rem 1rem; }
+  .header-right .datetime { display: none; }
+}
+</style>
 </head>
 <body>
-    <div id="loginWall" style="display:none">
-        <p>Redirecting to login...</p>
+
+<!-- AUTH GATE -->
+<div id="auth-gate">
+  <div class="auth-box">
+    <h1>Clover ERA</h1>
+    <p>Command center</p>
+    <form id="auth-form">
+      <input type="password" id="auth-input" placeholder="Password" autocomplete="current-password" autofocus>
+      <button type="submit" class="auth-btn">Sign in</button>
+    </form>
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+</div>
+
+<!-- ERROR PAGE -->
+<div class="error-page" id="error-page">
+  <svg width="40" height="40" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#E07A5F" stroke-width="1.5"/><path d="M12 8v4m0 4h.01" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round"/></svg>
+  <p>Could not connect to database. Check your connection and try again.</p>
+  <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <header>
+    <div class="header-row">
+      <div class="header-left">
+        <h1>Clover ERA Command Center</h1>
+      </div>
+      <div class="header-right">
+        <span class="datetime" id="header-datetime"></span>
+        <span><span class="status-dot"></span>All systems operational</span>
+        <span class="updated-label" id="updated-label">Loading...</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <div class="nav-inner">
+      <button class="nav-tab active" data-view="actions">Today's actions</button>
+      <button class="nav-tab" data-view="replies">Reply inbox</button>
+      <button class="nav-tab disabled" title="Coming phase 2">Signal feed</button>
+      <button class="nav-tab disabled" title="Coming phase 2">Content calendar</button>
+      <button class="nav-tab disabled" title="Coming phase 2">MGI cohort</button>
+      <button class="nav-tab disabled" title="Coming phase 2">Weekly focus</button>
+      <button class="nav-tab disabled" title="Coming phase 2">Performance</button>
+      <button class="nav-tab disabled" title="Coming phase 2">Pipeline</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <!-- METRICS -->
+    <div class="metrics-row">
+      <div class="metric-card" id="metric-review">
+        <div class="metric-label">Needs review</div>
+        <div class="metric-value" id="metric-review-val">--</div>
+      </div>
+      <div class="metric-card" id="metric-replies">
+        <div class="metric-label">Replies waiting</div>
+        <div class="metric-value" id="metric-replies-val">--</div>
+      </div>
+      <div class="metric-card" id="metric-prospects">
+        <div class="metric-label">New prospects</div>
+        <div class="metric-value" id="metric-prospects-val">--</div>
+      </div>
+      <div class="metric-card" id="metric-pipeline">
+        <div class="metric-label">Pipeline value</div>
+        <div class="metric-value" id="metric-pipeline-val">$--</div>
+      </div>
     </div>
 
-    <div id="app" style="display:none">
-        <!-- NAV -->
-        <nav class="nav">
-            <div class="nav-brand">Clover ERA CRM</div>
-            <div class="nav-links">
-                <a href="command-center.html" class="active">Command Center</a>
-                <a href="people.html">People</a>
-                <a href="outreach.html">Outreach</a>
-                <a href="admin.html" id="adminLink" style="display:none;">Admin</a>
-                <button class="btn-logout" id="btnLogout">Logout</button>
-            </div>
-        </nav>
-
-        <!-- TAB BAR -->
-        <div class="tab-bar">
-            <button class="tab-btn active" data-tab="today">Today <span class="badge" id="todayBadge" style="display:none">0</span></button>
-            <button class="tab-btn" data-tab="pipeline">Pipeline</button>
-            <button class="tab-btn" data-tab="outbound">Outbound</button>
-            <button class="tab-btn" data-tab="report">Weekly Report</button>
-            <button class="tab-btn" data-tab="analytics">Web Analytics</button>
-        </div>
-
-        <div class="container">
-            <!-- ═══════════════ TAB: TODAY ═══════════════ -->
-            <div id="tab-today" class="tab-content active">
-                <div class="stats-bar" id="todayStats"></div>
-
-                <!-- Overdue Follow-ups -->
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-red"></span> Overdue Follow-ups</div>
-                </div>
-                <table class="data-table" id="tableOverdue"><thead><tr><th>Person</th><th>Company</th><th>Stage</th><th>Next Action</th><th>Due</th><th>Days Late</th></tr></thead><tbody></tbody></table>
-
-                <!-- Due Today -->
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-amber"></span> Due Today</div>
-                </div>
-                <table class="data-table" id="tableDueToday"><thead><tr><th>Person</th><th>Company</th><th>Stage</th><th>Next Action</th></tr></thead><tbody></tbody></table>
-
-                <!-- Recently Replied (48h) -->
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-green"></span> Recently Replied (48h)</div>
-                </div>
-                <table class="data-table" id="tableReplied"><thead><tr><th>Person</th><th>Company</th><th>Source</th><th>Updated</th></tr></thead><tbody></tbody></table>
-
-                <!-- Stalled (14+ days) -->
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-amber"></span> Stalled (14+ days, no next action)</div>
-                </div>
-                <table class="data-table" id="tableStalled"><thead><tr><th>Person</th><th>Company</th><th>Stage</th><th>Days Since Update</th></tr></thead><tbody></tbody></table>
-            </div>
-
-            <!-- ═══════════════ TAB: PIPELINE ═══════════════ -->
-            <div id="tab-pipeline" class="tab-content">
-                <div class="stats-bar" id="pipelineStats"></div>
-                <div class="kanban-row" id="kanbanRow"></div>
-            </div>
-
-            <!-- ═══════════════ TAB: OUTBOUND ═══════════════ -->
-            <div id="tab-outbound" class="tab-content">
-                <div class="stats-bar" id="outboundStats"></div>
-                <div class="section-header">
-                    <div class="section-title">This Week's Target: <span id="outboundTarget">0/350</span></div>
-                    <a href="outreach.html" class="btn btn-green btn-sm">Open Outreach</a>
-                </div>
-                <div class="progress-bar" style="margin-bottom:1rem"><div class="progress-fill progress-green" id="outboundProgress" style="width:0%"></div></div>
-                <div class="daily-grid" id="dailyGrid"></div>
-                <div class="weekly-history" id="weeklyHistory"></div>
-                <div class="ob-controls">
-                    <div class="ob-search-row">
-                        <input type="text" id="obSearchInput" class="ob-search" placeholder="Search name, company, or email..." oninput="handleObSearch(this.value)">
-                        <div class="ob-result-count" id="obResultCount"></div>
-                    </div>
-                    <div class="ob-filters-row">
-                        <div class="ob-filter-group">
-                            <label class="ob-filter-label">Status</label>
-                            <div class="ob-status-pills" id="obStatusPills">
-                                <button class="ob-pill active" data-status="all" onclick="setObStatus('all')">All</button>
-                                <button class="ob-pill" data-status="sent" onclick="setObStatus('sent')">Sent</button>
-                                <button class="ob-pill" data-status="opened" onclick="setObStatus('opened')">Opened</button>
-                                <button class="ob-pill" data-status="clicked" onclick="setObStatus('clicked')">Clicked</button>
-                                <button class="ob-pill" data-status="replied" onclick="setObStatus('replied')">Replied</button>
-                                <button class="ob-pill" data-status="bounced" onclick="setObStatus('bounced')">Bounced</button>
-                            </div>
-                        </div>
-                        <div class="ob-filter-group">
-                            <label class="ob-filter-label">Date Range</label>
-                            <select id="obDateRange" class="ob-select" onchange="setObDateRange(this.value)">
-                                <option value="week">This Week</option>
-                                <option value="month">This Month</option>
-                                <option value="all">All Time</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <table class="data-table" id="tableOutbound">
-                    <thead><tr>
-                        <th class="sortable" onclick="toggleObSort('contact')">Contact <span class="sort-arrow" id="sort-contact"></span></th>
-                        <th class="sortable" onclick="toggleObSort('company')">Company <span class="sort-arrow" id="sort-company"></span></th>
-                        <th class="sortable" onclick="toggleObSort('position')">Email # <span class="sort-arrow" id="sort-position"></span></th>
-                        <th class="sortable" onclick="toggleObSort('sent_at')">Sent <span class="sort-arrow" id="sort-sent_at"></span></th>
-                        <th class="sortable" onclick="toggleObSort('opened')">Opened <span class="sort-arrow" id="sort-opened"></span></th>
-                        <th class="sortable" onclick="toggleObSort('replied')">Replied <span class="sort-arrow" id="sort-replied"></span></th>
-                        <th class="sortable" onclick="toggleObSort('status')">Status <span class="sort-arrow" id="sort-status"></span></th>
-                    </tr></thead>
-                    <tbody></tbody>
-                </table>
-                <div class="ob-pagination" id="obPagination" style="display:none">
-                    <button class="btn btn-white btn-sm" id="obPrevBtn" onclick="obPrevPage()">Previous</button>
-                    <span class="ob-page-info" id="obPageInfo">Page 1</span>
-                    <button class="btn btn-white btn-sm" id="obNextBtn" onclick="obNextPage()">Next</button>
-                </div>
-            </div>
-
-            <!-- ═══════════════ TAB: WEEKLY REPORT ═══════════════ -->
-            <div id="tab-report" class="tab-content">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                    <h2 style="font-size:1.1rem;font-weight:700">Weekly Report</h2>
-                    <div style="display:flex;gap:0.5rem;align-items:center">
-                        <label style="font-size:0.8rem;color:var(--text2)">Week of:</label>
-                        <input type="date" id="reportWeekStart" style="padding:0.3rem 0.5rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem">
-                    </div>
-                </div>
-
-                <div class="report-section">
-                    <h3>People by Stage</h3>
-                    <div class="report-grid" id="reportStages"></div>
-                </div>
-
-                <div class="report-section">
-                    <h3>Outreach Performance</h3>
-                    <div class="report-grid" id="reportOutreach"></div>
-                </div>
-
-                <div class="report-section">
-                    <h3>Pipeline Activity</h3>
-                    <div class="report-grid" id="reportActivity"></div>
-                </div>
-            </div>
-
-            <!-- ═══════════════ TAB: WEB ANALYTICS ═══════════════ -->
-            <div id="tab-analytics" class="tab-content">
-                <div class="stats-bar" id="analyticsStats"></div>
-
-                <div style="display:flex;gap:0.75rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
-                    <label style="font-size:0.8rem;color:var(--text2)">Page:</label>
-                    <select id="analyticsPage" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="renderAnalytics()">
-                        <option value="all">All Pages</option>
-                        <option value="/">/ (Home)</option>
-                        <option value="/audit">/audit</option>
-                        <option value="/67">/67</option>
-                    </select>
-                    <label style="font-size:0.8rem;color:var(--text2);margin-left:0.5rem">Range:</label>
-                    <select id="analyticsRange" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="renderAnalytics()">
-                        <option value="today">Today</option>
-                        <option value="7d">Last 7 Days</option>
-                        <option value="30d">Last 30 Days</option>
-                        <option value="all">All Time</option>
-                    </select>
-                    <span style="margin-left:auto;font-size:0.72rem;color:var(--text3)" id="analyticsLastUpdate">Auto-refreshes every 30s</span>
-                </div>
-
-                <!-- Table filters: search + scroll + time + button -->
-                <div style="display:flex;gap:0.75rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
-                    <input type="text" id="analyticsSearch" placeholder="Search company…"
-                        style="padding:0.35rem 0.7rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem;width:170px;outline:none"
-                        oninput="filterAndRenderTable()">
-                    <label style="font-size:0.8rem;color:var(--text2)">Scroll:</label>
-                    <select id="analyticsScroll" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="filterAndRenderTable()">
-                        <option value="0">Any</option>
-                        <option value="1">1%+</option>
-                        <option value="25">25%+</option>
-                        <option value="50">50%+</option>
-                        <option value="75">75%+</option>
-                        <option value="90">90%+</option>
-                    </select>
-                    <label style="font-size:0.8rem;color:var(--text2)">Time:</label>
-                    <select id="analyticsTime" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="filterAndRenderTable()">
-                        <option value="0">Any</option>
-                        <option value="15">15s+</option>
-                        <option value="30">30s+</option>
-                        <option value="60">1m+</option>
-                        <option value="120">2m+</option>
-                    </select>
-                    <label style="font-size:0.8rem;color:var(--text2)">Button:</label>
-                    <select id="analyticsBtn" style="padding:0.35rem 0.6rem;border:2px solid var(--border);border-radius:6px;font-size:0.8rem" onchange="filterAndRenderTable()">
-                        <option value="">Any</option>
-                        <option value="_any">Any clicked</option>
-                        <option value="Book Call">Book Call</option>
-                        <option value="Top Bar">Top Bar</option>
-                        <option value="Prosecution CTA">Prosecution CTA</option>
-                        <option value="Calculator">Calculator</option>
-                        <option value="Assessment">Assessment</option>
-                    </select>
-                    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text2);margin-left:0.5rem;cursor:pointer">
-                        <input type="checkbox" id="analyticsHumansOnly" checked onchange="filterAndRenderTable()">
-                        Humans only
-                    </label>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
-                    <!-- Scroll Depth Distribution -->
-                    <div style="background:var(--white);border-radius:10px;padding:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
-                        <div style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:0.75rem">Scroll Depth (Humans Only)</div>
-                        <div id="scrollChart"></div>
-                    </div>
-                    <!-- Time on Page Distribution -->
-                    <div style="background:var(--white);border-radius:10px;padding:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
-                        <div style="font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:0.75rem">Time on Page (Humans Only)</div>
-                        <div id="timeChart"></div>
-                    </div>
-                </div>
-
-                <!-- Recent Visits Table -->
-                <div class="section-header">
-                    <div class="section-title"><span class="dot dot-blue"></span> Recent Visits</div>
-                    <div style="font-size:0.75rem;color:var(--text2)" id="analyticsCount"></div>
-                </div>
-                <table class="data-table" id="tableAnalytics">
-                    <thead><tr>
-                        <th>Time</th>
-                        <th>Visitor</th>
-                        <th>Human</th>
-                        <th>Source</th>
-                        <th>Scroll %</th>
-                        <th>Time on Page</th>
-                        <th>Buttons Clicked</th>
-                    </tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ═══════════════ SLIDE-OUT DETAIL PANEL ═══════════════ -->
-        <div class="panel-overlay" id="panelOverlay"></div>
-        <div class="detail-panel" id="detailPanel">
-            <div class="panel-header">
-                <h2 id="panelTitle">Person Details</h2>
-                <button class="panel-close" id="panelClose">&times;</button>
-            </div>
-            <div class="panel-body" id="panelBody">
-            </div>
-        </div>
+    <!-- VIEW: TODAY'S ACTIONS -->
+    <div id="view-actions">
+      <div id="actions-skeleton">
+        <div class="skeleton-card"><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div></div>
+      </div>
+      <div id="actions-list"></div>
     </div>
 
-    <!-- DELETE CONFIRMATION MODAL -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal">
-            <h3 style="color:var(--red);">Delete Person</h3>
-            <p style="font-size:0.82rem; color:var(--text2); margin-bottom:0.75rem;">You are about to permanently delete this person:</p>
-            <p style="font-size:0.95rem; font-weight:700; margin-bottom:0.75rem;" id="deletePersonName"></p>
-            <p style="font-size:0.82rem; color:var(--red); margin-bottom:1rem;">This will remove the person and all their notes and activity history. This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button class="btn btn-white" onclick="closeDeleteModal()">Cancel</button>
-                <button class="btn" id="btnDelete" style="background:var(--red); color:white; border-color:var(--red);" onclick="executeDelete()">Delete Person</button>
-            </div>
+    <!-- VIEW: REPLY INBOX -->
+    <div id="view-replies" style="display:none">
+      <div class="reply-layout">
+        <div class="reply-list" id="reply-list">
+          <div id="reply-list-skeleton">
+            <div class="skeleton-card"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div>
+          </div>
+          <div id="reply-list-items"></div>
         </div>
-    </div>
-
-    <!-- PROMOTE MODAL -->
-    <div class="modal-overlay" id="promoteModal">
-        <div class="modal">
-            <h3>Promote to CRM</h3>
-            <p style="font-size:0.82rem; color:var(--text2); margin-bottom:1rem;">Creates a Company + Contact record so you can manage this person through the pipeline.</p>
-            <div class="modal-field">
-                <label>Initial Stage</label>
-                <select id="promoteStage"><option value="replied" selected>Replied</option><option value="call">Call</option><option value="pilot">Pilot</option></select>
-            </div>
-            <div class="modal-row">
-                <div class="modal-field"><label>Next Action</label><input type="text" id="promoteNextAction" placeholder="e.g., Follow up"></div>
-                <div class="modal-field"><label>Due Date</label><input type="date" id="promoteNextDate"></div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-white" onclick="closePromoteModal()">Cancel</button>
-                <button class="btn btn-green" id="btnPromote" onclick="executePromote()">Promote</button>
-            </div>
+        <div class="reply-detail" id="reply-detail">
+          <div class="reply-detail-placeholder">Select a reply to view details</div>
         </div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div class="toast" id="toast"></div>
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
 
-    <script>
-    // ═══════════════════════════════════════════════════════════════════════
-    // CONFIG
-    // ═══════════════════════════════════════════════════════════════════════
-    const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let analyticsInterval = null;
+<script type="module">
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const SUPABASE_URL = 'https://drugebiitlcjkknjfxeh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydWdlYmlpdGxjamtrbmpmeGVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NjY1MDQsImV4cCI6MjA3ODM0MjUwNH0.HaYY0UxEC4cYyC3V4O0RyIkm7JTljnQapUnaeBoXba8';
 
-    const STAGES = [
-        { id: 'cold', name: 'Cold' },
-        { id: 'emailed', name: 'Emailed' },
-        { id: 'opened', name: 'Opened' },
-        { id: 'clicked', name: 'Clicked' },
-        { id: 'li_con_req', name: 'LI Con Req' },
-        { id: 'li_dm', name: 'LinkedIn DM' },
-        { id: 'book_sent', name: 'Book Sent' },
-        { id: 'replied', name: 'Replied' },
-        { id: 'call', name: 'Call' },
-        { id: 'pilot', name: 'Pilot' },
-        { id: 'customer', name: 'Customer' },
-        { id: 'churned', name: 'Churned' }
-    ];
-    const STAGE_MAP = Object.fromEntries(STAGES.map(s => [s.id, s.name]));
-    // Active stages for pipeline (exclude churned)
-    const PIPELINE_STAGES = STAGES.filter(s => s.id !== 'churned');
-    // "Active" = replied and beyond
-    const ACTIVE_STAGE_IDS = ['replied', 'call', 'pilot', 'customer'];
-    const TERMINAL_STAGES = ['customer', 'churned'];
+// Change this hash to set your password. Default: "clover2026"
+// To generate: in browser console, run:
+//   crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(b => Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''))
+const PASSWORD_HASH = '81c3aa63dbb905c0aaef203ad4953b6f864e353c99645ca69c8a912592f8baea';
 
-    function stageName(id) { return STAGE_MAP[id] || id; }
-    function fmtDate(d) { if (!d) return '-'; return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
-    function fmtDateFull(d) { if (!d) return '-'; return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
-    function daysBetween(d1, d2) { return Math.floor((new Date(d2) - new Date(d1)) / 86400000); }
-    function escHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
-    function showToast(msg, type = 'success') {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.className = 'toast show ' + type;
-        setTimeout(() => t.className = 'toast', 3000);
+const STEP_LABELS = { 1: 'LI', 2: 'E1', 3: 'E2', 4: 'E3', 5: 'E4', 6: 'BU' };
+const POLL_INTERVAL = 120000; // 2 minutes
+const TOAST_DURATION = 3000;
+
+// ============================================================
+// INIT SUPABASE
+// ============================================================
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+let supabase;
+try {
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch (e) {
+  showErrorPage();
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+async function hashPassword(pw) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+  return Array.from(new Uint8Array(buf)).map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+const authGate = document.getElementById('auth-gate');
+const authForm = document.getElementById('auth-form');
+const authInput = document.getElementById('auth-input');
+const authError = document.getElementById('auth-error');
+const app = document.getElementById('app');
+
+function checkAuth() {
+  if (localStorage.getItem('cc-auth') === PASSWORD_HASH) {
+    authGate.classList.add('hidden');
+    app.classList.add('visible');
+    return true;
+  }
+  return false;
+}
+
+authForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const hash = await hashPassword(authInput.value);
+  if (hash === PASSWORD_HASH) {
+    localStorage.setItem('cc-auth', PASSWORD_HASH);
+    authGate.classList.add('hidden');
+    app.classList.add('visible');
+    initApp();
+  } else {
+    authError.textContent = 'Incorrect password';
+    authInput.value = '';
+    authInput.focus();
+  }
+});
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function showErrorPage() {
+  document.getElementById('error-page').classList.add('visible');
+  app.classList.remove('visible');
+}
+
+function toast(msg, isError = false) {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast' + (isError ? ' toast-error' : '');
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => { el.remove(); }, TOAST_DURATION);
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const now = new Date();
+  const d = new Date(dateStr);
+  const diffMs = now - d;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return mins + 'm ago';
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return hrs + 'h ago';
+  const days = Math.floor(hrs / 24);
+  if (days === 1) return 'yesterday';
+  return days + 'd ago';
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function oneDayAgoISO() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return d.toISOString();
+}
+
+function truncate(str, len) {
+  if (!str) return '';
+  return str.length > len ? str.slice(0, len) + '...' : str;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function safeQuery(queryFn) {
+  try {
+    const result = await queryFn();
+    if (result.error) {
+      // Table might not exist
+      if (result.error.code === '42P01' || result.error.message?.includes('does not exist')) {
+        console.warn('Table not found:', result.error.message);
+        return { data: [], error: null };
+      }
+      console.warn('Query error:', result.error);
+      return { data: [], error: result.error };
     }
-    function lifecyclePill(stage) {
-        return `<span class="pill pill-${stage}">${STAGE_MAP[stage] || stage}</span>`;
+    return result;
+  } catch (e) {
+    console.warn('Query exception:', e);
+    return { data: [], error: e };
+  }
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let currentView = 'actions';
+let lastRefresh = null;
+let repliesLoaded = false;
+let selectedReplyId = null;
+let cachedData = {
+  linkedinDrafts: [],
+  outreachEmails: [],
+  repliedProspects: [],
+  recentCompanyCount: 0,
+  allProspects: [],
+  prospectDetails: {},
+};
+
+// ============================================================
+// HEADER CLOCK
+// ============================================================
+function updateClock() {
+  const el = document.getElementById('header-datetime');
+  const now = new Date();
+  el.textContent = now.toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric'
+  }) + ' ' + now.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', hour12: true
+  });
+}
+function updateRefreshLabel() {
+  const el = document.getElementById('updated-label');
+  if (!lastRefresh) { el.textContent = 'Loading...'; return; }
+  el.textContent = 'Updated ' + timeAgo(lastRefresh.toISOString());
+}
+setInterval(updateClock, 60000);
+setInterval(updateRefreshLabel, 30000);
+updateClock();
+
+// ============================================================
+// NAV
+// ============================================================
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    if (tab.classList.contains('disabled')) return;
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const view = tab.dataset.view;
+    currentView = view;
+    document.getElementById('view-actions').style.display = view === 'actions' ? 'block' : 'none';
+    document.getElementById('view-replies').style.display = view === 'replies' ? 'block' : 'none';
+    if (view === 'replies' && !repliesLoaded) {
+      loadReplies();
     }
-    function sourceBadge(source) {
-        const s = (source || '').toLowerCase();
-        let cls = 'manual', label = 'Manual';
-        if (s.includes('outbound') || s.includes('outreach') || s.includes('cold')) { cls = 'outbound'; label = 'Outbound'; }
-        else if (s.includes('inbound') || s.includes('website')) { cls = 'inbound'; label = 'Inbound'; }
-        else if (s.includes('linkedin')) { cls = 'linkedin'; label = 'LinkedIn'; }
-        else if (s.includes('referral')) { cls = 'referral'; label = 'Referral'; }
-        return `<span class="source-badge source-${cls}">${label}</span>`;
-    }
+  });
+});
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════════════════════════════
-    let allPeople = [];
-    let allEmails = [];
-    let allEmailEngagement = []; // full email data for weekly history
-    let totalEmail1s = 0;
-    let unsubscribedEmails = new Set(); // emails of unsubscribed prospects
-    let currentUser = null;
-    let selectedPerson = null;
-    let currentActivityType = 'note';
+// ============================================================
+// DATA LOADING
+// ============================================================
+async function loadData() {
+  const today = todayISO();
+  const dayAgo = oneDayAgoISO();
 
-    // Outbound filter/sort/pagination state
-    let obSearch = '';
-    let obStatusFilter = 'all';
-    let obDateRange = 'week';
-    let obSortCol = 'sent_at';
-    let obSortAsc = false;
-    let obPage = 0;
-    const OB_PAGE_SIZE = 50;
+  const [linkedinRes, emailsRes, repliedRes, companiesRes, prospectsRes] = await Promise.all([
+    safeQuery(() => supabase.from('linkedin_post_drafts').select('*').eq('post_date', today).in('status', ['draft', 'needs_rewrite'])),
+    safeQuery(() => supabase.from('outreach_emails').select('*').eq('status', 'draft')),
+    safeQuery(() => supabase.from('outreach_prospects').select('*').eq('status', 'replied')),
+    safeQuery(() => supabase.from('companies').select('id').gte('created_at', dayAgo)),
+    safeQuery(() => supabase.from('outreach_prospects').select('status')),
+  ]);
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // AUTH
-    // ═══════════════════════════════════════════════════════════════════════
-    async function init() {
-        const { data: { session } } = await sb.auth.getSession();
-        if (!session) {
-            document.getElementById('loginWall').style.display = 'flex';
-            window.location.href = 'login.html';
-            return;
-        }
-        currentUser = session.user;
-        const { data: profile } = await sb.from('profiles').select('role').eq('id', currentUser.id).single();
-        if (profile && profile.role === 'admin') document.getElementById('adminLink').style.display = '';
-        document.getElementById('app').style.display = 'block';
-        await loadData();
-        renderToday();
-    }
+  // Check for total failure (Supabase unreachable)
+  const allFailed = [linkedinRes, emailsRes, repliedRes].every(r => r.error && !r.data?.length);
+  if (allFailed && !lastRefresh) {
+    showErrorPage();
+    return;
+  }
 
-    document.getElementById('btnLogout').addEventListener('click', async () => {
-        await sb.auth.signOut();
-        window.location.href = 'login.html';
+  cachedData.linkedinDrafts = linkedinRes.data || [];
+  cachedData.outreachEmails = emailsRes.data || [];
+  cachedData.repliedProspects = repliedRes.data || [];
+  cachedData.recentCompanyCount = (companiesRes.data || []).length;
+  cachedData.allProspects = prospectsRes.data || [];
+
+  // Fetch prospect details for outreach emails
+  const prospectIds = [...new Set((cachedData.outreachEmails || []).map(e => e.prospect_id).filter(Boolean))];
+  if (prospectIds.length > 0) {
+    const { data: prospects } = await safeQuery(() =>
+      supabase.from('outreach_prospects').select('*').in('id', prospectIds)
+    );
+    cachedData.prospectDetails = {};
+    (prospects || []).forEach(p => { cachedData.prospectDetails[p.id] = p; });
+  }
+
+  lastRefresh = new Date();
+  updateRefreshLabel();
+  updateMetrics();
+  if (currentView === 'actions') renderActions();
+}
+
+function updateMetrics() {
+  const emailsByProspect = groupBy(cachedData.outreachEmails, 'prospect_id');
+  const reviewCount = cachedData.linkedinDrafts.length + Object.keys(emailsByProspect).length;
+  const repliesCount = cachedData.repliedProspects.length;
+
+  setMetric('metric-review-val', reviewCount);
+  setMetric('metric-replies-val', repliesCount);
+  setMetric('metric-prospects-val', cachedData.recentCompanyCount);
+  // Pipeline value placeholder
+  document.getElementById('metric-pipeline-val').textContent = '$--';
+}
+
+function setMetric(id, value) {
+  const el = document.getElementById(id);
+  const prev = el.textContent;
+  el.textContent = value;
+  if (prev !== '--' && prev !== String(value)) {
+    el.closest('.metric-card').classList.add('pulse');
+    setTimeout(() => el.closest('.metric-card').classList.remove('pulse'), 600);
+  }
+}
+
+function groupBy(arr, key) {
+  const map = {};
+  (arr || []).forEach(item => {
+    const k = item[key];
+    if (!map[k]) map[k] = [];
+    map[k].push(item);
+  });
+  return map;
+}
+
+// ============================================================
+// RENDER: TODAY'S ACTIONS
+// ============================================================
+function renderActions() {
+  const skeleton = document.getElementById('actions-skeleton');
+  const list = document.getElementById('actions-list');
+  skeleton.style.display = 'none';
+
+  const items = [];
+
+  // Replies
+  cachedData.repliedProspects.forEach(p => {
+    items.push({
+      type: 'reply',
+      urgency: 90,
+      id: p.id,
+      name: p.contact_name || p.first_name || 'Unknown contact',
+      company: p.company_name || '',
+      desc: 'Reply received, needs review',
+      preview: truncate(p.reply_text || p.notes || '', 150),
+      time: p.updated_at || p.created_at,
+      data: p,
     });
+  });
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // DATA LOADING (People-centric)
-    // ═══════════════════════════════════════════════════════════════════════
-    function computeLifecycle(person) {
-        if (person._type === 'contact' && person.lifecycle_stage) return person.lifecycle_stage;
-        if (person._hasBookSent) return 'book_sent';
-        if (person._hasLiDm) return 'li_dm';
-        if (person._hasLiConReq) return 'li_con_req';
-        if (person._type === 'contact') return 'cold';
-        if (person._hasClicked) return 'clicked';
-        if (person._hasOpened) return 'opened';
-        const status = person.status || '';
-        if (status === 'replied') return 'replied';
-        if (person._hasSent || ['active', 'completed'].includes(status)) return 'emailed';
-        return 'cold';
-    }
-
-    async function loadData() {
-        const [contactsRes, prospectsRes, emailsRes, notesRes, unsubRes] = await Promise.all([
-            sb.from('contacts')
-                .select('id, first_name, last_name, email, title, linkedin_url, source, created_at, updated_at, lifecycle_stage, next_action, next_action_date, company_id, companies(id, name, industry, employee_count, website)')
-                .order('updated_at', { ascending: false }),
-            sb.from('outreach_prospects')
-                .select('id, first_name, last_name, email, title, linkedin_url, company_name, company_industry, company_employee_count, company_website, status, created_at, converted_contact_id, turnover_report_id, next_action, next_action_date')
-                .not('status', 'in', '(converted,bounced,invalid,unsubscribed)'),
-            sb.from('outreach_emails')
-                .select('*, prospect:campaign_prospects(prospect:outreach_prospects(first_name, last_name, email, company_name))')
-                .eq('position', 1)
-                .order('created_at', { ascending: false })
-                .limit(3000),
-            sb.from('person_notes')
-                .select('contact_id, prospect_id, note_type')
-                .in('note_type', ['book_sent', 'li_con_req', 'li_dm']),
-            sb.from('outreach_prospects')
-                .select('email')
-                .eq('status', 'unsubscribed')
-        ]);
-        unsubscribedEmails = new Set((unsubRes.data || []).map(r => (r.email || '').toLowerCase()));
-
-        // Paginated fetch helper (parallel first N pages, then sequential overflow)
-        async function fetchAllRows(query, pageSize = 1000, parallelPages = 10) {
-            const results = await Promise.all(
-                Array.from({ length: parallelPages }, (_, i) =>
-                    query().range(i * pageSize, (i + 1) * pageSize - 1)
-                )
-            );
-            let allRows = [];
-            for (const res of results) {
-                if (res.data) allRows = allRows.concat(res.data);
-            }
-            const lastPage = results[results.length - 1];
-            if (lastPage.data && lastPage.data.length === pageSize) {
-                let from = parallelPages * pageSize;
-                while (true) {
-                    const { data } = await query().range(from, from + pageSize - 1);
-                    if (!data || data.length === 0) break;
-                    allRows = allRows.concat(data);
-                    if (data.length < pageSize) break;
-                    from += pageSize;
-                }
-            }
-            return allRows;
-        }
-
-        // Fetch Email 1s for stats, plus opened/clicked prospect IDs (lightweight)
-        const [email1Data, openedProspects, clickedProspects] = await Promise.all([
-            // Email 1s only (for weekly stats / daily grid)
-            fetchAllRows(() => sb.from('outreach_emails')
-                .select('prospect_id, sent_at, opened_at, clicked_at, replied_at, position')
-                .eq('position', 1)
-                .not('sent_at', 'is', null), 1000, 5),
-            // Opened prospect IDs only (much smaller than all emails)
-            fetchAllRows(() => sb.from('outreach_emails')
-                .select('prospect_id')
-                .not('prospect_id', 'is', null)
-                .not('opened_at', 'is', null), 1000, 5),
-            // Clicked prospect IDs only
-            fetchAllRows(() => sb.from('outreach_emails')
-                .select('prospect_id')
-                .not('prospect_id', 'is', null)
-                .not('clicked_at', 'is', null), 1000, 5),
-        ]);
-
-        allEmails = emailsRes.data || [];
-        allEmailEngagement = email1Data;
-
-        // Build engagement maps: sent from Email 1 data, opened/clicked from dedicated queries
-        const sentSet = new Set();
-        email1Data.forEach(e => { if (e.prospect_id) sentSet.add(e.prospect_id); });
-        const openedSet = new Set(openedProspects.map(e => e.prospect_id).filter(Boolean));
-        const clickedSet = new Set(clickedProspects.map(e => e.prospect_id).filter(Boolean));
-        totalEmail1s = email1Data.length;
-
-        // Build action sets from person_notes (book_sent, li_con_req, li_dm)
-        const bookSentContacts = new Set();
-        const bookSentProspects = new Set();
-        const liConReqContacts = new Set();
-        const liConReqProspects = new Set();
-        const liDmContacts = new Set();
-        const liDmProspects = new Set();
-        (notesRes.data || []).forEach(n => {
-            if (n.note_type === 'book_sent') {
-                if (n.contact_id) bookSentContacts.add(n.contact_id);
-                if (n.prospect_id) bookSentProspects.add(n.prospect_id);
-            } else if (n.note_type === 'li_con_req') {
-                if (n.contact_id) liConReqContacts.add(n.contact_id);
-                if (n.prospect_id) liConReqProspects.add(n.prospect_id);
-            } else if (n.note_type === 'li_dm') {
-                if (n.contact_id) liDmContacts.add(n.contact_id);
-                if (n.prospect_id) liDmProspects.add(n.prospect_id);
-            }
-        });
-
-        const contacts = (contactsRes.data || []).map(c => ({
-            _type: 'contact', _id: c.id, _contactId: c.id, _prospectId: null,
-            first_name: c.first_name || '', last_name: c.last_name || '',
-            email: c.email || '', title: c.title || '',
-            linkedin_url: c.linkedin_url || '',
-            company_name: c.companies?.name || '',
-            company_industry: c.companies?.industry || '',
-            company_employee_count: c.companies?.employee_count || 0,
-            company_website: c.companies?.website || '',
-            company_id: c.company_id,
-            source: c.source || 'manual',
-            status: null,
-            lifecycle_stage: c.lifecycle_stage,
-            next_action: c.next_action, next_action_date: c.next_action_date,
-            created_at: c.created_at,
-            updated_at: c.updated_at || c.created_at,
-            _hasBookSent: bookSentContacts.has(c.id),
-            _hasLiConReq: liConReqContacts.has(c.id),
-            _hasLiDm: liDmContacts.has(c.id),
-            _hasOpened: false, _hasClicked: false
-        }));
-
-        const prospects = (prospectsRes.data || []).map(p => ({
-            _type: 'prospect', _id: p.id, _contactId: null, _prospectId: p.id,
-            first_name: p.first_name || '', last_name: p.last_name || '',
-            email: p.email || '', title: p.title || '',
-            linkedin_url: p.linkedin_url || '',
-            company_name: p.company_name || '',
-            company_industry: p.company_industry || '',
-            company_employee_count: p.company_employee_count || 0,
-            company_website: p.company_website || '',
-            company_id: null,
-            source: 'outbound',
-            status: p.status,
-            lifecycle_stage: null,
-            next_action: p.next_action || null, next_action_date: p.next_action_date || null,
-            created_at: p.created_at,
-            updated_at: p.created_at,
-            _hasBookSent: bookSentProspects.has(p.id),
-            _hasLiConReq: liConReqProspects.has(p.id),
-            _hasLiDm: liDmProspects.has(p.id),
-            _hasSent: sentSet.has(p.id),
-            _hasOpened: openedSet.has(p.id),
-            _hasClicked: clickedSet.has(p.id)
-        }));
-
-        // Merge, deduplicate by email (contacts win; skip contacts whose email is unsubscribed)
-        const emailMap = new Map();
-        contacts.forEach(c => {
-            if (c.email && !unsubscribedEmails.has(c.email.toLowerCase())) {
-                emailMap.set(c.email.toLowerCase(), c);
-            }
-        });
-        prospects.forEach(p => {
-            const key = (p.email || '').toLowerCase();
-            if (key && !emailMap.has(key)) emailMap.set(key, p);
-        });
-
-        allPeople = Array.from(emailMap.values());
-        allPeople.forEach(p => { p._lifecycle = computeLifecycle(p); });
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB SWITCHING
-    // ═══════════════════════════════════════════════════════════════════════
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            const tab = btn.dataset.tab;
-            document.getElementById('tab-' + tab).classList.add('active');
-            if (analyticsInterval) { clearInterval(analyticsInterval); analyticsInterval = null; }
-            if (tab === 'today') loadData().then(() => renderToday());
-            else if (tab === 'pipeline') renderPipeline();
-            else if (tab === 'outbound') renderOutbound();
-            else if (tab === 'report') renderReport();
-            else if (tab === 'analytics') { renderAnalytics(); analyticsInterval = setInterval(renderAnalytics, 30000); }
-        });
+  // LinkedIn drafts
+  const now = new Date();
+  const isPastPublish = now.getUTCHours() >= 7;
+  cachedData.linkedinDrafts.forEach(d => {
+    items.push({
+      type: 'linkedin',
+      urgency: isPastPublish ? 85 : 70,
+      id: d.id,
+      name: 'LinkedIn post',
+      company: d.post_date,
+      desc: 'Draft ready for review',
+      preview: truncate(d.post_text || '', 150),
+      time: d.created_at,
+      data: d,
     });
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB: TODAY (People-centric)
-    // ═══════════════════════════════════════════════════════════════════════
-    function renderToday() {
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
-
-        // Active people = not cold, not churned, not customer
-        const activePeople = allPeople.filter(p => !['cold', 'churned', 'customer'].includes(p._lifecycle));
-        const isUnsub = p => p.status === 'unsubscribed' || unsubscribedEmails.has((p.email || '').toLowerCase());
-        const overduePeople = allPeople.filter(p => p.next_action_date && p.next_action_date < today && !TERMINAL_STAGES.includes(p._lifecycle) && !isUnsub(p));
-        const dueTodayPeople = allPeople.filter(p => p.next_action_date && p.next_action_date.startsWith(today) && !isUnsub(p));
-
-        // Recently replied: people at 'replied' stage updated in last 48h
-        const ago48h = new Date(now.getTime() - 48 * 3600000).toISOString();
-        const recentReplied = allPeople.filter(p => p._lifecycle === 'replied' && p.updated_at && p.updated_at >= ago48h);
-
-        // Stats
-        document.getElementById('todayStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Active People</div><div class="stat-value">${activePeople.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value" style="color:${overduePeople.length > 0 ? 'var(--red)' : 'var(--green)'}">${overduePeople.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Due Today</div><div class="stat-value" style="color:${dueTodayPeople.length > 0 ? 'var(--amber)' : 'var(--green)'}">${dueTodayPeople.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Total Pipeline</div><div class="stat-value">${allPeople.filter(p => !TERMINAL_STAGES.includes(p._lifecycle)).length}</div></div>
-        `;
-
-        // Overdue follow-ups
-        const overdueTbody = document.querySelector('#tableOverdue tbody');
-        const overdueRows = overduePeople.sort((a, b) => daysBetween(b.next_action_date, today) - daysBetween(a.next_action_date, today));
-        overdueTbody.innerHTML = overdueRows.length === 0
-            ? '<tr><td colspan="6" class="empty-state">No overdue follow-ups</td></tr>'
-            : overdueRows.map(p => `<tr data-person="${p._id}" data-type="${p._type}">
-                <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
-                <td>${escHtml(p.company_name) || '-'}</td>
-                <td><span class="stage-pill stage-${p._lifecycle}">${stageName(p._lifecycle)}</span></td>
-                <td>${escHtml(p.next_action) || '-'}</td>
-                <td>${fmtDate(p.next_action_date)}</td>
-                <td><span class="pill pill-red">${daysBetween(p.next_action_date, today)}d late</span></td>
-            </tr>`).join('');
-
-        // Due today
-        const dueTbody = document.querySelector('#tableDueToday tbody');
-        dueTbody.innerHTML = dueTodayPeople.length === 0
-            ? '<tr><td colspan="4" class="empty-state">Nothing due today</td></tr>'
-            : dueTodayPeople.map(p => `<tr data-person="${p._id}" data-type="${p._type}">
-                <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
-                <td>${escHtml(p.company_name) || '-'}</td>
-                <td><span class="stage-pill stage-${p._lifecycle}">${stageName(p._lifecycle)}</span></td>
-                <td>${escHtml(p.next_action) || '-'}</td>
-            </tr>`).join('');
-
-        // Recently replied
-        const repliedTbody = document.querySelector('#tableReplied tbody');
-        repliedTbody.innerHTML = recentReplied.length === 0
-            ? '<tr><td colspan="4" class="empty-state">No replies in last 48 hours</td></tr>'
-            : recentReplied.map(p => `<tr data-person="${p._id}" data-type="${p._type}">
-                <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
-                <td>${escHtml(p.company_name) || '-'}</td>
-                <td><span class="pill pill-${p.source === 'outbound' ? 'blue' : 'green'}">${p.source || 'manual'}</span></td>
-                <td>${fmtDate(p.updated_at)}</td>
-            </tr>`).join('');
-
-        // Stalled: active people (not cold/churned/customer), no next action set, not touched in 14+ days
-        const stalledPeople = allPeople.filter(p => {
-            if (TERMINAL_STAGES.includes(p._lifecycle) || p._lifecycle === 'cold') return false;
-            if (p.next_action_date) return false; // has a scheduled action, not stalled
-            const lastTouch = p.updated_at || p.created_at;
-            if (!lastTouch) return false;
-            return daysBetween(lastTouch, now) >= 14;
-        }).sort((a, b) => {
-            const da = daysBetween(a.updated_at || a.created_at, now);
-            const db = daysBetween(b.updated_at || b.created_at, now);
-            return db - da;
-        });
-
-        const stalledTbody = document.querySelector('#tableStalled tbody');
-        stalledTbody.innerHTML = stalledPeople.length === 0
-            ? '<tr><td colspan="4" class="empty-state">No stalled people</td></tr>'
-            : stalledPeople.map(p => {
-                const days = daysBetween(p.updated_at || p.created_at, now);
-                return `<tr data-person="${p._id}" data-type="${p._type}">
-                    <td class="company">${escHtml(p.first_name + ' ' + p.last_name)}</td>
-                    <td>${escHtml(p.company_name) || '-'}</td>
-                    <td><span class="stage-pill stage-${p._lifecycle}">${stageName(p._lifecycle)}</span></td>
-                    <td><span class="pill ${days >= 30 ? 'pill-red' : 'pill-amber'}">${days}d</span></td>
-                </tr>`;
-            }).join('');
-
-        // Badge count
-        const urgentCount = overduePeople.length;
-        const badge = document.getElementById('todayBadge');
-        if (urgentCount > 0) { badge.textContent = urgentCount; badge.style.display = 'inline-block'; }
-        else { badge.style.display = 'none'; }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB: PIPELINE (People Kanban by Stage)
-    // ═══════════════════════════════════════════════════════════════════════
-    function renderPipeline() {
-        const allNonChurned = allPeople.filter(p => p._lifecycle !== 'churned');
-        const now = Date.now();
-
-        // Build stage data
-        const stageData = PIPELINE_STAGES.map(stage => {
-            const people = allNonChurned.filter(p => p._lifecycle === stage.id);
-            const stale = people.filter(p => {
-                const t = p.updated_at || p.created_at;
-                return t && (now - new Date(t).getTime()) > 7 * 86400000;
-            });
-            return { ...stage, people, staleCount: stale.length };
-        });
-
-        // Build cumulative funnel counts (each stage includes everyone who reached it or beyond)
-        const stageIndex = Object.fromEntries(stageData.map((s, i) => [s.id, i]));
-        const cumulativeCounts = {};
-        const emailedIdx = stageIndex['emailed'];
-        const openedIdx = stageIndex['opened'];
-        const clickedIdx = stageIndex['clicked'];
-        // Emailed = emailed + opened + clicked (everyone who was sent an email and is in those 3 stages)
-        cumulativeCounts['emailed'] = (stageData[emailedIdx]?.people.length || 0) + (stageData[openedIdx]?.people.length || 0) + (stageData[clickedIdx]?.people.length || 0);
-        // Opened = opened + clicked
-        cumulativeCounts['opened'] = (stageData[openedIdx]?.people.length || 0) + (stageData[clickedIdx]?.people.length || 0);
-        // Clicked = just clicked
-        cumulativeCounts['clicked'] = stageData[clickedIdx]?.people.length || 0;
-
-        // Display count: use cumulative for emailed/opened/clicked, raw for everything else
-        const displayCount = (stage) => {
-            if (cumulativeCounts[stage.id] !== undefined) return cumulativeCounts[stage.id];
-            return stage.people.length;
-        };
-
-        // Find max count for bar scaling (use display counts)
-        const maxCount = Math.max(...stageData.map(s => displayCount(s)), 1);
-
-        // Conversion rates (as % of all Email 1s sent, using cumulative counts where applicable)
-        const convRates = stageData.map((s, i) => {
-            if (s.id === 'cold') return null;
-            const count = displayCount(s);
-            if (s.id === 'emailed') return null; // emailed IS the total sent
-            return totalEmail1s > 0 ? ((count / totalEmail1s) * 100).toFixed(1) + '%' : '-';
-        });
-
-        // Stats
-        const totalPipeline = allNonChurned.length;
-        const active = allNonChurned.filter(p => ACTIVE_STAGE_IDS.includes(p._lifecycle));
-        const customers = allNonChurned.filter(p => p._lifecycle === 'customer');
-        const totalStale = stageData.reduce((sum, s) => sum + s.staleCount, 0);
-
-        document.getElementById('pipelineStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Total People</div><div class="stat-value">${totalPipeline.toLocaleString()}</div></div>
-            <div class="stat-card"><div class="stat-label">Active (Replied+)</div><div class="stat-value">${active.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value" style="color:var(--green)">${customers.length}</div></div>
-            <div class="stat-card"><div class="stat-label">Needs Attention</div><div class="stat-value" style="color:${totalStale > 0 ? 'var(--amber)' : 'var(--text)'}">${totalStale}</div><div class="stat-sub">no activity 7+ days</div></div>
-        `;
-
-        // Funnel table
-        const row = document.getElementById('kanbanRow');
-        let html = `<table class="funnel-table">
-            <thead><tr style="font-size:0.7rem; text-transform:uppercase; color:var(--text3); font-weight:700;">
-                <td style="padding:0.5rem 1rem; width:30%;">Stage</td>
-                <td style="padding:0.5rem 1rem; width:30%;"></td>
-                <td style="padding:0.5rem 1rem; text-align:right; width:10%;">Count</td>
-                <td style="padding:0.5rem 1rem; text-align:right; width:15%;">% of Sent</td>
-                <td style="padding:0.5rem 1rem; text-align:right; width:15%;">Attention</td>
-            </tr></thead><tbody>`;
-
-        stageData.forEach((stage, i) => {
-            const count = displayCount(stage);
-            const barWidth = (count / maxCount) * 100;
-            html += `<tr class="funnel-row" onclick="toggleFunnelExpand('${stage.id}')">
-                <td><div class="funnel-stage"><span class="stage-pill stage-${stage.id}" style="font-size:0.78rem;">${stage.name}</span></div></td>
-                <td><div style="width:100%; background:var(--border); border-radius:3px; height:6px;"><div class="funnel-bar" style="width:${barWidth}%"></div></div></td>
-                <td class="funnel-count">${count.toLocaleString()}</td>
-                <td class="funnel-conv">${convRates[i] || '-'}</td>
-                <td class="funnel-attn">${stage.staleCount > 0 ? '<span style="color:var(--amber); font-weight:600;">' + stage.staleCount + '</span>' : '<span style="color:var(--text3);">0</span>'}</td>
-            </tr>`;
-            // Expandable people list
-            html += `<tr class="funnel-expand" id="funnel-${stage.id}"><td colspan="5"><div class="funnel-people">`;
-            if (stage.people.length === 0) {
-                html += '<div style="text-align:center; color:var(--text3); font-size:0.82rem; padding:0.5rem;">No people in this stage</div>';
-            } else {
-                stage.people.sort((a, b) => new Date(a.updated_at || a.created_at) - new Date(b.updated_at || b.created_at)).slice(0, 50).forEach(p => {
-                    const lastTouch = p.updated_at || p.created_at;
-                    const isStale = lastTouch && (now - new Date(lastTouch).getTime()) > 7 * 86400000;
-                    const daysAgo = lastTouch ? Math.floor((now - new Date(lastTouch).getTime()) / 86400000) : '?';
-                    html += `<div class="funnel-person ${isStale ? 'stale' : ''}" onclick="event.stopPropagation(); window.open('people.html','_self');">
-                        <div>
-                            <div class="fp-name">${escHtml(p.first_name + ' ' + p.last_name)}</div>
-                            <div class="fp-company">${escHtml(p.company_name) || '-'}</div>
-                            ${p.next_action ? '<div class="fp-action">' + escHtml(p.next_action) + '</div>' : ''}
-                        </div>
-                        <div class="fp-meta">${daysAgo}d ago</div>
-                    </div>`;
-                });
-                if (stage.people.length > 50) {
-                    html += `<div style="text-align:center; font-size:0.72rem; color:var(--text3); padding:0.5rem;">+${stage.people.length - 50} more - view on People page</div>`;
-                }
-            }
-            html += '</div></td></tr>';
-        });
-
-        html += '</tbody></table>';
-        row.innerHTML = html;
-    }
-
-    function toggleFunnelExpand(stageId) {
-        const el = document.getElementById('funnel-' + stageId);
-        if (el) el.classList.toggle('open');
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB: OUTBOUND (Preserved as-is)
-    // ═══════════════════════════════════════════════════════════════════════
-    // Helper: get Monday 00:00 of the week containing a date
-    function getWeekStart(date) {
-        const d = new Date(date);
-        const day = d.getDay(); // 0=Sun, 1=Mon...
-        const diff = day === 0 ? -6 : 1 - day; // adjust so Monday is start
-        d.setDate(d.getDate() + diff);
-        d.setHours(0, 0, 0, 0);
-        return d;
-    }
-
-    function renderOutbound() {
-        const now = new Date();
-        const weekStart = getWeekStart(now);
-        const weekStartISO = weekStart.toISOString();
-
-        // Use allEmailEngagement (no limit) for Email 1s data
-        const allEmail1s = allEmailEngagement.filter(e => e.position === 1 && e.sent_at);
-
-        const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= weekStartISO && e.status !== 'draft');
-        const email1s = allEmail1s.filter(e => e.sent_at >= weekStartISO);
-        const sentCount = email1s.length;
-        const openedCount = email1s.filter(e => e.opened_at).length;
-        const repliedCount = email1s.filter(e => e.replied_at).length;
-        const openRate = sentCount > 0 ? Math.round(openedCount / sentCount * 100) : 0;
-        const clickedCount = email1s.filter(e => e.clicked_at).length;
-
-        document.getElementById('outboundStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Email 1s This Week</div><div class="stat-value">${sentCount}</div><div class="stat-sub">new prospects reached</div></div>
-            <div class="stat-card"><div class="stat-label">Open Rate</div><div class="stat-value">${openRate}%</div></div>
-            <div class="stat-card"><div class="stat-label">Clicked</div><div class="stat-value">${clickedCount}</div></div>
-            <div class="stat-card"><div class="stat-label">Replies</div><div class="stat-value">${repliedCount}</div></div>
-        `;
-
-        // Weekly target: 350 (50/day x 7)
-        const WEEKLY_TARGET = 350;
-        const DAILY_TARGET = 50;
-
-        document.getElementById('outboundTarget').textContent = sentCount + '/' + WEEKLY_TARGET;
-        const pct = Math.min(100, Math.round(sentCount / WEEKLY_TARGET * 100));
-        const bar = document.getElementById('outboundProgress');
-        bar.style.width = pct + '%';
-        bar.className = 'progress-fill ' + (pct >= 80 ? 'progress-green' : pct >= 50 ? 'progress-amber' : 'progress-red');
-
-        // Daily grid: Mon-Sun (7 days)
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        document.getElementById('dailyGrid').innerHTML = days.map((d, i) => {
-            const dayDate = new Date(weekStart);
-            dayDate.setDate(weekStart.getDate() + i);
-            const dayISO = dayDate.toISOString().split('T')[0];
-            const dayCount = email1s.filter(e => e.sent_at && e.sent_at.startsWith(dayISO)).length;
-            const isFuture = dayDate > now;
-            const isToday = dayISO === now.toISOString().split('T')[0];
-            return `<div class="daily-cell" style="${isToday ? 'border:2px solid var(--green);' : ''}">
-                <div class="day-label">${d}${isToday ? ' *' : ''}</div>
-                <div class="day-count" style="color:${isFuture ? 'var(--text3)' : dayCount >= DAILY_TARGET ? 'var(--green)' : dayCount >= DAILY_TARGET / 2 ? 'var(--amber)' : 'var(--red)'}">${isFuture ? '-' : dayCount}</div>
-                <div class="day-target">/${DAILY_TARGET}</div>
-            </div>`;
-        }).join('');
-
-        // ── Weekly History: previous 4 weeks + all-time record ──
-        // Group all Email 1s by week (Mon-Sun)
-        const weekTotals = new Map(); // weekStartISO -> count
-        allEmail1s.forEach(e => {
-            const ws = getWeekStart(e.sent_at);
-            const key = ws.toISOString().split('T')[0];
-            weekTotals.set(key, (weekTotals.get(key) || 0) + 1);
-        });
-
-        // Get previous 4 weeks (not including current week)
-        const prevWeeks = [];
-        for (let w = 1; w <= 4; w++) {
-            const ws = new Date(weekStart);
-            ws.setDate(ws.getDate() - 7 * w);
-            const wsKey = ws.toISOString().split('T')[0];
-            const we = new Date(ws);
-            we.setDate(we.getDate() + 6);
-            prevWeeks.push({
-                label: w === 1 ? 'Last Week' : w + ' Weeks Ago',
-                start: ws,
-                end: we,
-                count: weekTotals.get(wsKey) || 0
-            });
-        }
-
-        // Find all-time weekly record
-        let recordCount = 0;
-        let recordWeekStart = null;
-        weekTotals.forEach((count, key) => {
-            if (count > recordCount) {
-                recordCount = count;
-                recordWeekStart = key;
-            }
-        });
-
-        // Also check current week
-        if (sentCount > recordCount) {
-            recordCount = sentCount;
-            recordWeekStart = weekStart.toISOString().split('T')[0];
-        }
-
-        const fmtWeekRange = (start, end) => {
-            return fmtDate(start) + ' - ' + fmtDate(end);
-        };
-
-        let historyHtml = '';
-
-        // Previous weeks
-        prevWeeks.forEach(w => {
-            if (w.count > 0 || w.label === 'Last Week') {
-                const pctOfTarget = WEEKLY_TARGET > 0 ? Math.round(w.count / WEEKLY_TARGET * 100) : 0;
-                historyHtml += `<div class="week-card">
-                    <div class="wc-label">${w.label}</div>
-                    <div class="wc-value" style="color:${w.count >= WEEKLY_TARGET ? 'var(--green)' : w.count >= WEEKLY_TARGET / 2 ? 'var(--amber)' : 'var(--text)'}">${w.count.toLocaleString()} <span style="font-size:0.72rem; font-weight:400; color:var(--text3);">(${pctOfTarget}%)</span></div>
-                    <div class="wc-dates">${fmtWeekRange(w.start, w.end)}</div>
-                </div>`;
-            }
-        });
-
-        // Weekly record
-        if (recordCount > 0 && recordWeekStart) {
-            const recStart = new Date(recordWeekStart + 'T00:00:00');
-            const recEnd = new Date(recStart);
-            recEnd.setDate(recEnd.getDate() + 6);
-            historyHtml += `<div class="week-card record">
-                <div class="wc-label">Weekly Record</div>
-                <div class="wc-value" style="color:var(--green);">${recordCount.toLocaleString()}</div>
-                <div class="wc-dates">${fmtWeekRange(recStart, recEnd)}</div>
-            </div>`;
-        }
-
-        document.getElementById('weeklyHistory').innerHTML = historyHtml;
-
-        renderOutboundTable();
-    }
-
-    function renderOutboundTable() {
-        let filtered = allEmails.filter(e => e.status !== 'draft');
-
-        if (obDateRange !== 'all') {
-            const now = new Date();
-            let rangeStart;
-            if (obDateRange === 'week') {
-                rangeStart = new Date(now);
-                rangeStart.setDate(now.getDate() - now.getDay() + 1);
-                rangeStart.setHours(0, 0, 0, 0);
-            } else if (obDateRange === 'month') {
-                rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            }
-            const rangeISO = rangeStart.toISOString();
-            filtered = filtered.filter(e => e.sent_at && e.sent_at >= rangeISO);
-        }
-
-        if (obStatusFilter !== 'all') {
-            if (obStatusFilter === 'sent') {
-                filtered = filtered.filter(e => e.sent_at);
-            } else if (obStatusFilter === 'opened') {
-                filtered = filtered.filter(e => e.opened_at);
-            } else if (obStatusFilter === 'clicked') {
-                filtered = filtered.filter(e => e.clicked_at);
-            } else if (obStatusFilter === 'replied') {
-                filtered = filtered.filter(e => e.replied_at || e.status === 'replied');
-            } else {
-                filtered = filtered.filter(e => e.status === obStatusFilter);
-            }
-        }
-
-        if (obSearch) {
-            const term = obSearch.toLowerCase();
-            filtered = filtered.filter(e => {
-                const p = e.prospect?.prospect;
-                const searchable = [p?.first_name, p?.last_name, p?.company_name, p?.email].filter(Boolean).join(' ').toLowerCase();
-                return searchable.includes(term);
-            });
-        }
-
-        filtered.sort((a, b) => {
-            let valA, valB;
-            const pA = a.prospect?.prospect;
-            const pB = b.prospect?.prospect;
-            switch (obSortCol) {
-                case 'contact':
-                    valA = (pA ? pA.first_name + ' ' + (pA.last_name || '') : '').toLowerCase();
-                    valB = (pB ? pB.first_name + ' ' + (pB.last_name || '') : '').toLowerCase();
-                    break;
-                case 'company':
-                    valA = (pA?.company_name || '').toLowerCase();
-                    valB = (pB?.company_name || '').toLowerCase();
-                    break;
-                case 'position':
-                    valA = a.position || 0;
-                    valB = b.position || 0;
-                    break;
-                case 'sent_at':
-                    valA = a.sent_at || '';
-                    valB = b.sent_at || '';
-                    break;
-                case 'opened':
-                    valA = a.opened_at ? 1 : 0;
-                    valB = b.opened_at ? 1 : 0;
-                    break;
-                case 'replied':
-                    valA = (a.replied_at || a.status === 'replied') ? 1 : 0;
-                    valB = (b.replied_at || b.status === 'replied') ? 1 : 0;
-                    break;
-                case 'status':
-                    valA = a.status || '';
-                    valB = b.status || '';
-                    break;
-                default:
-                    valA = a.sent_at || '';
-                    valB = b.sent_at || '';
-            }
-            if (valA < valB) return obSortAsc ? -1 : 1;
-            if (valA > valB) return obSortAsc ? 1 : -1;
-            return 0;
-        });
-
-        const totalFiltered = filtered.length;
-        const totalPages = Math.max(1, Math.ceil(totalFiltered / OB_PAGE_SIZE));
-        if (obPage >= totalPages) obPage = totalPages - 1;
-        if (obPage < 0) obPage = 0;
-        const start = obPage * OB_PAGE_SIZE;
-        const pageItems = filtered.slice(start, start + OB_PAGE_SIZE);
-
-        if (totalFiltered > 0) {
-            document.getElementById('obResultCount').textContent = `Showing ${start + 1}\u2013${Math.min(start + OB_PAGE_SIZE, totalFiltered)} of ${totalFiltered}`;
-        } else {
-            document.getElementById('obResultCount').textContent = '0 results';
-        }
-
-        document.querySelectorAll('#tableOutbound .sort-arrow').forEach(el => { el.className = 'sort-arrow'; });
-        const activeArrow = document.getElementById('sort-' + obSortCol);
-        if (activeArrow) activeArrow.className = 'sort-arrow ' + (obSortAsc ? 'asc' : 'desc');
-
-        const tbody = document.querySelector('#tableOutbound tbody');
-        tbody.innerHTML = pageItems.length === 0
-            ? '<tr><td colspan="7" class="empty-state">No emails match filters</td></tr>'
-            : pageItems.map(e => {
-                const p = e.prospect?.prospect;
-                return `<tr${e.prospect_id ? ` data-person="${e.prospect_id}" data-type="prospect" style="cursor:pointer;"` : ''}>
-                    <td class="company">${p ? (p.first_name + ' ' + (p.last_name || '')) : '-'}</td>
-                    <td>${p?.company_name || '-'}</td>
-                    <td><span class="pill pill-${e.position === 1 ? 'blue' : 'gray'}">${e.position || '?'}</span></td>
-                    <td>${fmtDate(e.sent_at)}</td>
-                    <td>${e.opened_at ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
-                    <td>${e.replied_at || e.status === 'replied' ? '<span class="pill pill-green">Yes</span>' : '<span class="pill pill-gray">No</span>'}</td>
-                    <td><span class="pill pill-${e.status === 'replied' ? 'green' : e.status === 'clicked' ? 'cyan' : e.status === 'opened' ? 'amber' : e.status === 'bounced' ? 'red' : 'gray'}">${e.status}</span></td>
-                </tr>`;
-            }).join('');
-
-        const pagDiv = document.getElementById('obPagination');
-        if (totalFiltered <= OB_PAGE_SIZE) {
-            pagDiv.style.display = 'none';
-        } else {
-            pagDiv.style.display = 'flex';
-            document.getElementById('obPageInfo').textContent = `Page ${obPage + 1} of ${totalPages}`;
-            document.getElementById('obPrevBtn').disabled = obPage === 0;
-            document.getElementById('obNextBtn').disabled = obPage >= totalPages - 1;
-        }
-    }
-
-    function handleObSearch(val) {
-        obSearch = val.trim();
-        obPage = 0;
-        renderOutboundTable();
-    }
-
-    function setObStatus(status) {
-        obStatusFilter = status;
-        obPage = 0;
-        document.querySelectorAll('#obStatusPills .ob-pill').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.status === status);
-        });
-        renderOutboundTable();
-    }
-
-    function setObDateRange(range) {
-        obDateRange = range;
-        obPage = 0;
-        renderOutboundTable();
-    }
-
-    function toggleObSort(col) {
-        if (obSortCol === col) {
-            obSortAsc = !obSortAsc;
-        } else {
-            obSortCol = col;
-            obSortAsc = (col === 'contact' || col === 'company' || col === 'status');
-        }
-        renderOutboundTable();
-    }
-
-    function obNextPage() {
-        obPage++;
-        renderOutboundTable();
-        document.getElementById('tableOutbound').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function obPrevPage() {
-        obPage--;
-        renderOutboundTable();
-        document.getElementById('tableOutbound').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB: WEEKLY REPORT
-    // ═══════════════════════════════════════════════════════════════════════
-    function renderReport() {
-        const now = new Date();
-        const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - now.getDay() + 1);
-        weekStart.setHours(0, 0, 0, 0);
-
-        const picker = document.getElementById('reportWeekStart');
-        if (!picker.value) picker.value = weekStart.toISOString().split('T')[0];
-
-        const ws = picker.value;
-        const weDate = new Date(ws);
-        weDate.setDate(weDate.getDate() + 6);
-        const we = weDate.toISOString().split('T')[0];
-
-        // People by stage
-        const stageCounts = {};
-        STAGES.forEach(s => { stageCounts[s.id] = 0; });
-        allPeople.forEach(p => { if (stageCounts[p._lifecycle] !== undefined) stageCounts[p._lifecycle]++; });
-
-        document.getElementById('reportStages').innerHTML = STAGES.map(s =>
-            metric(s.name, stageCounts[s.id])
-        ).join('');
-
-        // Outreach performance (Email 1s only for the selected week)
-        const weekEmails = allEmails.filter(e => e.sent_at && e.sent_at >= ws && e.sent_at <= we + 'T23:59:59' && e.status !== 'draft');
-        const email1s = weekEmails.filter(e => e.position === 1);
-        const sentCount = email1s.length;
-        const openCount = email1s.filter(e => e.opened_at).length;
-        const clickCount = email1s.filter(e => e.clicked_at).length;
-        const replyCount = email1s.filter(e => e.replied_at || e.status === 'replied').length;
-        const totalAllEmails = weekEmails.length;
-
-        document.getElementById('reportOutreach').innerHTML =
-            metric('Email 1s Sent', sentCount) +
-            metric('Total Emails', totalAllEmails) +
-            metric('Open Rate', sentCount > 0 ? Math.round(openCount / sentCount * 100) + '%' : '0%') +
-            metric('Click Rate', sentCount > 0 ? Math.round(clickCount / sentCount * 100) + '%' : '0%') +
-            metric('Reply Rate', sentCount > 0 ? Math.round(replyCount / sentCount * 100) + '%' : '0%') +
-            metric('Replies', replyCount);
-
-        // Pipeline activity
-        const withNextAction = allPeople.filter(p => p.next_action && !TERMINAL_STAGES.includes(p._lifecycle)).length;
-        const overdue = allPeople.filter(p => p.next_action_date && p.next_action_date < now.toISOString().split('T')[0] && !TERMINAL_STAGES.includes(p._lifecycle)).length;
-        const activePipeline = allPeople.filter(p => !['cold', 'churned', 'customer'].includes(p._lifecycle)).length;
-
-        document.getElementById('reportActivity').innerHTML =
-            metric('Active Pipeline', activePipeline) +
-            metric('With Next Action', withNextAction) +
-            metric('Overdue', overdue) +
-            metric('Customers', stageCounts['customer']);
-    }
-
-    function metric(label, value) {
-        return `<div class="report-metric"><div class="rm-value">${value}</div><div class="rm-label">${label}</div></div>`;
-    }
-
-    document.getElementById('reportWeekStart').addEventListener('change', renderReport);
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // SLIDE-OUT DETAIL PANEL (Full person management - mirrors People page)
-    // ═══════════════════════════════════════════════════════════════════════
-    function openPanel() {
-        document.getElementById('detailPanel').classList.add('open');
-        document.getElementById('panelOverlay').classList.add('active');
-        document.body.classList.add('panel-open');
-    }
-
-    function closePanel() {
-        document.getElementById('detailPanel').classList.remove('open');
-        document.getElementById('panelOverlay').classList.remove('active');
-        document.body.classList.remove('panel-open');
-        selectedPerson = null;
-    }
-
-    document.getElementById('panelClose').addEventListener('click', closePanel);
-    document.getElementById('panelOverlay').addEventListener('click', closePanel);
-
-    async function openPerson(id) {
-        const person = allPeople.find(p => p._id === id);
-        if (!person) return;
-        selectedPerson = person;
-
-        const name = (person.first_name + ' ' + person.last_name).trim() || person.email;
-        document.getElementById('panelTitle').textContent = name;
-        const body = document.getElementById('panelBody');
-        body.innerHTML = '<div class="loading">Loading...</div>';
-        openPanel();
-
-        // Header
-        let html = `<div class="panel-section">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                    ${lifecyclePill(person._lifecycle)}
-                    ${sourceBadge(person.source)}
-                    <span style="font-size:0.72rem; color:var(--text3);">${person._type === 'prospect' ? 'Outreach Prospect' : 'CRM Contact'}</span>
-                </div>
-                ${person._type === 'contact' ? '<button class="btn btn-white btn-sm" id="btnEditContact" onclick="toggleEditContact()">Edit</button>' : ''}
-            </div>
-            <div id="contactDisplay">
-                ${person.title ? `<div style="font-size:0.85rem; color:var(--text2); margin-bottom:0.25rem;">${escHtml(person.title)}</div>` : ''}
-                ${person.company_name ? `<div style="font-size:0.85rem; font-weight:600;">${escHtml(person.company_name)}</div>` : ''}
-                <div style="margin-top:0.4rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-                    ${person.email ? `<a href="mailto:${escHtml(person.email)}" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">${escHtml(person.email)}</a>` : ''}
-                    ${person.linkedin_url ? `<a href="${escHtml(person.linkedin_url)}" target="_blank" style="font-size:0.78rem; color:var(--blue); text-decoration:none;">LinkedIn</a>` : ''}
-                </div>
-            </div>
-            ${person._type === 'contact' ? `<div id="contactEdit" style="display:none;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:0.5rem;">
-                    <div><label>First Name</label><input class="panel-input" id="editFirstName" value="${escHtml(person.first_name)}"></div>
-                    <div><label>Last Name</label><input class="panel-input" id="editLastName" value="${escHtml(person.last_name)}"></div>
-                </div>
-                <div style="margin-bottom:0.5rem;"><label>Title</label><input class="panel-input" id="editTitle" value="${escHtml(person.title || '')}"></div>
-                <div style="margin-bottom:0.5rem;"><label>Email</label><input class="panel-input" id="editEmail" value="${escHtml(person.email || '')}"></div>
-                <div style="margin-bottom:0.5rem;"><label>LinkedIn URL</label><input class="panel-input" id="editLinkedin" value="${escHtml(person.linkedin_url || '')}"></div>
-                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-                    <button class="btn btn-green btn-sm" onclick="saveContactEdit()">Save</button>
-                    <button class="btn btn-white btn-sm" onclick="toggleEditContact()">Cancel</button>
-                </div>
-            </div>` : ''}
+  });
+
+  // Outreach emails grouped by prospect
+  const emailsByProspect = groupBy(cachedData.outreachEmails, 'prospect_id');
+  Object.entries(emailsByProspect).forEach(([prospectId, emails]) => {
+    const prospect = cachedData.prospectDetails[prospectId] || {};
+    items.push({
+      type: 'outreach',
+      urgency: 50,
+      id: prospectId,
+      name: prospect.contact_name || prospect.first_name || 'Prospect',
+      company: prospect.company_name || '',
+      desc: `${emails.length} email${emails.length > 1 ? 's' : ''} pending review`,
+      preview: truncate(emails[0]?.subject || '', 150),
+      time: emails[0]?.created_at,
+      data: { prospect, emails },
+    });
+  });
+
+  items.sort((a, b) => b.urgency - a.urgency);
+
+  if (items.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#46AEB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#46AEB8" stroke-width="1.5"/></svg>
+        <p>All caught up. Next prospect research runs at 00:01 UTC.</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = items.map(item => renderActionCard(item)).join('');
+  attachActionHandlers();
+}
+
+function renderActionCard(item) {
+  const badgeClass = {
+    reply: 'badge-reply', linkedin: 'badge-linkedin',
+    outreach: 'badge-outreach', mgi: 'badge-mgi'
+  }[item.type];
+  const badgeLabel = {
+    reply: 'Reply', linkedin: 'LinkedIn',
+    outreach: 'Outreach', mgi: 'MGI'
+  }[item.type];
+  const isUrgent = item.type === 'reply';
+
+  let body = '';
+  if (item.type === 'linkedin') body = renderLinkedinCard(item);
+  else if (item.type === 'outreach') body = renderOutreachCard(item);
+  else if (item.type === 'reply') body = renderReplyCard(item);
+
+  return `
+    <div class="card ${isUrgent ? 'urgent' : ''}" data-type="${item.type}" data-id="${item.id}">
+      <div class="card-header">
+        <span class="card-badge ${badgeClass}">${badgeLabel}</span>
+        <span class="card-time">${timeAgo(item.time)}</span>
+      </div>
+      <div class="card-title">${escapeHtml(item.name)}${item.company ? ' at ' + escapeHtml(item.company) : ''}</div>
+      <div class="card-desc">${escapeHtml(item.desc)}</div>
+      ${body}
+    </div>`;
+}
+
+function renderLinkedinCard(item) {
+  const d = item.data;
+  const voiceCheck = d.voice_check_passed;
+  const prePublish = d.pre_publish_check_passed;
+  let hooks = '';
+  if (d.alternative_hooks) {
+    let parsed;
+    try { parsed = typeof d.alternative_hooks === 'string' ? JSON.parse(d.alternative_hooks) : d.alternative_hooks; } catch(e) { parsed = null; }
+    if (parsed && Array.isArray(parsed) && parsed.length) {
+      hooks = `
+        <button class="expandable-toggle" data-expand="hooks-${d.id}">Show alt hooks</button>
+        <div class="expandable-content" id="hooks-${d.id}">
+          ${parsed.map((h, i) => `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:0.25rem;">${i + 1}. ${escapeHtml(typeof h === 'string' ? h : JSON.stringify(h))}</div>`).join('')}
         </div>`;
+    }
+  }
+  let imgDesc = '';
+  if (d.image_description) {
+    imgDesc = `
+      <button class="expandable-toggle" data-expand="img-${d.id}">Image description</button>
+      <div class="expandable-content" id="img-${d.id}">
+        <div style="font-size:12px;color:var(--text-secondary);">${escapeHtml(d.image_description)}</div>
+      </div>`;
+  }
 
-        // Lifecycle stage selector (contacts only)
-        if (person._type === 'contact') {
-            html += `<div class="panel-section">
-                <label>Stage</label>
-                <select class="panel-select" id="panelStage" onchange="updateLifecycle(this.value)">
-                    ${STAGES.map(s => `<option value="${s.id}" ${s.id === person._lifecycle ? 'selected' : ''}>${s.name}</option>`).join('')}
-                </select>
-            </div>`;
-        }
+  return `
+    <div class="post-text-box" data-copy="${escapeHtml(d.post_text || '')}" onclick="this.dispatchEvent(new CustomEvent('copytext',{bubbles:true}))">${escapeHtml(d.post_text || '')}</div>
+    <div class="check-badges">
+      <span class="check-badge ${voiceCheck ? 'check-pass' : voiceCheck === false ? 'check-fail' : 'check-neutral'}">Voice check ${voiceCheck ? 'passed' : voiceCheck === false ? 'failed' : 'n/a'}</span>
+      <span class="check-badge ${prePublish ? 'check-pass' : prePublish === false ? 'check-fail' : 'check-neutral'}">Pre-publish ${prePublish ? 'passed' : prePublish === false ? 'failed' : 'n/a'}</span>
+      <span class="check-badge check-neutral">${d.character_count || 0} chars</span>
+      <span class="check-badge check-neutral">${d.word_count || 0} words</span>
+    </div>
+    ${hooks}
+    ${imgDesc}
+    <div class="card-actions">
+      <button class="btn btn-secondary btn-sm" data-action="copy-post" data-post-text="${escapeHtml(d.post_text || '')}">Copy post</button>
+      <button class="btn btn-danger btn-sm" data-action="linkedin-rewrite" data-draft-id="${d.id}">Needs rewrite</button>
+      <button class="btn btn-primary btn-sm" data-action="linkedin-approve" data-draft-id="${d.id}">Approve</button>
+    </div>`;
+}
 
-        // Next action (all person types)
-        html += `<div class="panel-section">
-            <label>Next Action</label>
-            <input type="text" class="panel-input" id="panelNextAction" value="${escHtml(person.next_action || '')}" placeholder="What's next?">
-            <div style="margin-top:0.4rem;"><label>Due Date</label>
-            <input type="date" class="panel-input" id="panelNextDate" value="${person.next_action_date || ''}"></div>
-            <button class="btn btn-green btn-sm" style="margin-top:0.5rem;" onclick="saveNextAction()">Save</button>
-        </div>`;
+function renderOutreachCard(item) {
+  const { prospect, emails } = item.data;
+  const sorted = [...emails].sort((a, b) => (a.position || 0) - (b.position || 0));
+  const segment = prospect.segment || prospect.title || '';
 
-        // Quick actions
-        html += '<div class="quick-actions">';
-        html += '<button class="qa-btn primary" onclick="showActivityLogger(\'note\')">Note</button>';
-        html += '<button class="qa-btn" onclick="showActivityLogger(\'call\')" style="border-color:var(--green);color:var(--green);">Call</button>';
-        html += '<button class="qa-btn" onclick="showActivityLogger(\'meeting\')" style="border-color:var(--purple);color:var(--purple);">Meeting</button>';
-        html += '<button class="qa-btn" onclick="showActivityLogger(\'email_sent\')" style="border-color:var(--blue);color:var(--blue);">Email</button>';
-        html += '<button class="qa-btn" onclick="showActivityLogger(\'task\')" style="border-color:var(--amber);color:var(--amber);">Task</button>';
-        html += '<button class="qa-btn" onclick="quickAction(\'book_sent\')">Book Sent</button>';
-        html += '<button class="qa-btn" onclick="quickAction(\'report_sent\')">Report Sent</button>';
-        html += '<button class="qa-btn" onclick="quickAction(\'li_con_req\')" style="border-color:var(--blue);color:var(--blue);">LI Con Req</button>';
-        html += '<button class="qa-btn" onclick="quickAction(\'li_dm\')" style="border-color:var(--blue);color:var(--blue);">LinkedIn DM</button>';
-        if (person._type === 'prospect') {
-            html += '<button class="qa-btn" style="background:var(--green); color:white; border-color:var(--green);" onclick="showPromoteModal()">Promote to CRM</button>';
-        }
-        if (person.status === 'unsubscribed') {
-            html += '<span style="font-size:0.78rem; color:var(--red); font-weight:600; padding:0.3rem 0.6rem; background:#fef2f2; border-radius:4px;">Unsubscribed</span>';
-        } else {
-            html += '<button class="qa-btn" style="background:#fbbf24; color:#000; border-color:#fbbf24;" onclick="unsubscribePerson()">Unsubscribe</button>';
-        }
-        html += '<button class="qa-btn" style="border-color:var(--red); color:var(--red);" onclick="showDeleteModal()">Delete</button>';
-        html += '</div>';
+  return `
+    <div style="margin-bottom:0.5rem;">
+      ${segment ? `<span class="check-badge check-neutral" style="margin-right:0.25rem;">${escapeHtml(segment)}</span>` : ''}
+    </div>
+    <div class="expandable-content open" id="emails-${item.id}">
+      ${sorted.map(em => renderEmailRow(em)).join('')}
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-secondary btn-sm" data-action="skip-prospect" data-prospect-id="${item.id}">Skip prospect</button>
+      <button class="btn btn-primary btn-sm" data-action="approve-all-emails" data-prospect-id="${item.id}">Approve all</button>
+    </div>`;
+}
 
-        // Activity logger
-        html += `<div class="note-input-area" id="activityLogger">
-            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
-                <span id="activityTypeLabel" style="font-size:0.72rem; font-weight:700; color:var(--text3); text-transform:uppercase;"></span>
-            </div>
-            <textarea id="noteText" placeholder="What happened?"></textarea>
-            <div id="activityExtraFields" style="display:none; margin-top:0.5rem;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
-                    <div><label>Outcome</label><input class="panel-input" id="activityOutcome" placeholder="e.g., Interested in pilot"></div>
-                    <div><label>Duration (min)</label><input class="panel-input" id="activityDuration" type="number" placeholder="30"></div>
-                </div>
-            </div>
-            <div id="taskFields" style="display:none; margin-top:0.5rem;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
-                    <div><label>Due Date</label><input class="panel-input" id="taskDueDate" type="date"></div>
-                    <div style="display:flex; align-items:end;"><label style="display:flex; align-items:center; gap:0.3rem; font-size:0.78rem;"><input type="checkbox" id="taskCompleted"> Already done</label></div>
-                </div>
-            </div>
-            <div class="note-input-actions">
-                <button class="btn btn-white btn-sm" onclick="hideActivityLogger()">Cancel</button>
-                <button class="btn btn-green btn-sm" onclick="saveActivity()">Save</button>
-            </div>
-        </div>`;
-
-        // Timeline
-        const timeline = await loadTimeline(person);
-        html += `<div class="collapse-header" onclick="toggleCollapse('timelineSection')" style="margin-top:0;">
-            <h3>Timeline</h3><span class="collapse-arrow open" id="arrow-timelineSection">&#9660;</span>
+function renderEmailRow(em) {
+  const step = STEP_LABELS[em.position] || `S${em.position}`;
+  return `
+    <div class="email-row" data-email-id="${em.id}">
+      <div class="email-row-header">
+        <span class="email-step-badge">${step}</span>
+        <span class="email-subject">${escapeHtml(em.subject || '(no subject)')}</span>
+        <div class="email-row-actions">
+          <button class="btn btn-sm btn-primary" data-action="approve-email" data-email-id="${em.id}" title="Approve" style="padding:0.25rem 0.5rem;">&#10003;</button>
+          <button class="btn btn-sm btn-danger" data-action="reject-email" data-email-id="${em.id}" title="Reject" style="padding:0.25rem 0.5rem;">&#10005;</button>
         </div>
-        <div class="collapse-body open" id="timelineSection">
-            <div class="timeline" id="timelineContainer">${timeline}</div>
-        </div>`;
+      </div>
+      <button class="expandable-toggle" data-expand="email-body-${em.id}">Show body</button>
+      <div class="expandable-content" id="email-body-${em.id}">
+        <div class="email-body-expand">${escapeHtml(em.body || '')}</div>
+        ${em.personalization_notes ? `<div style="font-size:11px;color:var(--text-meta);margin-top:0.25rem;">Personalization: ${escapeHtml(em.personalization_notes)}</div>` : ''}
+      </div>
+    </div>`;
+}
 
-        // Company info
-        if (person.company_name || (person._type === 'contact' && person.company_id)) {
-            html += `<div class="collapse-header" onclick="toggleCollapse('companySection')">
-                <h3>Company Info</h3><span class="collapse-arrow" id="arrow-companySection">&#9660;</span>
-            </div>
-            <div class="collapse-body" id="companySection">
-                <div id="companyDisplay">
-                    <div style="font-size:0.82rem; margin-bottom:0.25rem;"><strong>${escHtml(person.company_name)}</strong></div>
-                    ${person.company_industry ? `<div style="font-size:0.78rem; color:var(--text2);">Industry: ${escHtml(person.company_industry)}</div>` : ''}
-                    ${person.company_employee_count ? `<div style="font-size:0.78rem; color:var(--text2);">Employees: ${person.company_employee_count.toLocaleString()}</div>` : ''}
-                    ${person.company_website ? `<div style="font-size:0.78rem;"><a href="${escHtml(person.company_website)}" target="_blank" style="color:var(--blue); text-decoration:none;">${escHtml(person.company_website)}</a></div>` : ''}
-                    ${person._type === 'contact' && person.company_id ? '<button class="btn btn-white btn-sm" style="margin-top:0.5rem;" onclick="toggleEditCompany()">Edit Company</button>' : ''}
-                </div>
-                ${person._type === 'contact' && person.company_id ? `<div id="companyEdit" style="display:none;">
-                    <div style="margin-bottom:0.5rem;"><label>Company Name</label><input class="panel-input" id="editCompanyName" value="${escHtml(person.company_name || '')}"></div>
-                    <div style="margin-bottom:0.5rem;"><label>Industry</label><input class="panel-input" id="editCompanyIndustry" value="${escHtml(person.company_industry || '')}"></div>
-                    <div style="margin-bottom:0.5rem;"><label>Employees</label><input class="panel-input" id="editCompanyEmployees" type="number" value="${person.company_employee_count || ''}"></div>
-                    <div style="margin-bottom:0.5rem;"><label>Website</label><input class="panel-input" id="editCompanyWebsite" value="${escHtml(person.company_website || '')}"></div>
-                    <div style="display:flex; gap:0.5rem;">
-                        <button class="btn btn-green btn-sm" onclick="saveCompanyEdit()">Save</button>
-                        <button class="btn btn-white btn-sm" onclick="toggleEditCompany()">Cancel</button>
-                    </div>
-                </div>` : ''}
-            </div>`;
-        }
+function renderReplyCard(item) {
+  const p = item.data;
+  return `
+    <div class="card-preview">${escapeHtml(item.preview)}</div>
+    <button class="expandable-toggle" data-expand="reply-full-${p.id}">View full reply</button>
+    <div class="expandable-content" id="reply-full-${p.id}">
+      <div class="detail-text">${escapeHtml(p.reply_text || p.notes || 'No reply text available')}</div>
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-primary btn-sm" data-action="mark-handled" data-prospect-id="${p.id}">Mark handled</button>
+    </div>`;
+}
 
-        body.innerHTML = html;
-    }
-
-    // ── Timeline ──
-    async function loadTimeline(person) {
-        const items = [];
-
-        let noteQuery = sb.from('person_notes').select('id, contact_id, prospect_id, note_type, content, outcome, duration_minutes, due_date, completed, created_by, created_at');
-        if (person._contactId && person._prospectId) {
-            noteQuery = noteQuery.or(`contact_id.eq.${person._contactId},prospect_id.eq.${person._prospectId}`);
-        } else if (person._contactId) {
-            noteQuery = noteQuery.eq('contact_id', person._contactId);
-        } else if (person._prospectId) {
-            noteQuery = noteQuery.eq('prospect_id', person._prospectId);
-        }
-        const { data: notes } = await noteQuery.order('created_at', { ascending: false }).limit(50);
-        (notes || []).forEach(n => items.push({
-            id: n.id, date: n.created_at, type: n.note_type || 'note', text: n.content, source: 'note',
-            outcome: n.outcome, duration: n.duration_minutes, due_date: n.due_date, completed: n.completed
-        }));
-
-        if (person._prospectId) {
-            const { data: emails } = await sb.from('outreach_emails').select('subject, status, position, sent_at, opened_at, clicked_at, replied_at, created_at')
-                .eq('prospect_id', person._prospectId).order('created_at', { ascending: false }).limit(20);
-            (emails || []).forEach(e => {
-                items.push({
-                    date: e.sent_at || e.created_at, type: 'email', text: e.subject || '(no subject)', source: 'outreach',
-                    position: e.position, email_sent_at: e.sent_at, email_opened_at: e.opened_at,
-                    email_clicked_at: e.clicked_at, email_replied_at: e.replied_at
-                });
-            });
-        }
-
-        if (person._contactId) {
-            const { data: activities } = await sb.from('activities').select('type, description, created_at')
-                .eq('contact_id', person._contactId).order('created_at', { ascending: false }).limit(20);
-            (activities || []).forEach(a => items.push({ date: a.created_at, type: a.type || 'activity', text: a.description || a.type, source: 'activity' }));
-        }
-
-        items.sort((a, b) => new Date(b.date) - new Date(a.date));
-        if (items.length === 0) return '<div class="timeline-empty">No activity yet. Log a note to get started.</div>';
-        return items.map(item => renderTimelineItem(item)).join('');
-    }
-
-    function renderTimelineItem(item) {
-        const typeLabels = {
-            note: 'Note', call: 'Call', meeting: 'Meeting', email_sent: 'Email Sent',
-            email: 'Outreach Email', book_sent: 'Book Sent', report_sent: 'Report Sent',
-            system: 'System', task: 'Task', activity: 'Activity',
-            li_con_req: 'LI Connection Request', li_dm: 'LinkedIn DM'
-        };
-        let label = typeLabels[item.type] || 'Activity';
-        let extra = '';
-
-        if (item.type === 'email') {
-            label = item.position ? `Email ${item.position}` : 'Outreach Email';
-            const check = '<span style="color:var(--green);">&#10003;</span>';
-            const dash = '<span style="color:var(--text3);">&#8212;</span>';
-            extra += `<div class="timeline-extra" style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.2rem;">
-                <span>${item.email_sent_at ? check : dash} Sent ${item.email_sent_at ? fmtDate(item.email_sent_at) : ''}</span>
-                <span>${item.email_opened_at ? check : dash} Opened ${item.email_opened_at ? fmtDate(item.email_opened_at) : ''}</span>
-                <span>${item.email_clicked_at ? check : dash} Clicked ${item.email_clicked_at ? fmtDate(item.email_clicked_at) : ''}</span>
-                ${item.email_replied_at ? `<span>${check} Replied ${fmtDate(item.email_replied_at)}</span>` : ''}
-            </div>`;
-        }
-
-        if (item.outcome) extra += `<div class="timeline-extra">Outcome: ${escHtml(item.outcome)}</div>`;
-        if (item.duration) extra += `<div class="timeline-extra">${item.duration} min</div>`;
-        if (item.type === 'task' && item.due_date) {
-            const today = new Date().toISOString().split('T')[0];
-            const overdue = !item.completed && item.due_date < today;
-            extra += `<div class="timeline-extra" style="${overdue ? 'color:var(--red);font-weight:600;' : ''}">Due: ${fmtDate(item.due_date)} ${item.completed ? '(done)' : overdue ? '(overdue)' : ''}</div>`;
-            if (!item.completed && item.id) {
-                extra += `<button class="btn btn-green btn-sm" style="margin-top:0.25rem;padding:0.2rem 0.5rem;font-size:0.68rem;" onclick="completeTask('${item.id}')">Mark Done</button>`;
-            }
-        }
-
-        return `<div class="timeline-item">
-            <div class="timeline-dot ${item.type}"></div>
-            <div class="timeline-content">
-                <div class="timeline-type-label">${label}</div>
-                <div class="timeline-text">${escHtml(item.text)}</div>
-                ${extra}
-                <div class="timeline-meta">${fmtDateFull(item.date)}</div>
-            </div>
-        </div>`;
-    }
-
-    function toggleCollapse(id) {
-        document.getElementById(id).classList.toggle('open');
-        document.getElementById('arrow-' + id).classList.toggle('open');
-    }
-
-    // ── Activity Logging ──
-    function showActivityLogger(type) {
-        currentActivityType = type;
-        const area = document.getElementById('activityLogger');
-        const label = document.getElementById('activityTypeLabel');
-        const extra = document.getElementById('activityExtraFields');
-        const taskF = document.getElementById('taskFields');
-        const textarea = document.getElementById('noteText');
-
-        const labels = { note: 'Log Note', call: 'Log Call', meeting: 'Log Meeting', email_sent: 'Log Email', task: 'Create Task' };
-        const placeholders = { note: 'Write a note...', call: 'What did you discuss?', meeting: 'Meeting summary...', email_sent: 'What did you send?', task: 'What needs to be done?' };
-
-        label.textContent = labels[type] || 'Log Activity';
-        textarea.placeholder = placeholders[type] || 'Details...';
-        extra.style.display = ['call', 'meeting'].includes(type) ? '' : 'none';
-        taskF.style.display = type === 'task' ? '' : 'none';
-        area.classList.add('visible');
-        textarea.focus();
-    }
-
-    function hideActivityLogger() {
-        const area = document.getElementById('activityLogger');
-        if (area) area.classList.remove('visible');
-        const textarea = document.getElementById('noteText');
-        if (textarea) textarea.value = '';
-        const outcome = document.getElementById('activityOutcome');
-        if (outcome) outcome.value = '';
-        const duration = document.getElementById('activityDuration');
-        if (duration) duration.value = '';
-        const dueDate = document.getElementById('taskDueDate');
-        if (dueDate) dueDate.value = '';
-        const completed = document.getElementById('taskCompleted');
-        if (completed) completed.checked = false;
-    }
-
-    async function saveActivity() {
-        if (!selectedPerson) return;
-        const text = document.getElementById('noteText').value.trim();
-        if (!text) { showToast('Please enter details', 'error'); return; }
-
-        const record = {
-            contact_id: selectedPerson._contactId,
-            prospect_id: selectedPerson._prospectId,
-            note_type: currentActivityType,
-            content: text,
-            created_by: currentUser?.id
-        };
-
-        if (['call', 'meeting'].includes(currentActivityType)) {
-            const outcome = document.getElementById('activityOutcome').value.trim();
-            const duration = parseInt(document.getElementById('activityDuration').value);
-            if (outcome) record.outcome = outcome;
-            if (duration > 0) record.duration_minutes = duration;
-        }
-
-        if (currentActivityType === 'task') {
-            const dueDate = document.getElementById('taskDueDate').value;
-            const completed = document.getElementById('taskCompleted').checked;
-            if (dueDate) record.due_date = dueDate;
-            record.completed = completed;
-        }
-
-        const { error } = await sb.from('person_notes').insert(record);
-        if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-
-        if (selectedPerson._contactId && !(currentActivityType === 'task' && !document.getElementById('taskCompleted').checked)) {
-            await sb.from('contacts').update({
-                last_activity_date: new Date().toISOString(), updated_at: new Date().toISOString()
-            }).eq('id', selectedPerson._contactId);
-        }
-
-        if (currentActivityType === 'task' && !document.getElementById('taskCompleted').checked) {
-            const dueDate = document.getElementById('taskDueDate').value;
-            if (dueDate) {
-                if (selectedPerson._contactId) {
-                    await sb.from('contacts').update({
-                        next_action: text.substring(0, 100), next_action_date: dueDate, updated_at: new Date().toISOString()
-                    }).eq('id', selectedPerson._contactId);
-                } else if (selectedPerson._prospectId) {
-                    await sb.from('outreach_prospects').update({
-                        next_action: text.substring(0, 100), next_action_date: dueDate, updated_at: new Date().toISOString()
-                    }).eq('id', selectedPerson._prospectId);
-                }
-                selectedPerson.next_action = text.substring(0, 100);
-                selectedPerson.next_action_date = dueDate;
-            }
-        }
-
-        selectedPerson.updated_at = new Date().toISOString();
-        hideActivityLogger();
-        showToast(currentActivityType === 'task' ? 'Task created' : 'Activity saved');
-        document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
-        renderToday();
-    }
-
-    async function completeTask(noteId) {
-        const { error } = await sb.from('person_notes').update({ completed: true }).eq('id', noteId);
-        if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-        showToast('Task completed');
-        if (selectedPerson?._contactId) {
-            await sb.from('contacts').update({
-                last_activity_date: new Date().toISOString(), updated_at: new Date().toISOString()
-            }).eq('id', selectedPerson._contactId);
-        }
-        document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
-    }
-
-    // ── Edit Contact ──
-    function toggleEditContact() {
-        const display = document.getElementById('contactDisplay');
-        const edit = document.getElementById('contactEdit');
-        const btn = document.getElementById('btnEditContact');
-        if (!display || !edit) return;
-        const isEditing = edit.style.display !== 'none';
-        display.style.display = isEditing ? '' : 'none';
-        edit.style.display = isEditing ? 'none' : '';
-        if (btn) btn.textContent = isEditing ? 'Edit' : 'Cancel';
-    }
-
-    async function saveContactEdit() {
-        if (!selectedPerson || selectedPerson._type !== 'contact') return;
-        const updates = {
-            first_name: document.getElementById('editFirstName').value.trim(),
-            last_name: document.getElementById('editLastName').value.trim(),
-            email: document.getElementById('editEmail').value.trim(),
-            title: document.getElementById('editTitle').value.trim() || null,
-            linkedin_url: document.getElementById('editLinkedin').value.trim() || null,
-            updated_at: new Date().toISOString()
-        };
-        if (!updates.first_name || !updates.last_name) { showToast('Name is required', 'error'); return; }
-        const { error } = await sb.from('contacts').update(updates).eq('id', selectedPerson._contactId);
-        if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-        Object.assign(selectedPerson, updates);
-        showToast('Contact updated');
-        toggleEditContact();
-        document.getElementById('panelTitle').textContent = (updates.first_name + ' ' + updates.last_name).trim();
-    }
-
-    // ── Edit Company ──
-    function toggleEditCompany() {
-        const d = document.getElementById('companyDisplay');
-        const e = document.getElementById('companyEdit');
-        if (!d || !e) return;
-        d.style.display = d.style.display === 'none' ? '' : 'none';
-        e.style.display = e.style.display === 'none' ? '' : 'none';
-    }
-
-    async function saveCompanyEdit() {
-        if (!selectedPerson || !selectedPerson.company_id) return;
-        const updates = {
-            name: document.getElementById('editCompanyName').value.trim(),
-            industry: document.getElementById('editCompanyIndustry').value.trim() || null,
-            employee_count: parseInt(document.getElementById('editCompanyEmployees').value) || null,
-            website: document.getElementById('editCompanyWebsite').value.trim() || null
-        };
-        if (!updates.name) { showToast('Company name required', 'error'); return; }
-        const { error } = await sb.from('companies').update(updates).eq('id', selectedPerson.company_id);
-        if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-        selectedPerson.company_name = updates.name;
-        selectedPerson.company_industry = updates.industry;
-        selectedPerson.company_employee_count = updates.employee_count;
-        selectedPerson.company_website = updates.website;
-        showToast('Company updated');
-        toggleEditCompany();
-    }
-
-    // ── Quick Actions ──
-    async function quickAction(type) {
-        if (!selectedPerson) return;
-        const labels = { book_sent: 'Already Gone book sent', report_sent: 'Turnover Intelligence Report sent', li_con_req: 'LinkedIn connection request sent', li_dm: 'LinkedIn DM sent' };
-        const content = labels[type] + ' ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const { error } = await sb.from('person_notes').insert({
-            contact_id: selectedPerson._contactId, prospect_id: selectedPerson._prospectId,
-            note_type: type, content: content, created_by: currentUser?.id
-        });
-        if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-        showToast(labels[type] + ' recorded');
-
-        if (type === 'book_sent' && selectedPerson._type === 'contact') {
-            const earlyStages = ['cold', 'emailed', 'opened', 'clicked'];
-            if (earlyStages.includes(selectedPerson._lifecycle)) {
-                await sb.from('contacts').update({ lifecycle_stage: 'book_sent', updated_at: new Date().toISOString() }).eq('id', selectedPerson._contactId);
-                selectedPerson._lifecycle = 'book_sent';
-                selectedPerson.lifecycle_stage = 'book_sent';
-            }
-        }
-
-        const now = new Date().toISOString();
-        if (selectedPerson._contactId) {
-            await sb.from('contacts').update({
-                last_activity_date: now, updated_at: now
-            }).eq('id', selectedPerson._contactId);
-        }
-        selectedPerson.updated_at = now;
-
-        document.getElementById('timelineContainer').innerHTML = await loadTimeline(selectedPerson);
-        renderToday();
-    }
-
-    // ── Lifecycle Stage Change ──
-    async function updateLifecycle(stage) {
-        if (!selectedPerson || selectedPerson._type !== 'contact') return;
-        const { error } = await sb.from('contacts').update({
-            lifecycle_stage: stage, updated_at: new Date().toISOString()
-        }).eq('id', selectedPerson._contactId);
-        if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-        selectedPerson._lifecycle = stage;
-        selectedPerson.lifecycle_stage = stage;
-        showToast('Stage updated to ' + (STAGE_MAP[stage] || stage));
-        await sb.from('person_notes').insert({
-            contact_id: selectedPerson._contactId, note_type: 'system',
-            content: `Stage changed to ${STAGE_MAP[stage] || stage}`, created_by: currentUser?.id
-        });
-        renderToday();
-    }
-
-    // ── Next Action ──
-    async function saveNextAction() {
-        if (!selectedPerson) return;
-        const action = document.getElementById('panelNextAction').value.trim();
-        const date = document.getElementById('panelNextDate').value;
-
-        let error;
-        if (selectedPerson._type === 'contact' && selectedPerson._contactId) {
-            ({ error } = await sb.from('contacts').update({
-                next_action: action || null, next_action_date: date || null, updated_at: new Date().toISOString()
-            }).eq('id', selectedPerson._contactId));
-        } else if (selectedPerson._type === 'prospect' && selectedPerson._prospectId) {
-            ({ error } = await sb.from('outreach_prospects').update({
-                next_action: action || null, next_action_date: date || null, updated_at: new Date().toISOString()
-            }).eq('id', selectedPerson._prospectId));
-        }
-        if (error) { showToast('Failed: ' + error.message, 'error'); return; }
-
-        selectedPerson.next_action = action || null;
-        selectedPerson.next_action_date = date || null;
-        showToast('Next action saved');
-        if (action) {
-            await sb.from('person_notes').insert({
-                contact_id: selectedPerson._contactId, prospect_id: selectedPerson._prospectId,
-                note_type: 'system',
-                content: `Next action: ${action}${date ? ' (due ' + fmtDate(date) + ')' : ''}`, created_by: currentUser?.id
-            });
-        }
-        renderToday();
-    }
-
-    // ── Promote to CRM ──
-    function showPromoteModal() {
-        if (!selectedPerson || selectedPerson._type !== 'prospect') return;
-        document.getElementById('promoteModal').classList.add('active');
-    }
-    function closePromoteModal() { document.getElementById('promoteModal').classList.remove('active'); }
-
-    async function executePromote() {
-        if (!selectedPerson) return;
-        const p = selectedPerson;
-        const btn = document.getElementById('btnPromote');
-        btn.disabled = true; btn.textContent = 'Promoting...';
-        try {
-            let companyId = null;
-            if (p.company_name) {
-                const { data: existing } = await sb.from('companies').select('id').eq('name', p.company_name).single();
-                if (existing) { companyId = existing.id; }
-                else {
-                    const { data: newCo, error: coErr } = await sb.from('companies').insert({
-                        name: p.company_name, website: p.company_website || null,
-                        industry: p.company_industry || null, employee_count: p.company_employee_count || null,
-                        created_at: new Date().toISOString()
-                    }).select('id').single();
-                    if (coErr) throw coErr;
-                    companyId = newCo.id;
-                }
-            }
-
-            let contactId = null;
-            if (p.email) {
-                const { data: existing } = await sb.from('contacts').select('id').eq('email', p.email).single();
-                if (existing) { contactId = existing.id; }
-                else {
-                    const stage = document.getElementById('promoteStage').value || 'replied';
-                    const nextAction = document.getElementById('promoteNextAction').value.trim();
-                    const nextDate = document.getElementById('promoteNextDate').value;
-                    const { data: newC, error: cErr } = await sb.from('contacts').insert({
-                        company_id: companyId, first_name: p.first_name, last_name: p.last_name,
-                        email: p.email, title: p.title || null, linkedin_url: p.linkedin_url || null,
-                        source: 'people_promote', lifecycle_stage: stage,
-                        next_action: nextAction || null, next_action_date: nextDate || null,
-                        created_at: new Date().toISOString(), updated_at: new Date().toISOString()
-                    }).select('id').single();
-                    if (cErr) throw cErr;
-                    contactId = newC.id;
-                }
-            }
-
-            await sb.from('outreach_prospects').update({
-                status: 'converted', converted_contact_id: contactId, converted_at: new Date().toISOString()
-            }).eq('id', p._prospectId);
-
-            if (contactId && p._prospectId) {
-                await sb.from('person_notes').update({ contact_id: contactId }).eq('prospect_id', p._prospectId).is('contact_id', null);
-            }
-
-            await sb.from('person_notes').insert({
-                contact_id: contactId, prospect_id: p._prospectId, note_type: 'system',
-                content: 'Promoted from outreach prospect to CRM contact.', created_by: currentUser?.id
-            });
-
-            closePromoteModal(); closePanel();
-            showToast('Promoted to CRM');
-            await loadData();
-            renderToday();
-        } catch (err) {
-            showToast('Promote failed: ' + err.message, 'error');
-        } finally {
-            btn.disabled = false; btn.textContent = 'Promote';
-        }
-    }
-
-    // ── Delete Person ──
-    function showDeleteModal() {
-        if (!selectedPerson) return;
-        const name = `${selectedPerson.first_name || ''} ${selectedPerson.last_name || ''}`.trim() || selectedPerson.email || 'Unknown';
-        document.getElementById('deletePersonName').textContent = name;
-        document.getElementById('deleteModal').classList.add('active');
-    }
-    function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); }
-
-    async function executeDelete() {
-        if (!selectedPerson) return;
-        const btn = document.getElementById('btnDelete');
-        btn.disabled = true; btn.textContent = 'Deleting...';
-        try {
-            if (selectedPerson._contactId) {
-                await sb.from('person_notes').delete().eq('contact_id', selectedPerson._contactId);
-            }
-            if (selectedPerson._prospectId) {
-                await sb.from('person_notes').delete().eq('prospect_id', selectedPerson._prospectId);
-            }
-            if (selectedPerson._type === 'contact' && selectedPerson._contactId) {
-                await sb.from('contacts').delete().eq('id', selectedPerson._contactId);
-            }
-            if (selectedPerson._prospectId) {
-                await sb.from('outreach_prospects').delete().eq('id', selectedPerson._prospectId);
-            }
-            closeDeleteModal(); closePanel();
-            showToast('Person deleted');
-            await loadData();
-            renderToday();
-        } catch (err) {
-            showToast('Delete failed: ' + err.message, 'error');
-        } finally {
-            btn.disabled = false; btn.textContent = 'Delete Person';
-        }
-    }
-
-    // ── Unsubscribe Person ──
-    async function unsubscribePerson() {
-        if (!selectedPerson) return;
-        const name = `${selectedPerson.first_name || ''} ${selectedPerson.last_name || ''}`.trim() || selectedPerson.email;
-
-        // Find prospect ID - either directly or by email lookup
-        let prospectId = selectedPerson._prospectId;
-        if (!prospectId && selectedPerson.email) {
-            const { data: found } = await sb.from('outreach_prospects')
-                .select('id').eq('email', selectedPerson.email).limit(1).single();
-            if (found) prospectId = found.id;
-        }
-        if (!prospectId) {
-            showToast('No outreach prospect record found for this person', 'error');
-            return;
-        }
-
-        if (!confirm(`Unsubscribe ${name}?\n\nThis will cancel all pending/scheduled emails and prevent future sends.`)) return;
-
-        try {
-            // 1. Cancel all pending/scheduled/draft emails
-            await sb.from('outreach_emails')
-                .update({ status: 'cancelled' })
-                .eq('prospect_id', prospectId)
-                .in('status', ['draft', 'approved', 'pending_followup', 'scheduled']);
-
-            // 2. Mark prospect as unsubscribed and clear next action date
-            await sb.from('outreach_prospects')
-                .update({ status: 'unsubscribed', next_action: null, next_action_date: null, updated_at: new Date().toISOString() })
-                .eq('id', prospectId);
-
-            // 3. Mark all campaign_prospects as unsubscribed
-            const { data: cps } = await sb.from('campaign_prospects')
-                .select('id').eq('prospect_id', prospectId);
-            if (cps && cps.length > 0) {
-                await sb.from('campaign_prospects')
-                    .update({ status: 'unsubscribed' })
-                    .in('id', cps.map(cp => cp.id));
-            }
-
-            // 4. If person is also a CRM contact, clear their next action date
-            if (selectedPerson._contactId) {
-                await sb.from('contacts')
-                    .update({ next_action: null, next_action_date: null, updated_at: new Date().toISOString() })
-                    .eq('id', selectedPerson._contactId);
-            }
-
-            showToast(`${name} unsubscribed`);
-            closePanel();
-            await loadData();
-            renderToday();
-        } catch (err) {
-            showToast('Unsubscribe failed: ' + err.message, 'error');
-        }
-    }
-
-    // Click delegation for tables and kanban cards
-    document.addEventListener('click', function(e) {
-        const row = e.target.closest('tr[data-person]');
-        const card = e.target.closest('.kanban-card[data-person]');
-        const el = row || card;
-        if (el && el.dataset.person) {
-            openPerson(el.dataset.person);
-        }
+// ============================================================
+// ACTION HANDLERS
+// ============================================================
+function attachActionHandlers() {
+  // Expandable toggles
+  document.querySelectorAll('.expandable-toggle').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const targetId = btn.dataset.expand;
+      const target = document.getElementById(targetId);
+      if (target) target.classList.toggle('open');
     });
+  });
 
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+  // Copy text from post box
+  document.querySelectorAll('.post-text-box').forEach(box => {
+    box.addEventListener('copytext', async () => {
+      try {
+        await navigator.clipboard.writeText(box.dataset.copy || box.textContent);
+        toast('Copied to clipboard');
+      } catch(e) {
+        toast('Copy failed', true);
+      }
+    });
+  });
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // TAB: WEB ANALYTICS
-    // ═══════════════════════════════════════════════════════════════════════
-    async function renderAnalytics() {
-        const pagePath = document.getElementById('analyticsPage').value;
-        const range = document.getElementById('analyticsRange').value;
+  // Button actions
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const action = btn.dataset.action;
+      btn.disabled = true;
 
-        // Build date filter
-        let dateFilter = null;
-        const now = new Date();
-        if (range === 'today') {
-            dateFilter = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-        } else if (range === '7d') {
-            dateFilter = new Date(now - 7 * 86400000).toISOString();
-        } else if (range === '30d') {
-            dateFilter = new Date(now - 30 * 86400000).toISOString();
+      try {
+        switch (action) {
+          case 'copy-post': {
+            await navigator.clipboard.writeText(btn.dataset.postText || '');
+            toast('Copied to clipboard');
+            break;
+          }
+          case 'linkedin-approve': {
+            const { error } = await supabase.from('linkedin_post_drafts')
+              .update({ status: 'approved', published_at: new Date().toISOString() })
+              .eq('id', btn.dataset.draftId);
+            if (error) throw error;
+            toast('LinkedIn draft approved');
+            removeCard(btn);
+            break;
+          }
+          case 'linkedin-rewrite': {
+            const { error } = await supabase.from('linkedin_post_drafts')
+              .update({ status: 'needs_rewrite' })
+              .eq('id', btn.dataset.draftId);
+            if (error) throw error;
+            toast('Marked for rewrite');
+            removeCard(btn);
+            break;
+          }
+          case 'approve-email': {
+            const { error } = await supabase.from('outreach_emails')
+              .update({ status: 'approved' })
+              .eq('id', btn.dataset.emailId);
+            if (error) throw error;
+            toast('Email approved');
+            const row = btn.closest('.email-row');
+            if (row) row.style.opacity = '0.4';
+            btn.disabled = true;
+            break;
+          }
+          case 'reject-email': {
+            const { error } = await supabase.from('outreach_emails')
+              .update({ status: 'rejected' })
+              .eq('id', btn.dataset.emailId);
+            if (error) throw error;
+            toast('Email rejected');
+            const row = btn.closest('.email-row');
+            if (row) row.style.opacity = '0.4';
+            btn.disabled = true;
+            break;
+          }
+          case 'approve-all-emails': {
+            const { error } = await supabase.from('outreach_emails')
+              .update({ status: 'approved' })
+              .eq('prospect_id', btn.dataset.prospectId)
+              .eq('status', 'draft');
+            if (error) throw error;
+            toast('All emails approved');
+            removeCard(btn);
+            break;
+          }
+          case 'skip-prospect': {
+            const { error } = await supabase.from('outreach_prospects')
+              .update({ status: 'completed' })
+              .eq('id', btn.dataset.prospectId);
+            if (error) throw error;
+            toast('Prospect skipped');
+            removeCard(btn);
+            break;
+          }
+          case 'mark-handled': {
+            const { error } = await supabase.from('outreach_prospects')
+              .update({ status: 'completed' })
+              .eq('id', btn.dataset.prospectId);
+            if (error) throw error;
+            toast('Marked as handled');
+            removeCard(btn);
+            break;
+          }
         }
+      } catch (err) {
+        console.error('Action error:', err);
+        toast('Action failed: ' + (err.message || 'Unknown error'), true);
+        btn.disabled = false;
+      }
+    });
+  });
+}
 
-        // Fetch all visits for this page/range
-        let query = sb.from('page_visits')
-            .select('*')
-            .order('created_at', { ascending: false });
+function removeCard(btn) {
+  const card = btn.closest('.card');
+  if (card) {
+    card.style.transition = 'opacity 0.3s, transform 0.3s';
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(20px)';
+    setTimeout(() => {
+      card.remove();
+      // Update metrics
+      const remaining = document.querySelectorAll('#actions-list .card').length;
+      document.getElementById('metric-review-val').textContent = remaining;
+      if (remaining === 0) {
+        document.getElementById('actions-list').innerHTML = `
+          <div class="empty-state">
+            <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#46AEB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="#46AEB8" stroke-width="1.5"/></svg>
+            <p>All caught up. Next prospect research runs at 00:01 UTC.</p>
+          </div>`;
+      }
+    }, 300);
+  }
+}
 
-        if (pagePath !== 'all') query = query.eq('page_path', pagePath);
+// ============================================================
+// REPLY INBOX
+// ============================================================
+async function loadReplies() {
+  repliesLoaded = true;
+  const { data: prospects } = await safeQuery(() =>
+    supabase.from('outreach_prospects').select('*').eq('status', 'replied').order('updated_at', { ascending: false })
+  );
 
-        if (dateFilter) query = query.gte('created_at', dateFilter);
+  const listSkeleton = document.getElementById('reply-list-skeleton');
+  const listItems = document.getElementById('reply-list-items');
+  listSkeleton.style.display = 'none';
 
-        const { data: visits } = await query.limit(1000);
-        if (!visits) return;
+  if (!prospects || prospects.length === 0) {
+    listItems.innerHTML = '<div class="empty-state" style="padding:2rem;"><p>No replies waiting</p></div>';
+    return;
+  }
 
-        document.getElementById('analyticsLastUpdate').textContent =
-            'Updated ' + new Date().toLocaleTimeString() + ' · Auto-refreshes every 30s';
-
-        const totalVisits = visits.length;
-        const humanVisits = visits.filter(v => v.is_human);
-        const humanCount = humanVisits.length;
-        const botCount = totalVisits - humanCount;
-        const avgScroll = humanCount > 0 ? Math.round(humanVisits.reduce((s, v) => s + (v.max_scroll_pct || 0), 0) / humanCount) : 0;
-        const avgTime = humanCount > 0 ? Math.round(humanVisits.reduce((s, v) => s + (v.time_on_page_secs || 0), 0) / humanCount) : 0;
-        const scrolledPast50 = humanVisits.filter(v => v.max_scroll_pct >= 50).length;
-        const scrolledPast90 = humanVisits.filter(v => v.max_scroll_pct >= 90).length;
-
-        // Stats bar
-        document.getElementById('analyticsStats').innerHTML = `
-            <div class="stat-card"><div class="stat-label">Total Page Loads</div><div class="stat-value">${totalVisits}</div></div>
-            <div class="stat-card"><div class="stat-label">Confirmed Humans</div><div class="stat-value" style="color:var(--green)">${humanCount}</div><div class="stat-sub">${totalVisits > 0 ? Math.round(humanCount / totalVisits * 100) : 0}% human</div></div>
-            <div class="stat-card"><div class="stat-label">Bots / Prefetch</div><div class="stat-value" style="color:var(--text3)">${botCount}</div></div>
-            <div class="stat-card"><div class="stat-label">Avg Scroll Depth</div><div class="stat-value">${avgScroll}%</div></div>
-            <div class="stat-card"><div class="stat-label">Avg Time on Page</div><div class="stat-value">${formatDuration(avgTime)}</div></div>
-            <div class="stat-card"><div class="stat-label">Scrolled 50%+</div><div class="stat-value">${scrolledPast50}</div><div class="stat-sub">${humanCount > 0 ? Math.round(scrolledPast50 / humanCount * 100) : 0}% of humans</div></div>
-            <div class="stat-card"><div class="stat-label">Read to Bottom (90%+)</div><div class="stat-value">${scrolledPast90}</div><div class="stat-sub">${humanCount > 0 ? Math.round(scrolledPast90 / humanCount * 100) : 0}% of humans</div></div>
-        `;
-
-        // Scroll depth chart (horizontal bars)
-        const scrollBuckets = [
-            { label: '0%', min: 0, max: 0 },
-            { label: '1-25%', min: 1, max: 25 },
-            { label: '26-50%', min: 26, max: 50 },
-            { label: '51-75%', min: 51, max: 75 },
-            { label: '76-90%', min: 76, max: 90 },
-            { label: '91-100%', min: 91, max: 100 }
-        ];
-        const scrollData = scrollBuckets.map(b => ({
-            label: b.label,
-            count: humanVisits.filter(v => v.max_scroll_pct >= b.min && v.max_scroll_pct <= b.max).length
-        }));
-        const maxScrollCount = Math.max(...scrollData.map(d => d.count), 1);
-
-        document.getElementById('scrollChart').innerHTML = scrollData.map(d => `
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
-                <div style="width:55px;font-size:0.72rem;color:var(--text2);text-align:right">${d.label}</div>
-                <div style="flex:1;background:#f3f4f6;border-radius:4px;height:20px;overflow:hidden">
-                    <div style="width:${d.count / maxScrollCount * 100}%;background:var(--teal);height:100%;border-radius:4px;transition:width 0.3s"></div>
-                </div>
-                <div style="width:30px;font-size:0.72rem;font-weight:600;color:var(--text)">${d.count}</div>
-            </div>
-        `).join('');
-
-        // Time on page chart
-        const timeBuckets = [
-            { label: '0-5s', min: 0, max: 5 },
-            { label: '6-15s', min: 6, max: 15 },
-            { label: '16-30s', min: 16, max: 30 },
-            { label: '31-60s', min: 31, max: 60 },
-            { label: '1-2m', min: 61, max: 120 },
-            { label: '2m+', min: 121, max: Infinity }
-        ];
-        const timeData = timeBuckets.map(b => ({
-            label: b.label,
-            count: humanVisits.filter(v => v.time_on_page_secs >= b.min && v.time_on_page_secs <= b.max).length
-        }));
-        const maxTimeCount = Math.max(...timeData.map(d => d.count), 1);
-
-        document.getElementById('timeChart').innerHTML = timeData.map(d => `
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
-                <div style="width:55px;font-size:0.72rem;color:var(--text2);text-align:right">${d.label}</div>
-                <div style="flex:1;background:#f3f4f6;border-radius:4px;height:20px;overflow:hidden">
-                    <div style="width:${d.count / maxTimeCount * 100}%;background:var(--blue);height:100%;border-radius:4px;transition:width 0.3s"></div>
-                </div>
-                <div style="width:30px;font-size:0.72rem;font-weight:600;color:var(--text)">${d.count}</div>
-            </div>
-        `).join('');
-
-        // Cache visits for client-side filtering, then render table
-        window._analyticsVisits = visits;
-        filterAndRenderTable();
+  listItems.innerHTML = prospects.map(p => {
+    const intentScore = p.intent_score;
+    let intentClass = 'intent-low';
+    let intentLabel = 'No score';
+    if (intentScore != null) {
+      intentLabel = intentScore;
+      if (intentScore >= 80) intentClass = 'intent-high';
+      else if (intentScore >= 50) intentClass = 'intent-med';
     }
 
-    function filterAndRenderTable() {
-        const visits = window._analyticsVisits;
-        if (!visits) return;
+    return `
+      <div class="reply-item unread" data-prospect-id="${p.id}" data-prospect='${escapeHtml(JSON.stringify(p))}'>
+        <div class="reply-item-top">
+          <span class="reply-item-name">${escapeHtml(p.contact_name || p.first_name || 'Unknown')}<span class="intent-pill ${intentClass}">${intentLabel}</span></span>
+          <span class="reply-item-time">${timeAgo(p.updated_at || p.created_at)}</span>
+        </div>
+        <div class="reply-item-company">${escapeHtml(p.company_name || '')}</div>
+        <div class="reply-item-snippet">${escapeHtml(truncate(p.reply_text || p.notes || '', 80))}</div>
+      </div>`;
+  }).join('');
 
-        const search      = (document.getElementById('analyticsSearch')?.value || '').toLowerCase().trim();
-        const minScroll   = parseInt(document.getElementById('analyticsScroll')?.value) || 0;
-        const minTime     = parseInt(document.getElementById('analyticsTime')?.value) || 0;
-        const btnFilter   = document.getElementById('analyticsBtn')?.value || '';
-        const humansOnly  = document.getElementById('analyticsHumansOnly')?.checked !== false;
+  listItems.querySelectorAll('.reply-item').forEach(item => {
+    item.addEventListener('click', () => {
+      listItems.querySelectorAll('.reply-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      item.classList.remove('unread');
+      showReplyDetail(JSON.parse(item.dataset.prospect));
+    });
+  });
+}
 
-        let filtered = visits;
+function showReplyDetail(prospect) {
+  selectedReplyId = prospect.id;
+  const detail = document.getElementById('reply-detail');
+  const intentScore = prospect.intent_score;
+  let intentClass = 'intent-low';
+  let intentLabel = 'No score';
+  if (intentScore != null) {
+    intentLabel = intentScore;
+    if (intentScore >= 80) intentClass = 'intent-high';
+    else if (intentScore >= 50) intentClass = 'intent-med';
+  }
 
-        if (humansOnly) filtered = filtered.filter(v => v.is_human);
+  detail.innerHTML = `
+    <h3>${escapeHtml(prospect.contact_name || prospect.first_name || 'Unknown')} <span class="intent-pill ${intentClass}">${intentLabel}</span></h3>
+    <div class="detail-company">${escapeHtml(prospect.company_name || '')}${prospect.title ? ' / ' + escapeHtml(prospect.title) : ''}</div>
 
-        if (search) {
-            filtered = filtered.filter(v =>
-                (v.utm_campaign    || '').toLowerCase().includes(search) ||
-                (v.visitor_id      || '').toLowerCase().includes(search) ||
-                (v.visitor_name    || '').toLowerCase().includes(search) ||
-                (v.visitor_company || '').toLowerCase().includes(search) ||
-                (v.visitor_email   || '').toLowerCase().includes(search)
-            );
-        }
-        if (minScroll > 0) filtered = filtered.filter(v => (v.max_scroll_pct    || 0) >= minScroll);
-        if (minTime   > 0) filtered = filtered.filter(v => (v.time_on_page_secs || 0) >= minTime);
-        if (btnFilter === '_any') {
-            filtered = filtered.filter(v => v.buttons_clicked && v.buttons_clicked.trim().length > 0);
-        } else if (btnFilter) {
-            filtered = filtered.filter(v => v.buttons_clicked && v.buttons_clicked.includes(btnFilter));
-        }
+    <div class="detail-section">
+      <div class="detail-section-title">Reply</div>
+      <div class="detail-text">${escapeHtml(prospect.reply_text || prospect.notes || 'No reply text available')}</div>
+    </div>
 
-        const display = filtered.slice(0, 100);
-        document.getElementById('analyticsCount').textContent =
-            `Showing ${display.length} of ${filtered.length} visits (${visits.length} total)`;
+    ${prospect.last_outreach_text ? `
+    <div class="detail-section">
+      <div class="detail-section-title">Original outreach</div>
+      <div class="detail-text">${escapeHtml(prospect.last_outreach_text)}</div>
+    </div>` : ''}
 
-        const tbody = document.querySelector('#tableAnalytics tbody');
-        tbody.innerHTML = display.map(v => {
-            const time = new Date(v.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            const humanPill = v.is_human
-                ? '<span class="pill pill-green">Human</span>'
-                : '<span class="pill pill-gray">Bot</span>';
-            const source = v.utm_source
-                ? `<span class="pill pill-blue">${escHtml(v.utm_source)}</span>${v.utm_campaign ? ' <span style="font-size:0.7rem;color:var(--text3)">' + escHtml(v.utm_campaign) + '</span>' : ''}`
-                : (v.referrer ? '<span class="pill pill-cyan">Referral</span>' : '<span style="color:var(--text3)">Direct</span>');
-            const btns = v.buttons_clicked ? escHtml(v.buttons_clicked) : '<span style="color:var(--text3)">—</span>';
+    <div class="detail-section">
+      <div class="detail-section-title">Prospect context</div>
+      <dl class="detail-context">
+        ${prospect.company_name ? `<dt>Company</dt><dd>${escapeHtml(prospect.company_name)}</dd>` : ''}
+        ${prospect.headcount ? `<dt>Headcount</dt><dd>${prospect.headcount}</dd>` : ''}
+        ${prospect.sector ? `<dt>Sector</dt><dd>${escapeHtml(prospect.sector)}</dd>` : ''}
+        ${prospect.icp_score != null ? `<dt>ICP score</dt><dd>${prospect.icp_score}</dd>` : ''}
+        ${prospect.turnover_estimate ? `<dt>Turnover estimate</dt><dd>${escapeHtml(prospect.turnover_estimate)}</dd>` : ''}
+        ${prospect.segment ? `<dt>Segment</dt><dd>${escapeHtml(prospect.segment)}</dd>` : ''}
+      </dl>
+    </div>
 
-            // Visitor identity: name + company, or email, or anonymous
-            let visitorCell = '';
-            const name = (v.visitor_name || '').trim();
-            const company = (v.visitor_company || '').trim();
-            const vemail = (v.visitor_email || '').trim();
-            if (name || company) {
-                visitorCell = `<div class="company">${escHtml(name || 'Unknown')}</div><div class="sub">${escHtml(company)}</div>`;
-            } else if (vemail) {
-                visitorCell = `<div style="font-size:0.78rem">${escHtml(vemail)}</div>`;
-            } else if (v.visitor_id && !v.visitor_id.startsWith('anon-')) {
-                visitorCell = `<span class="pill pill-purple">Outreach</span> <span class="sub">${escHtml(v.visitor_id)}</span>`;
-            } else {
-                visitorCell = `<span style="color:var(--text3)">Anonymous</span>`;
-            }
+    <div class="card-actions" style="margin-top:1rem;">
+      <button class="btn btn-secondary" disabled title="Coming phase 2">Draft AI reply</button>
+      <button class="btn btn-primary" id="detail-mark-handled">Mark handled</button>
+    </div>`;
 
-            return `<tr>
-                <td>${time}</td>
-                <td style="font-size:0.82rem">${visitorCell}</td>
-                <td>${humanPill}</td>
-                <td style="font-size:0.78rem">${source}</td>
-                <td>${v.max_scroll_pct || 0}%</td>
-                <td>${formatDuration(v.time_on_page_secs || 0)}</td>
-                <td style="font-size:0.78rem;color:var(--text2)">${btns}</td>
-            </tr>`;
-        }).join('');
+  document.getElementById('detail-mark-handled').addEventListener('click', async () => {
+    const btn = document.getElementById('detail-mark-handled');
+    btn.disabled = true;
+    try {
+      const { error } = await supabase.from('outreach_prospects')
+        .update({ status: 'completed' })
+        .eq('id', prospect.id);
+      if (error) throw error;
+      toast('Marked as handled');
+      // Remove from list
+      const listItem = document.querySelector(`.reply-item[data-prospect-id="${prospect.id}"]`);
+      if (listItem) listItem.remove();
+      detail.innerHTML = '<div class="reply-detail-placeholder">Select a reply to view details</div>';
+      // Update metric
+      const remaining = document.querySelectorAll('.reply-item').length;
+      document.getElementById('metric-replies-val').textContent = remaining;
+    } catch (err) {
+      toast('Failed to update', true);
+      btn.disabled = false;
     }
+  });
+}
 
-    function formatDuration(secs) {
-        if (secs < 60) return secs + 's';
-        const m = Math.floor(secs / 60);
-        const s = secs % 60;
-        return m + 'm ' + s + 's';
+// ============================================================
+// POLLING
+// ============================================================
+let pollTimer = null;
+function startPolling() {
+  pollTimer = setInterval(async () => {
+    await loadData();
+    if (currentView === 'replies' && repliesLoaded) {
+      await loadReplies();
     }
+  }, POLL_INTERVAL);
+}
 
-    function shortenUrl(url) {
-        try {
-            const u = new URL(url);
-            return u.hostname + (u.pathname !== '/' ? u.pathname : '');
-        } catch { return url; }
-    }
+// ============================================================
+// INIT
+// ============================================================
+async function initApp() {
+  try {
+    await loadData();
+    startPolling();
+  } catch (e) {
+    console.error('Init error:', e);
+    showErrorPage();
+  }
+}
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // INIT
-    // ═══════════════════════════════════════════════════════════════════════
-    init();
-    </script>
+if (checkAuth()) {
+  initApp();
+}
+</script>
 </body>
 </html>
