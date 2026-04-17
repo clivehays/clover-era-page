@@ -505,7 +505,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ============================================================
 const state = {
   replies: [],
-  post: null,
+  posts: [],
   outreach: [],
   other: [],
   actioned: new Set(),        // id strings just actioned in this session
@@ -688,16 +688,21 @@ async function fetchReplies() {
 
 async function fetchPost() {
   return safeFetch('linkedin_post_drafts', async () => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date();
+    const cutoff = new Date(today);
+    cutoff.setDate(cutoff.getDate() - 3);
+    const todayStr = today.toISOString().slice(0, 10);
+    const cutoffStr = cutoff.toISOString().slice(0, 10);
     const { data, error } = await sb
       .from('linkedin_post_drafts')
       .select('*')
-      .eq('post_date', today)
+      .gte('post_date', cutoffStr)
+      .lte('post_date', todayStr)
       .eq('status', 'draft')
-      .order('created_at', { ascending: false })
-      .limit(1);
+      .order('post_date', { ascending: false })
+      .order('created_at', { ascending: false });
     if (error) throw error;
-    return (data || [])[0] || null;
+    return data || [];
   });
 }
 
@@ -730,7 +735,7 @@ async function fetchOutreach() {
 
 async function fetchOther() {
   return safeFetch('mgi_results', async () => {
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const { data, error } = await sb
       .from('mgi_results')
       .select('*')
@@ -763,7 +768,7 @@ async function fetchOvernight() {
 // ============================================================
 function renderStatusBar() {
   const rCount = state.replies.length;
-  const pCount = state.post && state.post.status === 'draft' ? 1 : 0;
+  const pCount = state.posts.length;
   const oCount = state.outreach.length;
   const mCount = state.other.length;
   const total = rCount + pCount + oCount + mCount;
@@ -776,9 +781,9 @@ function renderStatusBar() {
     parts.push((rCount > 0
       ? '<span class="need">' + rCount + ' ' + (rCount === 1 ? 'reply' : 'replies') + ' need you</span>'
       : '0 replies need you'));
-    parts.push(pCount + ' post ready');
+    parts.push(pCount + ' ' + (pCount === 1 ? 'post' : 'posts') + ' ready');
     parts.push(oCount + ' ' + (oCount === 1 ? 'sequence' : 'sequences') + ' drafted');
-    parts.push(mCount + ' MGI ' + (mCount === 1 ? 'completed' : 'completed'));
+    parts.push(mCount + ' MGI completed');
     el.innerHTML = parts.join(' · ');
   }
   document.title = total > 0 ? '(' + total + ') Clover ERA' : 'Clover ERA';
@@ -983,11 +988,11 @@ function renderPost() {
     return;
   }
   root.innerHTML = '';
-  if (!state.post) {
+  if (!state.posts.length) {
     root.innerHTML = '<div class="card"><div class="card-meta">No post draft for today. Content Writer agent may not have run. Check n8n.</div></div>';
     return;
   }
-  root.appendChild(postCard(state.post));
+  for (const p of state.posts) root.appendChild(postCard(p));
 }
 
 function postCard(p) {
@@ -1009,9 +1014,18 @@ function postCard(p) {
     p.source_signal ? ('signal: ' + p.source_signal) : null,
   ].filter(Boolean).join(' · ');
 
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const postDate = p.post_date || todayStr;
+  const isToday = postDate === todayStr;
+  const daysOld = Math.round((new Date(todayStr) - new Date(postDate)) / 86400000);
+  const title = isToday
+    ? 'Ready for 8am EST'
+    : 'From ' + (daysOld === 1 ? 'yesterday' : daysOld + ' days ago') + ' (unapproved)';
+  if (!isToday) card.classList.add('urgent');
+
   card.innerHTML = `
     <div class="badges"><span class="badge badge-post">Post</span></div>
-    <div class="card-title">Ready for 8am EST</div>
+    <div class="card-title">${escapeHtml(title)}</div>
     <div class="card-meta">${escapeHtml(meta)}</div>
     ${warnings.length ? `<div class="warning">${escapeHtml(warnings.join(' · '))}</div>` : ''}
     <div class="preview" data-role="preview">${escapeHtml(p.post_text || '')}</div>
@@ -1045,7 +1059,7 @@ async function approvePost(card, p, needsConfirm) {
     const { error } = await sb.rpc('approve_linkedin_draft', { draft_id: p.id });
     if (error) throw error;
     markDone(card);
-    state.post = null;
+    state.posts = state.posts.filter(x => x.id !== p.id);
     renderStatusBar();
   } catch (e) {
     showToast('Failed. Try again.');
@@ -1422,10 +1436,8 @@ async function refresh(which) {
     }
   }
   if (!which || which === 'post') {
-    const p = await fetchPost();
-    state.post = p && !state.actioned.has(p.id) ? p : null;
-    renderPost();
-    renderStatusBar();
+    const arr = await fetchPost();
+    if (arr) { state.posts = arr.filter(x => !state.actioned.has(x.id)); renderPost(); renderStatusBar(); }
   }
   if (!which || which === 'outreach') {
     const o = await fetchOutreach();
