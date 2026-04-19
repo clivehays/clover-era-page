@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit per Employee Instrument | Clover ERA</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Profit per employee is the most honest number on your P&L. Enter three years. See your trajectory. Sit with the four questions that follow.">
+    <meta name="author" content="Clover ERA">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cloverera.com/ppe/">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Profit per Employee Instrument | Clover ERA">
+    <meta property="og:description" content="A diagnostic for CEOs and CFOs. Three years of revenue, profit, and headcount. One trajectory. Four questions most executives cannot answer with data.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cloverera.com/ppe/">
+    <meta property="og:site_name" content="Clover ERA">
+    <meta property="og:image" content="https://cloverera.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Profit per Employee Instrument | Clover ERA">
+    <meta name="twitter:description" content="A diagnostic for CEOs and CFOs. Three years in. One trajectory. Four questions most executives cannot answer with data.">
+    <meta name="twitter:image" content="https://cloverera.com/images/og-image.png">
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://cloverera.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Profit per Employee Instrument",
+                "item": "https://cloverera.com/ppe/"
+            }
+        ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --teal: #46AEB8;
+            --deep-teal: #0D7C88;
+            --charcoal: #1F2937;
+            --dark-charcoal: #111827;
+            --white: #FFFFFF;
+            --warm-white: #FDFBF7;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --coral: #E07A5F;
+            --dark-coral: #c96a52;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--warm-white);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 820px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.92;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.65;
+        }
+
+        /* Calculator Container */
+        .calculator-container {
+            max-width: 1100px;
+            margin: -3rem auto 0;
+            padding: 0 2rem 3rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .calculator-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+        }
+
+        .calc-section-header {
+            margin-bottom: 1.75rem;
+        }
+
+        .calc-section-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .calc-section-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Year Grid */
+        .year-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .year-block {
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .year-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            color: var(--deep-teal);
+            margin-bottom: 0.25rem;
+        }
+
+        .year-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.1rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--medium-gray);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: help;
+            user-select: none;
+        }
+
+        .tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-charcoal);
+            color: var(--white);
+            padding: 0.55rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            white-space: normal;
+            width: 220px;
+            text-align: left;
+            line-height: 1.45;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s;
+            z-index: 50;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tooltip:hover::after,
+        .tooltip:focus::after {
+            opacity: 1;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input[type="text"] {
+            width: 100%;
+            padding: 0.75rem 0.9rem 0.75rem 1.85rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            background: var(--white);
+            font-family: inherit;
+        }
+
+        .input-wrapper.no-prefix input[type="text"] {
+            padding-left: 0.9rem;
+        }
+
+        .input-wrapper input[type="text"]:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
+        }
+
+        .input-wrapper input.error {
+            border-color: var(--coral);
+            background: rgba(224, 122, 95, 0.04);
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Calculate Button */
+        .calculate-row {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .calculate-btn {
+            background: var(--coral);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2.75rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+
+        .calculate-btn:hover {
+            background: var(--dark-coral);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
+        }
+
+        .calculate-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.35);
+        }
+
+        .form-error {
+            text-align: center;
+            color: var(--dark-coral);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            min-height: 1.2rem;
+        }
+
+        /* Output */
+        .output-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            display: none;
+        }
+
+        .output-container.visible {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .output-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 3rem 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Element 1: The number */
+        .ppe-number-block {
+            text-align: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .ppe-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .ppe-figure {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            word-break: break-word;
+        }
+
+        /* Element 2: Trend chart */
+        .chart-block {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .chart-heading {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            text-align: center;
+        }
+
+        .chart-wrap {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .chart-wrap svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Element 3: Four questions */
+        .questions-block {
+            padding-top: 2.5rem;
+        }
+
+        .questions-heading {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 1.75rem;
+            text-align: center;
+        }
+
+        .question-list {
+            list-style: none;
+            counter-reset: q;
+            max-width: 740px;
+            margin: 0 auto;
+        }
+
+        .question-list li {
+            counter-increment: q;
+            position: relative;
+            padding: 1.5rem 0 1.5rem 3.5rem;
+            border-top: 1px solid var(--medium-gray);
+            font-size: 1.15rem;
+            line-height: 1.55;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .question-list li:last-child {
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .question-list li::before {
+            content: counter(q);
+            position: absolute;
+            left: 0;
+            top: 1.55rem;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background: var(--deep-teal);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        /* Section 4: Handoff */
+        .handoff-card {
+            background: linear-gradient(160deg, var(--white) 0%, rgba(70, 174, 184, 0.06) 100%);
+            border-radius: 12px;
+            padding: 2.75rem 2.5rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        .handoff-card p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            max-width: 720px;
+            margin: 0 auto 1.75rem;
+        }
+
+        .handoff-card p + p {
+            margin-top: -0.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--coral);
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            background: var(--dark-coral);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .year-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 1.5rem 4rem;
+            }
+
+            .hero h1 {
+                font-size: 1.85rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .calculator-container,
+            .output-container {
+                padding: 0 1rem 3rem;
+            }
+
+            .calculator-container {
+                margin-top: -2rem;
+            }
+
+            .calculator-card,
+            .output-card,
+            .handoff-card {
+                padding: 1.75rem 1.25rem;
+            }
+
+            .ppe-figure {
+                font-size: 2.75rem;
+            }
+
+            .question-list li {
+                font-size: 1.05rem;
+                padding-left: 3rem;
+            }
+
+            .question-list li::before {
+                width: 1.9rem;
+                height: 1.9rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <script src="/js/header.js"></script>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>You've pulled every mechanical lever. What moves this number now?</h1>
+            <p class="hero-subtitle">Profit per employee is the most honest number on your P&amp;L. Enter three years of revenue, profit, and headcount. The trajectory and the four questions that follow are the diagnostic.</p>
+        </div>
+    </section>
+
+    <!-- Calculator -->
+    <div class="calculator-container">
+        <div class="calculator-card">
+            <div class="calc-section-header">
+                <h2>Your numbers</h2>
+                <p>Three years. Most recent first.</p>
+            </div>
+
+            <form id="ppeForm" novalidate>
+                <div class="year-grid" id="yearGrid"></div>
+
+                <div class="calculate-row">
+                    <button type="submit" class="calculate-btn" id="calculateBtn">Calculate</button>
+                </div>
+                <div class="form-error" id="formError" role="alert" aria-live="polite"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Output -->
+    <div class="output-container" id="outputContainer" aria-live="polite">
+        <div class="output-card">
+            <!-- The number -->
+            <div class="ppe-number-block">
+                <div class="ppe-label">Profit per employee, most recent year</div>
+                <div class="ppe-figure" id="ppeFigure"></div>
+            </div>
+
+            <!-- The chart -->
+            <div class="chart-block">
+                <div class="chart-heading">Three-year trajectory</div>
+                <div class="chart-wrap">
+                    <svg id="ppeChart" viewBox="0 0 800 360" role="img" aria-label="Three year profit per employee trend"></svg>
+                </div>
+            </div>
+
+            <!-- The questions -->
+            <div class="questions-block">
+                <div class="questions-heading">Four questions</div>
+                <ol class="question-list">
+                    <li>What initiatives do you currently have in place to move this number?</li>
+                    <li>How do you measure whether those initiatives are working?</li>
+                    <li>When was the last time this figure moved meaningfully, and what caused it?</li>
+                    <li>If you flatlined here for three more years, what would that mean for the business?</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Handoff -->
+        <div class="handoff-card">
+            <p>Most executives cannot answer those four questions with data. They answer them with instinct.</p>
+            <p>The Manager Gap Index is the measurement system that turns that instinct into a quarterly trend line, six to twelve months ahead of where it shows up in the financials. It is the instrument for the one lever left once the mechanical options are exhausted.</p>
+            <a href="https://mgi.cloverera.com/" class="cta-button">Measure the Manager Gap</a>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        var yearLabels = ['Most recent year', 'Prior year', 'Two years ago'];
+        var fields = [
+            { key: 'revenue',   label: 'Annual revenue',          prefix: '$', tip: null },
+            { key: 'profit',    label: 'Net profit',              prefix: '$', tip: 'GAAP net income. Use operating profit if net income is not available. Negative values accepted.' },
+            { key: 'employees', label: 'Total employees (FTE)',   prefix: null, tip: null }
+        ];
+
+        var grid = document.getElementById('yearGrid');
+        var formError = document.getElementById('formError');
+        var output = document.getElementById('outputContainer');
+
+        // Build year input blocks
+        for (var y = 0; y < 3; y++) {
+            var block = document.createElement('div');
+            block.className = 'year-block';
+            block.innerHTML =
+                '<div class="year-label">Year ' + (y + 1) + '</div>' +
+                '<div class="year-name">' + yearLabels[y] + '</div>';
+
+            for (var f = 0; f < fields.length; f++) {
+                var fld = fields[f];
+                var inputId = fld.key + '_' + y;
+                var allowNeg = fld.key === 'profit';
+
+                var group = document.createElement('div');
+                group.className = 'input-group';
+
+                var labelHtml = '<label for="' + inputId + '">' + fld.label;
+                if (fld.tip) {
+                    labelHtml += ' <span class="tooltip" tabindex="0" data-tip="' + fld.tip + '" aria-label="' + fld.tip + '">i</span>';
+                }
+                labelHtml += '</label>';
+
+                var wrapperClass = fld.prefix ? 'input-wrapper' : 'input-wrapper no-prefix';
+                var prefixHtml = fld.prefix ? '<span class="input-prefix">' + fld.prefix + '</span>' : '';
+
+                group.innerHTML =
+                    labelHtml +
+                    '<div class="' + wrapperClass + '">' +
+                        prefixHtml +
+                        '<input type="text" inputmode="numeric" autocomplete="off" id="' + inputId + '" name="' + inputId + '" ' +
+                        'data-key="' + fld.key + '" data-year="' + y + '" data-allow-neg="' + (allowNeg ? '1' : '0') + '">' +
+                    '</div>';
+
+                block.appendChild(group);
+            }
+
+            grid.appendChild(block);
+        }
+
+        // Format numeric input live: keep digits (and optional leading '-' for profit), insert commas
+        function formatNumeric(raw, allowNeg) {
+            var negative = false;
+            if (allowNeg && raw.indexOf('-') !== -1) negative = true;
+            var digits = raw.replace(/[^0-9]/g, '');
+            if (!digits) return negative ? '-' : '';
+            // Strip leading zeros (but allow single '0')
+            digits = digits.replace(/^0+(?=\d)/, '');
+            var withCommas = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return (negative ? '-' : '') + withCommas;
+        }
+
+        function parseNumeric(formatted) {
+            if (!formatted) return NaN;
+            var clean = formatted.replace(/,/g, '');
+            if (clean === '-' || clean === '') return NaN;
+            var n = parseFloat(clean);
+            return isNaN(n) ? NaN : n;
+        }
+
+        // Wire up formatting on every numeric input
+        var inputs = grid.querySelectorAll('input[type="text"]');
+        for (var i = 0; i < inputs.length; i++) {
+            (function (input) {
+                var allowNeg = input.getAttribute('data-allow-neg') === '1';
+                input.addEventListener('input', function () {
+                    var oldVal = input.value;
+                    var caretFromEnd = oldVal.length - (input.selectionStart || 0);
+                    var formatted = formatNumeric(oldVal, allowNeg);
+                    input.value = formatted;
+                    input.classList.remove('error');
+                    var newCaret = Math.max(0, formatted.length - caretFromEnd);
+                    try { input.setSelectionRange(newCaret, newCaret); } catch (e) {}
+                });
+            })(inputs[i]);
+        }
+
+        // Form submit -> compute and render
+        document.getElementById('ppeForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            formError.textContent = '';
+
+            var data = [];
+            var hasError = false;
+            var firstError = null;
+
+            for (var y = 0; y < 3; y++) {
+                var rev = document.getElementById('revenue_' + y);
+                var prof = document.getElementById('profit_' + y);
+                var emp = document.getElementById('employees_' + y);
+
+                var revVal = parseNumeric(rev.value);
+                var profVal = parseNumeric(prof.value);
+                var empVal = parseNumeric(emp.value);
+
+                var rowError = false;
+                if (isNaN(revVal))                  { rev.classList.add('error');  rowError = true; }
+                if (isNaN(profVal))                 { prof.classList.add('error'); rowError = true; }
+                if (isNaN(empVal) || empVal <= 0)   { emp.classList.add('error');  rowError = true; }
+
+                if (rowError) {
+                    hasError = true;
+                    if (!firstError) firstError = (isNaN(revVal) ? rev : (isNaN(profVal) ? prof : emp));
+                }
+
+                data.push({ revenue: revVal, profit: profVal, employees: empVal });
+            }
+
+            if (hasError) {
+                formError.textContent = 'Fill every field. Employees must be greater than zero.';
+                if (firstError) firstError.focus();
+                return;
+            }
+
+            renderOutput(data);
+        });
+
+        function renderOutput(data) {
+            var ppe = data.map(function (d) { return d.profit / d.employees; });
+
+            // The number (most recent = year index 0)
+            document.getElementById('ppeFigure').textContent = formatCurrency(ppe[0]);
+
+            // Chart
+            drawChart(ppe);
+
+            // Reveal and scroll
+            output.classList.add('visible');
+            setTimeout(function () {
+                output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 60);
+        }
+
+        function formatCurrency(n) {
+            var rounded = Math.round(n);
+            var abs = Math.abs(rounded);
+            var formatted = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return (rounded < 0 ? '-$' : '$') + formatted;
+        }
+
+        function drawChart(values) {
+            // values are in chronological order index 0=most recent. Chart left-to-right = oldest to newest.
+            var chrono = values.slice().reverse();
+            var labels = ['Two years ago', 'Prior year', 'Most recent'];
+
+            var svg = document.getElementById('ppeChart');
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+            var W = 800, H = 360;
+            var padL = 90, padR = 40, padT = 30, padB = 60;
+            var plotW = W - padL - padR;
+            var plotH = H - padT - padB;
+
+            var rawMin = Math.min.apply(null, chrono);
+            var rawMax = Math.max.apply(null, chrono);
+            var yMin, yMax;
+            if (rawMin === rawMax) {
+                // Flat line: pad symmetrically so the point sits center
+                var pad = Math.max(Math.abs(rawMax) * 0.2, 1);
+                yMin = rawMin - pad;
+                yMax = rawMax + pad;
+            } else {
+                var range = rawMax - rawMin;
+                yMin = rawMin - range * 0.15;
+                yMax = rawMax + range * 0.15;
+                // If all positive, anchor baseline at 0 for honesty
+                if (rawMin >= 0) yMin = 0;
+            }
+
+            function xAt(i) { return padL + (plotW * i) / (chrono.length - 1); }
+            function yAt(v) { return padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH; }
+
+            var ns = 'http://www.w3.org/2000/svg';
+
+            // Y-axis line
+            var yAxis = document.createElementNS(ns, 'line');
+            yAxis.setAttribute('x1', padL); yAxis.setAttribute('x2', padL);
+            yAxis.setAttribute('y1', padT); yAxis.setAttribute('y2', padT + plotH);
+            yAxis.setAttribute('stroke', '#E5E7EB'); yAxis.setAttribute('stroke-width', '1');
+            svg.appendChild(yAxis);
+
+            // X-axis line
+            var xAxis = document.createElementNS(ns, 'line');
+            xAxis.setAttribute('x1', padL); xAxis.setAttribute('x2', padL + plotW);
+            xAxis.setAttribute('y1', padT + plotH); xAxis.setAttribute('y2', padT + plotH);
+            xAxis.setAttribute('stroke', '#E5E7EB'); xAxis.setAttribute('stroke-width', '1');
+            svg.appendChild(xAxis);
+
+            // Y-axis labels: yMin, mid, yMax
+            var yTicks = [yMin, (yMin + yMax) / 2, yMax];
+            for (var t = 0; t < yTicks.length; t++) {
+                var v = yTicks[t];
+                var yPos = yAt(v);
+
+                var grid = document.createElementNS(ns, 'line');
+                grid.setAttribute('x1', padL); grid.setAttribute('x2', padL + plotW);
+                grid.setAttribute('y1', yPos); grid.setAttribute('y2', yPos);
+                grid.setAttribute('stroke', '#F1F3F5'); grid.setAttribute('stroke-width', '1');
+                svg.appendChild(grid);
+
+                var lbl = document.createElementNS(ns, 'text');
+                lbl.setAttribute('x', padL - 12);
+                lbl.setAttribute('y', yPos + 4);
+                lbl.setAttribute('text-anchor', 'end');
+                lbl.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif');
+                lbl.setAttribute('font-size', '12');
+                lbl.setAttribute('fill', '#4B5563');
+                lbl.textContent = formatCurrencyShort(v);
+                svg.appendChild(lbl);
+            }
+
+            // X-axis labels
+            for (var i = 0; i < chrono.length; i++) {
+                var xLbl = document.createElementNS(ns, 'text');
+                xLbl.setAttribute('x', xAt(i));
+                xLbl.setAttribute('y', padT + plotH + 28);
+                xLbl.setAttribute('text-anchor', 'middle');
+                xLbl.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif');
+                xLbl.setAttribute('font-size', '13');
+                xLbl.setAttribute('font-weight', '600');
+                xLbl.setAttribute('fill', '#1F2937');
+                xLbl.textContent = labels[i];
+                svg.appendChild(xLbl);
+            }
+
+            // Connecting line
+            var pts = chrono.map(function (v, i) { return xAt(i) + ',' + yAt(v); }).join(' ');
+            var line = document.createElementNS(ns, 'polyline');
+            line.setAttribute('points', pts);
+            line.setAttribute('fill', 'none');
+            line.setAttribute('stroke', '#46AEB8');
+            line.setAttribute('stroke-width', '3');
+            line.setAttribute('stroke-linecap', 'round');
+            line.setAttribute('stroke-linejoin', 'round');
+            svg.appendChild(line);
+
+            // Data points + value labels
+            for (var p = 0; p < chrono.length; p++) {
+                var cx = xAt(p), cy = yAt(chrono[p]);
+
+                var c = document.createElementNS(ns, 'circle');
+                c.setAttribute('cx', cx); c.setAttribute('cy', cy);
+                c.setAttribute('r', '6');
+                c.setAttribute('fill', '#FFFFFF');
+                c.setAttribute('stroke', '#0D7C88');
+                c.setAttribute('stroke-width', '3');
+                svg.appendChild(c);
+
+                var vLbl = document.createElementNS(ns, 'text');
+                var labelY = cy - 14;
+                if (labelY < padT + 12) labelY = cy + 22;
+                vLbl.setAttribute('x', cx);
+                vLbl.setAttribute('y', labelY);
+                vLbl.setAttribute('text-anchor', 'middle');
+                vLbl.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif');
+                vLbl.setAttribute('font-size', '13');
+                vLbl.setAttribute('font-weight', '700');
+                vLbl.setAttribute('fill', '#111827');
+                vLbl.textContent = formatCurrencyShort(chrono[p]);
+                svg.appendChild(vLbl);
+            }
+        }
+
+        function formatCurrencyShort(n) {
+            var abs = Math.abs(n);
+            var sign = n < 0 ? '-' : '';
+            if (abs >= 1e6) return sign + '$' + (n / 1e6).toFixed(abs >= 1e7 ? 1 : 2).replace(/\.?0+$/, '') + 'M';
+            if (abs >= 1e3) return sign + '$' + Math.round(abs / 1e3).toLocaleString() + 'K';
+            return sign + '$' + Math.round(abs).toLocaleString();
+        }
+    })();
+    </script>
+
+    <script src="/js/footer.js"></script>
+    <script src="/js/cookie-consent.js"></script>
+</body>
+</html>
