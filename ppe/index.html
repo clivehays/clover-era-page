@@ -610,30 +610,19 @@
 
         /* Exposure map (primary output) */
         .map-card {
-            padding: 2.5rem 2rem 1.75rem;
-        }
-
-        .map-eyebrow {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 700;
-            color: var(--deep-teal);
-            margin-bottom: 0.4rem;
-            text-align: center;
+            padding: 2.25rem 1.75rem 1.75rem;
         }
 
         .map-heading {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 1.75rem;
-            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .exposure-map-wrap {
             width: 100%;
-            max-width: 480px;
+            max-width: 460px;
             margin: 0 auto;
         }
 
@@ -643,11 +632,15 @@
             display: block;
         }
 
+        .map-quadrant-fill {
+            fill: #F4F4F4;
+            fill-opacity: 0.55;
+        }
+
         .map-svg .map-label-text {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.4px;
-            fill: var(--text-secondary);
+            font-weight: 400;
+            fill: #9CA3AF;
         }
 
         .map-axis-line {
@@ -655,28 +648,72 @@
             stroke-width: 0.4;
         }
 
-        .exposure-dot {
-            r: 0;
+        .dot-halo {
+            r: 7.5;
+            fill: var(--coral);
             opacity: 0;
-            transition: r 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease-out;
+        }
+
+        .dot-halo.shown {
+            animation: haloEntrancePulse 2.4s ease-in-out forwards;
+        }
+
+        .exposure-dot {
+            r: 6.5;
+            fill: var(--coral);
+            opacity: 0;
+            transform-box: fill-box;
+            transform-origin: center;
         }
 
         .exposure-dot.shown {
-            r: 4;
-            opacity: 1;
+            animation: dotEntrancePulse 2.4s ease-in-out forwards;
         }
 
-        .map-caption {
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
+        @keyframes dotEntrancePulse {
+            0%    { opacity: 0; transform: scale(0.4); }
+            10%   { opacity: 1; transform: scale(1); }
+            33%   { transform: scale(1); }
+            50%   { transform: scale(1.15); }
+            66%   { transform: scale(1); }
+            83%   { transform: scale(1.15); }
+            100%  { opacity: 1; transform: scale(1); }
         }
 
-        .map-caption strong {
-            color: var(--text-primary);
+        @keyframes haloEntrancePulse {
+            0%    { opacity: 0; }
+            10%   { opacity: 0.2; }
+            33%   { opacity: 0.2; }
+            50%   { opacity: 0.4; }
+            66%   { opacity: 0.2; }
+            83%   { opacity: 0.4; }
+            100%  { opacity: 0.2; }
+        }
+
+        .ppe-annotation {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-weight: 600;
+            fill: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.4s ease-out;
+        }
+
+        .ppe-annotation.shown {
+            opacity: 1;
+            transition-delay: 1.6s;
+        }
+
+        .map-caption-dynamic {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.55;
+            color: var(--text-primary);
+            max-width: 460px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: 1.55em;
         }
 
         /* Output paragraph */
@@ -785,10 +822,11 @@
 
             .output-paragraph { font-size: 1.05rem; }
 
-            .map-card { padding: 1.75rem 1rem 1.25rem; }
-            .map-heading { font-size: 1.15rem; margin-bottom: 1.25rem; }
-            .exposure-dot.shown { r: 7; }
-            .map-caption { font-size: 0.78rem; }
+            .map-card { padding: 1.5rem 1rem 1.25rem; }
+            .map-heading { font-size: 1.2rem; margin-bottom: 1rem; }
+            .exposure-dot { r: 10; }
+            .dot-halo { r: 11.5; }
+            .map-caption-dynamic { font-size: 0.95rem; margin-top: 1rem; }
         }
 
         @keyframes fadeInUp {
@@ -1029,22 +1067,22 @@
     <!-- Stage 3: Map + paragraph + confrontation + handoff -->
     <div class="container narrow stage" id="stageOutput">
         <div class="card map-card">
-            <div class="map-eyebrow">Your position</div>
-            <h2 class="map-heading">Where you sit</h2>
+            <h2 class="map-heading">This is where you are.</h2>
             <div class="exposure-map-wrap">
                 <svg viewBox="0 0 200 200" class="map-svg" role="img" aria-label="Exposure map showing your position on two axes: mechanical runway and human lever visibility">
-                    <line class="map-axis-line" x1="50" y1="100" x2="150" y2="100" />
-                    <line class="map-axis-line" x1="100" y1="50" x2="100" y2="150" />
-                    <text class="map-label-text" x="100" y="42" text-anchor="middle" dominant-baseline="middle" font-size="7">MEASURED</text>
-                    <text class="map-label-text" x="100" y="163" text-anchor="middle" dominant-baseline="middle" font-size="7">NOT MEASURED</text>
-                    <text class="map-label-text" x="45" y="100" text-anchor="end" dominant-baseline="middle" font-size="7">EXHAUSTED</text>
-                    <text class="map-label-text" x="155" y="100" text-anchor="start" dominant-baseline="middle" font-size="7">PLENTY LEFT</text>
-                    <circle id="exposureDot" class="exposure-dot" cx="100" cy="100" fill="#46AEB8" />
+                    <rect class="map-quadrant-fill" x="35" y="100" width="65" height="65" />
+                    <line class="map-axis-line" x1="35" y1="100" x2="165" y2="100" />
+                    <line class="map-axis-line" x1="100" y1="35" x2="100" y2="165" />
+                    <text class="map-label-text" x="100" y="27" text-anchor="middle" dominant-baseline="middle" font-size="6.5">Measured</text>
+                    <text class="map-label-text" x="100" y="178" text-anchor="middle" dominant-baseline="middle" font-size="6.5">Not measured</text>
+                    <text class="map-label-text" x="30" y="100" text-anchor="end" dominant-baseline="middle" font-size="6.5">Exhausted</text>
+                    <text class="map-label-text" x="170" y="100" text-anchor="start" dominant-baseline="middle" font-size="6.5">Plenty left</text>
+                    <circle id="dotHalo" class="dot-halo" cx="100" cy="100" />
+                    <circle id="exposureDot" class="exposure-dot" cx="100" cy="100" />
+                    <text id="ppeAnnotation" class="ppe-annotation" x="100" y="100" font-size="7"></text>
                 </svg>
             </div>
-            <div class="map-caption">
-                Horizontal: <strong>Mechanical runway</strong>. Vertical: <strong>Human lever visibility</strong>.
-            </div>
+            <p class="map-caption-dynamic" id="mapCaption" aria-live="polite"></p>
         </div>
 
         <div class="card paragraph-card">
@@ -1244,12 +1282,53 @@
 
             document.getElementById('outputParagraph').textContent = paragraph;
 
-            // Plot area inside SVG: x in [50, 150], y in [50, 150].
-            // SVG y is inverted, so vertical=1 (top) maps to cy=50.
+            // Plot area inside SVG: x in [35, 165], y in [35, 165] (130x130 plot in 200x200 viewBox).
+            // SVG y is inverted, so vertical=1 (top) maps to cy=35.
+            var PLOT_ORIGIN = 35;
+            var PLOT_SIZE = 130;
+
+            var cx = PLOT_ORIGIN + pos.horizontal * PLOT_SIZE;
+            var cy = PLOT_ORIGIN + (1 - pos.vertical) * PLOT_SIZE;
+
             var dot = document.getElementById('exposureDot');
+            var halo = document.getElementById('dotHalo');
+            var annotation = document.getElementById('ppeAnnotation');
+
+            dot.setAttribute('cx', cx.toFixed(2));
+            dot.setAttribute('cy', cy.toFixed(2));
+            halo.setAttribute('cx', cx.toFixed(2));
+            halo.setAttribute('cy', cy.toFixed(2));
+
+            // PPE annotation position: place to the right of the dot.
+            // Flip up/down based on dot's vertical position so the label sits in the more open whitespace.
+            // Flip to the left if dot is far right and annotation would clip "Plenty left".
+            var annotationOffset = 11;
+            var annoX, annoY, annoAnchor, annoBaseline;
+            var goLeft = cx > 140;
+            annoX = goLeft ? cx - annotationOffset : cx + annotationOffset;
+            annoAnchor = goLeft ? 'end' : 'start';
+            if (pos.vertical >= 0.5) {
+                annoY = cy + annotationOffset;
+                annoBaseline = 'hanging';
+            } else {
+                annoY = cy - annotationOffset;
+                annoBaseline = 'alphabetic';
+            }
+            annotation.setAttribute('x', annoX.toFixed(2));
+            annotation.setAttribute('y', annoY.toFixed(2));
+            annotation.setAttribute('text-anchor', annoAnchor);
+            annotation.setAttribute('dominant-baseline', annoBaseline);
+            annotation.textContent = formatCurrency(inputs.ppe);
+
+            // Dynamic caption based on quadrant
+            document.getElementById('mapCaption').textContent = quadrantCaption(pos);
+
+            // Reset animation state so re-submission re-triggers cleanly.
             dot.classList.remove('shown');
-            dot.setAttribute('cx', (50 + pos.horizontal * 100).toFixed(2));
-            dot.setAttribute('cy', (50 + (1 - pos.vertical) * 100).toFixed(2));
+            halo.classList.remove('shown');
+            annotation.classList.remove('shown');
+            // Force reflow so the animation restarts on re-add.
+            void dot.getBoundingClientRect();
 
             stageOutput.classList.add('visible');
 
@@ -1257,11 +1336,28 @@
                 document.querySelector('.map-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 60);
 
-            // 400ms delay creates the visual punch moment after the map appears.
+            // 400ms delay lets the axes settle before the dot lands.
             setTimeout(function () {
                 dot.classList.add('shown');
+                halo.classList.add('shown');
+                annotation.classList.add('shown');
             }, 400);
         });
+
+        function quadrantCaption(pos) {
+            var h = pos.horizontal;
+            var v = pos.vertical;
+            if (h < 0.5 && v < 0.5) {
+                return 'Mechanical runway thin. Human lever not measured. This is the exposed position.';
+            }
+            if (h >= 0.5 && v < 0.5) {
+                return "You have mechanical options left. The human lever you'll eventually need is not measured.";
+            }
+            if (h < 0.5 && v >= 0.5) {
+                return 'Mechanical runway thin. At least you see where your managers stand.';
+            }
+            return 'Options remain on both axes. The question is how long that holds.';
+        }
 
         // ---------- Exposure map position ----------
         function computeMapPosition(d) {
