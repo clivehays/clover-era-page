@@ -15,14 +15,14 @@
     <link rel="shortcut icon" href="/favicon.ico">
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Profit per employee is the most honest number on your P&L. Enter three years. See your trajectory. Sit with the four questions that follow.">
+    <meta name="description" content="Profit per employee is the most honest number on your P&L. The output is a paragraph that reflects your exposure, not a score.">
     <meta name="author" content="Clover ERA">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://cloverera.com/ppe/">
 
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Profit per Employee Instrument | Clover ERA">
-    <meta property="og:description" content="A diagnostic for CEOs and CFOs. Three years of revenue, profit, and headcount. One trajectory. Four questions most executives cannot answer with data.">
+    <meta property="og:description" content="A diagnostic for CEOs and CFOs. Your number and the one lever the financials cannot see yet.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://cloverera.com/ppe/">
     <meta property="og:site_name" content="Clover ERA">
@@ -33,7 +33,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Profit per Employee Instrument | Clover ERA">
-    <meta name="twitter:description" content="A diagnostic for CEOs and CFOs. Three years in. One trajectory. Four questions most executives cannot answer with data.">
+    <meta name="twitter:description" content="A diagnostic for CEOs and CFOs. Your number and the one lever the financials cannot see yet.">
     <meta name="twitter:image" content="https://cloverera.com/images/og-image.png">
 
     <!-- Breadcrumb Schema -->
@@ -42,18 +42,8 @@
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://cloverera.com/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Profit per Employee Instrument",
-                "item": "https://cloverera.com/ppe/"
-            }
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://cloverera.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Profit per Employee Instrument", "item": "https://cloverera.com/ppe/" }
         ]
     }
     </script>
@@ -74,11 +64,7 @@
             --dark-coral: #c96a52;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -87,7 +73,7 @@
             background: var(--warm-white);
         }
 
-        /* Hero Section */
+        /* Hero */
         .hero {
             background: linear-gradient(160deg, var(--dark-charcoal) 0%, var(--charcoal) 40%, var(--deep-teal) 100%);
             color: var(--white);
@@ -98,8 +84,7 @@
 
         .hero::before {
             content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             opacity: 0.03;
             pointer-events: none;
@@ -124,90 +109,64 @@
         .hero-subtitle {
             font-size: 1.1rem;
             opacity: 0.92;
-            max-width: 680px;
+            max-width: 700px;
             margin: 0 auto;
             line-height: 1.65;
         }
 
-        /* Calculator Container */
-        .calculator-container {
-            max-width: 1100px;
-            margin: -3rem auto 0;
-            padding: 0 2rem 3rem;
-            position: relative;
-            z-index: 10;
+        /* Card container shared */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
 
-        .calculator-card {
+        .container.narrow { max-width: 800px; }
+
+        .card {
             background: var(--white);
             border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 2.75rem 2.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .calc-section-header {
-            margin-bottom: 1.75rem;
+        .card.lift { margin-top: -3rem; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1); position: relative; z-index: 10; }
+
+        .section-eyebrow {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--deep-teal);
+            margin-bottom: 0.6rem;
         }
 
-        .calc-section-header h2 {
-            font-size: 1.4rem;
+        .section-heading {
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 0.4rem;
         }
 
-        .calc-section-header p {
+        .section-sub {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* Year Grid */
-        .year-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
+            font-size: 0.98rem;
             margin-bottom: 1.75rem;
         }
 
-        .year-block {
-            background: var(--light-gray);
-            border-radius: 10px;
-            padding: 1.5rem;
-            border: 1px solid var(--medium-gray);
-        }
-
-        .year-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-            color: var(--deep-teal);
-            margin-bottom: 0.25rem;
-        }
-
-        .year-name {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1.1rem;
-        }
-
-        .input-group {
-            margin-bottom: 1rem;
-        }
-
-        .input-group:last-child {
-            margin-bottom: 0;
-        }
+        /* Inputs */
+        .input-group { margin-bottom: 1.5rem; }
+        .input-group:last-child { margin-bottom: 0; }
 
         .input-group label {
             display: flex;
             align-items: center;
             gap: 0.4rem;
             color: var(--text-primary);
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         .tooltip {
@@ -239,7 +198,7 @@
             font-size: 0.78rem;
             font-weight: 500;
             white-space: normal;
-            width: 220px;
+            width: 240px;
             text-align: left;
             line-height: 1.45;
             opacity: 0;
@@ -249,32 +208,26 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .tooltip:hover::after,
-        .tooltip:focus::after {
-            opacity: 1;
-        }
+        .tooltip:hover::after, .tooltip:focus::after { opacity: 1; }
 
-        .input-wrapper {
-            position: relative;
-        }
+        .input-wrapper { position: relative; }
 
-        .input-wrapper input[type="text"] {
+        .input-wrapper input[type="text"],
+        .input-wrapper input[type="number"] {
             width: 100%;
-            padding: 0.75rem 0.9rem 0.75rem 1.85rem;
+            padding: 0.85rem 1rem 0.85rem 2rem;
             border: 2px solid var(--medium-gray);
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border-radius: 10px;
+            font-size: 1rem;
             font-weight: 500;
             transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
             background: var(--white);
             font-family: inherit;
         }
 
-        .input-wrapper.no-prefix input[type="text"] {
-            padding-left: 0.9rem;
-        }
+        .input-wrapper.no-prefix input { padding-left: 1rem; }
 
-        .input-wrapper input[type="text"]:focus {
+        .input-wrapper input:focus {
             outline: none;
             border-color: var(--teal);
             box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
@@ -287,7 +240,16 @@
 
         .input-prefix {
             position: absolute;
-            left: 0.85rem;
+            left: 0.95rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
@@ -295,33 +257,96 @@
             font-size: 0.95rem;
         }
 
-        /* Calculate Button */
-        .calculate-row {
+        /* Denominator radios */
+        .denom-block { margin-bottom: 1.5rem; }
+
+        .denom-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.6rem;
+            display: block;
+        }
+
+        .denom-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+        }
+
+        .denom-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .denom-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            inset: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .denom-option-body {
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            background: var(--white);
+            transition: border-color 0.15s, background 0.15s;
+            height: 100%;
+        }
+
+        .denom-option input[type="radio"]:focus + .denom-option-body {
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
+        }
+
+        .denom-option input[type="radio"]:checked + .denom-option-body {
+            border-color: var(--teal);
+            background: rgba(70, 174, 184, 0.06);
+        }
+
+        .denom-option-title {
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .denom-option-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        /* Buttons */
+        .btn-row {
             display: flex;
             justify-content: center;
             margin-top: 0.5rem;
         }
 
-        .calculate-btn {
+        .btn {
             background: var(--coral);
             color: var(--white);
             border: none;
-            padding: 1rem 2.75rem;
+            padding: 1rem 2.5rem;
             border-radius: 10px;
             font-size: 1.05rem;
             font-weight: 700;
             cursor: pointer;
             transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
             font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .calculate-btn:hover {
+        .btn:hover {
             background: var(--dark-coral);
             transform: translateY(-1px);
             box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
         }
 
-        .calculate-btn:focus {
+        .btn:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.35);
         }
@@ -335,44 +360,22 @@
             min-height: 1.2rem;
         }
 
-        /* Output */
-        .output-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 2rem 4rem;
-            display: none;
-        }
-
-        .output-container.visible {
-            display: block;
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        .output-card {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            padding: 3rem 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Element 1: The number */
-        .ppe-number-block {
+        /* The number */
+        .number-card {
             text-align: center;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--medium-gray);
+            padding: 3rem 2.5rem;
         }
 
-        .ppe-label {
+        .number-label {
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             font-weight: 700;
             color: var(--text-secondary);
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
 
-        .ppe-figure {
+        .number-figure {
             font-size: 4.5rem;
             font-weight: 800;
             color: var(--text-primary);
@@ -381,55 +384,239 @@
             word-break: break-word;
         }
 
-        /* Element 2: Trend chart */
-        .chart-block {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
+        /* Exposure question groups */
+        .exposure-group { margin-bottom: 2rem; }
+        .exposure-group:last-of-type { margin-bottom: 1rem; }
+
+        .group-eyebrow {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--deep-teal);
+            margin-bottom: 0.3rem;
+        }
+
+        .group-heading {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.6rem;
             border-bottom: 1px solid var(--medium-gray);
         }
 
-        .chart-heading {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+        .question {
+            margin-bottom: 1.6rem;
+        }
+
+        .question:last-child { margin-bottom: 0; }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.55;
+        }
+
+        /* Rating scale */
+        .scale-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            max-width: 480px;
+        }
+
+        .scale-option {
+            position: relative;
+        }
+
+        .scale-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            inset: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .scale-option-body {
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            padding: 0.7rem 0;
+            background: var(--white);
+            text-align: center;
             font-weight: 700;
             color: var(--text-secondary);
-            margin-bottom: 1.25rem;
-            text-align: center;
+            transition: border-color 0.15s, background 0.15s, color 0.15s;
+            cursor: pointer;
+            font-size: 1rem;
         }
 
-        .chart-wrap {
-            width: 100%;
-            max-width: 760px;
-            margin: 0 auto;
+        .scale-option input[type="radio"]:focus + .scale-option-body {
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
         }
 
-        .chart-wrap svg {
-            width: 100%;
-            height: auto;
-            display: block;
+        .scale-option input[type="radio"]:checked + .scale-option-body {
+            border-color: var(--teal);
+            background: var(--teal);
+            color: var(--white);
         }
 
-        /* Element 3: Four questions */
-        .questions-block {
-            padding-top: 2.5rem;
-        }
-
-        .questions-heading {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
+        .scale-anchors {
+            display: flex;
+            justify-content: space-between;
+            max-width: 480px;
+            margin-top: 0.45rem;
+            font-size: 0.78rem;
             color: var(--text-secondary);
-            margin-bottom: 1.75rem;
-            text-align: center;
         }
 
+        /* Checkboxes */
+        .check-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+        .check-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            padding: 0.7rem 0.9rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+            background: var(--white);
+        }
+
+        .check-option:hover { border-color: var(--teal); }
+
+        .check-option input[type="checkbox"] {
+            margin-top: 0.18rem;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--teal);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .check-option input[type="checkbox"]:checked + span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .check-option-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .check-option:has(input:checked) {
+            border-color: var(--teal);
+            background: rgba(70, 174, 184, 0.05);
+        }
+
+        /* Yes / No / Not sure */
+        .ynm-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-width: 420px;
+        }
+
+        .ynm-option { position: relative; }
+
+        .ynm-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            inset: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .ynm-option-body {
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            padding: 0.75rem 0.5rem;
+            background: var(--white);
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: border-color 0.15s, background 0.15s, color 0.15s;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .ynm-option input[type="radio"]:focus + .ynm-option-body {
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
+        }
+
+        .ynm-option input[type="radio"]:checked + .ynm-option-body {
+            border-color: var(--teal);
+            background: var(--teal);
+            color: var(--white);
+        }
+
+        /* Free text */
+        .free-text {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem 0.9rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--white);
+            resize: vertical;
+            line-height: 1.55;
+        }
+
+        .free-text:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(70, 174, 184, 0.15);
+        }
+
+        .char-count {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 0.3rem;
+        }
+
+        .optional-note {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-left: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Output paragraph */
+        .paragraph-card {
+            background: linear-gradient(160deg, var(--white) 0%, rgba(70, 174, 184, 0.05) 100%);
+        }
+
+        .paragraph-eyebrow {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--deep-teal);
+            margin-bottom: 1rem;
+        }
+
+        .output-paragraph {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        /* Confrontation questions */
         .question-list {
             list-style: none;
             counter-reset: q;
-            max-width: 740px;
-            margin: 0 auto;
         }
 
         .question-list li {
@@ -437,15 +624,13 @@
             position: relative;
             padding: 1.5rem 0 1.5rem 3.5rem;
             border-top: 1px solid var(--medium-gray);
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             line-height: 1.55;
             color: var(--text-primary);
             font-weight: 500;
         }
 
-        .question-list li:last-child {
-            border-bottom: 1px solid var(--medium-gray);
-        }
+        .question-list li:last-child { border-bottom: 1px solid var(--medium-gray); }
 
         .question-list li::before {
             content: counter(q);
@@ -464,99 +649,57 @@
             font-weight: 700;
         }
 
-        /* Section 4: Handoff */
+        /* Handoff */
         .handoff-card {
-            background: linear-gradient(160deg, var(--white) 0%, rgba(70, 174, 184, 0.06) 100%);
-            border-radius: 12px;
-            padding: 2.75rem 2.5rem;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
             text-align: center;
+            background: linear-gradient(160deg, var(--white) 0%, rgba(70, 174, 184, 0.05) 100%);
         }
 
         .handoff-card p {
             font-size: 1.05rem;
             line-height: 1.7;
             color: var(--text-primary);
-            max-width: 720px;
-            margin: 0 auto 1.75rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
         }
 
-        .handoff-card p + p {
-            margin-top: -0.5rem;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: var(--coral);
-            color: var(--white);
-            padding: 1rem 2.5rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.05rem;
-            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-        }
-
-        .cta-button:hover {
-            background: var(--dark-coral);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
+        /* Hidden by default for staged reveal */
+        .stage { display: none; }
+        .stage.visible {
+            display: block;
+            animation: fadeInUp 0.45s ease-out;
         }
 
         /* Responsive */
-        @media (max-width: 900px) {
-            .year-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
-            .hero {
-                padding: 4rem 1.5rem 4rem;
-            }
+            .hero { padding: 4rem 1.25rem 4rem; }
+            .hero h1 { font-size: 1.85rem; }
+            .hero-subtitle { font-size: 1rem; }
 
-            .hero h1 {
-                font-size: 1.85rem;
-            }
+            .container { padding: 0 1rem; }
 
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-
-            .calculator-container,
-            .output-container {
-                padding: 0 1rem 3rem;
-            }
-
-            .calculator-container {
-                margin-top: -2rem;
-            }
-
-            .calculator-card,
-            .output-card,
-            .handoff-card {
+            .card {
                 padding: 1.75rem 1.25rem;
             }
 
-            .ppe-figure {
-                font-size: 2.75rem;
-            }
+            .denom-options { grid-template-columns: 1fr; }
 
-            .question-list li {
-                font-size: 1.05rem;
-                padding-left: 3rem;
-            }
+            .number-card { padding: 2rem 1.25rem; }
+            .number-figure { font-size: 2.75rem; }
 
-            .question-list li::before {
-                width: 1.9rem;
-                height: 1.9rem;
-                font-size: 0.85rem;
-            }
+            .scale-row { gap: 0.35rem; }
+            .scale-option-body { font-size: 0.95rem; padding: 0.6rem 0; }
+
+            .ynm-row { grid-template-columns: 1fr; max-width: none; }
+
+            .question-list li { font-size: 1rem; padding-left: 3rem; }
+            .question-list li::before { width: 1.9rem; height: 1.9rem; font-size: 0.85rem; }
+
+            .output-paragraph { font-size: 1.05rem; }
         }
 
-        /* Animations */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(16px); }
             to   { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -568,141 +711,285 @@
     <section class="hero">
         <div class="hero-content">
             <h1>You've pulled every mechanical lever. What moves this number now?</h1>
-            <p class="hero-subtitle">Profit per employee is the most honest number on your P&amp;L. Enter three years of revenue, profit, and headcount. The trajectory and the four questions that follow are the diagnostic.</p>
+            <p class="hero-subtitle">Profit per employee is the most honest number on your P&amp;L. Enter one year of inputs, then answer the four exposure groups. The output is a paragraph, not a score.</p>
         </div>
     </section>
 
-    <!-- Calculator -->
-    <div class="calculator-container">
-        <div class="calculator-card">
-            <div class="calc-section-header">
-                <h2>Your numbers</h2>
-                <p>Three years. Most recent first.</p>
-            </div>
+    <!-- Calculator inputs -->
+    <div class="container">
+        <div class="card lift">
+            <div class="section-eyebrow">Step 1</div>
+            <h2 class="section-heading">Your number</h2>
+            <p class="section-sub">Most recent completed fiscal year.</p>
 
             <form id="ppeForm" novalidate>
-                <div class="year-grid" id="yearGrid"></div>
-
-                <div class="calculate-row">
-                    <button type="submit" class="calculate-btn" id="calculateBtn">Calculate</button>
+                <div class="input-group">
+                    <label for="revenue">Annual revenue</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">$</span>
+                        <input type="text" inputmode="numeric" autocomplete="off" id="revenue" name="revenue" data-allow-neg="0">
+                    </div>
                 </div>
-                <div class="form-error" id="formError" role="alert" aria-live="polite"></div>
+
+                <div class="input-group">
+                    <label for="profit">
+                        Profit
+                        <span class="tooltip" tabindex="0" data-tip="GAAP net income, or operating profit if you prefer. Your choice." aria-label="GAAP net income, or operating profit if you prefer. Your choice.">i</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">$</span>
+                        <input type="text" inputmode="numeric" autocomplete="off" id="profit" name="profit" data-allow-neg="1">
+                    </div>
+                </div>
+
+                <div class="denom-block">
+                    <label class="denom-label" id="denomGroupLabel">Denominator</label>
+                    <div class="denom-options" role="radiogroup" aria-labelledby="denomGroupLabel">
+                        <label class="denom-option">
+                            <input type="radio" name="denom" value="w2" data-short="W-2 employee" data-output-label="W-2 employees only">
+                            <span class="denom-option-body">
+                                <span class="denom-option-title">W-2 employees only</span>
+                                <span class="denom-option-desc">Direct payroll headcount.</span>
+                            </span>
+                        </label>
+                        <label class="denom-option">
+                            <input type="radio" name="denom" value="fte_pt" data-short="FTE" data-output-label="FTEs including part-time">
+                            <span class="denom-option-body">
+                                <span class="denom-option-title">FTEs including part-time</span>
+                                <span class="denom-option-desc">W-2 plus part-time, pro-rated to full-time.</span>
+                            </span>
+                        </label>
+                        <label class="denom-option">
+                            <input type="radio" name="denom" value="fte_contract" data-short="FTE including contractors" data-output-label="FTEs including contractors and outsourced labor">
+                            <span class="denom-option-body">
+                                <span class="denom-option-title">FTEs including contractors and outsourced labor</span>
+                                <span class="denom-option-desc">All people doing the work, not all on payroll.</span>
+                            </span>
+                        </label>
+                        <label class="denom-option">
+                            <input type="radio" name="denom" value="lce" data-short="labor-cost-equivalent headcount" data-output-label="Total labor-cost-equivalent headcount">
+                            <span class="denom-option-body">
+                                <span class="denom-option-title">Total labor-cost-equivalent headcount</span>
+                                <span class="denom-option-desc">Total people-cost normalised to a headcount figure.</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="denomValue">Denominator value</label>
+                    <div class="input-wrapper no-prefix">
+                        <input type="text" inputmode="numeric" autocomplete="off" id="denomValue" name="denomValue" data-allow-neg="0">
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="btn" id="calculateBtn">Calculate</button>
+                </div>
+                <div class="form-error" id="calcError" role="alert" aria-live="polite"></div>
             </form>
         </div>
     </div>
 
-    <!-- Output -->
-    <div class="output-container" id="outputContainer" aria-live="polite">
-        <div class="output-card">
-            <!-- The number -->
-            <div class="ppe-number-block">
-                <div class="ppe-label">Profit per employee, most recent year</div>
-                <div class="ppe-figure" id="ppeFigure"></div>
-            </div>
-
-            <!-- The chart -->
-            <div class="chart-block">
-                <div class="chart-heading">Three-year trajectory</div>
-                <div class="chart-wrap">
-                    <svg id="ppeChart" viewBox="0 0 800 360" role="img" aria-label="Three year profit per employee trend"></svg>
-                </div>
-            </div>
-
-            <!-- The questions -->
-            <div class="questions-block">
-                <div class="questions-heading">Four questions</div>
-                <ol class="question-list">
-                    <li>What initiatives do you currently have in place to move this number?</li>
-                    <li>How do you measure whether those initiatives are working?</li>
-                    <li>When was the last time this figure moved meaningfully, and what caused it?</li>
-                    <li>If you flatlined here for three more years, what would that mean for the business?</li>
-                </ol>
-            </div>
+    <!-- Stage 2: Number + exposure questions -->
+    <div class="container stage" id="stageNumber">
+        <div class="card number-card">
+            <div class="number-label" id="numberLabel"></div>
+            <div class="number-figure" id="numberFigure"></div>
         </div>
 
-        <!-- Handoff -->
-        <div class="handoff-card">
-            <p>Most executives cannot answer those four questions with data. They answer them with instinct.</p>
-            <p>The Manager Gap Index is the measurement system that turns that instinct into a quarterly trend line, six to twelve months ahead of where it shows up in the financials. It is the instrument for the one lever left once the mechanical options are exhausted.</p>
-            <a href="https://mgi.cloverera.com/" class="cta-button">Measure the Manager Gap</a>
+        <div class="card">
+            <div class="section-eyebrow">Step 2</div>
+            <h2 class="section-heading">Exposure</h2>
+            <p class="section-sub">Four groups. Ninety seconds.</p>
+
+            <form id="exposureForm" novalidate>
+                <!-- Group 1: Drift exposure -->
+                <div class="exposure-group">
+                    <div class="group-eyebrow">Group 1</div>
+                    <h3 class="group-heading">Drift exposure</h3>
+
+                    <div class="question">
+                        <div class="question-text" id="q11Text">If labor costs rise at inflation and your revenue growth matches last year's, how confident are you that your profit per employee will hold steady in 24 months?</div>
+                        <div class="scale-row" role="radiogroup" aria-labelledby="q11Text">
+                            <label class="scale-option"><input type="radio" name="q11" value="1" aria-label="1 Not confident"><span class="scale-option-body">1</span></label>
+                            <label class="scale-option"><input type="radio" name="q11" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+                            <label class="scale-option"><input type="radio" name="q11" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+                            <label class="scale-option"><input type="radio" name="q11" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+                            <label class="scale-option"><input type="radio" name="q11" value="5" aria-label="5 Very confident"><span class="scale-option-body">5</span></label>
+                        </div>
+                        <div class="scale-anchors"><span>Not confident</span><span>Very confident</span></div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text"><label for="q12">Of your current workforce, what percentage are in roles where output per person has not improved in three years?</label></div>
+                        <div class="input-wrapper" style="max-width: 200px;">
+                            <input type="number" id="q12" name="q12" min="0" max="100" step="1" style="padding-left: 1rem; padding-right: 2.5rem;">
+                            <span class="input-suffix">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2: Competitive exposure -->
+                <div class="exposure-group">
+                    <div class="group-eyebrow">Group 2</div>
+                    <h3 class="group-heading">Competitive exposure</h3>
+
+                    <div class="question">
+                        <div class="question-text">Which of these would put meaningful pressure on your profit per employee in the next 24 months?</div>
+                        <div class="check-list" id="q21Group">
+                            <label class="check-option"><input type="checkbox" name="q21" value="competitor_low_labor" data-exclusive="0"><span class="check-option-text">A direct competitor with materially lower labor costs</span></label>
+                            <label class="check-option"><input type="checkbox" name="q21" value="ai_entrant" data-exclusive="0"><span class="check-option-text">A new entrant rebuilding your model with AI and fewer people</span></label>
+                            <label class="check-option"><input type="checkbox" name="q21" value="customer_consolidation" data-exclusive="0"><span class="check-option-text">Customer consolidation shifting pricing power away from you</span></label>
+                            <label class="check-option"><input type="checkbox" name="q21" value="regulatory" data-exclusive="0"><span class="check-option-text">Regulatory changes increasing compliance headcount</span></label>
+                            <label class="check-option"><input type="checkbox" name="q21" value="none" data-exclusive="1"><span class="check-option-text">None of these feel urgent</span></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text" id="q22Text">If a competitor's profit per employee is 40% higher than yours, how quickly does that translate into pricing pressure?</div>
+                        <div class="scale-row" role="radiogroup" aria-labelledby="q22Text">
+                            <label class="scale-option"><input type="radio" name="q22" value="1" aria-label="1 Already happening"><span class="scale-option-body">1</span></label>
+                            <label class="scale-option"><input type="radio" name="q22" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+                            <label class="scale-option"><input type="radio" name="q22" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+                            <label class="scale-option"><input type="radio" name="q22" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+                            <label class="scale-option"><input type="radio" name="q22" value="5" aria-label="5 No visible impact"><span class="scale-option-body">5</span></label>
+                        </div>
+                        <div class="scale-anchors"><span>Already happening</span><span>No visible impact</span></div>
+                    </div>
+                </div>
+
+                <!-- Group 3: Execution exposure -->
+                <div class="exposure-group">
+                    <div class="group-eyebrow">Group 3</div>
+                    <h3 class="group-heading">Execution exposure</h3>
+
+                    <div class="question">
+                        <div class="question-text">In the last 24 months, which of these levers have you already pulled?</div>
+                        <div class="check-list" id="q31Group">
+                            <label class="check-option"><input type="checkbox" name="q31" value="headcount" data-exclusive="0"><span class="check-option-text">Headcount reduction</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="pricing" data-exclusive="0"><span class="check-option-text">Pricing increases</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="offshore" data-exclusive="0"><span class="check-option-text">Offshoring or nearshoring</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="automation" data-exclusive="0"><span class="check-option-text">Automation or AI deployment</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="process" data-exclusive="0"><span class="check-option-text">Process redesign</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="span" data-exclusive="0"><span class="check-option-text">Span-of-control changes (flatter structure)</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="vendor" data-exclusive="0"><span class="check-option-text">Vendor or cost-base renegotiation</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="mix" data-exclusive="0"><span class="check-option-text">Product or customer mix shift</span></label>
+                            <label class="check-option"><input type="checkbox" name="q31" value="none" data-exclusive="1"><span class="check-option-text">None of the above</span></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text" id="q32Text">Of the levers you've pulled, how much more do you realistically think is available from the same playbook?</div>
+                        <div class="scale-row" role="radiogroup" aria-labelledby="q32Text">
+                            <label class="scale-option"><input type="radio" name="q32" value="1" aria-label="1 Fully exhausted"><span class="scale-option-body">1</span></label>
+                            <label class="scale-option"><input type="radio" name="q32" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+                            <label class="scale-option"><input type="radio" name="q32" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+                            <label class="scale-option"><input type="radio" name="q32" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+                            <label class="scale-option"><input type="radio" name="q32" value="5" aria-label="5 Plenty left"><span class="scale-option-body">5</span></label>
+                        </div>
+                        <div class="scale-anchors"><span>Fully exhausted</span><span>Plenty left</span></div>
+                    </div>
+                </div>
+
+                <!-- Group 4: Human exposure -->
+                <div class="exposure-group">
+                    <div class="group-eyebrow">Group 4</div>
+                    <h3 class="group-heading">Human exposure</h3>
+
+                    <div class="question">
+                        <div class="question-text">Do you know, today, which of your managers are actively enabling their teams and which are actively blocking them?</div>
+                        <div class="ynm-row" role="radiogroup" aria-label="Yes No or Not sure">
+                            <label class="ynm-option"><input type="radio" name="q41" value="yes"><span class="ynm-option-body">Yes</span></label>
+                            <label class="ynm-option"><input type="radio" name="q41" value="no"><span class="ynm-option-body">No</span></label>
+                            <label class="ynm-option"><input type="radio" name="q41" value="not_sure"><span class="ynm-option-body">Not sure</span></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text" id="q42Text">How confident are you that you could name your five worst managers by impact on team output?</div>
+                        <div class="scale-row" role="radiogroup" aria-labelledby="q42Text">
+                            <label class="scale-option"><input type="radio" name="q42" value="1" aria-label="1 Not confident"><span class="scale-option-body">1</span></label>
+                            <label class="scale-option"><input type="radio" name="q42" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+                            <label class="scale-option"><input type="radio" name="q42" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+                            <label class="scale-option"><input type="radio" name="q42" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+                            <label class="scale-option"><input type="radio" name="q42" value="5" aria-label="5 Very confident"><span class="scale-option-body">5</span></label>
+                        </div>
+                        <div class="scale-anchors"><span>Not confident</span><span>Very confident</span></div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text"><label for="q43">If 30% of your workforce is sitting under a manager who suppresses their output, what would that cost you annually?<span class="optional-note">Optional</span></label></div>
+                        <textarea id="q43" name="q43" class="free-text" maxlength="300" placeholder="Your figure or estimate"></textarea>
+                        <div class="char-count"><span id="q43Count">0</span> / 300</div>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="btn" id="exposureBtn">See your exposure</button>
+                </div>
+                <div class="form-error" id="exposureError" role="alert" aria-live="polite"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stage 3: Paragraph + confrontation + handoff -->
+    <div class="container narrow stage" id="stageOutput">
+        <div class="card paragraph-card">
+            <div class="paragraph-eyebrow">Your exposure</div>
+            <p class="output-paragraph" id="outputParagraph"></p>
+        </div>
+
+        <div class="card">
+            <div class="section-eyebrow">Sit with these</div>
+            <h2 class="section-heading">Four questions</h2>
+            <p class="section-sub">No input boxes. These are not questions the tool answers.</p>
+            <ol class="question-list">
+                <li>What initiatives do you currently have in place to move this number?</li>
+                <li>How do you measure whether those initiatives are working?</li>
+                <li>When was the last time this figure moved meaningfully, and what caused it?</li>
+                <li>If you flatlined here for three more years, what would that mean for the business?</li>
+            </ol>
+        </div>
+
+        <div class="card handoff-card">
+            <p>Most executives cannot answer those four questions with data. They can answer them with instinct.</p>
+            <p>The Manager Gap Index is the measurement system that turns instinct into a quarterly trend line, six to twelve months ahead of where it shows up in the financials. It measures the one lever you have left.</p>
+            <a href="https://mgi.cloverera.com/" class="btn">Measure the Manager Gap</a>
         </div>
     </div>
 
     <script>
     (function () {
-        var yearLabels = ['Most recent year', 'Prior year', 'Two years ago'];
-        var fields = [
-            { key: 'revenue',   label: 'Annual revenue',          prefix: '$', tip: null },
-            { key: 'profit',    label: 'Net profit',              prefix: '$', tip: 'GAAP net income. Use operating profit if net income is not available. Negative values accepted.' },
-            { key: 'employees', label: 'Total employees (FTE)',   prefix: null, tip: null }
-        ];
-
-        var grid = document.getElementById('yearGrid');
-        var formError = document.getElementById('formError');
-        var output = document.getElementById('outputContainer');
-
-        // Build year input blocks
-        for (var y = 0; y < 3; y++) {
-            var block = document.createElement('div');
-            block.className = 'year-block';
-            block.innerHTML =
-                '<div class="year-label">Year ' + (y + 1) + '</div>' +
-                '<div class="year-name">' + yearLabels[y] + '</div>';
-
-            for (var f = 0; f < fields.length; f++) {
-                var fld = fields[f];
-                var inputId = fld.key + '_' + y;
-                var allowNeg = fld.key === 'profit';
-
-                var group = document.createElement('div');
-                group.className = 'input-group';
-
-                var labelHtml = '<label for="' + inputId + '">' + fld.label;
-                if (fld.tip) {
-                    labelHtml += ' <span class="tooltip" tabindex="0" data-tip="' + fld.tip + '" aria-label="' + fld.tip + '">i</span>';
-                }
-                labelHtml += '</label>';
-
-                var wrapperClass = fld.prefix ? 'input-wrapper' : 'input-wrapper no-prefix';
-                var prefixHtml = fld.prefix ? '<span class="input-prefix">' + fld.prefix + '</span>' : '';
-
-                group.innerHTML =
-                    labelHtml +
-                    '<div class="' + wrapperClass + '">' +
-                        prefixHtml +
-                        '<input type="text" inputmode="numeric" autocomplete="off" id="' + inputId + '" name="' + inputId + '" ' +
-                        'data-key="' + fld.key + '" data-year="' + y + '" data-allow-neg="' + (allowNeg ? '1' : '0') + '">' +
-                    '</div>';
-
-                block.appendChild(group);
-            }
-
-            grid.appendChild(block);
-        }
-
-        // Format numeric input live: keep digits (and optional leading '-' for profit), insert commas
+        // ---------- Numeric formatting ----------
         function formatNumeric(raw, allowNeg) {
             var negative = false;
             if (allowNeg && raw.indexOf('-') !== -1) negative = true;
             var digits = raw.replace(/[^0-9]/g, '');
             if (!digits) return negative ? '-' : '';
-            // Strip leading zeros (but allow single '0')
             digits = digits.replace(/^0+(?=\d)/, '');
             var withCommas = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             return (negative ? '-' : '') + withCommas;
         }
 
         function parseNumeric(formatted) {
-            if (!formatted) return NaN;
-            var clean = formatted.replace(/,/g, '');
+            if (!formatted && formatted !== 0) return NaN;
+            var clean = String(formatted).replace(/,/g, '');
             if (clean === '-' || clean === '') return NaN;
             var n = parseFloat(clean);
             return isNaN(n) ? NaN : n;
         }
 
-        // Wire up formatting on every numeric input
-        var inputs = grid.querySelectorAll('input[type="text"]');
-        for (var i = 0; i < inputs.length; i++) {
+        function formatCurrency(n) {
+            var rounded = Math.round(n);
+            var abs = Math.abs(rounded);
+            var s = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return (rounded < 0 ? '-$' : '$') + s;
+        }
+
+        // Wire formatting on financial inputs
+        var fmtInputs = document.querySelectorAll('input[type="text"][data-allow-neg]');
+        for (var i = 0; i < fmtInputs.length; i++) {
             (function (input) {
                 var allowNeg = input.getAttribute('data-allow-neg') === '1';
                 input.addEventListener('input', function () {
@@ -714,201 +1001,200 @@
                     var newCaret = Math.max(0, formatted.length - caretFromEnd);
                     try { input.setSelectionRange(newCaret, newCaret); } catch (e) {}
                 });
-            })(inputs[i]);
+            })(fmtInputs[i]);
         }
 
-        // Form submit -> compute and render
+        // ---------- Step 1: Calculate ----------
+        var calcError = document.getElementById('calcError');
+        var stageNumber = document.getElementById('stageNumber');
+        var stageOutput = document.getElementById('stageOutput');
+
+        var calculatedPpe = null;
+        var chosenDenomShort = null;
+        var chosenDenomLabel = null;
+
         document.getElementById('ppeForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            formError.textContent = '';
+            calcError.textContent = '';
 
-            var data = [];
+            var revenueEl = document.getElementById('revenue');
+            var profitEl = document.getElementById('profit');
+            var denomValueEl = document.getElementById('denomValue');
+            var denomChecked = document.querySelector('input[name="denom"]:checked');
+
+            var revenue = parseNumeric(revenueEl.value);
+            var profit = parseNumeric(profitEl.value);
+            var denomValue = parseNumeric(denomValueEl.value);
+
             var hasError = false;
-            var firstError = null;
+            var firstBad = null;
 
-            for (var y = 0; y < 3; y++) {
-                var rev = document.getElementById('revenue_' + y);
-                var prof = document.getElementById('profit_' + y);
-                var emp = document.getElementById('employees_' + y);
+            if (isNaN(revenue))                      { revenueEl.classList.add('error');    hasError = true; firstBad = firstBad || revenueEl; }
+            if (isNaN(profit))                       { profitEl.classList.add('error');     hasError = true; firstBad = firstBad || profitEl; }
+            if (isNaN(denomValue) || denomValue <= 0){ denomValueEl.classList.add('error'); hasError = true; firstBad = firstBad || denomValueEl; }
 
-                var revVal = parseNumeric(rev.value);
-                var profVal = parseNumeric(prof.value);
-                var empVal = parseNumeric(emp.value);
-
-                var rowError = false;
-                if (isNaN(revVal))                  { rev.classList.add('error');  rowError = true; }
-                if (isNaN(profVal))                 { prof.classList.add('error'); rowError = true; }
-                if (isNaN(empVal) || empVal <= 0)   { emp.classList.add('error');  rowError = true; }
-
-                if (rowError) {
-                    hasError = true;
-                    if (!firstError) firstError = (isNaN(revVal) ? rev : (isNaN(profVal) ? prof : emp));
-                }
-
-                data.push({ revenue: revVal, profit: profVal, employees: empVal });
+            if (!denomChecked) {
+                hasError = true;
+                calcError.textContent = 'Pick a denominator. Then fill all three numbers.';
+                if (!firstBad) firstBad = document.querySelector('input[name="denom"]');
             }
 
             if (hasError) {
-                formError.textContent = 'Fill every field. Employees must be greater than zero.';
-                if (firstError) firstError.focus();
+                if (!calcError.textContent) calcError.textContent = 'Fill all three numbers. Denominator must be greater than zero.';
+                if (firstBad && firstBad.focus) firstBad.focus();
                 return;
             }
 
-            renderOutput(data);
+            calculatedPpe = profit / denomValue;
+            chosenDenomShort = denomChecked.getAttribute('data-short');
+            chosenDenomLabel = denomChecked.getAttribute('data-output-label');
+
+            document.getElementById('numberLabel').textContent = 'Profit per ' + chosenDenomShort;
+            document.getElementById('numberFigure').textContent = formatCurrency(calculatedPpe);
+
+            stageNumber.classList.add('visible');
+            setTimeout(function () {
+                document.getElementById('numberLabel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 60);
         });
 
-        function renderOutput(data) {
-            var ppe = data.map(function (d) { return d.profit / d.employees; });
+        // ---------- Exclusive checkbox handling ----------
+        function wireExclusiveGroup(groupId) {
+            var group = document.getElementById(groupId);
+            if (!group) return;
+            var boxes = group.querySelectorAll('input[type="checkbox"]');
+            for (var i = 0; i < boxes.length; i++) {
+                boxes[i].addEventListener('change', function (e) {
+                    var changed = e.target;
+                    if (changed.checked && changed.getAttribute('data-exclusive') === '1') {
+                        for (var j = 0; j < boxes.length; j++) {
+                            if (boxes[j] !== changed) boxes[j].checked = false;
+                        }
+                    } else if (changed.checked && changed.getAttribute('data-exclusive') === '0') {
+                        for (var k = 0; k < boxes.length; k++) {
+                            if (boxes[k].getAttribute('data-exclusive') === '1') boxes[k].checked = false;
+                        }
+                    }
+                });
+            }
+        }
+        wireExclusiveGroup('q21Group');
+        wireExclusiveGroup('q31Group');
 
-            // The number (most recent = year index 0)
-            document.getElementById('ppeFigure').textContent = formatCurrency(ppe[0]);
+        // Char counter for q43
+        var q43 = document.getElementById('q43');
+        var q43Count = document.getElementById('q43Count');
+        q43.addEventListener('input', function () { q43Count.textContent = q43.value.length; });
 
-            // Chart
-            drawChart(ppe);
+        // ---------- Step 2: See your exposure ----------
+        var exposureError = document.getElementById('exposureError');
 
-            // Reveal and scroll
-            output.classList.add('visible');
+        document.getElementById('exposureForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            exposureError.textContent = '';
+
+            var q11 = getRadio('q11');
+            var q12Raw = document.getElementById('q12').value;
+            var q12 = q12Raw === '' ? NaN : parseInt(q12Raw, 10);
+            var q21 = getCheckedValues('q21');
+            var q22 = getRadio('q22');
+            var q31 = getCheckedValues('q31');
+            var q32 = getRadio('q32');
+            var q41 = getRadio('q41');
+            var q42 = getRadio('q42');
+
+            var missing = [];
+            if (q11 === null) missing.push('Group 1 confidence rating');
+            if (isNaN(q12) || q12 < 0 || q12 > 100) missing.push('Group 1 percentage (0 to 100)');
+            if (q21.length === 0) missing.push('Group 2 pressure sources');
+            if (q22 === null) missing.push('Group 2 pricing-pressure rating');
+            if (q31.length === 0) missing.push('Group 3 levers pulled');
+            if (q32 === null) missing.push('Group 3 runway rating');
+            if (q41 === null) missing.push('Group 4 manager visibility');
+            if (q42 === null) missing.push('Group 4 worst-managers confidence');
+
+            if (missing.length > 0) {
+                exposureError.textContent = 'Answer all required questions. Missing: ' + missing.join(', ') + '.';
+                return;
+            }
+
+            var paragraph = assembleParagraph({
+                ppe: calculatedPpe,
+                denomShort: chosenDenomShort,
+                q11: q11, q12: q12,
+                q21: q21, q22: q22,
+                q31: q31, q32: q32,
+                q41: q41, q42: q42
+            });
+
+            document.getElementById('outputParagraph').textContent = paragraph;
+            stageOutput.classList.add('visible');
             setTimeout(function () {
-                output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.getElementById('outputParagraph').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 60);
+        });
+
+        function getRadio(name) {
+            var el = document.querySelector('input[name="' + name + '"]:checked');
+            return el ? parseInt(el.value, 10) || el.value : null;
         }
 
-        function formatCurrency(n) {
-            var rounded = Math.round(n);
-            var abs = Math.abs(rounded);
-            var formatted = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            return (rounded < 0 ? '-$' : '$') + formatted;
+        function getCheckedValues(name) {
+            var els = document.querySelectorAll('input[name="' + name + '"]:checked');
+            var out = [];
+            for (var i = 0; i < els.length; i++) out.push(els[i].value);
+            return out;
         }
 
-        function drawChart(values) {
-            // values are in chronological order index 0=most recent. Chart left-to-right = oldest to newest.
-            var chrono = values.slice().reverse();
-            var labels = ['Two years ago', 'Prior year', 'Most recent'];
-
-            var svg = document.getElementById('ppeChart');
-            while (svg.firstChild) svg.removeChild(svg.firstChild);
-
-            var W = 800, H = 360;
-            var padL = 90, padR = 40, padT = 30, padB = 60;
-            var plotW = W - padL - padR;
-            var plotH = H - padT - padB;
-
-            var rawMin = Math.min.apply(null, chrono);
-            var rawMax = Math.max.apply(null, chrono);
-            var yMin, yMax;
-            if (rawMin === rawMax) {
-                // Flat line: pad symmetrically so the point sits center
-                var pad = Math.max(Math.abs(rawMax) * 0.2, 1);
-                yMin = rawMin - pad;
-                yMax = rawMax + pad;
-            } else {
-                var range = rawMax - rawMin;
-                yMin = rawMin - range * 0.15;
-                yMax = rawMax + range * 0.15;
-                // If all positive, anchor baseline at 0 for honesty
-                if (rawMin >= 0) yMin = 0;
-            }
-
-            function xAt(i) { return padL + (plotW * i) / (chrono.length - 1); }
-            function yAt(v) { return padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH; }
-
-            var ns = 'http://www.w3.org/2000/svg';
-
-            // Y-axis line
-            var yAxis = document.createElementNS(ns, 'line');
-            yAxis.setAttribute('x1', padL); yAxis.setAttribute('x2', padL);
-            yAxis.setAttribute('y1', padT); yAxis.setAttribute('y2', padT + plotH);
-            yAxis.setAttribute('stroke', '#E5E7EB'); yAxis.setAttribute('stroke-width', '1');
-            svg.appendChild(yAxis);
-
-            // X-axis line
-            var xAxis = document.createElementNS(ns, 'line');
-            xAxis.setAttribute('x1', padL); xAxis.setAttribute('x2', padL + plotW);
-            xAxis.setAttribute('y1', padT + plotH); xAxis.setAttribute('y2', padT + plotH);
-            xAxis.setAttribute('stroke', '#E5E7EB'); xAxis.setAttribute('stroke-width', '1');
-            svg.appendChild(xAxis);
-
-            // Y-axis labels: yMin, mid, yMax
-            var yTicks = [yMin, (yMin + yMax) / 2, yMax];
-            for (var t = 0; t < yTicks.length; t++) {
-                var v = yTicks[t];
-                var yPos = yAt(v);
-
-                var grid = document.createElementNS(ns, 'line');
-                grid.setAttribute('x1', padL); grid.setAttribute('x2', padL + plotW);
-                grid.setAttribute('y1', yPos); grid.setAttribute('y2', yPos);
-                grid.setAttribute('stroke', '#F1F3F5'); grid.setAttribute('stroke-width', '1');
-                svg.appendChild(grid);
-
-                var lbl = document.createElementNS(ns, 'text');
-                lbl.setAttribute('x', padL - 12);
-                lbl.setAttribute('y', yPos + 4);
-                lbl.setAttribute('text-anchor', 'end');
-                lbl.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif');
-                lbl.setAttribute('font-size', '12');
-                lbl.setAttribute('fill', '#4B5563');
-                lbl.textContent = formatCurrencyShort(v);
-                svg.appendChild(lbl);
-            }
-
-            // X-axis labels
-            for (var i = 0; i < chrono.length; i++) {
-                var xLbl = document.createElementNS(ns, 'text');
-                xLbl.setAttribute('x', xAt(i));
-                xLbl.setAttribute('y', padT + plotH + 28);
-                xLbl.setAttribute('text-anchor', 'middle');
-                xLbl.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif');
-                xLbl.setAttribute('font-size', '13');
-                xLbl.setAttribute('font-weight', '600');
-                xLbl.setAttribute('fill', '#1F2937');
-                xLbl.textContent = labels[i];
-                svg.appendChild(xLbl);
-            }
-
-            // Connecting line
-            var pts = chrono.map(function (v, i) { return xAt(i) + ',' + yAt(v); }).join(' ');
-            var line = document.createElementNS(ns, 'polyline');
-            line.setAttribute('points', pts);
-            line.setAttribute('fill', 'none');
-            line.setAttribute('stroke', '#46AEB8');
-            line.setAttribute('stroke-width', '3');
-            line.setAttribute('stroke-linecap', 'round');
-            line.setAttribute('stroke-linejoin', 'round');
-            svg.appendChild(line);
-
-            // Data points + value labels
-            for (var p = 0; p < chrono.length; p++) {
-                var cx = xAt(p), cy = yAt(chrono[p]);
-
-                var c = document.createElementNS(ns, 'circle');
-                c.setAttribute('cx', cx); c.setAttribute('cy', cy);
-                c.setAttribute('r', '6');
-                c.setAttribute('fill', '#FFFFFF');
-                c.setAttribute('stroke', '#0D7C88');
-                c.setAttribute('stroke-width', '3');
-                svg.appendChild(c);
-
-                var vLbl = document.createElementNS(ns, 'text');
-                var labelY = cy - 14;
-                if (labelY < padT + 12) labelY = cy + 22;
-                vLbl.setAttribute('x', cx);
-                vLbl.setAttribute('y', labelY);
-                vLbl.setAttribute('text-anchor', 'middle');
-                vLbl.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif');
-                vLbl.setAttribute('font-size', '13');
-                vLbl.setAttribute('font-weight', '700');
-                vLbl.setAttribute('fill', '#111827');
-                vLbl.textContent = formatCurrencyShort(chrono[p]);
-                svg.appendChild(vLbl);
-            }
+        // ---------- Paragraph assembly ----------
+        function assembleParagraph(d) {
+            var s1 = sentence1(d);
+            var s2 = sentence2(d);
+            var s3 = sentence3(d);
+            var s4 = sentence4(d);
+            return [s1, s2, s3, s4].join(' ');
         }
 
-        function formatCurrencyShort(n) {
-            var abs = Math.abs(n);
-            var sign = n < 0 ? '-' : '';
-            if (abs >= 1e6) return sign + '$' + (n / 1e6).toFixed(abs >= 1e7 ? 1 : 2).replace(/\.?0+$/, '') + 'M';
-            if (abs >= 1e3) return sign + '$' + Math.round(abs / 1e3).toLocaleString() + 'K';
-            return sign + '$' + Math.round(abs).toLocaleString();
+        function sentence1(d) {
+            return 'Your profit per ' + d.denomShort + ' is ' + formatCurrency(d.ppe) + '.';
+        }
+
+        function sentence2(d) {
+            var levers = d.q31.filter(function (v) { return v !== 'none'; });
+            var noneSelected = d.q31.indexOf('none') !== -1;
+            var count = levers.length;
+
+            if (noneSelected && count === 0) {
+                return "You haven't pulled the mechanical levers yet, which means you still have one-time resets available. None of them change the underlying trajectory.";
+            }
+            if (count >= 5)  return "You've pulled most of the mechanical playbook.";
+            if (count >= 3)  return "You've pulled several mechanical levers already.";
+            if (count >= 1)  return "You have mechanical options still open, though they buy time rather than trajectory.";
+            return "You haven't pulled the mechanical levers yet, which means you still have one-time resets available. None of them change the underlying trajectory.";
+        }
+
+        function sentence3(d) {
+            var ex = d.q32 <= 2;     // exhausted
+            var lots = d.q32 >= 4;   // plenty left
+            var lowDrift = d.q11 <= 2;
+            var highDrift = d.q11 >= 4;
+
+            if (ex && lowDrift)   return "The levers you've pulled are approaching their limit, and you're not confident the number holds without further action.";
+            if (ex && highDrift)  return "The levers you've pulled are approaching their limit, though you believe the number holds for now. Drift tends to surface later than expected.";
+            if (lots && lowDrift) return "You believe there's more mechanical runway, though you're not confident the number holds steady. Worth testing that assumption.";
+            if (lots && highDrift)return "You see mechanical runway ahead and feel confident about drift. If both are accurate, the question is what happens after.";
+            return "The mechanical picture is mixed, with some levers still available and some pressure on the number.";
+        }
+
+        function sentence4(d) {
+            if (d.q41 === 'no' || d.q41 === 'not_sure') {
+                return "You don't currently have visibility into which of your managers are enabling their teams and which are suppressing them. That means the one renewable lever left on this number is the one you're not measuring.";
+            }
+            if (d.q41 === 'yes' && d.q42 >= 4) {
+                return 'You say you have visibility into manager effectiveness. The question is whether that visibility is systematic and trending, or instinctive.';
+            }
+            // q41 = yes, q42 <= 3
+            return "You say you have visibility into manager effectiveness, though you're not confident you could name your worst managers. That's the gap between instinct and measurement.";
         }
     })();
     </script>
