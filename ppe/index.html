@@ -605,6 +605,77 @@
             letter-spacing: 0.05em;
         }
 
+        /* Exposure map (primary output) */
+        .map-card {
+            padding: 2.5rem 2rem 1.75rem;
+        }
+
+        .map-eyebrow {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--deep-teal);
+            margin-bottom: 0.4rem;
+            text-align: center;
+        }
+
+        .map-heading {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.75rem;
+            text-align: center;
+        }
+
+        .exposure-map-wrap {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .map-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .map-svg .map-label-text {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            fill: var(--text-secondary);
+        }
+
+        .map-axis-line {
+            stroke: var(--medium-gray);
+            stroke-width: 0.4;
+        }
+
+        .exposure-dot {
+            r: 0;
+            opacity: 0;
+            transition: r 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease-out;
+        }
+
+        .exposure-dot.shown {
+            r: 3;
+            opacity: 1;
+        }
+
+        .map-caption {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .map-caption strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
         /* Output paragraph */
         .paragraph-card {
             background: linear-gradient(160deg, var(--white) 0%, rgba(70, 174, 184, 0.05) 100%);
@@ -710,6 +781,11 @@
             .question-list li::before { width: 1.9rem; height: 1.9rem; font-size: 0.85rem; }
 
             .output-paragraph { font-size: 1.05rem; }
+
+            .map-card { padding: 1.75rem 1rem 1.25rem; }
+            .map-heading { font-size: 1.15rem; margin-bottom: 1.25rem; }
+            .exposure-dot.shown { r: 5; }
+            .map-caption { font-size: 0.78rem; }
         }
 
         @keyframes fadeInUp {
@@ -947,8 +1023,27 @@
         </div>
     </div>
 
-    <!-- Stage 3: Paragraph + confrontation + handoff -->
+    <!-- Stage 3: Map + paragraph + confrontation + handoff -->
     <div class="container narrow stage" id="stageOutput">
+        <div class="card map-card">
+            <div class="map-eyebrow">Your position</div>
+            <h2 class="map-heading">Where you sit</h2>
+            <div class="exposure-map-wrap">
+                <svg viewBox="0 0 140 140" class="map-svg" role="img" aria-label="Exposure map showing your position on two axes: mechanical runway and human lever visibility">
+                    <line class="map-axis-line" x1="20" y1="70" x2="120" y2="70" />
+                    <line class="map-axis-line" x1="70" y1="20" x2="70" y2="120" />
+                    <text class="map-label-text" x="70" y="13" text-anchor="middle" font-size="5">MEASURED</text>
+                    <text class="map-label-text" x="70" y="134" text-anchor="middle" font-size="5">NOT MEASURED</text>
+                    <text class="map-label-text" x="17" y="72" text-anchor="end" font-size="5">EXHAUSTED</text>
+                    <text class="map-label-text" x="123" y="72" text-anchor="start" font-size="5">PLENTY LEFT</text>
+                    <circle id="exposureDot" class="exposure-dot" cx="70" cy="70" fill="#46AEB8" />
+                </svg>
+            </div>
+            <div class="map-caption">
+                Horizontal: <strong>Mechanical runway</strong>. Vertical: <strong>Human lever visibility</strong>.
+            </div>
+        </div>
+
         <div class="card paragraph-card">
             <div class="paragraph-eyebrow">Your exposure</div>
             <p class="output-paragraph" id="outputParagraph"></p>
@@ -1132,21 +1227,65 @@
                 return;
             }
 
-            var paragraph = assembleParagraph({
+            var inputs = {
                 ppe: calculatedPpe,
                 denomShort: chosenDenomShort,
                 q11: q11, q12: q12,
                 q21: q21, q22: q22,
                 q31: q31, q32: q32,
                 q41: q41, q42: q42
-            });
+            };
+
+            var paragraph = assembleParagraph(inputs);
+            var pos = computeMapPosition(inputs);
 
             document.getElementById('outputParagraph').textContent = paragraph;
+
+            // Plot area inside SVG: x in [20, 120], y in [20, 120].
+            // SVG y is inverted, so vertical=1 (top) maps to cy=20.
+            var dot = document.getElementById('exposureDot');
+            dot.classList.remove('shown');
+            dot.setAttribute('cx', (20 + pos.horizontal * 100).toFixed(2));
+            dot.setAttribute('cy', (20 + (1 - pos.vertical) * 100).toFixed(2));
+
             stageOutput.classList.add('visible');
+
             setTimeout(function () {
-                document.getElementById('outputParagraph').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.querySelector('.map-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 60);
+
+            // 400ms delay creates the visual punch moment after the map appears.
+            setTimeout(function () {
+                dot.classList.add('shown');
+            }, 400);
         });
+
+        // ---------- Exposure map position ----------
+        function computeMapPosition(d) {
+            var levers = d.q31.filter(function (v) { return v !== 'none'; });
+            var noneSelected = d.q31.indexOf('none') !== -1;
+
+            var horizontal;
+            if (noneSelected) {
+                horizontal = 0.85;
+            } else {
+                var leverFactor = 1 - (levers.length / 8);
+                var ratingFactor = (d.q32 - 1) / 4;
+                horizontal = (leverFactor * 0.5) + (ratingFactor * 0.5);
+            }
+            horizontal = Math.max(0.05, Math.min(0.95, horizontal));
+
+            var q41Score;
+            if (d.q41 === 'no') q41Score = 0.0;
+            else if (d.q41 === 'not_sure') q41Score = 0.25;
+            else q41Score = 0.7; // 'yes'
+
+            var q42Factor = (d.q42 - 1) / 4;
+            var vertical = (q41Score * 0.6) + (q42Factor * 0.4);
+            vertical = Math.max(0.05, Math.min(0.95, vertical));
+
+            return { horizontal: horizontal, vertical: vertical };
+        }
 
         function getRadio(name) {
             var el = document.querySelector('input[name="' + name + '"]:checked');
