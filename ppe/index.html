@@ -198,7 +198,8 @@
             font-size: 0.78rem;
             font-weight: 500;
             white-space: normal;
-            width: 240px;
+            width: max-content;
+            max-width: min(240px, calc(100vw - 2rem));
             text-align: left;
             line-height: 1.45;
             opacity: 0;
@@ -209,6 +210,14 @@
         }
 
         .tooltip:hover::after, .tooltip:focus::after { opacity: 1; }
+
+        @media (max-width: 600px) {
+            .tooltip::after {
+                left: 0;
+                transform: none;
+                max-width: calc(100vw - 3rem);
+            }
+        }
 
         .input-wrapper { position: relative; }
 
@@ -288,6 +297,7 @@
         }
 
         .denom-option-body {
+            display: block;
             border: 2px solid var(--medium-gray);
             border-radius: 10px;
             padding: 0.85rem 1rem;
@@ -306,13 +316,16 @@
         }
 
         .denom-option-title {
+            display: block;
             font-weight: 600;
             font-size: 0.92rem;
             color: var(--text-primary);
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.25rem;
+            line-height: 1.35;
         }
 
         .denom-option-desc {
+            display: block;
             font-size: 0.8rem;
             color: var(--text-secondary);
             line-height: 1.45;
@@ -687,8 +700,9 @@
             .number-card { padding: 2rem 1.25rem; }
             .number-figure { font-size: 2.75rem; }
 
-            .scale-row { gap: 0.35rem; }
-            .scale-option-body { font-size: 0.95rem; padding: 0.6rem 0; }
+            .scale-row { gap: 0.35rem; max-width: 100%; }
+            .scale-option-body { font-size: 0.95rem; padding: 0.85rem 0; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+            .scale-anchors { max-width: 100%; }
 
             .ynm-row { grid-template-columns: 1fr; max-width: none; }
 
