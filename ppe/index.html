@@ -438,7 +438,7 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 0.5rem;
-            max-width: 480px;
+            max-width: 320px;
         }
 
         .scale-option {
@@ -456,7 +456,6 @@
         .scale-option-body {
             border: 2px solid var(--medium-gray);
             border-radius: 8px;
-            padding: 0.7rem 0;
             background: var(--white);
             text-align: center;
             font-weight: 700;
@@ -464,6 +463,10 @@
             transition: border-color 0.15s, background 0.15s, color 0.15s;
             cursor: pointer;
             font-size: 1rem;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .scale-option input[type="radio"]:focus + .scale-option-body {
@@ -479,7 +482,7 @@
         .scale-anchors {
             display: flex;
             justify-content: space-between;
-            max-width: 480px;
+            max-width: 320px;
             margin-top: 0.45rem;
             font-size: 0.78rem;
             color: var(--text-secondary);
@@ -659,7 +662,7 @@
         }
 
         .exposure-dot.shown {
-            r: 3;
+            r: 4;
             opacity: 1;
         }
 
@@ -771,9 +774,9 @@
             .number-card { padding: 2rem 1.25rem; }
             .number-figure { font-size: 2.75rem; }
 
-            .scale-row { gap: 0.35rem; max-width: 100%; }
-            .scale-option-body { font-size: 0.95rem; padding: 0.85rem 0; min-height: 44px; display: flex; align-items: center; justify-content: center; }
-            .scale-anchors { max-width: 100%; }
+            .scale-row { gap: 0.4rem; max-width: 280px; }
+            .scale-option-body { font-size: 0.95rem; }
+            .scale-anchors { max-width: 280px; }
 
             .ynm-row { grid-template-columns: 1fr; max-width: none; }
 
@@ -784,7 +787,7 @@
 
             .map-card { padding: 1.75rem 1rem 1.25rem; }
             .map-heading { font-size: 1.15rem; margin-bottom: 1.25rem; }
-            .exposure-dot.shown { r: 5; }
+            .exposure-dot.shown { r: 7; }
             .map-caption { font-size: 0.78rem; }
         }
 
@@ -836,17 +839,17 @@
                     <label class="denom-label" id="denomGroupLabel">Denominator</label>
                     <div class="denom-options" role="radiogroup" aria-labelledby="denomGroupLabel">
                         <label class="denom-option">
-                            <input type="radio" name="denom" value="w2" data-short="W-2 employee" data-output-label="W-2 employees only">
+                            <input type="radio" name="denom" value="direct" data-short="employee" data-output-label="Direct employees only" checked>
                             <span class="denom-option-body">
-                                <span class="denom-option-title">W-2 employees only</span>
-                                <span class="denom-option-desc">Direct payroll headcount.</span>
+                                <span class="denom-option-title">Direct employees only</span>
+                                <span class="denom-option-desc">People on your payroll. Full-time only.</span>
                             </span>
                         </label>
                         <label class="denom-option">
                             <input type="radio" name="denom" value="fte_pt" data-short="FTE" data-output-label="FTEs including part-time">
                             <span class="denom-option-body">
                                 <span class="denom-option-title">FTEs including part-time</span>
-                                <span class="denom-option-desc">W-2 plus part-time, pro-rated to full-time.</span>
+                                <span class="denom-option-desc">Direct employees plus part-time, pro-rated.</span>
                             </span>
                         </label>
                         <label class="denom-option">
@@ -1029,14 +1032,14 @@
             <div class="map-eyebrow">Your position</div>
             <h2 class="map-heading">Where you sit</h2>
             <div class="exposure-map-wrap">
-                <svg viewBox="0 0 140 140" class="map-svg" role="img" aria-label="Exposure map showing your position on two axes: mechanical runway and human lever visibility">
-                    <line class="map-axis-line" x1="20" y1="70" x2="120" y2="70" />
-                    <line class="map-axis-line" x1="70" y1="20" x2="70" y2="120" />
-                    <text class="map-label-text" x="70" y="13" text-anchor="middle" font-size="5">MEASURED</text>
-                    <text class="map-label-text" x="70" y="134" text-anchor="middle" font-size="5">NOT MEASURED</text>
-                    <text class="map-label-text" x="17" y="72" text-anchor="end" font-size="5">EXHAUSTED</text>
-                    <text class="map-label-text" x="123" y="72" text-anchor="start" font-size="5">PLENTY LEFT</text>
-                    <circle id="exposureDot" class="exposure-dot" cx="70" cy="70" fill="#46AEB8" />
+                <svg viewBox="0 0 200 200" class="map-svg" role="img" aria-label="Exposure map showing your position on two axes: mechanical runway and human lever visibility">
+                    <line class="map-axis-line" x1="50" y1="100" x2="150" y2="100" />
+                    <line class="map-axis-line" x1="100" y1="50" x2="100" y2="150" />
+                    <text class="map-label-text" x="100" y="42" text-anchor="middle" dominant-baseline="middle" font-size="7">MEASURED</text>
+                    <text class="map-label-text" x="100" y="163" text-anchor="middle" dominant-baseline="middle" font-size="7">NOT MEASURED</text>
+                    <text class="map-label-text" x="45" y="100" text-anchor="end" dominant-baseline="middle" font-size="7">EXHAUSTED</text>
+                    <text class="map-label-text" x="155" y="100" text-anchor="start" dominant-baseline="middle" font-size="7">PLENTY LEFT</text>
+                    <circle id="exposureDot" class="exposure-dot" cx="100" cy="100" fill="#46AEB8" />
                 </svg>
             </div>
             <div class="map-caption">
@@ -1241,12 +1244,12 @@
 
             document.getElementById('outputParagraph').textContent = paragraph;
 
-            // Plot area inside SVG: x in [20, 120], y in [20, 120].
-            // SVG y is inverted, so vertical=1 (top) maps to cy=20.
+            // Plot area inside SVG: x in [50, 150], y in [50, 150].
+            // SVG y is inverted, so vertical=1 (top) maps to cy=50.
             var dot = document.getElementById('exposureDot');
             dot.classList.remove('shown');
-            dot.setAttribute('cx', (20 + pos.horizontal * 100).toFixed(2));
-            dot.setAttribute('cy', (20 + (1 - pos.vertical) * 100).toFixed(2));
+            dot.setAttribute('cx', (50 + pos.horizontal * 100).toFixed(2));
+            dot.setAttribute('cy', (50 + (1 - pos.vertical) * 100).toFixed(2));
 
             stageOutput.classList.add('visible');
 
