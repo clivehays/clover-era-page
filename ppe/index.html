@@ -642,7 +642,7 @@
             letter-spacing: 0.05em;
         }
 
-        /* Diagnostic output: heading, figure, paragraph, question */
+        /* Trajectory chart output */
         .output-section {
             padding: 1.5rem 1.75rem 0.5rem;
             margin-bottom: 1.5rem;
@@ -652,15 +652,15 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .output-figure {
-            margin-bottom: 2.25rem;
+            margin-bottom: 1.5rem;
         }
 
         .output-amount {
-            font-size: 3.75rem;
+            font-size: 3rem;
             font-weight: 800;
             letter-spacing: -0.02em;
             color: var(--text-primary);
@@ -670,7 +670,7 @@
         }
 
         .output-denom {
-            font-size: 1.05rem;
+            font-size: 0.98rem;
             font-weight: 500;
             color: var(--text-secondary);
             display: inline-block;
@@ -678,12 +678,105 @@
             margin-left: 0.6rem;
         }
 
-        .output-paragraph {
-            font-size: 1.1rem;
-            line-height: 1.7;
+        .trajectory-chart-wrap {
+            margin: 1.5rem auto 0.5rem;
+            width: 100%;
+            max-width: 880px;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .chart-svg .chart-axis-line  { stroke: #D1D5DB; stroke-width: 1; }
+        .chart-svg .chart-gridline   { stroke: #F1F3F5; stroke-width: 1; }
+        .chart-svg .chart-axis-label {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 11px;
+            fill: var(--text-secondary);
+            font-weight: 500;
+        }
+        .chart-svg .chart-axis-title {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 10.5px;
+            fill: #6B7280;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .chart-svg .chart-line-baseline {
+            fill: none;
+            stroke: #9CA3AF;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+        .chart-svg .chart-line-improved {
+            fill: none;
+            stroke: var(--coral);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+        .chart-svg .chart-endpoint-label {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+        .chart-svg .chart-endpoint-label.baseline { fill: #6B7280; }
+        .chart-svg .chart-endpoint-label.improved { fill: var(--coral); }
+        .chart-svg .chart-gap-bracket  { stroke: var(--text-secondary); stroke-width: 1; }
+        .chart-svg .chart-gap-label {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            fill: var(--text-primary);
+        }
+        .chart-svg .chart-gap-sublabel {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 10.5px;
+            font-weight: 500;
+            fill: var(--text-secondary);
+        }
+
+        /* Mobile legend (shown only when SVG endpoint labels are hidden) */
+        .chart-mobile-legend {
+            display: none;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-top: 0.6rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .chart-legend-swatch {
+            display: inline-block;
+            width: 22px;
+            height: 3px;
+            margin-right: 0.4rem;
+            vertical-align: middle;
+            border-radius: 2px;
+        }
+
+        .chart-legend-baseline .chart-legend-swatch { background: #9CA3AF; }
+        .chart-legend-improved .chart-legend-swatch { background: var(--coral); }
+
+        .chart-caption {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 0.6rem;
+            line-height: 1.55;
+        }
+
+        .diagnostic-sentence {
+            font-size: 1.05rem;
+            line-height: 1.65;
             color: var(--text-primary);
             font-weight: 400;
-            margin-bottom: 2.25rem;
+            margin: 1.75rem 0 1.5rem;
         }
 
         .output-question {
@@ -692,6 +785,28 @@
             color: var(--text-primary);
             font-weight: 500;
             font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-footer {
+            font-size: 0.78rem;
+            line-height: 1.55;
+            color: #6B7280;
+            margin-top: 1rem;
+        }
+
+        .chart-footer em {
+            font-style: italic;
+        }
+
+        .tool-footer {
+            font-size: 0.74rem;
+            line-height: 1.55;
+            color: #6B7280;
+            text-align: center;
+            margin: 1.5rem auto 0;
+            max-width: 760px;
+            padding: 0 1rem;
         }
 
         /* Handoff */
@@ -740,10 +855,27 @@
 
             .output-section { padding: 1.25rem 1rem 0.5rem; }
             .output-heading { font-size: 1.2rem; margin-bottom: 1rem; }
-            .output-amount { font-size: 2.5rem; }
+            .output-amount { font-size: 2.25rem; }
             .output-denom { display: block; margin-left: 0; margin-top: 0.4rem; font-size: 0.95rem; }
-            .output-paragraph { font-size: 1rem; margin-bottom: 1.75rem; }
-            .output-question { font-size: 1rem; }
+
+            .chart-svg .chart-axis-label { font-size: 10px; }
+            .chart-svg .chart-axis-title { font-size: 9.5px; }
+
+            .chart-caption { font-size: 0.74rem; }
+            .diagnostic-sentence { font-size: 0.97rem; margin-top: 1.25rem; }
+            .output-question { font-size: 0.97rem; }
+            .chart-footer { font-size: 0.72rem; }
+            .tool-footer { font-size: 0.7rem; }
+        }
+
+        /* Chart-specific narrow-viewport rules: hide endpoint labels and the gap bracket
+           inside the SVG, and surface the HTML legend below the chart instead. */
+        @media (max-width: 640px) {
+            .chart-svg .chart-endpoint-label,
+            .chart-svg .chart-gap-bracket,
+            .chart-svg .chart-gap-label,
+            .chart-svg .chart-gap-sublabel { display: none; }
+            .chart-mobile-legend { display: flex; }
         }
 
         @keyframes fadeInUp {
@@ -1017,13 +1149,30 @@
     <!-- Stage 3: Map + paragraph + confrontation + handoff -->
     <div class="container narrow stage" id="stageOutput">
         <div class="output-section">
-            <h2 class="output-heading">Your number.</h2>
+            <h2 class="output-heading">Where this number goes.</h2>
+
             <div class="output-figure">
                 <span class="output-amount" id="ppeAmountText"></span>
                 <span class="output-denom" id="ppeDenomText"></span>
             </div>
-            <p class="output-paragraph" id="diagnosticParagraph" aria-live="polite"></p>
+
+            <div class="trajectory-chart-wrap">
+                <svg id="trajectoryChart" class="chart-svg" viewBox="0 0 880 420" role="img" aria-labelledby="chartTitle chartDesc" preserveAspectRatio="xMidYMid meet">
+                    <title id="chartTitle">Profit-per-employee trajectory chart</title>
+                    <desc id="chartDesc"></desc>
+                </svg>
+                <div class="chart-mobile-legend" aria-hidden="true">
+                    <span class="chart-legend-baseline"><span class="chart-legend-swatch"></span>Current path</span>
+                    <span class="chart-legend-improved"><span class="chart-legend-swatch"></span>With the lever addressed</span>
+                </div>
+                <p class="chart-caption">Current path based on your inputs. Improved path based on Bain's research on recoverable organisational drag.</p>
+            </div>
+
+            <p class="diagnostic-sentence" id="diagnosticSentence" aria-live="polite"></p>
+
             <p class="output-question">What are you doing to influence this number sustainably, and how would you know if it was working?</p>
+
+            <p class="chart-footer">Current path reflects the productivity stagnation documented by NBER (Feb 2026) across firms that have not addressed manager capability. Improved path reflects the 20-25% productive capacity that Bain (Mankins and Garton, <em>Time, Talent, Energy</em>, 2017) has documented is recoverable when organisational drag is addressed. This tool projects a conservative 15% recovery over 24 months, moderated by your specific inputs.</p>
         </div>
 
         <div class="card handoff-card">
@@ -1031,6 +1180,8 @@
             <p>The Manager Gap Index is the measurement system that turns instinct into a quarterly trend line, six to twelve months ahead of where it shows up in the financials. It measures the one lever you have left.</p>
             <a href="https://mgi.cloverera.com/" class="btn">Measure the Manager Gap</a>
         </div>
+
+        <p class="tool-footer">This tool draws on research from Bain (Mankins and Garton, 2017), McKinsey Quarterly (Bryan and Joyce, 2007), and Gallup's State of the American Manager. The profit-per-employee metric itself was established by McKinsey as a better proxy for returns on intangibles than ROIC.</p>
     </div>
 
     <script>
@@ -1215,54 +1366,324 @@
             var inputs = {
                 ppe: calculatedPpe,
                 denomShort: chosenDenomShort,
+                denomValue: chosenDenomValue,
                 q11: q11, q12: q12,
                 q21: q21, q22: q22,
                 q31: q31, q32: q32,
                 q41: q41, q42: q42
             };
 
+            stageOutput.classList.add('visible');
+            // Force a synchronous layout so the chart wrapper has a measurable width
+            // before the chart reads its container size.
+            void stageOutput.offsetWidth;
+
             renderOutput(inputs);
             captureSubmission(inputs);
-
-            stageOutput.classList.add('visible');
 
             setTimeout(function () {
                 document.querySelector('.output-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 60);
         });
 
-        // ---------- Diagnostic output (heading, figure, paragraph, question) ----------
+        // ---------- Trajectory chart output ----------
         function renderOutput(inputs) {
             document.getElementById('ppeAmountText').textContent = formatCurrency(inputs.ppe);
             document.getElementById('ppeDenomText').textContent  = 'per ' + inputs.denomShort;
-            document.getElementById('diagnosticParagraph').textContent = diagnosticParagraph(inputs);
+
+            var trajectory = computeTrajectory(inputs);
+            buildChart(inputs, trajectory);
+
+            document.getElementById('diagnosticSentence').textContent =
+                diagnosticSentence(trajectory.measurementState, trajectory.dollarGap);
+
+            document.getElementById('chartDesc').textContent =
+                'Line chart showing two projected trajectories of profit per ' + inputs.denomShort +
+                ' over 24 months. Current path projects ' + formatCurrency(trajectory.baselineEnd) +
+                ' per ' + inputs.denomShort + ' at month 24. Path with manager effectiveness addressed projects ' +
+                formatCurrency(trajectory.improvedEnd) + ' per ' + inputs.denomShort +
+                ' at month 24. The gap is ' + formatGap(trajectory.dollarGap) + ' per year.';
         }
 
-        function diagnosticParagraph(d) {
-            var noneSelected = d.q31.indexOf('none') !== -1;
-            var leversPulledCount = noneSelected
-                ? 0
-                : d.q31.filter(function (v) { return v !== 'none'; }).length;
-            var humanMeasured = d.q41 === 'yes' && d.q42 >= 4;
+        function computeTrajectory(inputs) {
+            // Mechanical runway feeds the baseline drift. Range 0.05 to 0.95.
+            var pos = computeMapPosition(inputs);
+            var mechanicalRunwayRemaining = pos.horizontal;
 
-            var s1 = 'This is your profit per ' + d.denomShort + '.';
+            // Annual baseline drift: -1.8% (exhausted) to +1.6% (plenty left).
+            var baselineAnnualGrowthRate = -0.02 + (mechanicalRunwayRemaining * 0.04);
+            var baselineEnd = inputs.ppe * Math.pow(1 + baselineAnnualGrowthRate, 2);
 
-            var s2;
-            if (noneSelected || leversPulledCount === 0) {
-                s2 = "Moving it sustainably means either mechanical options you haven't used or human effectiveness you're not currently measuring. You haven't pulled the mechanical levers yet. When you do, they are one-time resets.";
-            } else if (leversPulledCount >= 6) {
-                s2 = "Moving it sustainably means either mechanical options you haven't exhausted or human effectiveness you're not currently measuring. You've pulled most of the mechanical playbook.";
-            } else if (leversPulledCount >= 3) {
-                s2 = "Moving it sustainably means either mechanical options you haven't exhausted or human effectiveness you're not currently measuring. You've pulled several mechanical levers already.";
-            } else {
-                s2 = "Moving it sustainably means either mechanical options you haven't exhausted or human effectiveness you're not currently measuring. You have mechanical options still open, though they buy time rather than trajectory.";
+            var measurementState = getMeasurementState(inputs);
+            var bainRecoveryCeiling = 0.15;
+            var dragRecoveryMultiplier =
+                measurementState === 'unmeasured' ? 1.0 :
+                measurementState === 'partial'    ? 0.5 :
+                                                    0.2; // measured
+            var effectiveRecovery = bainRecoveryCeiling * dragRecoveryMultiplier;
+            var improvedEnd = baselineEnd * (1 + effectiveRecovery);
+
+            var dollarGap = (improvedEnd - baselineEnd) * (inputs.denomValue || 0);
+
+            return {
+                startPpe: inputs.ppe,
+                baselineEnd: baselineEnd,
+                improvedEnd: improvedEnd,
+                dollarGap: dollarGap,
+                measurementState: measurementState
+            };
+        }
+
+        function getMeasurementState(d) {
+            if (d.q41 === 'yes' && d.q42 >= 4) return 'measured';
+            if (d.q41 === 'yes' && d.q42 <= 3) return 'partial';
+            if (d.q41 === 'not_sure') return 'partial';
+            return 'unmeasured';
+        }
+
+        function diagnosticSentence(measurementState, dollarGap) {
+            var gapText = formatGap(dollarGap);
+            if (measurementState === 'unmeasured') {
+                return 'The gap at 24 months is approximately ' + gapText + '. Closing it requires addressing the variable you don\u2019t currently measure: which of your managers are enabling your teams and which are blocking them.';
+            }
+            if (measurementState === 'partial') {
+                return 'The gap at 24 months is approximately ' + gapText + '. Partial visibility into manager effectiveness captures part of the improved trajectory. Systematic measurement captures the rest.';
+            }
+            return 'The gap at 24 months is approximately ' + gapText + '. You report that you measure manager effectiveness, which positions you to capture most of the improved trajectory. The question is whether that measurement is systematic enough to maintain.';
+        }
+
+        // ---------- Currency / gap formatting ----------
+        function formatGap(n) {
+            var rounded = Math.round(n / 100000) * 100000;
+            var abs = Math.abs(rounded);
+            if (abs >= 1000000) {
+                var m = rounded / 1000000;
+                return '$' + m.toFixed(1).replace(/\.0$/, '') + 'M';
+            }
+            if (abs >= 1000) {
+                return '$' + Math.round(rounded / 1000) + 'K';
+            }
+            return '$' + Math.round(rounded);
+        }
+
+        function formatAxisCurrency(n) {
+            var abs = Math.abs(n);
+            var sign = n < 0 ? '-' : '';
+            if (abs >= 1000000) return sign + '$' + (abs / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (abs >= 1000)    return sign + '$' + Math.round(abs / 1000) + 'K';
+            return sign + '$' + Math.round(abs);
+        }
+
+        // Standard "nice numbers" axis algorithm
+        function chooseIncrement(range) {
+            if (range <= 0) return 1;
+            var rough = range / 4;
+            var magnitude = Math.pow(10, Math.floor(Math.log10(rough)));
+            var fraction = rough / magnitude;
+            var nice = fraction < 1.5 ? 1 : fraction < 3 ? 2 : fraction < 7 ? 5 : 10;
+            return nice * magnitude;
+        }
+
+        function buildYAxis(values) {
+            var dataMin = Math.min.apply(null, values);
+            var dataMax = Math.max.apply(null, values);
+            if (dataMin === dataMax) {
+                var pad = Math.max(Math.abs(dataMin) * 0.1, 1);
+                dataMin -= pad;
+                dataMax += pad;
+            }
+            var range = dataMax - dataMin;
+            var slack = range * 0.18;
+            var increment = chooseIncrement(range + slack * 2);
+            var axisMin = Math.floor((dataMin - slack) / increment) * increment;
+            var axisMax = Math.ceil((dataMax + slack) / increment) * increment;
+            var ticks = [];
+            // Guard against runaway loops if increment is somehow tiny
+            for (var v = axisMin; v <= axisMax + 0.0001 && ticks.length < 12; v += increment) {
+                ticks.push(v);
+            }
+            return { min: axisMin, max: axisMax, ticks: ticks };
+        }
+
+        // SVG element helper
+        function svgEl(tag, attrs, content) {
+            var node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            if (attrs) {
+                for (var k in attrs) {
+                    if (attrs.hasOwnProperty(k)) node.setAttribute(k, attrs[k]);
+                }
+            }
+            if (content !== undefined && content !== null) node.textContent = String(content);
+            return node;
+        }
+
+        function buildChart(inputs, t) {
+            var svg = document.getElementById('trajectoryChart');
+            var wrap = svg.parentElement;
+
+            // Match viewBox to actual rendered width so 1 user unit = 1 CSS pixel.
+            // This keeps font-size in CSS px rendering at true pixel size on every viewport.
+            var W = Math.max(280, Math.min(wrap.clientWidth || 800, 880));
+            var H = Math.round(W * 0.52);
+            svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
+            // Preserve <title> and <desc>; clear everything else.
+            var preserve = [];
+            for (var i = svg.childNodes.length - 1; i >= 0; i--) {
+                var n = svg.childNodes[i];
+                if (n.nodeType === 1 && (n.tagName === 'title' || n.tagName === 'desc')) {
+                    preserve.unshift(n);
+                }
+                svg.removeChild(n);
+            }
+            preserve.forEach(function (p) { svg.appendChild(p); });
+
+            // On narrow viewports the endpoint labels and gap annotation are hidden via CSS
+            // (see the @media max-width: 640px rule), so the chart reclaims the right margin
+            // to give the trajectory lines more breathing room. On wider viewports padR has
+            // to clear the longest endpoint label ("With the lever addressed") plus the gap
+            // bracket and dollar label all the way to the viewBox edge.
+            var isNarrow = W < 640;
+            var padL = isNarrow ? 48 : 60;
+            var padR = isNarrow ? 24 : 250;
+            var padT = isNarrow ? 18 : 28;
+            var padB = isNarrow ? 44 : 58;
+            var plotW = W - padL - padR;
+            var plotH = H - padT - padB;
+
+            var yAxis = buildYAxis([t.startPpe, t.baselineEnd, t.improvedEnd]);
+
+            function xAt(months) {
+                return padL + (months / 24) * plotW;
+            }
+            function yAt(value) {
+                return padT + plotH - ((value - yAxis.min) / (yAxis.max - yAxis.min)) * plotH;
             }
 
-            var s3 = humanMeasured
-                ? 'You say you can see where your managers stand. The question is whether that visibility is systematic and trending, or instinctive.'
-                : "You don't currently measure which of your managers are enabling your teams and which are blocking them. That is the lever you haven't instrumented.";
+            // Subtle horizontal gridlines + Y-axis labels
+            yAxis.ticks.forEach(function (v) {
+                var y = yAt(v);
+                svg.appendChild(svgEl('line', {
+                    'class': 'chart-gridline',
+                    x1: padL, x2: padL + plotW,
+                    y1: y, y2: y
+                }));
+                svg.appendChild(svgEl('text', {
+                    'class': 'chart-axis-label',
+                    x: padL - 10,
+                    y: y + 4,
+                    'text-anchor': 'end'
+                }, formatAxisCurrency(v)));
+            });
 
-            return s1 + ' ' + s2 + ' ' + s3;
+            // X-axis line
+            svg.appendChild(svgEl('line', {
+                'class': 'chart-axis-line',
+                x1: padL, x2: padL + plotW,
+                y1: padT + plotH, y2: padT + plotH
+            }));
+
+            // X-axis tick labels at 0, 6, 12, 18, 24
+            [0, 6, 12, 18, 24].forEach(function (m) {
+                svg.appendChild(svgEl('text', {
+                    'class': 'chart-axis-label',
+                    x: xAt(m),
+                    y: padT + plotH + 20,
+                    'text-anchor': 'middle'
+                }, String(m)));
+            });
+
+            // Axis titles
+            svg.appendChild(svgEl('text', {
+                'class': 'chart-axis-title',
+                x: padL + plotW / 2,
+                y: padT + plotH + 45,
+                'text-anchor': 'middle'
+            }, 'Months from today'));
+
+            svg.appendChild(svgEl('text', {
+                'class': 'chart-axis-title',
+                x: 0, y: 0,
+                transform: 'translate(' + (padL - 50) + ' ' + (padT + plotH / 2) + ') rotate(-90)',
+                'text-anchor': 'middle'
+            }, 'Profit per ' + inputs.denomShort + ' ($)'));
+
+            // Smooth curves (quadratic Bezier with ease-out shape)
+            var x0 = xAt(0);
+            var y0 = yAt(t.startPpe);
+            var xEnd = xAt(24);
+
+            var yBaseEnd = yAt(t.baselineEnd);
+            var yImpEnd  = yAt(t.improvedEnd);
+
+            // Baseline: very gentle curve. Control point near midpoint, slight ease.
+            var baselinePath =
+                'M ' + x0 + ' ' + y0 +
+                ' Q ' + (x0 + 0.55 * (xEnd - x0)) + ' ' + (y0 + 0.30 * (yBaseEnd - y0)) +
+                ' '   + xEnd + ' ' + yBaseEnd;
+
+            // Improved: ease-out, flat early, accelerating late.
+            var improvedPath =
+                'M ' + x0 + ' ' + y0 +
+                ' Q ' + (x0 + 0.65 * (xEnd - x0)) + ' ' + (y0 + 0.10 * (yImpEnd - y0)) +
+                ' '   + xEnd + ' ' + yImpEnd;
+
+            svg.appendChild(svgEl('path', { 'class': 'chart-line-baseline', d: baselinePath }));
+            svg.appendChild(svgEl('path', { 'class': 'chart-line-improved', d: improvedPath }));
+
+            // Endpoint labels (hidden via CSS on mobile; legend takes over)
+            svg.appendChild(svgEl('text', {
+                'class': 'chart-endpoint-label improved',
+                x: xEnd + 8,
+                y: yImpEnd + 4,
+                'text-anchor': 'start'
+            }, 'With the lever addressed'));
+
+            svg.appendChild(svgEl('text', {
+                'class': 'chart-endpoint-label baseline',
+                x: xEnd + 8,
+                y: yBaseEnd + 4,
+                'text-anchor': 'start'
+            }, 'Current path'));
+
+            // Gap bracket and dollar label sit to the right of the endpoint labels.
+            // "With the lever addressed" is the longest label (~150 CSS px at 11.5px font),
+            // so the bracket clears it with a small gap. CSS hides this whole annotation
+            // below 640px viewport width.
+            var bracketX = xEnd + 158;
+
+            // Vertical line of the bracket
+            svg.appendChild(svgEl('line', {
+                'class': 'chart-gap-bracket',
+                x1: bracketX, x2: bracketX,
+                y1: yImpEnd, y2: yBaseEnd
+            }));
+            // Top tick
+            svg.appendChild(svgEl('line', {
+                'class': 'chart-gap-bracket',
+                x1: bracketX - 4, x2: bracketX + 4,
+                y1: yImpEnd, y2: yImpEnd
+            }));
+            // Bottom tick
+            svg.appendChild(svgEl('line', {
+                'class': 'chart-gap-bracket',
+                x1: bracketX - 4, x2: bracketX + 4,
+                y1: yBaseEnd, y2: yBaseEnd
+            }));
+
+            var midY = (yImpEnd + yBaseEnd) / 2;
+            svg.appendChild(svgEl('text', {
+                'class': 'chart-gap-label',
+                x: bracketX + 8,
+                y: midY - 2,
+                'text-anchor': 'start'
+            }, formatGap(t.dollarGap) + ' / year'));
+            svg.appendChild(svgEl('text', {
+                'class': 'chart-gap-sublabel',
+                x: bracketX + 8,
+                y: midY + 14,
+                'text-anchor': 'start'
+            }, 'at month 24'));
         }
 
         // ---------- Fire-and-forget capture to ppe_submissions ----------
