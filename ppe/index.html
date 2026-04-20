@@ -642,39 +642,35 @@
             letter-spacing: 0.05em;
         }
 
-        /* Depleting lever bar (primary output) */
-        .lever-card {
-            padding: 2.25rem 1.75rem 1.75rem;
+        /* Diagnostic output: heading, figure, paragraph, question */
+        .output-section {
+            padding: 1.5rem 1.75rem 0.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .lever-heading {
+        .output-heading {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 1.5rem;
         }
 
-        .lever-ppe-figure {
-            text-align: center;
-            margin-bottom: 1.75rem;
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
+        .output-figure {
+            margin-bottom: 2.25rem;
         }
 
-        .lever-ppe-figure.shown { opacity: 1; }
-
-        .ppe-amount {
-            font-size: 3.5rem;
+        .output-amount {
+            font-size: 3.75rem;
             font-weight: 800;
             letter-spacing: -0.02em;
             color: var(--text-primary);
-            line-height: 1;
+            line-height: 1.05;
             display: inline-block;
             vertical-align: middle;
         }
 
-        .ppe-denom {
-            font-size: 1rem;
+        .output-denom {
+            font-size: 1.05rem;
             font-weight: 500;
             color: var(--text-secondary);
             display: inline-block;
@@ -682,279 +678,20 @@
             margin-left: 0.6rem;
         }
 
-        /* Three-zone composition: mechanical | AI | human */
-        .exposure-zones {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-        }
-
-        .zone-mechanical {
-            flex: 1 1 auto;
-            max-width: 460px;
-            margin-right: 2rem;
-        }
-
-        .mechanical-bar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            border-radius: 8px;
-            overflow: hidden;
-            opacity: 0;
-            transition: opacity 0.25s ease-out;
-        }
-
-        .mechanical-bar.shown { opacity: 1; }
-
-        .lever-segment {
-            background: #F4F4F4;
-            min-height: 72px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 0.3rem;
-            text-align: center;
-            position: relative;
-            transition: background-color 0.25s ease-out;
-        }
-
-        .lever-segment.consumed {
-            background: #1F2937;
-        }
-
-        .lever-segment-label {
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            line-height: 1.2;
-            transition: color 0.25s ease-out;
-        }
-
-        .lever-segment.consumed .lever-segment-label {
-            color: rgba(255, 255, 255, 0.55);
-            text-decoration: line-through;
-        }
-
-        /* Zone 2: the AI zone */
-        .zone-ai {
-            flex: 0 0 auto;
-            width: 140px;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
-        }
-
-        .zone-ai.shown { opacity: 1; }
-
-        .ai-block {
-            min-height: 72px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0.4rem 0.4rem;
-            text-align: center;
-            background:
-                repeating-linear-gradient(
-                    45deg,
-                    #F4F4F4 0px,
-                    #F4F4F4 6px,
-                    #9CA3AF 6px,
-                    #9CA3AF 8px
-                );
-            color: var(--text-primary);
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
-        }
-
-        .ai-label {
-            font-size: 0.95rem;
-            font-weight: 800;
-            line-height: 1.05;
-            letter-spacing: 0.02em;
-        }
-
-        .ai-sublabel {
-            font-size: 0.72rem;
-            font-weight: 700;
-            margin-top: 0.2rem;
-            line-height: 1.15;
-        }
-
-        .ai-tertiary {
-            font-size: 0.65rem;
-            font-weight: 500;
-            margin-top: 0.15rem;
-            line-height: 1.2;
-            color: var(--text-secondary);
-        }
-
-        .ai-citation {
-            margin-top: 0.5rem;
-            font-size: 0.62rem;
-            line-height: 1.35;
-            color: #6B7280;
-            text-align: center;
-        }
-
-        /* Unlock bridge between AI zone and human lever */
-        .unlock-bridge {
-            flex: 0 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 0 1.25rem;
-            min-height: 72px;
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
-        }
-
-        .unlock-bridge.shown { opacity: 1; }
-
-        .unlock-text {
-            font-size: 0.62rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-            color: #6B7280;
-            margin-bottom: 0.3rem;
-            white-space: nowrap;
-        }
-
-        .unlock-arrow {
-            width: 32px;
-            height: 12px;
-            color: #9CA3AF;
-        }
-
-        /* Zone 3: human lever */
-        .zone-human {
-            flex: 0 0 auto;
-        }
-
-        .human-lever-block {
-            width: 150px;
-            min-height: 72px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 0.4rem;
-            text-align: center;
-            background: #4B5563;
-            color: var(--white);
-            opacity: 0;
-            transition: opacity 0.4s ease-out;
-            position: relative;
-        }
-
-        .human-lever-block.shown { opacity: 1; }
-
-        .human-lever-block.partial {
-            background: #9CA3AF;
-            color: var(--text-primary);
-        }
-
-        .human-lever-block.unlocked {
-            background: var(--coral);
-            color: var(--white);
-        }
-
-        .human-lever-icon {
-            width: 18px;
-            height: 22px;
-            margin-bottom: 0.3rem;
-        }
-
-        .human-lever-label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            line-height: 1.1;
-        }
-
-        .human-lever-sublabel {
-            font-size: 0.7rem;
-            font-weight: 500;
-            opacity: 0.85;
-            margin-top: 0.15rem;
-        }
-
-        .lever-caption {
-            text-align: center;
-            margin-top: 1.75rem;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-primary);
-            font-weight: 400;
-            max-width: 720px;
-            margin-left: auto;
-            margin-right: auto;
-            opacity: 0;
-            transition: opacity 0.4s ease-out;
-            min-height: 1.6em;
-        }
-
-        .lever-caption.shown { opacity: 1; }
-
-        /* Output paragraph */
-        .paragraph-card {
-            background: linear-gradient(160deg, var(--white) 0%, rgba(70, 174, 184, 0.05) 100%);
-        }
-
-        .paragraph-eyebrow {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 700;
-            color: var(--deep-teal);
-            margin-bottom: 1rem;
-        }
-
         .output-paragraph {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             line-height: 1.7;
             color: var(--text-primary);
             font-weight: 400;
+            margin-bottom: 2.25rem;
         }
 
-        /* Confrontation questions */
-        .question-list {
-            list-style: none;
-            counter-reset: q;
-        }
-
-        .question-list li {
-            counter-increment: q;
-            position: relative;
-            padding: 1.5rem 0 1.5rem 3.5rem;
-            border-top: 1px solid var(--medium-gray);
-            font-size: 1.1rem;
-            line-height: 1.55;
+        .output-question {
+            font-size: 1.05rem;
+            line-height: 1.6;
             color: var(--text-primary);
             font-weight: 500;
-        }
-
-        .question-list li:last-child { border-bottom: 1px solid var(--medium-gray); }
-
-        .question-list li::before {
-            content: counter(q);
-            position: absolute;
-            left: 0;
-            top: 1.55rem;
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 50%;
-            background: var(--deep-teal);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-            font-weight: 700;
+            font-style: italic;
         }
 
         /* Handoff */
@@ -1001,43 +738,12 @@
 
             .ynm-row { grid-template-columns: 1fr; max-width: none; }
 
-            .question-list li { font-size: 1rem; padding-left: 3rem; }
-            .question-list li::before { width: 1.9rem; height: 1.9rem; font-size: 0.85rem; }
-
-            .output-paragraph { font-size: 1.05rem; }
-
-            .lever-card { padding: 1.5rem 1rem 1.25rem; }
-            .lever-heading { font-size: 1.2rem; margin-bottom: 1rem; }
-            .ppe-amount { font-size: 2.5rem; }
-            .ppe-denom { display: block; margin-left: 0; margin-top: 0.25rem; font-size: 0.95rem; }
-
-            .exposure-zones {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1.5rem;
-            }
-            .zone-mechanical { max-width: 100%; margin-right: 0; }
-            .lever-segment { min-height: 56px; padding: 0.35rem 0.1rem; }
-            .lever-segment-label { font-size: 0.55rem; line-height: 1.15; }
-
-            .zone-ai { width: 100%; }
-            .ai-block { padding: 0.5rem; }
-            .unlock-bridge {
-                flex-direction: row;
-                margin: 0;
-                min-height: auto;
-                gap: 0.5rem;
-            }
-            .unlock-text { margin-bottom: 0; }
-            .unlock-arrow { transform: rotate(90deg); width: 12px; height: 32px; }
-
-            .zone-human { width: 100%; }
-            .human-lever-block { width: 100%; min-height: 64px; }
-            .human-lever-icon { width: 16px; height: 20px; margin-bottom: 0.2rem; }
-            .human-lever-label { font-size: 0.95rem; }
-            .human-lever-sublabel { font-size: 0.78rem; }
-
-            .lever-caption { font-size: 0.95rem; margin-top: 1.25rem; }
+            .output-section { padding: 1.25rem 1rem 0.5rem; }
+            .output-heading { font-size: 1.2rem; margin-bottom: 1rem; }
+            .output-amount { font-size: 2.5rem; }
+            .output-denom { display: block; margin-left: 0; margin-top: 0.4rem; font-size: 0.95rem; }
+            .output-paragraph { font-size: 1rem; margin-bottom: 1.75rem; }
+            .output-question { font-size: 1rem; }
         }
 
         @keyframes fadeInUp {
@@ -1045,15 +751,11 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* Output stage renders in its final state with no entrance animation. */
+        #stageOutput.visible { animation: none; }
+
         @media (prefers-reduced-motion: reduce) {
             .stage.visible { animation: none; }
-            .lever-ppe-figure,
-            .mechanical-bar,
-            .lever-segment,
-            .zone-ai,
-            .unlock-bridge,
-            .human-lever-block,
-            .lever-caption { transition: none; }
         }
     </style>
 </head>
@@ -1314,78 +1016,18 @@
 
     <!-- Stage 3: Map + paragraph + confrontation + handoff -->
     <div class="container narrow stage" id="stageOutput">
-        <div class="card lever-card">
-            <h2 class="lever-heading">Here's what you have left.</h2>
-
-            <div class="lever-ppe-figure" id="leverPpeFigure">
-                <span class="ppe-amount" id="ppeAmountText"></span>
-                <span class="ppe-denom" id="ppeDenomText"></span>
+        <div class="output-section">
+            <h2 class="output-heading">Your number.</h2>
+            <div class="output-figure">
+                <span class="output-amount" id="ppeAmountText"></span>
+                <span class="output-denom" id="ppeDenomText"></span>
             </div>
-
-            <div class="exposure-zones">
-                <div class="zone-mechanical">
-                    <div class="mechanical-bar" id="mechanicalBar" role="list" aria-label="Mechanical levers">
-                        <div class="lever-segment" data-key="headcount" role="listitem"><span class="lever-segment-label">Headcount</span></div>
-                        <div class="lever-segment" data-key="pricing"   role="listitem"><span class="lever-segment-label">Pricing</span></div>
-                        <div class="lever-segment" data-key="offshore"  role="listitem"><span class="lever-segment-label">Offshoring</span></div>
-                        <div class="lever-segment" data-key="process"   role="listitem"><span class="lever-segment-label">Process</span></div>
-                        <div class="lever-segment" data-key="span"      role="listitem"><span class="lever-segment-label">Span of control</span></div>
-                        <div class="lever-segment" data-key="vendor"    role="listitem"><span class="lever-segment-label">Vendor costs</span></div>
-                        <div class="lever-segment" data-key="mix"       role="listitem"><span class="lever-segment-label">Mix shift</span></div>
-                    </div>
-                </div>
-
-                <div class="zone-ai" id="zoneAi" role="group" aria-label="AI">
-                    <div class="ai-block">
-                        <span class="ai-label">AI</span>
-                        <span class="ai-sublabel" id="aiSublabel">Under consideration.</span>
-                        <span class="ai-tertiary">Not yet reflected in productivity data.</span>
-                    </div>
-                    <div class="ai-citation">NBER, Feb 2026: 90% of firms report no productivity impact from AI over the last three years.</div>
-                </div>
-
-                <div class="unlock-bridge" id="unlockBridge" aria-hidden="true">
-                    <span class="unlock-text">Unlocks here</span>
-                    <svg class="unlock-arrow" viewBox="0 0 32 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <line x1="1" y1="6" x2="29" y2="6" />
-                        <polyline points="24,1.5 30,6 24,10.5" />
-                    </svg>
-                </div>
-
-                <div class="zone-human">
-                    <div class="human-lever-block" id="humanLeverBlock" role="group" aria-label="Human lever">
-                        <svg class="human-lever-icon" id="humanLeverIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect x="5" y="11" width="14" height="10" rx="2" ry="2" />
-                            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-                        </svg>
-                        <span class="human-lever-label">Human lever</span>
-                        <span class="human-lever-sublabel" id="humanLeverSublabel">Not measured</span>
-                    </div>
-                </div>
-            </div>
-
-            <p class="lever-caption" id="leverCaption" aria-live="polite"></p>
-        </div>
-
-        <div class="card paragraph-card">
-            <div class="paragraph-eyebrow">Your exposure</div>
-            <p class="output-paragraph" id="outputParagraph"></p>
-        </div>
-
-        <div class="card">
-            <div class="section-eyebrow">Sit with these</div>
-            <h2 class="section-heading">Four questions</h2>
-            <p class="section-sub">No input boxes. These are not questions the tool answers.</p>
-            <ol class="question-list">
-                <li>What initiatives do you currently have in place to move this number?</li>
-                <li>How do you measure whether those initiatives are working?</li>
-                <li>When was the last time this figure moved meaningfully, and what caused it?</li>
-                <li>If you flatlined here for three more years, what would that mean for the business?</li>
-            </ol>
+            <p class="output-paragraph" id="diagnosticParagraph" aria-live="polite"></p>
+            <p class="output-question">What are you doing to influence this number sustainably, and how would you know if it was working?</p>
         </div>
 
         <div class="card handoff-card">
-            <p>Most executives cannot answer those four questions with data. They can answer them with instinct.</p>
+            <p>Most executives cannot answer that question with data. They can answer it with instinct.</p>
             <p>The Manager Gap Index is the measurement system that turns instinct into a quarterly trend line, six to twelve months ahead of where it shows up in the financials. It measures the one lever you have left.</p>
             <a href="https://mgi.cloverera.com/" class="btn">Measure the Manager Gap</a>
         </div>
@@ -1579,18 +1221,49 @@
                 q41: q41, q42: q42
             };
 
-            var paragraph = assembleParagraph(inputs);
-            document.getElementById('outputParagraph').textContent = paragraph;
-
-            renderLeverBar(inputs);
+            renderOutput(inputs);
             captureSubmission(inputs);
 
             stageOutput.classList.add('visible');
 
             setTimeout(function () {
-                document.querySelector('.lever-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.querySelector('.output-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 60);
         });
+
+        // ---------- Diagnostic output (heading, figure, paragraph, question) ----------
+        function renderOutput(inputs) {
+            document.getElementById('ppeAmountText').textContent = formatCurrency(inputs.ppe);
+            document.getElementById('ppeDenomText').textContent  = 'per ' + inputs.denomShort;
+            document.getElementById('diagnosticParagraph').textContent = diagnosticParagraph(inputs);
+        }
+
+        function diagnosticParagraph(d) {
+            var noneSelected = d.q31.indexOf('none') !== -1;
+            var leversPulledCount = noneSelected
+                ? 0
+                : d.q31.filter(function (v) { return v !== 'none'; }).length;
+            var humanMeasured = d.q41 === 'yes' && d.q42 >= 4;
+
+            var s1 = 'This is your profit per ' + d.denomShort + '.';
+
+            var s2;
+            if (noneSelected || leversPulledCount === 0) {
+                s2 = "Moving it sustainably means either mechanical options you haven't used or human effectiveness you're not currently measuring. You haven't pulled the mechanical levers yet. When you do, they are one-time resets.";
+            } else if (leversPulledCount >= 6) {
+                s2 = "Moving it sustainably means either mechanical options you haven't exhausted or human effectiveness you're not currently measuring. You've pulled most of the mechanical playbook.";
+            } else if (leversPulledCount >= 3) {
+                s2 = "Moving it sustainably means either mechanical options you haven't exhausted or human effectiveness you're not currently measuring. You've pulled several mechanical levers already.";
+            } else {
+                s2 = "Moving it sustainably means either mechanical options you haven't exhausted or human effectiveness you're not currently measuring. You have mechanical options still open, though they buy time rather than trajectory.";
+            }
+
+            var s3 = humanMeasured
+                ? 'You say you can see where your managers stand. The question is whether that visibility is systematic and trending, or instinctive.'
+                : "You don't currently measure which of your managers are enabling your teams and which are blocking them. That is the lever you haven't instrumented.";
+
+            return s1 + ' ' + s2 + ' ' + s3;
+        }
 
         // ---------- Fire-and-forget capture to ppe_submissions ----------
         function captureSubmission(inputs) {
@@ -1637,156 +1310,7 @@
             }
         }
 
-        // ---------- Three-zone exposure composition (primary visual) ----------
-        // Mechanical bar has 7 segments. AI is its own zone, always visible. Human lever is its own zone.
-        var SEGMENT_KEYS = ['headcount', 'pricing', 'offshore', 'process', 'span', 'vendor', 'mix'];
-
-        function renderLeverBar(inputs) {
-            var aiDeployed = inputs.q31.indexOf('automation') !== -1;
-            var noneSelected = inputs.q31.indexOf('none') !== -1;
-            // Mechanical levers exclude both 'none' and 'automation' (AI is its own zone now).
-            var mechanicalConsumed = noneSelected ? [] : inputs.q31.filter(function (v) {
-                return v !== 'none' && v !== 'automation';
-            });
-            var mechanicalCount = mechanicalConsumed.length;
-            var humanState = getHumanState(inputs);
-            var caption = exposureCaption(mechanicalCount, aiDeployed, humanState);
-
-            // PPE figure
-            document.getElementById('ppeAmountText').textContent = formatCurrency(inputs.ppe);
-            document.getElementById('ppeDenomText').textContent  = 'per ' + inputs.denomShort;
-
-            // Element refs
-            var ppeFigure   = document.getElementById('leverPpeFigure');
-            var bar         = document.getElementById('mechanicalBar');
-            var zoneAi      = document.getElementById('zoneAi');
-            var aiSublabel  = document.getElementById('aiSublabel');
-            var unlockBridge = document.getElementById('unlockBridge');
-            var humanBlock  = document.getElementById('humanLeverBlock');
-            var humanIcon   = document.getElementById('humanLeverIcon');
-            var humanSub    = document.getElementById('humanLeverSublabel');
-            var captionEl   = document.getElementById('leverCaption');
-            var segments    = bar.querySelectorAll('.lever-segment');
-
-            // Reset all stage classes so the animation replays on re-submission.
-            ppeFigure.classList.remove('shown');
-            bar.classList.remove('shown');
-            zoneAi.classList.remove('shown');
-            unlockBridge.classList.remove('shown');
-            humanBlock.classList.remove('shown', 'partial', 'unlocked');
-            captionEl.classList.remove('shown');
-            for (var i = 0; i < segments.length; i++) segments[i].classList.remove('consumed');
-
-            // AI sub-label
-            aiSublabel.textContent = aiDeployed ? 'Deployed.' : 'Under consideration.';
-
-            // Human lever state
-            if (humanState === 'unlocked') {
-                humanBlock.classList.add('unlocked');
-                humanIcon.style.display = 'none';
-                humanSub.textContent = 'Measured';
-            } else if (humanState === 'partial') {
-                humanBlock.classList.add('partial');
-                humanIcon.style.display = 'none';
-                humanSub.textContent = 'Partially visible';
-            } else {
-                humanIcon.style.display = '';
-                humanSub.textContent = 'Not measured';
-            }
-
-            captionEl.textContent = caption;
-
-            // Force reflow so the transitions restart cleanly on re-submission.
-            void bar.getBoundingClientRect();
-
-            var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-            if (reduceMotion) {
-                ppeFigure.classList.add('shown');
-                bar.classList.add('shown');
-                for (var k = 0; k < segments.length; k++) {
-                    if (mechanicalConsumed.indexOf(segments[k].getAttribute('data-key')) !== -1) {
-                        segments[k].classList.add('consumed');
-                    }
-                }
-                zoneAi.classList.add('shown');
-                humanBlock.classList.add('shown');
-                unlockBridge.classList.add('shown');
-                captionEl.classList.add('shown');
-                return;
-            }
-
-            // Animation sequence (per spec)
-            // 1. PPE fade in over 300ms, starting immediately.
-            setTimeout(function () { ppeFigure.classList.add('shown'); }, 50);
-
-            // 2. After PPE (300) + 200ms delay = 500ms: Zone 1 (mechanical bar) appears.
-            setTimeout(function () { bar.classList.add('shown'); }, 550);
-
-            // 3. After bar appears + 300ms = 850ms: consumed segments dim 200ms each, left-to-right.
-            var segDelay = 850;
-            var lastSegEnd = segDelay;
-            for (var s = 0; s < segments.length; s++) {
-                if (mechanicalConsumed.indexOf(segments[s].getAttribute('data-key')) === -1) continue;
-                (function (el, when) {
-                    setTimeout(function () { el.classList.add('consumed'); }, when);
-                })(segments[s], segDelay);
-                lastSegEnd = segDelay + 200;
-                segDelay += 200;
-            }
-
-            // 4. After last consumed segment + 400ms pause: Zone 2 (AI) fades in over 500ms.
-            var aiStart = lastSegEnd + 400;
-            setTimeout(function () { zoneAi.classList.add('shown'); }, aiStart);
-
-            // 5. After Zone 2 fully visible + 500ms storytelling pause: Zone 3 (human lever) fades in over 400ms.
-            var humanStart = aiStart + 500 + 500;
-            setTimeout(function () { humanBlock.classList.add('shown'); }, humanStart);
-
-            // 6. After human block + 200ms pause: unlock bridge fades in over 300ms.
-            var bridgeStart = humanStart + 400 + 200;
-            setTimeout(function () { unlockBridge.classList.add('shown'); }, bridgeStart);
-
-            // 7. After bridge fully visible + 200ms pause: caption fades in over 400ms.
-            var captionStart = bridgeStart + 300 + 200;
-            setTimeout(function () { captionEl.classList.add('shown'); }, captionStart);
-        }
-
-        function getHumanState(d) {
-            if (d.q41 === 'yes' && d.q42 >= 4) return 'unlocked';
-            if (d.q41 === 'yes' && d.q42 <= 3) return 'partial';
-            if (d.q41 === 'not_sure') return 'partial';
-            return 'locked';
-        }
-
-        // Caption logic centred on the AI argument.
-        // mechanicalConsumed counts mechanical levers checked, excluding 'none' and 'automation'.
-        function exposureCaption(mechanicalConsumed, aiDeployed, humanState) {
-            if (humanState === 'locked') {
-                if (aiDeployed && mechanicalConsumed >= 4) {
-                    return "Most of the mechanical playbook consumed. AI deployed, not yet producing. The lever that unlocks AI's return is the one you're not measuring.";
-                }
-                if (aiDeployed && mechanicalConsumed < 4) {
-                    return 'AI deployed, not yet producing. The industry pattern is clear: nearly 90% of firms report no productivity impact. The unlock sits in the human lever.';
-                }
-                if (!aiDeployed && mechanicalConsumed >= 4) {
-                    return "Most of the mechanical playbook consumed. AI is the next bet. Without the human lever measured, the industry pattern suggests it won't produce either.";
-                }
-                return 'Early on the curve. AI is the bet most CEOs are considering next. The data says it produces nothing without the human lever measured.';
-            }
-            if (humanState === 'partial') {
-                if (aiDeployed) {
-                    return 'AI deployed. You see manager effectiveness partially. Partial visibility is why most AI deployments underperform. The question is whether that sharpens before your board asks for AI ROI.';
-                }
-                return 'AI is the next lever on the table. Partial human-lever visibility means partial AI returns. This is where most firms are stuck right now.';
-            }
-            // unlocked
-            if (aiDeployed) {
-                return "AI deployed and you measure your managers. That combination is rare. It's also the combination that shows up in the firms actually reporting productivity gains.";
-            }
-            return "You measure your managers. When you deploy AI, you'll be in the small minority positioned for it to produce. The mechanism is already in place.";
-        }
-
+        // ---------- Helpers ----------
         function getRadio(name) {
             var el = document.querySelector('input[name="' + name + '"]:checked');
             return el ? parseInt(el.value, 10) || el.value : null;
@@ -1799,55 +1323,40 @@
             return out;
         }
 
-        // ---------- Paragraph assembly ----------
-        function assembleParagraph(d) {
-            var s1 = sentence1(d);
-            var s2 = sentence2(d);
-            var s3 = sentence3(d);
-            var s4 = sentence4(d);
-            return [s1, s2, s3, s4].join(' ');
+        // Used by captureSubmission to record a derived state alongside raw answers.
+        function getHumanState(d) {
+            if (d.q41 === 'yes' && d.q42 >= 4) return 'unlocked';
+            if (d.q41 === 'yes' && d.q42 <= 3) return 'partial';
+            if (d.q41 === 'not_sure') return 'partial';
+            return 'locked';
         }
 
-        function sentence1(d) {
-            return 'Your profit per ' + d.denomShort + ' is ' + formatCurrency(d.ppe) + '.';
-        }
-
-        function sentence2(d) {
+        // Kept in code per spec, even though no visual currently consumes it.
+        // Useful for future iterations or analytics on horizontal/vertical exposure positions.
+        function computeMapPosition(d) {
             var levers = d.q31.filter(function (v) { return v !== 'none'; });
             var noneSelected = d.q31.indexOf('none') !== -1;
-            var count = levers.length;
 
-            if (noneSelected && count === 0) {
-                return "You haven't pulled the mechanical levers yet, which means you still have one-time resets available. None of them change the underlying trajectory.";
+            var horizontal;
+            if (noneSelected) {
+                horizontal = 0.85;
+            } else {
+                var leverFactor = 1 - (levers.length / 8);
+                var ratingFactor = (d.q32 - 1) / 4;
+                horizontal = (leverFactor * 0.5) + (ratingFactor * 0.5);
             }
-            if (count >= 5)  return "You've pulled most of the mechanical playbook.";
-            if (count >= 3)  return "You've pulled several mechanical levers already.";
-            if (count >= 1)  return "You have mechanical options still open, though they buy time rather than trajectory.";
-            return "You haven't pulled the mechanical levers yet, which means you still have one-time resets available. None of them change the underlying trajectory.";
-        }
+            horizontal = Math.max(0.05, Math.min(0.95, horizontal));
 
-        function sentence3(d) {
-            var ex = d.q32 <= 2;     // exhausted
-            var lots = d.q32 >= 4;   // plenty left
-            var lowDrift = d.q11 <= 2;
-            var highDrift = d.q11 >= 4;
+            var q41Score;
+            if (d.q41 === 'no') q41Score = 0.0;
+            else if (d.q41 === 'not_sure') q41Score = 0.25;
+            else q41Score = 0.7;
 
-            if (ex && lowDrift)   return "The levers you've pulled are approaching their limit, and you're not confident the number holds without further action.";
-            if (ex && highDrift)  return "The levers you've pulled are approaching their limit, though you believe the number holds for now. Drift tends to surface later than expected.";
-            if (lots && lowDrift) return "You believe there's more mechanical runway, though you're not confident the number holds steady. Worth testing that assumption.";
-            if (lots && highDrift)return "You see mechanical runway ahead and feel confident about drift. If both are accurate, the question is what happens after.";
-            return "The mechanical picture is mixed, with some levers still available and some pressure on the number.";
-        }
+            var q42Factor = (d.q42 - 1) / 4;
+            var vertical = (q41Score * 0.6) + (q42Factor * 0.4);
+            vertical = Math.max(0.05, Math.min(0.95, vertical));
 
-        function sentence4(d) {
-            if (d.q41 === 'no' || d.q41 === 'not_sure') {
-                return "You don't currently have visibility into which of your managers are enabling their teams and which are suppressing them. That means the one renewable lever left on this number is the one you're not measuring.";
-            }
-            if (d.q41 === 'yes' && d.q42 >= 4) {
-                return 'You say you have visibility into manager effectiveness. The question is whether that visibility is systematic and trending, or instinctive.';
-            }
-            // q41 = yes, q42 <= 3
-            return "You say you have visibility into manager effectiveness, though you're not confident you could name your worst managers. That's the gap between instinct and measurement.";
+            return { horizontal: horizontal, vertical: vertical };
         }
     })();
     </script>
