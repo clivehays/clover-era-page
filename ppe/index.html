@@ -1211,7 +1211,7 @@
 
             <p class="output-question">What are you doing to influence this number sustainably, and how would you know if it was working?</p>
 
-            <p class="chart-footer">Current path is your projected 24-month trajectory. Improved path adds the 20-25% productive capacity that Bain has documented is recoverable when organisational drag is addressed (Mankins and Garton, <em>Time, Talent, Energy</em>, 2017). This tool applies a conservative 15% recovery ceiling, moderated by your stated visibility into manager effectiveness.</p>
+            <p class="chart-footer">Current path is your projected 24-month trajectory. Improved path adds the 20-25% productive capacity that Bain has documented is recoverable when organisational drag is addressed (Mankins and Garton, <em>Time, Talent, Energy</em>, 2017). This tool applies a conservative 15% recovery ceiling, moderated by your stated visibility into manager effectiveness. The five-year total extrapolates the year-2 run-rate forward at a constant level, with no further compounding past month 24.</p>
         </div>
 
         <div class="card handoff-card">
@@ -1457,7 +1457,7 @@
             buildChart(inputs, trajectory);
 
             document.getElementById('diagnosticSentence').textContent =
-                diagnosticSentence(trajectory.measurementState, trajectory.dollarGap);
+                diagnosticSentence(trajectory.measurementState, trajectory.dollarGap, trajectory.cumulative5yr);
 
             document.getElementById('chartDesc').textContent =
                 'Line chart showing two projected trajectories of profit per ' + inputs.denomShort +
@@ -1490,11 +1490,19 @@
             // Gap is always non-negative: improvedEnd >= baselineEnd by construction.
             var dollarGap = (improvedEnd - baselineEnd) * (inputs.denomValue || 0);
 
+            // Five-year cumulative under conservative assumptions:
+            //   - Years 0-2: gap ramps linearly from 0 to peak (area under ramp = 1 yr at peak)
+            //   - Years 2-5: gap holds at peak (3 yrs at peak)
+            // Total = peak * 4 = annual run-rate at month 24 * 4.
+            // Conservative because no further compounding past month 24.
+            var cumulative5yr = dollarGap * 4;
+
             return {
                 startPpe: inputs.ppe,
                 baselineEnd: baselineEnd,
                 improvedEnd: improvedEnd,
                 dollarGap: dollarGap,
+                cumulative5yr: cumulative5yr,
                 measurementState: measurementState
             };
         }
@@ -1506,15 +1514,16 @@
             return 'unmeasured';
         }
 
-        function diagnosticSentence(measurementState, dollarGap) {
+        function diagnosticSentence(measurementState, dollarGap, cumulative5yr) {
             var gapText = formatGap(dollarGap);
+            var cumText = formatGap(cumulative5yr);
             if (measurementState === 'unmeasured') {
-                return 'The gap at 24 months is approximately ' + gapText + '. Closing it requires addressing the variable you don\u2019t currently measure: which of your managers are enabling your teams and which are blocking them.';
+                return 'The gap at 24 months is approximately ' + gapText + ' per year. Over five years, that totals approximately ' + cumText + '. Closing it requires addressing the variable you don\u2019t currently measure: which of your managers are enabling your teams and which are blocking them.';
             }
             if (measurementState === 'partial') {
-                return 'The gap at 24 months is approximately ' + gapText + '. Partial visibility into manager effectiveness captures part of the improved trajectory. Systematic measurement captures the rest.';
+                return 'The gap at 24 months is approximately ' + gapText + ' per year. Over five years, that totals approximately ' + cumText + '. Partial visibility into manager effectiveness captures part of the improved trajectory. Systematic measurement captures the rest.';
             }
-            return 'The gap at 24 months is approximately ' + gapText + '. You report that you measure manager effectiveness, which positions you to capture most of the improved trajectory. The question is whether that measurement is systematic enough to maintain.';
+            return 'The gap at 24 months is approximately ' + gapText + ' per year. Over five years, that totals approximately ' + cumText + '. You report that you measure manager effectiveness, which positions you to capture most of the improved trajectory. The question is whether that measurement is systematic enough to maintain.';
         }
 
         // ---------- Currency / gap formatting ----------
