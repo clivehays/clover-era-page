@@ -1320,6 +1320,10 @@
         var calculatedPpe = null;
         var chosenDenomShort = null;
         var chosenDenomLabel = null;
+        var chosenDenomType = null;
+        var chosenRevenue = null;
+        var chosenProfit = null;
+        var chosenDenomValue = null;
 
         document.getElementById('ppeForm').addEventListener('submit', function (e) {
             e.preventDefault();
@@ -1356,6 +1360,10 @@
             calculatedPpe = profit / denomValue;
             chosenDenomShort = denomChecked.getAttribute('data-short');
             chosenDenomLabel = denomChecked.getAttribute('data-output-label');
+            chosenDenomType = denomChecked.value;
+            chosenRevenue = revenue;
+            chosenProfit = profit;
+            chosenDenomValue = denomValue;
 
             document.getElementById('numberLabel').textContent = 'Profit per ' + chosenDenomShort;
             document.getElementById('numberFigure').textContent = formatCurrency(calculatedPpe);
@@ -1439,6 +1447,7 @@
             document.getElementById('outputParagraph').textContent = paragraph;
 
             renderLeverBar(inputs);
+            captureSubmission(inputs);
 
             stageOutput.classList.add('visible');
 
@@ -1446,6 +1455,51 @@
                 document.querySelector('.lever-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 60);
         });
+
+        // ---------- Fire-and-forget capture to ppe_submissions ----------
+        function captureSubmission(inputs) {
+            try {
+                var industryEl = document.getElementById('industry');
+                var industryOtherEl = document.getElementById('industryOther');
+                var consumed = inputs.q31.filter(function (v) { return v !== 'none'; });
+
+                var payload = {
+                    industry:          industryEl ? industryEl.value || null : null,
+                    industry_other:    (industryEl && industryEl.value === 'other' && industryOtherEl) ? (industryOtherEl.value || null) : null,
+
+                    revenue:           chosenRevenue,
+                    profit:            chosenProfit,
+                    denominator_value: chosenDenomValue,
+                    denominator_type:  chosenDenomType,
+                    denominator_label: chosenDenomLabel,
+                    ppe:               inputs.ppe,
+
+                    q11_confidence:        inputs.q11,
+                    q12_stale_pct:         inputs.q12,
+                    q21_pressures:         inputs.q21,
+                    q22_pricing_pressure:  inputs.q22,
+                    q31_levers_pulled:     inputs.q31,
+                    q32_runway:            inputs.q32,
+                    q41_visibility:        inputs.q41,
+                    q42_confidence:        inputs.q42,
+                    q43_cost_estimate:     (document.getElementById('q43').value || '').trim() || null,
+
+                    human_state:           getHumanState(inputs),
+                    consumed_lever_count:  consumed.length
+                };
+
+                fetch('/api/ppe-submission', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    keepalive: true
+                }).catch(function (err) {
+                    console.warn('PPE submission capture failed:', err);
+                });
+            } catch (e) {
+                console.warn('PPE submission capture threw:', e);
+            }
+        }
 
         // ---------- Depleting lever bar (primary visual) ----------
         var SEGMENT_KEYS = ['headcount', 'pricing', 'offshore', 'automation', 'process', 'span', 'vendor', 'mix'];
