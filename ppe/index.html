@@ -1461,17 +1461,25 @@
         }
 
         // ---------- Currency / gap formatting ----------
+        // Adaptive rounding keeps ~2 significant figures across the magnitude scale,
+        // so a $9K gap doesn't render as "$0" and a $151K gap doesn't render as "$200K".
+        // Tiers:
+        //   < $1K       -> "$0"
+        //   < $100K     -> nearest $1K  (e.g. "$9K", "$43K")
+        //   < $1M       -> nearest $10K (e.g. "$150K", "$750K")
+        //   >= $1M      -> nearest $100K, 1 decimal (e.g. "$1.5M", "$12.4M")
         function formatGap(n) {
-            var rounded = Math.round(n / 100000) * 100000;
-            var abs = Math.abs(rounded);
-            var sign = rounded < 0 ? '-' : '';
-            if (abs >= 1000000) {
-                return sign + '$' + (abs / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-            }
-            if (abs >= 1000) {
+            var abs = Math.abs(n);
+            var sign = n < 0 ? '-' : '';
+            if (abs < 1000) return sign + '$0';
+            if (abs < 100000) {
                 return sign + '$' + Math.round(abs / 1000) + 'K';
             }
-            return sign + '$' + Math.round(abs);
+            if (abs < 1000000) {
+                return sign + '$' + (Math.round(abs / 10000) * 10) + 'K';
+            }
+            var m = Math.round(abs / 100000) / 10;
+            return sign + '$' + m.toFixed(1).replace(/\.0$/, '') + 'M';
         }
 
         function formatAxisCurrency(n) {
