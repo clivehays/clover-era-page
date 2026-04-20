@@ -1412,7 +1412,14 @@
 
             // Annual baseline drift: -1.8% (exhausted) to +1.6% (plenty left).
             var baselineAnnualGrowthRate = -0.02 + (mechanicalRunwayRemaining * 0.04);
-            var baselineEnd = inputs.ppe * Math.pow(1 + baselineAnnualGrowthRate, 2);
+            var driftFactor = Math.pow(1 + baselineAnnualGrowthRate, 2) - 1;
+
+            // Apply drift and recovery as signed adjustments scaled by the magnitude of PPE,
+            // not as multiplicative factors. This keeps the semantics consistent for
+            // loss-making companies (negative PPE): negative drift widens the loss, positive
+            // recovery shrinks it. The improved line is always at-or-above the baseline line.
+            var ppeMagnitude = Math.abs(inputs.ppe);
+            var baselineEnd = inputs.ppe + driftFactor * ppeMagnitude;
 
             var measurementState = getMeasurementState(inputs);
             var bainRecoveryCeiling = 0.15;
@@ -1421,8 +1428,9 @@
                 measurementState === 'partial'    ? 0.5 :
                                                     0.2; // measured
             var effectiveRecovery = bainRecoveryCeiling * dragRecoveryMultiplier;
-            var improvedEnd = baselineEnd * (1 + effectiveRecovery);
+            var improvedEnd = baselineEnd + effectiveRecovery * Math.abs(baselineEnd);
 
+            // Gap is always non-negative: improvedEnd >= baselineEnd by construction.
             var dollarGap = (improvedEnd - baselineEnd) * (inputs.denomValue || 0);
 
             return {
@@ -1456,14 +1464,14 @@
         function formatGap(n) {
             var rounded = Math.round(n / 100000) * 100000;
             var abs = Math.abs(rounded);
+            var sign = rounded < 0 ? '-' : '';
             if (abs >= 1000000) {
-                var m = rounded / 1000000;
-                return '$' + m.toFixed(1).replace(/\.0$/, '') + 'M';
+                return sign + '$' + (abs / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
             }
             if (abs >= 1000) {
-                return '$' + Math.round(rounded / 1000) + 'K';
+                return sign + '$' + Math.round(abs / 1000) + 'K';
             }
-            return '$' + Math.round(rounded);
+            return sign + '$' + Math.round(abs);
         }
 
         function formatAxisCurrency(n) {
