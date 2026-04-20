@@ -1681,7 +1681,7 @@
                 'text-anchor': 'middle'
             }, 'Profit per ' + inputs.denomShort + ' ($)'));
 
-            // Smooth curves (quadratic Bezier with ease-out shape)
+            // Smooth curves (quadratic Bezier with shared ease-out shape)
             var x0 = xAt(0);
             var y0 = yAt(t.startPpe);
             var xEnd = xAt(24);
@@ -1689,16 +1689,21 @@
             var yBaseEnd = yAt(t.baselineEnd);
             var yImpEnd  = yAt(t.improvedEnd);
 
-            // Baseline: very gentle curve. Control point near midpoint, slight ease.
+            // Both curves share the same control-point factors so the improved line is a
+            // parallel lift above the baseline at every point along the trajectory rather
+            // than a separately-eased curve that can dip beneath baseline mid-period when
+            // the projected baseline itself is steep (growth scenarios).
+            var cpX = x0 + 0.55 * (xEnd - x0);
+            var easeY = 0.30;
+
             var baselinePath =
                 'M ' + x0 + ' ' + y0 +
-                ' Q ' + (x0 + 0.55 * (xEnd - x0)) + ' ' + (y0 + 0.30 * (yBaseEnd - y0)) +
+                ' Q ' + cpX + ' ' + (y0 + easeY * (yBaseEnd - y0)) +
                 ' '   + xEnd + ' ' + yBaseEnd;
 
-            // Improved: ease-out, flat early, accelerating late.
             var improvedPath =
                 'M ' + x0 + ' ' + y0 +
-                ' Q ' + (x0 + 0.65 * (xEnd - x0)) + ' ' + (y0 + 0.10 * (yImpEnd - y0)) +
+                ' Q ' + cpX + ' ' + (y0 + easeY * (yImpEnd - y0)) +
                 ' '   + xEnd + ' ' + yImpEnd;
 
             svg.appendChild(svgEl('path', { 'class': 'chart-line-baseline', d: baselinePath }));
