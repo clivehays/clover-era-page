@@ -431,6 +431,36 @@
             word-break: break-word;
         }
 
+        .projection-block {
+            margin-top: 2.25rem;
+            padding-top: 1.75rem;
+            border-top: 1px solid var(--medium-gray);
+            text-align: left;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .projection-label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+            margin-bottom: 0.4rem;
+        }
+
+        .projection-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 0.85rem;
+        }
+
+        .projection-block .input-wrapper {
+            max-width: 240px;
+        }
+
         /* Exposure question groups */
         .exposure-group { margin-bottom: 2rem; }
         .exposure-group:last-of-type { margin-bottom: 1rem; }
@@ -1009,6 +1039,15 @@
         <div class="card number-card">
             <div class="number-label" id="numberLabel"></div>
             <div class="number-figure" id="numberFigure"></div>
+
+            <div class="projection-block">
+                <label for="projectedPpe" class="projection-label">Where do you expect this figure to be in 24 months at your current trajectory?</label>
+                <p class="projection-subtitle">Assuming you don't significantly change your approach to managing the workforce. Most users either accept the prefilled default for steady state, or enter a higher figure if they expect revenue growth to outpace headcount growth.</p>
+                <div class="input-wrapper">
+                    <span class="input-prefix">$</span>
+                    <input type="text" inputmode="numeric" autocomplete="off" id="projectedPpe" name="projectedPpe" data-allow-neg="1">
+                </div>
+            </div>
         </div>
 
         <div class="card">
@@ -1165,14 +1204,14 @@
                     <span class="chart-legend-baseline"><span class="chart-legend-swatch"></span>Current path</span>
                     <span class="chart-legend-improved"><span class="chart-legend-swatch"></span>With the lever addressed</span>
                 </div>
-                <p class="chart-caption">Current path based on your inputs. Improved path based on Bain's research on recoverable organisational drag.</p>
+                <p class="chart-caption">Current path based on your projected trajectory. Improved path adds the productive capacity Bain's research suggests is recoverable when organisational drag is addressed.</p>
             </div>
 
             <p class="diagnostic-sentence" id="diagnosticSentence" aria-live="polite"></p>
 
             <p class="output-question">What are you doing to influence this number sustainably, and how would you know if it was working?</p>
 
-            <p class="chart-footer">Current path reflects the productivity stagnation documented by NBER (Feb 2026) across firms that have not addressed manager capability. Improved path reflects the 20-25% productive capacity that Bain (Mankins and Garton, <em>Time, Talent, Energy</em>, 2017) has documented is recoverable when organisational drag is addressed. This tool projects a conservative 15% recovery over 24 months, moderated by your specific inputs.</p>
+            <p class="chart-footer">Current path is your projected 24-month trajectory. Improved path adds the 20-25% productive capacity that Bain has documented is recoverable when organisational drag is addressed (Mankins and Garton, <em>Time, Talent, Energy</em>, 2017). This tool applies a conservative 15% recovery ceiling, moderated by your stated visibility into manager effectiveness.</p>
         </div>
 
         <div class="card handoff-card">
@@ -1297,6 +1336,12 @@
             document.getElementById('numberLabel').textContent = 'Profit per ' + chosenDenomShort;
             document.getElementById('numberFigure').textContent = formatCurrency(calculatedPpe);
 
+            // Prefill the 24-month projection with the calculated PPE (steady-state default).
+            // Users override this if they expect revenue growth to outpace headcount growth.
+            var projectedInput = document.getElementById('projectedPpe');
+            projectedInput.value = formatNumeric(String(Math.round(calculatedPpe)), true);
+            projectedInput.classList.remove('error');
+
             stageNumber.classList.add('visible');
             setTimeout(function () {
                 document.getElementById('numberLabel').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1348,6 +1393,13 @@
             var q41 = getRadio('q41');
             var q42 = getRadio('q42');
 
+            // The 24-month projection lives outside this form (it sits with the PPE figure
+            // in stage 2), so we read it directly. Validate it as a number; allow any sign
+            // so a Series-A-stage company projecting a smaller-but-still-negative loss can
+            // proceed.
+            var projectedEl = document.getElementById('projectedPpe');
+            var projectedPpe = parseNumeric(projectedEl.value);
+
             var missing = [];
             if (q11 === null) missing.push('Group 1 confidence rating');
             if (isNaN(q12) || q12 < 0 || q12 > 100) missing.push('Group 1 percentage (0 to 100)');
@@ -1358,6 +1410,15 @@
             if (q41 === null) missing.push('Group 4 manager visibility');
             if (q42 === null) missing.push('Group 4 worst-managers confidence');
 
+            if (isNaN(projectedPpe)) {
+                projectedEl.classList.add('error');
+                exposureError.textContent = 'Enter your projected 24-month profit per ' + chosenDenomShort + ' (you can accept the prefilled default or override it).';
+                projectedEl.focus();
+                return;
+            } else {
+                projectedEl.classList.remove('error');
+            }
+
             if (missing.length > 0) {
                 exposureError.textContent = 'Answer all required questions. Missing: ' + missing.join(', ') + '.';
                 return;
@@ -1365,6 +1426,7 @@
 
             var inputs = {
                 ppe: calculatedPpe,
+                projectedPpe: projectedPpe,
                 denomShort: chosenDenomShort,
                 denomValue: chosenDenomValue,
                 q11: q11, q12: q12,
@@ -1406,20 +1468,11 @@
         }
 
         function computeTrajectory(inputs) {
-            // Mechanical runway feeds the baseline drift. Range 0.05 to 0.95.
-            var pos = computeMapPosition(inputs);
-            var mechanicalRunwayRemaining = pos.horizontal;
-
-            // Annual baseline drift: -1.8% (exhausted) to +1.6% (plenty left).
-            var baselineAnnualGrowthRate = -0.02 + (mechanicalRunwayRemaining * 0.04);
-            var driftFactor = Math.pow(1 + baselineAnnualGrowthRate, 2) - 1;
-
-            // Apply drift and recovery as signed adjustments scaled by the magnitude of PPE,
-            // not as multiplicative factors. This keeps the semantics consistent for
-            // loss-making companies (negative PPE): negative drift widens the loss, positive
-            // recovery shrinks it. The improved line is always at-or-above the baseline line.
-            var ppeMagnitude = Math.abs(inputs.ppe);
-            var baselineEnd = inputs.ppe + driftFactor * ppeMagnitude;
+            // Baseline endpoint is whatever the user told us their 24-month trajectory is.
+            // The tool no longer second-guesses that with a research-derived drift formula.
+            // (computeMapPosition is still defined for analytics/future use but no longer
+            // feeds the chart.)
+            var baselineEnd = inputs.projectedPpe;
 
             var measurementState = getMeasurementState(inputs);
             var bainRecoveryCeiling = 0.15;
@@ -1428,6 +1481,10 @@
                 measurementState === 'partial'    ? 0.5 :
                                                     0.2; // measured
             var effectiveRecovery = bainRecoveryCeiling * dragRecoveryMultiplier;
+
+            // Improved compounds on top of the user's baseline. Use additive form scaled
+            // by |baseline| so improvement always moves the line upward, including for
+            // negative-PPE companies still in the loss phase.
             var improvedEnd = baselineEnd + effectiveRecovery * Math.abs(baselineEnd);
 
             // Gap is always non-negative: improvedEnd >= baselineEnd by construction.
