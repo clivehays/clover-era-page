@@ -794,6 +794,54 @@
             border-radius: 50%;
         }
 
+        /* Execution Cost Band */
+        .execution-cost {
+            padding: 4.5rem 2rem;
+            background: var(--charcoal);
+            color: var(--white);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .execution-cost::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .execution-cost-content {
+            max-width: 720px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .execution-cost h2 {
+            font-size: clamp(1.65rem, 3.75vw, 2.1rem);
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .execution-cost p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.88);
+            line-height: 1.6;
+        }
+
+        .execution-cost .accent {
+            color: var(--coral);
+            font-weight: 600;
+        }
+
         /* CFO-Level Close */
         .cfo-close {
             padding: 5rem 2rem;
@@ -904,8 +952,8 @@
     <!-- Hero -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Nothing is broken. <span class="highlight">But everything is slower than it should be.</span></h1>
-            <p class="subtitle">Clover ERA shows you where execution is drifting inside your teams&hellip; before it shows up in your numbers.</p>
+            <h1>Your managers don't see <span class="highlight">what's really happening in their teams.</span></h1>
+            <p class="subtitle">Clover ERA measures the hidden human signals that determine whether teams execute&hellip; or silently fail.</p>
             <div class="hero-cta">
                 <a href="/assessment/" class="btn-primary">See where your teams are slowing down (2 min)</a>
             </div>
@@ -915,34 +963,36 @@
     <!-- Problem Section -->
     <section class="problem-section">
         <div class="problem-content">
-            <p class="problem-lead">Work is happening.</p>
-            <p class="problem-lead">But it's not translating into output the way you think it is.</p>
+            <p class="problem-lead">You're measuring output.</p>
             <div class="problem-gap"></div>
-            <p class="problem-body">Decisions take longer.</p>
-            <p class="problem-body">Ideas don't surface.</p>
-            <p class="problem-body">Teams look busy&hellip; but progress drifts.</p>
-            <p class="problem-kicker">You won't see this in dashboards.</p>
-            <p class="problem-kicker problem-kicker-final">Until it hits performance.</p>
+            <p class="problem-body">But output is the result of something you're not measuring:</p>
+            <p class="problem-kicker problem-kicker-final">what people are thinking, holding back, and not saying.</p>
         </div>
     </section>
 
-    <!-- Core Value: Early Warning System -->
+    <!-- Execution Cost -->
+    <section class="execution-cost">
+        <div class="execution-cost-content">
+            <h2>This is where execution breaks.</h2>
+            <p>And where <span class="accent">millions in performance</span> is lost&hellip; without any system detecting it.</p>
+        </div>
+    </section>
+
+    <!-- Solution: Manager Gap Index -->
     <section class="value-section">
         <div class="value-content">
-            <h2>Clover ERA is an early warning system for team performance.</h2>
-            <p class="value-intro">It shows:</p>
-            <p class="value-bullet">Where execution is slowing.</p>
-            <p class="value-bullet">Which teams are drifting.</p>
-            <p class="value-bullet">What managers need to do this week to fix it.</p>
+            <h2>The Manager Gap Index (MGI) shows you:</h2>
+            <p class="value-bullet">Which managers are seeing clearly.</p>
+            <p class="value-bullet">Which are missing signals.</p>
+            <p class="value-bullet">Where inaction is creating risk.</p>
         </div>
     </section>
 
-    <!-- Most tools... -->
+    <!-- Differentiation -->
     <section class="replacement-section">
         <div class="replacement-content">
-            <h2>Most tools tell you what already happened.</h2>
-            <p>Clover ERA shows you what's about to go wrong.</p>
-            <p>And what to do about it this week.</p>
+            <h2>AI can track what your teams produce.</h2>
+            <p>Clover ERA shows you why they are (or aren't).</p>
         </div>
     </section>
 
