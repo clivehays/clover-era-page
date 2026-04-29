@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Page not found — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="That page isn't here. Some links to where the rest of the site lives.">
+
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  body::before{
+    content:""; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none; mix-blend-mode: multiply; opacity: 0.7; z-index: 0;
+  }
+  a{ color: inherit; }
+
+  /* masthead — same pattern as the rest of the site */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+    width: 100%;
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 19px;
+    letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display:flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  nav.primary a:hover{ color: var(--ink); }
+  nav.primary a.cta{
+    color: var(--accent-body);
+    border-bottom: 1px solid var(--accent-body);
+    padding-bottom: 2px;
+  }
+
+  main{
+    position: relative; z-index: 1;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 56px;
+    flex: 1;
+    width: 100%;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+
+  .err-eyebrow{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+    margin-bottom: 28px;
+  }
+  .err-eyebrow .code{
+    color: var(--accent-body); font-weight: 500;
+  }
+  h1.err-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+    max-width: 800px;
+  }
+  h1.err-title em{ font-style: italic; color: var(--accent-body); font-weight: 400; }
+  .err-sub{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 19px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 28px 0 0;
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+
+  .destinations{
+    margin: 56px 0 0;
+    max-width: 720px;
+  }
+  .destinations .deck{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .destinations ul{
+    list-style: none; margin: 0; padding: 0;
+    border-top: 1px solid var(--ink);
+  }
+  .destinations li{
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .destinations a{
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 24px;
+    padding: 18px 0;
+    text-decoration: none;
+    color: var(--ink);
+    align-items: baseline;
+    transition: color 120ms ease;
+  }
+  .destinations a:hover{ color: var(--accent-body); }
+  .destinations a:hover .arrow{ transform: translateX(4px); }
+  .d-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 19px; line-height: 1.3;
+  }
+  .d-host{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: lowercase;
+    color: var(--ink-mute);
+    text-align: right;
+    transition: color 120ms ease;
+  }
+  .destinations a:hover .d-host{ color: var(--accent-body); }
+  .arrow{ display: inline-block; margin-left: 6px; transition: transform 160ms ease; }
+
+  /* footer */
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule);
+    margin: 80px auto 0;
+    padding: 36px 56px 48px;
+    max-width: 1180px;
+    width: 100%;
+    display: grid; grid-template-columns: 2fr 3fr;
+    gap: 48px; align-items: start;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 13px; line-height: 1.5;
+    color: var(--ink-mute); max-width: 360px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  @media (max-width: 720px){
+    .masthead{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    main{ padding: 64px 28px; }
+    .destinations a{ grid-template-columns: 1fr; gap: 4px; }
+    .d-host{ text-align: left; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px; }
+    footer .links{ grid-template-columns: 1fr; }
+  }
+</style>
+
+<link rel="stylesheet" href="assets/site-mobile.css">
+<script src="assets/site-mobile.js" defer></script>
+</head>
+<body>
+
+<header class="masthead">
+  <a class="wordmark" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <button class="hamburger" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu" type="button">
+    <svg class="hamburger-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+    <svg class="hamburger-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/>
+    </svg>
+  </button>
+  <nav id="primary-nav" class="primary" aria-label="Primary">
+    <a href="Index Teaser.html">The Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology</a>
+    <a href="About.html">About</a>
+    <a href="MGI Landing.html" class="cta">Take the MGI →</a>
+  </nav>
+</header>
+
+<main>
+  <div class="err-eyebrow"><span class="code">404</span> &nbsp;·&nbsp; Not Found</div>
+  <h1 class="err-title">What you're looking for <em>isn't here</em>.</h1>
+  <p class="err-sub">The link may have moved, expired, or never existed. The shape of the site changes as the work changes. Some places to start instead.</p>
+
+  <div class="destinations">
+    <div class="deck">Try one of these</div>
+    <ul>
+      <li>
+        <a href="index.html">
+          <div class="d-title">The homepage. The Silent Degradation thesis in one place.</div>
+          <div class="d-host">cloverera.com<span class="arrow">›</span></div>
+        </a>
+      </li>
+      <li>
+        <a href="MGI Landing.html">
+          <div class="d-title">The Manager Gap Index. A free 4-minute diagnostic.</div>
+          <div class="d-host">cloverera.com/mgi<span class="arrow">›</span></div>
+        </a>
+      </li>
+      <li>
+        <a href="Index Teaser.html">
+          <div class="d-title">The Silent Degradation Index, Q2 2026. Live cohort snapshot.</div>
+          <div class="d-host">cloverera.com/silent-degradation-index<span class="arrow">›</span></div>
+        </a>
+      </li>
+      <li>
+        <a href="The Productivity Inversion.html">
+          <div class="d-title">The Productivity Inversion. A four-beat thesis.</div>
+          <div class="d-host">cloverera.com/productivity-inversion<span class="arrow">›</span></div>
+        </a>
+      </li>
+      <li>
+        <a href="Books.html">
+          <div class="d-title">The body of work. Three books, one thesis.</div>
+          <div class="d-host">cloverera.com/books<span class="arrow">›</span></div>
+        </a>
+      </li>
+      <li>
+        <a href="mailto:contact@cloverera.com">
+          <div class="d-title">Or write to us. Tell us where the broken link came from.</div>
+          <div class="d-host">contact@cloverera.com<span class="arrow">›</span></div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</main>
+
+<footer class="page-footer">
+  <div class="colophon">
+    <em>Page not found.</em> The link is gone. The site is here.
+  </div>
+  <div class="links">
+    <a href="index.html">Clover ERA</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology &amp; Evidence</a>
+    <a href="About.html">About / Founders</a>
+    <a href="Books.html">Books</a>
+    <a href="MGI Landing.html">Manager Gap Index</a>
+    <a href="Index Teaser.html">The Silent Degradation Index</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+    <a href="/privacy">Privacy / Terms</a>
+  </div>
+</footer>
+</body>
+</html>
