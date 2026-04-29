@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>About — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Clover ERA was founded by Clive Hays, Neil Hays, and Chad Williams. The body of work includes The Trillion Dollar Problem (2024), Already Gone (2025), and Silent Degradation (forthcoming).">
+<meta property="og:title" content="About — Clover ERA">
+<meta property="og:description" content="The people, the body of work, and why Clover ERA exists.">
+
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&amp;family=Inter+Tight:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196f3;
+    --accent-body: #2196f3;
+    --oxblood: #2196f3;
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+    z-index: 0;
+  }
+  a{ color: inherit; }
+
+  .mono{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .serif{ font-family: "Source Serif 4", Georgia, serif; font-feature-settings: "onum" 1; }
+
+  .ed-link{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--ink); padding-bottom: 2px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .ed-link:hover{ color: var(--accent-body); border-bottom-color: var(--accent-body); }
+  .ed-link .arrow{ display: inline-block; margin-left: 6px; transition: transform 160ms ease; }
+  .ed-link:hover .arrow{ transform: translateX(3px); }
+
+  /* masthead --------------------------------------------------------- */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 19px;
+    letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display: flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  nav.primary a:hover{ color: var(--ink); }
+  nav.primary a.active{ color: var(--ink); }
+  nav.primary a.cta{
+    color: var(--accent-body);
+    border-bottom: 1px solid var(--accent-body);
+    padding-bottom: 2px;
+  }
+
+  main{
+    position: relative; z-index: 1;
+    max-width: 1180px; margin: 0 auto;
+    padding: 0 56px;
+  }
+  .section-rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* publication header ---------------------------------------------- */
+  .pub-header{
+    padding: 36px 0 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 32px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .pub-header .pub-id{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 19px; letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .pub-header .pub-meta{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    text-align: right;
+    line-height: 1.7;
+  }
+  .pub-header .pub-meta span{ display: inline-block; }
+  .pub-header .pub-meta .sep{ margin: 0 10px; opacity: 0.5; }
+
+  /* ---------- Hero ------------------------------------------------- */
+  section.hero{ padding: 64px 0 88px; }
+  .hero-eyebrow{ margin-bottom: 28px; }
+  h1.hero-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(38px, 5vw, 60px);
+    line-height: 1.04;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+    margin: 0;
+    max-width: 920px;
+    text-wrap: pretty;
+  }
+  h1.hero-title em{
+    font-style: italic;
+    color: var(--oxblood);
+    font-weight: 400;
+  }
+  .hero-sub{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 19px; line-height: 1.5;
+    color: var(--ink-2);
+    margin: 32px 0 0;
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+
+  /* ---------- Body of work ---------------------------------------- */
+  section.work{ padding: 88px 0 96px; }
+  .work-head{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+    align-items: baseline;
+    margin-bottom: 36px;
+  }
+  .work-head .w-mark{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .work-head .w-mark .num{
+    color: var(--ink); font-weight: 500;
+    margin-right: 12px;
+  }
+  .work-head h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .work-head h2 em{ font-style: italic; color: var(--oxblood); font-weight: 400; }
+
+  .work-body{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+    align-items: start;
+    margin-bottom: 48px;
+  }
+  .work-body .w-aside{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .work-body .w-prose{ max-width: 720px; }
+  .work-body p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 17px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 18px;
+    text-wrap: pretty;
+  }
+  .work-body p em{ font-style: italic; color: var(--ink); }
+  .work-body p strong{ color: var(--ink); font-weight: 500; }
+
+  /* book list */
+  .book-list{
+    list-style: none; margin: 0 0 36px; padding: 0;
+    border-top: 1px solid var(--ink);
+  }
+  .book-list li{
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .book-list .row{
+    display: grid;
+    grid-template-columns: 220px 1fr 220px;
+    gap: 48px;
+    padding: 28px 0;
+    align-items: start;
+  }
+  .book-list .b-year{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+    padding-top: 4px;
+  }
+  .book-list .b-year .num{ color: var(--ink); font-weight: 500; display: block; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.04em; }
+  .book-list .b-main{ }
+  .book-list .b-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 24px; line-height: 1.15;
+    letter-spacing: -0.008em;
+    color: var(--ink);
+    margin: 0 0 6px;
+    text-wrap: pretty;
+  }
+  .book-list .b-subtitle{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 300;
+    font-size: 16px; line-height: 1.35;
+    letter-spacing: -0.005em;
+    color: var(--ink-mute);
+    margin: 0 0 14px;
+    max-width: 560px;
+    text-wrap: pretty;
+  }
+  .book-list .b-desc{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 16px; line-height: 1.5;
+    color: var(--ink-2);
+    margin: 0;
+    max-width: 560px;
+    text-wrap: pretty;
+  }
+  .book-list .b-link{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    text-align: right;
+    text-decoration: none;
+    padding-top: 8px;
+    transition: color 120ms ease;
+    display: block;
+  }
+  .book-list a.b-link:hover{ color: var(--accent-body); }
+  .book-list .b-link.muted{ color: var(--ink-mute); opacity: 0.7; }
+  .book-list .b-link .arrow{ display: inline-block; margin-left: 6px; transition: transform 160ms ease; }
+  .book-list a.b-link:hover .arrow{ transform: translateX(3px); }
+
+  .work-footnote{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 15px; line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 0; padding: 0 0 0 268px;
+    max-width: 980px;
+  }
+  .work-footnote a{
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .work-footnote a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ---------- Founders -------------------------------------------- */
+  section.founders{
+    padding: 88px 0 96px;
+    border-top: 1px solid var(--rule);
+  }
+  .founders-head{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+    align-items: baseline;
+    margin-bottom: 56px;
+  }
+  .founders-head .f-mark{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .founders-head .f-mark .num{
+    color: var(--ink); font-weight: 500;
+    margin-right: 12px;
+  }
+  .founders-head h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+    max-width: 720px;
+  }
+
+  .founder{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+    align-items: start;
+    padding: 44px 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .founder:first-of-type{ border-top: 1px solid var(--ink); }
+  .founder:last-of-type{ border-bottom: 1px solid var(--rule-soft); }
+
+  .founder .portrait-wrap{
+    width: 200px;
+  }
+  .founder .portrait{
+    width: 200px; height: 240px;
+    display: block;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .founder .portrait svg,
+  .founder .portrait img{
+    width: 100%; height: 100%; display: block;
+    object-fit: cover; object-position: center top;
+  }
+  .founder .portrait-cap{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  .founder .bio{ max-width: 720px; }
+  .founder h3{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: 28px; line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .founder .role{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 22px;
+  }
+  .founder .bio p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 18px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 18px;
+    text-wrap: pretty;
+  }
+  .founder .bio p strong{ color: var(--ink); font-weight: 500; }
+  .founder .bio p em{ font-style: italic; }
+  .founder .credit{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 4px 0 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule-soft);
+    line-height: 1.7;
+  }
+  .founder .credit em{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 14px; letter-spacing: -0.005em;
+    color: var(--ink); text-transform: none;
+  }
+  .founder .credit a{
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .founder .credit a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+  .founder .closing-line{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 15px; line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ---------- Page footer info ----------------------------------- */
+  section.colophon-block{
+    padding: 64px 0 56px;
+    border-top: 1px solid var(--rule);
+  }
+  .colophon-block .col-eyebrow{
+    margin-bottom: 24px;
+  }
+  .colophon-block p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 16px; line-height: 1.55;
+    color: var(--ink-mute);
+    margin: 0;
+    max-width: 720px;
+  }
+  .colophon-block p em{ font-style: italic; color: var(--ink); }
+  .colophon-block p a{
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .colophon-block p a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* footer --------------------------------------------------------- */
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule);
+    margin: 16px auto 0;
+    padding: 36px 56px 48px;
+    max-width: 1180px;
+    display: grid; grid-template-columns: 2fr 3fr;
+    gap: 48px; align-items: start;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 13px;
+    color: var(--ink-mute); line-height: 1.5; max-width: 360px;
+  }
+  footer .draft{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 8px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  /* responsive ----------------------------------------------------- */
+  @media (max-width: 980px){
+    .work-head, .work-body, .founders-head{ grid-template-columns: 1fr; gap: 18px; }
+    .book-list .row{ grid-template-columns: 1fr; gap: 12px; padding: 24px 0; }
+    .book-list .b-year{ padding-top: 0; }
+    .book-list .b-link{ text-align: left; padding-top: 4px; }
+    .work-footnote{ padding-left: 0; }
+    .founder{ grid-template-columns: 1fr; gap: 28px; padding: 36px 0; }
+    .pub-header{ grid-template-columns: 1fr; gap: 12px; }
+    .pub-header .pub-meta{ text-align: left; }
+  }
+  @media (max-width: 720px){
+    .masthead{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    nav.primary{ gap: 18px; }
+    main{ padding: 0 28px; }
+    section.hero{ padding: 40px 0 56px; }
+    section.work, section.founders{ padding: 56px 0 64px; }
+    .founder .portrait-wrap{ width: 160px; }
+    .founder .portrait{ width: 160px; height: 192px; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px; }
+    footer .links{ grid-template-columns: 1fr; }
+  }
+
+  @media print{
+    body::before{ display: none; }
+    .masthead, footer.page-footer{ break-inside: avoid; }
+    section.founders, .founder{ break-inside: avoid-page; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead" data-screen-label="Masthead">
+  <a class="wordmark" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="Index Teaser.html">The Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology</a>
+    <a href="About.html" class="active">About</a>
+    <a href="MGI Landing.html" class="cta">Take the MGI →</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ====== Publication header ====== -->
+  <header class="pub-header" data-screen-label="Publication header">
+    <div class="pub-id"><em>About</em></div>
+    <div class="pub-meta">
+      <span>Masthead</span><span class="sep">·</span><span>The people, the body of work</span><span class="sep">·</span><span>cloverera.com/about</span>
+    </div>
+  </header>
+
+  <!-- ====== Hero ====== -->
+  <section class="hero" data-screen-label="00 Hero" aria-labelledby="hero-title">
+    <div class="mono hero-eyebrow">About</div>
+    <h1 class="hero-title" id="hero-title">
+      The people, the body of work, and <em>why Clover ERA exists</em>.
+    </h1>
+    <p class="hero-sub">
+      Clover ERA exists because three people watched the same retention failure repeat across hundreds of organisations. Companies invest in programmes that never change daily manager behaviour. The pattern repeats because the data that would change it stays invisible. Clover ERA makes that data visible.
+    </p>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ====== Body of work ====== -->
+  <section class="work" id="body-of-work" data-screen-label="01 The body of work" aria-labelledby="work-title">
+    <div class="work-head">
+      <div class="w-mark"><span class="num">Section 01</span>The body of work</div>
+      <h2 id="work-title">Three books, <em>one thesis</em>.</h2>
+    </div>
+
+    <div class="work-body">
+      <div class="w-aside">Published<br>2024 — 2026</div>
+      <div class="w-prose">
+        <p>The books document the same observation Clover ERA was built to address: that retention failure is the visible symptom of a deeper invisibility, and that the daily behaviours that would prevent it are not changing because the data that would change them is not being collected.</p>
+        <p><em>The Trillion Dollar Problem</em> (2024) named the financial scale, and introduced the CLOVER Framework. <em>Already Gone</em> (2025) named the human scale. <em>Silent Degradation</em> (forthcoming, 2026) names the structural scale.</p>
+      </div>
+    </div>
+
+    <ul class="book-list">
+      <li>
+        <div class="row">
+          <div class="b-year"><span class="num">2024</span>Published</div>
+          <div class="b-main">
+            <h3 class="b-title">The Trillion Dollar Problem</h3>
+            <p class="b-desc">A financial decomposition of the cost of workforce retention failure across the Fortune 500. The book that established the scale of the problem Clover ERA exists to address.</p>
+          </div>
+          <a class="b-link" href="https://www.amazon.com/Trillion-Dollar-Problem-Employee-Engagement-ebook/dp/B0CYMC3ST1/">Read more <span class="arrow">→</span></a>
+        </div>
+      </li>
+      <li>
+        <div class="row">
+          <div class="b-year"><span class="num">2025</span>Published</div>
+          <div class="b-main">
+            <h3 class="b-title">Already Gone: 78 Ways to Miss Someone Leaving</h3>
+            <p class="b-desc">Seventy-eight short entries documenting the small signals that managers consistently miss before someone resigns. The pattern catalogue that became the foundation for the CLOVER framework.</p>
+          </div>
+          <a class="b-link" href="https://www.amazon.com/Already-Gone-Ways-Someone-Leaving-ebook/dp/B0GMKPB87P/">Read more <span class="arrow">→</span></a>
+        </div>
+      </li>
+      <li>
+        <div class="row">
+          <div class="b-year"><span class="num">2026</span>Forthcoming</div>
+          <div class="b-main">
+            <h3 class="b-title">Silent Degradation</h3>
+            <p class="b-subtitle">The Manager Gap, the Cohort, and the Cost of Invisibility.</p>
+            <p class="b-desc">The structural argument behind the workforce phenomenon Clover ERA measures. Why the post-WWII productivity model has broken and what replaces it.</p>
+          </div>
+          <span class="b-link muted">Coming soon</span>
+        </div>
+      </li>
+    </ul>
+
+    <p class="work-footnote">
+      The full <a href="Books.html">books page</a> documents methodology, reviews, and where to read them.
+    </p>
+  </section>
+
+  <!-- ====== Founders ====== -->
+  <section class="founders" id="who-we-are" data-screen-label="02 Who we are" aria-labelledby="founders-title">
+    <div class="founders-head">
+      <div class="f-mark"><span class="num">Section 02</span>Who we are</div>
+      <h2 id="founders-title">Three people. Two brothers, one operator. Twenty-plus years each, on the same problem.</h2>
+    </div>
+
+    <!-- Clive -->
+    <article class="founder" data-screen-label="Clive Hays bio">
+      <div class="portrait-wrap">
+        <figure class="portrait">
+          <img src="assets/Clive-Hays.png" alt="Clive Hays" loading="lazy" />
+        </figure>
+      </div>
+      <div class="bio">
+        <h3>Clive Hays</h3>
+        <div class="role">Co-Founder</div>
+        <p>Twenty-plus years inside Fortune 500 transformations spanning technology, financial services, and industrial sectors. Clive has seen the same retention failure repeat across hundreds of organisations: companies invest in programmes that never change daily manager behaviour. That pattern became the foundation for the CLOVER framework.</p>
+        <div class="credit">
+          Co-author of <em><a href="https://www.amazon.com/Trillion-Dollar-Problem-Employee-Engagement-ebook/dp/B0CYMC3ST1/">The Trillion Dollar Problem</a></em> (2024) and <em><a href="https://www.amazon.com/Already-Gone-Ways-Someone-Leaving-ebook/dp/B0GMKPB87P/">Already Gone</a></em> (2025).
+        </div>
+        <p class="closing-line">Based in Scotland. Prefers direct conversation over corporate speak.</p>
+      </div>
+    </article>
+
+    <!-- Neil -->
+    <article class="founder" data-screen-label="Neil Hays bio">
+      <div class="portrait-wrap">
+        <figure class="portrait">
+          <img src="assets/Neil-Hays.jpg" alt="Neil Hays" loading="lazy" />
+        </figure>
+      </div>
+      <div class="bio">
+        <h3>Neil Hays</h3>
+        <div class="role">Co-Founder &amp; CFO</div>
+        <p>Clive's brother. That matters. This isn't a business partnership built on a pitch deck. It's built on twenty years of arguing about the same problems at the same dinner table.</p>
+        <p>Twenty years in large organisations managing operations and optimising processes. Flow rates, cycle times, capacity utilisation. All measurable. All improvable.</p>
+        <div class="credit">
+          Co-author of <em><a href="https://www.amazon.com/Trillion-Dollar-Problem-Employee-Engagement-ebook/dp/B0CYMC3ST1/">The Trillion Dollar Problem</a></em> (2024) and <em><a href="https://www.amazon.com/Already-Gone-Ways-Someone-Leaving-ebook/dp/B0GMKPB87P/">Already Gone</a></em> (2025).
+        </div>
+        <p class="closing-line">Based in Scotland. Treats every problem as a flow problem until proven otherwise.</p>
+      </div>
+    </article>
+
+    <!-- Chad -->
+    <article class="founder" data-screen-label="Chad Williams bio">
+      <div class="portrait-wrap">
+        <figure class="portrait">
+          <img src="assets/Chad-Williams.jpg" alt="Chad Williams" loading="lazy" />
+        </figure>
+      </div>
+      <div class="bio">
+        <h3>Chad Williams</h3>
+        <div class="role">Co-Founder</div>
+        <p>Over 20 years building and operating delivery and workflow systems across banking and enterprise environments. Programme offices, operating model design, large-scale coordination across teams. Chad makes the infrastructure work at the scale where most platforms break.</p>
+        <p class="closing-line">Believes most platform failures are coordination failures dressed up as technology problems.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ====== Colophon block ====== -->
+  <section class="colophon-block" data-screen-label="03 Company">
+    <div class="mono col-eyebrow">Company</div>
+    <p>
+      Clover ERA is incorporated in Delaware. <em>The Silent Degradation Index</em> publishes quarterly at <a href="Index Teaser.html">silentdegradation.com</a>.
+    </p>
+  </section>
+
+</main>
+
+<footer class="page-footer" data-screen-label="Page footer">
+  <div class="colophon">
+    <em>About</em>. The people, the body of work, and why Clover ERA exists.
+    <div class="draft">Apr 2026 · cloverera.com/about</div>
+  </div>
+  <div class="links">
+    <a href="Index Teaser.html">The Silent Degradation Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology &amp; Evidence</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="Books.html">Books</a>
+    <a href="https://alreadygone.substack.com">Already Gone Weekly</a>
+    <a href="MGI Landing.html">Manager Gap Index</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+  </div>
+</footer>
+
+</body>
+</html>

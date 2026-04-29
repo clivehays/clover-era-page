@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Productivity Inversion — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A four-beat argument. For 75 years, productivity belonged to the machine. The arc has bent, broken, and inverted. The lever is no longer the workplace. It is the person standing in it.">
+<meta property="og:title" content="The Productivity Inversion — Clover ERA">
+<meta property="og:description" content="A four-beat argument on how productivity stopped coming from capital and started depending on the human.">
+
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&amp;family=Inter+Tight:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+    --oxblood: #2196F3;
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+    z-index: 0;
+  }
+  a{ color: inherit; }
+
+  .mono{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .serif{ font-family: "Source Serif 4", Georgia, serif; font-feature-settings: "onum" 1; }
+
+  .ed-link{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--ink); padding-bottom: 2px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .ed-link:hover{ color: var(--accent-body); border-bottom-color: var(--accent-body); }
+  .ed-link .arrow{ display: inline-block; margin-left: 6px; transition: transform 160ms ease; }
+  .ed-link:hover .arrow{ transform: translateX(3px); }
+
+  /* masthead --------------------------------------------------------- */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 19px;
+    letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display: flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  nav.primary a:hover{ color: var(--ink); }
+  nav.primary a.cta{
+    color: var(--accent-body);
+    border-bottom: 1px solid var(--accent-body);
+    padding-bottom: 2px;
+  }
+
+  main{
+    position: relative; z-index: 1;
+    max-width: 1180px; margin: 0 auto;
+    padding: 0 56px;
+  }
+  .section-rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* publication header ---------------------------------------------- */
+  .pub-header{
+    padding: 36px 0 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 32px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .pub-header .pub-id{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 19px; letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .pub-header .pub-meta{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    text-align: right;
+    line-height: 1.7;
+  }
+  .pub-header .pub-meta span{ display: inline-block; }
+  .pub-header .pub-meta .sep{ margin: 0 10px; opacity: 0.5; }
+
+  /* ---------- Hero ------------------------------------------------- */
+  section.hero{ padding: 64px 0 88px; }
+  .hero-eyebrow{ margin-bottom: 28px; }
+  h1.hero-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(40px, 5.6vw, 68px);
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: 0;
+    max-width: 980px;
+    text-wrap: pretty;
+  }
+  h1.hero-title em{
+    font-style: italic;
+    color: var(--oxblood);
+    font-weight: 400;
+  }
+  .hero-sub{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 21px; line-height: 1.5;
+    color: var(--ink-2);
+    margin: 36px 0 0;
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+
+  /* arc chart ------------------------------------------------------- */
+  .arc-figure{
+    margin: 64px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+    padding: 28px 0 36px;
+  }
+  .arc-meta{
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .arc-meta .arc-y-label{ font-style: normal; }
+  .arc-svg{
+    display: block;
+    width: 100%; height: auto;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .arc-svg .grid-x{ stroke: var(--rule-soft); stroke-width: 0.6; }
+  .arc-svg .baseline{ stroke: var(--ink); stroke-width: 1.2; }
+  .arc-svg .rise{ fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .arc-svg .plateau{ fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .arc-svg .uncertain{ fill: none; stroke: var(--ink); stroke-width: 2.0; stroke-dasharray: 3 6; stroke-linecap: round; }
+  .arc-svg .invert{ fill: none; stroke: var(--oxblood); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .arc-svg .endpoint{ fill: var(--oxblood); }
+  .arc-svg .tick-text{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    fill: var(--ink-mute);
+  }
+  .arc-svg .anno-line{ stroke: var(--ink-mute); stroke-width: 0.6; stroke-dasharray: 1 3; }
+  .arc-svg .anno-text{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    fill: var(--ink);
+  }
+  .arc-svg .anno-text.alert{ fill: var(--oxblood); }
+  .arc-svg .today-text{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 14px;
+    fill: var(--oxblood);
+  }
+  .arc-caption{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 14px; line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 18px 0 0;
+    max-width: 720px;
+  }
+
+  /* beat navigation ------------------------------------------------- */
+  .beat-nav{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 56px 0 0;
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .beat-nav a{
+    padding: 22px 18px;
+    text-decoration: none;
+    color: var(--ink);
+    border-right: 1px solid var(--rule-soft);
+    transition: background 120ms ease;
+  }
+  .beat-nav a:last-child{ border-right: 0; }
+  .beat-nav a:hover{ background: rgba(0,0,0,0.025); }
+  .beat-nav .b-num{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .beat-nav .b-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 16px; line-height: 1.25;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+
+  /* beat sections --------------------------------------------------- */
+  section.beat{
+    padding: 96px 0 80px;
+    max-width: 1080px;
+  }
+  .beat-head{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+    align-items: baseline;
+    margin-bottom: 44px;
+  }
+  .beat-head .b-mark{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .beat-head .b-mark .num{
+    color: var(--ink); font-weight: 500;
+    margin-right: 12px;
+  }
+  .beat-head h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(30px, 3.6vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .beat-head h2 em{ font-style: italic; color: var(--oxblood); font-weight: 400; }
+
+  .beat-body{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .beat-body .b-aside{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .beat-body .b-aside.small{ font-size: 10px; }
+  .beat-body .b-prose{ max-width: 720px; }
+  .beat-body p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 19px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 22px;
+    text-wrap: pretty;
+  }
+  .beat-body p:last-child{ margin-bottom: 0; }
+  .beat-body p strong{ color: var(--ink); font-weight: 500; }
+  .beat-body p em{ font-style: italic; }
+
+  /* beat 1 stat blocks --------------------------------------------- */
+  .stat-pair{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 56px 0 0;
+    border-top: 1px solid var(--ink);
+  }
+  .stat-pair .stat{
+    padding: 28px 0 4px;
+    border-right: 1px solid var(--rule-soft);
+  }
+  .stat-pair .stat:last-child{ border-right: 0; padding-left: 36px; }
+  .stat-pair .stat:first-child{ padding-right: 36px; }
+  .stat-pair .stat-lbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .stat-pair .stat-num{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 96px; line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    font-feature-settings: "lnum" 1;
+    margin-bottom: 10px;
+  }
+  .stat-pair .stat:last-child .stat-num{ color: var(--oxblood); }
+  .stat-pair .stat-cap{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 14px; line-height: 1.5;
+    color: var(--ink-mute);
+    max-width: 320px;
+  }
+
+  /* beat 2 engines -------------------------------------------------- */
+  .engines{
+    margin: 64px 0 0;
+    border-top: 1px solid var(--ink);
+  }
+  .engine{
+    display: grid;
+    grid-template-columns: 220px 1fr 280px;
+    gap: 48px;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: start;
+  }
+  .engine .e-id{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+  }
+  .engine .e-id .e-num{ color: var(--ink); font-weight: 500; display: block; margin-bottom: 6px; }
+  .engine .e-id .e-name{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 17px; letter-spacing: -0.005em;
+    color: var(--ink); text-transform: none;
+    margin-top: 4px;
+  }
+  .engine .e-prose p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 17px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 16px;
+    text-wrap: pretty;
+  }
+  .engine .e-prose p:last-child{ margin-bottom: 0; }
+  .engine .e-prose .mech-list{
+    margin: 0 0 18px; padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .engine .e-prose .mech-list li{
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 16px;
+    align-items: baseline;
+  }
+  .engine .e-prose .mech-list .mlbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .engine .e-prose .mech-list .mtxt{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 15px; line-height: 1.5;
+    color: var(--ink-2); font-weight: 400;
+    text-wrap: pretty;
+  }
+  .engine .e-prose .mech-list .mtxt em{ color: var(--ink); font-style: italic; font-weight: 400; }
+  .engine .e-viz{ width: 100%; }
+  .engine svg.viz{ width: 100%; height: auto; max-width: 280px; display: block; }
+  .viz .vbase{ stroke: var(--ink); stroke-width: 1.0; }
+  .viz .vline{ fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+  .viz .vline.alert{ stroke: var(--oxblood); stroke-width: 2.0; }
+  .viz .vlabel{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    fill: var(--ink-mute);
+  }
+  .viz .vlabel.alert{ fill: var(--oxblood); }
+
+  /* beat 3 composition --------------------------------------------- */
+  .composition{
+    margin: 56px 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    border-top: 1px solid var(--ink);
+    padding-top: 36px;
+  }
+  .comp-col{ }
+  .comp-era{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .comp-era .em{ color: var(--ink); font-weight: 500; margin-right: 12px; }
+  .comp-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 18px; color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .comp-bar{
+    display: flex; height: 56px;
+    border: 1px solid var(--ink);
+    margin-bottom: 28px;
+  }
+  .comp-bar .seg{
+    height: 100%;
+    border-right: 1px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.16em; font-weight: 500;
+    color: var(--ink);
+  }
+  .comp-bar .seg:last-child{ border-right: 0; }
+  .comp-bar .seg.capital{ background: rgba(23,22,26,0.10); }
+  .comp-bar .seg.tech{ background: rgba(23,22,26,0.05); }
+  .comp-bar .seg.human{ background: rgba(33,150,243,0.18); color: var(--oxblood); }
+  .comp-legend{
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: 10px;
+  }
+  .comp-legend li{
+    display: grid;
+    grid-template-columns: 14px 1fr 56px;
+    gap: 10px;
+    align-items: baseline;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 15px; color: var(--ink-2);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .comp-legend .swatch{ width: 14px; height: 14px; border: 1px solid var(--ink); }
+  .comp-legend .swatch.capital{ background: rgba(23,22,26,0.10); }
+  .comp-legend .swatch.tech{ background: rgba(23,22,26,0.05); }
+  .comp-legend .swatch.human{ background: rgba(33,150,243,0.18); border-color: var(--oxblood); }
+  .comp-legend .pct{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px; letter-spacing: 0.04em;
+    color: var(--ink); text-align: right; font-feature-settings: "lnum" 1;
+  }
+  .comp-legend li.human .pct{ color: var(--oxblood); }
+  .comp-foot{
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule-soft);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+    max-width: 880px;
+  }
+  .comp-foot em{ color: var(--ink); font-style: normal; }
+
+  .beat-close{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .beat-close .bc-line{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 17px; line-height: 1.5;
+    color: var(--ink-mute);
+    text-wrap: pretty;
+  }
+  .beat-close .bc-line.lead{ color: var(--ink); }
+
+  /* beat 4 cohort number ------------------------------------------ */
+  .depletion{
+    margin: 64px 0 0;
+    border-top: 1px solid var(--ink);
+    padding-top: 48px;
+  }
+  .depletion .dlbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .depletion .dnum{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: clamp(120px, 18vw, 220px);
+    line-height: 0.9; letter-spacing: -0.04em;
+    color: var(--oxblood);
+    margin: 0;
+    font-feature-settings: "lnum" 1;
+  }
+  .depletion .dcap{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.45;
+    color: var(--ink); font-weight: 400;
+    margin: 24px 0 0; max-width: 600px;
+    text-wrap: pretty;
+  }
+  .depletion .dcap .live{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.16em;
+    color: var(--ink-mute); text-transform: uppercase;
+    display: inline-block; margin-left: 6px;
+  }
+
+  /* cost layer split ---------------------------------------------- */
+  .cost-split{
+    margin: 56px 0 0;
+    padding-top: 36px;
+    border-top: 1px solid var(--rule-soft);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .cost-bar-wrap{ }
+  .cost-bar-lbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .cost-bar{
+    display: flex; height: 44px;
+    border: 1px solid var(--ink);
+    margin-bottom: 18px;
+  }
+  .cost-bar .seg-vol{
+    background: rgba(23,22,26,0.07);
+    width: 47%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.16em;
+    color: var(--ink);
+    border-right: 1px solid var(--ink);
+  }
+  .cost-bar .seg-rest{
+    background: rgba(33,150,243,0.18);
+    width: 53%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.16em;
+    color: var(--oxblood);
+  }
+  .cost-bar-key{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .cost-bar-key .k-lbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 6px;
+  }
+  .cost-bar-key .k-name{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 14px;
+    color: var(--ink); line-height: 1.4;
+  }
+  .cost-prose p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 17px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 18px;
+    text-wrap: pretty;
+  }
+  .cost-prose p:last-child{ margin-bottom: 0; }
+  .cost-prose p strong{ color: var(--ink); font-weight: 500; }
+  .cost-prose p em{ font-style: italic; }
+
+  /* closing cta ---------------------------------------------------- */
+  section.closing-cta{
+    padding: 96px 0 56px;
+    border-top: 1px solid var(--rule);
+  }
+  .closing-cta .ec-eyebrow{
+    margin-bottom: 36px;
+  }
+  .closing-cta h3{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 28px; line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 36px; max-width: 720px;
+    text-wrap: pretty;
+  }
+  .closing-cta h3 em{ font-style: italic; color: var(--oxblood); }
+  .cta-list{
+    list-style: none; margin: 0 0 48px; padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .cta-list li{
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .cta-list a{
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 32px;
+    padding: 22px 0;
+    text-decoration: none;
+    color: var(--ink);
+    align-items: baseline;
+    transition: color 120ms ease;
+  }
+  .cta-list a:hover .cl-title{ color: var(--accent-body); }
+  .cta-list a:hover .cl-host{ color: var(--accent-body); }
+  .cta-list a:hover .cl-host .arrow{ transform: translateX(4px); }
+  .cl-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 21px; line-height: 1.25;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    transition: color 120ms ease;
+  }
+  .cl-title em{ font-style: italic; color: var(--oxblood); }
+  .cl-host{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: lowercase;
+    color: var(--ink-mute);
+    text-align: right;
+    transition: color 120ms ease;
+  }
+  .cl-host .arrow{ display: inline-block; margin-left: 6px; transition: transform 160ms ease; }
+  .pub-footnote{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.7;
+    max-width: 720px;
+  }
+  .pub-footnote a{
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pub-footnote a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* footer --------------------------------------------------------- */
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule);
+    margin: 16px auto 0;
+    padding: 36px 56px 48px;
+    max-width: 1180px;
+    display: grid; grid-template-columns: 2fr 3fr;
+    gap: 48px; align-items: start;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 13px;
+    color: var(--ink-mute); line-height: 1.5; max-width: 360px;
+  }
+  footer .draft{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 8px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  /* responsive ---------------------------------------------------- */
+  @media (max-width: 980px){
+    .beat-head, .beat-body{ grid-template-columns: 1fr; gap: 18px; }
+    .beat-body .b-aside{ order: 2; }
+    .engine{ grid-template-columns: 1fr; gap: 18px; }
+    .engine .e-viz{ max-width: 320px; }
+    .composition{ grid-template-columns: 1fr; gap: 40px; }
+    .cost-split{ grid-template-columns: 1fr; gap: 36px; }
+    .stat-pair{ grid-template-columns: 1fr; }
+    .stat-pair .stat{ border-right: 0; border-bottom: 1px solid var(--rule-soft); padding: 24px 0; }
+    .stat-pair .stat:last-child{ padding-left: 0; }
+    .stat-pair .stat:first-child{ padding-right: 0; }
+    .beat-close{ grid-template-columns: 1fr; gap: 18px; }
+    .pub-header{ grid-template-columns: 1fr; gap: 12px; }
+    .pub-header .pub-meta{ text-align: left; }
+  }
+  @media (max-width: 720px){
+    .masthead{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    nav.primary{ gap: 18px; }
+    main{ padding: 0 28px; }
+    section.hero{ padding: 40px 0 56px; }
+    section.beat{ padding: 64px 0 56px; }
+    section.closing-cta{ padding: 64px 0 40px; }
+    .beat-nav{ grid-template-columns: 1fr 1fr; }
+    .beat-nav a{ border-right: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+    .beat-nav a:nth-child(even){ border-right: 0; }
+    .beat-nav a:nth-last-child(-n+2){ border-bottom: 0; }
+    .cta-list a{ grid-template-columns: 1fr; gap: 10px; padding: 20px 0; }
+    .cl-host{ text-align: left; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px; }
+    footer .links{ grid-template-columns: 1fr; }
+  }
+
+  @media print{
+    body::before{ display: none; }
+    .masthead, footer.page-footer{ break-inside: avoid; }
+    section.beat{ break-inside: avoid-page; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead" data-screen-label="Masthead">
+  <a class="wordmark" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="Index Teaser.html">The Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology</a>
+    <a href="About.html">About</a>
+    <a href="MGI Landing.html" class="cta">Take the MGI →</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ====== Publication header ====== -->
+  <header class="pub-header" data-screen-label="Publication header">
+    <div class="pub-id"><em>The Productivity Inversion</em></div>
+    <div class="pub-meta">
+      <span>Thesis</span><span class="sep">·</span><span>Section 01 — The Inversion</span><span class="sep">·</span><span>Fig. 1 of 4</span>
+    </div>
+  </header>
+
+  <!-- ====== Hero ====== -->
+  <section class="hero" data-screen-label="00 Hero" aria-labelledby="hero-title">
+    <div class="mono hero-eyebrow">A Graphic Argument in Four Beats</div>
+    <h1 class="hero-title" id="hero-title">
+      For 75 years, productivity belonged to the&nbsp;machine. Now it belongs to <em>the&nbsp;human</em>.
+    </h1>
+    <p class="hero-sub">
+      The arc that lifted output per hour for 75 years has bent, broken, and inverted. What used to be a story about capital is now a story about people, and the people are burning out. The arc shows productivity adjusted for human capacity, not raw output per hour.
+    </p>
+
+    <figure class="arc-figure" aria-label="Productivity arc, 1948 to 2025: rise, plateau, uncertainty, inversion.">
+      <div class="arc-meta">
+        <span class="arc-y-label">Productivity adjusted for human capacity, indexed</span>
+        <span>Fig. 1.0</span>
+      </div>
+      <svg class="arc-svg" viewBox="0 0 1080 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arc-title arc-desc">
+        <title id="arc-title">Productivity arc, 1948 to 2025</title>
+        <desc id="arc-desc">A line chart showing output per hour rising from 1948 through 2005, plateauing through the mid-2010s, becoming uncertain, and inverting downward from 2024 onward.</desc>
+
+        <!-- vertical year ticks -->
+        <g class="grid-x">
+          <line x1="80" y1="40" x2="80" y2="290"></line>
+          <line x1="280" y1="40" x2="280" y2="290"></line>
+          <line x1="500" y1="40" x2="500" y2="290"></line>
+          <line x1="700" y1="40" x2="700" y2="290"></line>
+          <line x1="860" y1="40" x2="860" y2="290"></line>
+          <line x1="1000" y1="40" x2="1000" y2="290"></line>
+        </g>
+
+        <!-- baseline -->
+        <line class="baseline" x1="80" y1="290" x2="1000" y2="290"></line>
+
+        <!-- year labels -->
+        <text class="tick-text" x="80"  y="312">1948</text>
+        <text class="tick-text" x="280" y="312">1970</text>
+        <text class="tick-text" x="500" y="312">2005</text>
+        <text class="tick-text" x="700" y="312">2014</text>
+        <text class="tick-text" x="860" y="312">2024</text>
+        <text class="tick-text" x="1000" y="312" text-anchor="end">2025</text>
+
+        <!-- rise 1948 → 2005 -->
+        <path class="rise" d="M 80 250 C 180 232, 240 200, 280 178 C 360 138, 440 102, 500 88"></path>
+        <!-- plateau 2005 → 2014 -->
+        <path class="plateau" d="M 500 88 C 560 86, 640 92, 700 92"></path>
+        <!-- uncertain 2014 → 2024 -->
+        <path class="uncertain" d="M 700 92 C 760 96, 810 110, 860 122"></path>
+        <!-- inversion 2024 → 2025 (oxblood) -->
+        <path class="invert" d="M 860 122 C 910 156, 960 220, 1000 280"></path>
+        <circle class="endpoint" cx="1000" cy="280" r="5"></circle>
+
+        <!-- annotations -->
+        <!-- Capital deepening slows (2005) -->
+        <line class="anno-line" x1="500" y1="88" x2="500" y2="50"></line>
+        <text class="anno-text" x="500" y="42" text-anchor="middle">2005 · Capital deepening slows</text>
+
+        <!-- Engagement peaks (2014) -->
+        <line class="anno-line" x1="700" y1="92" x2="700" y2="62"></line>
+        <text class="anno-text" x="700" y="54" text-anchor="middle">2014 · Engagement peaks</text>
+
+        <!-- AI arrives (2022) — between 700 and 860 -->
+        <line class="anno-line" x1="800" y1="106" x2="800" y2="170"></line>
+        <text class="anno-text" x="800" y="184" text-anchor="middle">2022 · AI arrives</text>
+
+        <!-- AI cognitive load inverts (2024) -->
+        <line class="anno-line" x1="860" y1="122" x2="860" y2="76"></line>
+        <text class="anno-text alert" x="860" y="68" text-anchor="middle">2024 · Cognitive load inverts</text>
+
+        <!-- today -->
+        <text class="today-text" x="1004" y="276">today</text>
+      </svg>
+      <figcaption class="arc-caption">
+        Three event markers, one fault line. The arc rises through capital and technology, plateaus at the productivity slowdown, becomes uncertain through the engagement peak, and inverts when AI cognitive load lands on a workforce already running thin.
+      </figcaption>
+      <div class="comp-foot">
+        Sources: BLS Multifactor Productivity (1948&ndash;2025); Clover ERA cohort analysis. <em>The chart shows productivity adjusted for the cognitive and motivational cost to the worker. Standard BLS-measured labour productivity has continued to rise modestly through 2025; the inversion shown reflects the rising human cost rather than a decline in measured output.</em>
+      </div>
+    </figure>
+
+    <!-- beat navigation -->
+    <nav class="beat-nav" aria-label="Beats">
+      <a href="#beat-1"><span class="b-num">Beat 01</span><span class="b-title">The machine era</span></a>
+      <a href="#beat-2"><span class="b-num">Beat 02</span><span class="b-title">The model breaks</span></a>
+      <a href="#beat-3"><span class="b-num">Beat 03</span><span class="b-title">The inversion</span></a>
+      <a href="#beat-4"><span class="b-num">Beat 04</span><span class="b-title">The depletion</span></a>
+    </nav>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ====== BEAT 1 ====== -->
+  <section class="beat" id="beat-1" data-screen-label="01 Beat 1 — The machine era" aria-labelledby="b1-title">
+    <div class="beat-head">
+      <div class="b-mark"><span class="num">Beat 01</span>The machine era<br>1948 — 2005</div>
+      <h2 id="b1-title">For 75 years, productivity gains came from capital and technology.</h2>
+    </div>
+
+    <div class="beat-body">
+      <div class="b-aside">Composition of growth<br>Post-WWII baseline</div>
+      <div class="b-prose">
+        <p>Workers got more productive each hour because the tools around them got better, not because they worked harder. Output per hour rose with every wave of equipment, software, and process. The factory floor automated. The office digitised. The supply chain globalised. At each turn the worker rode a curve someone else had built.</p>
+        <p>The arithmetic was simple. <strong>Capital deepening</strong> did roughly six-tenths of the work. Technology and process improvements did roughly three-tenths. The human contribution was the residual, and the residual was small.</p>
+      </div>
+    </div>
+
+    <div class="stat-pair">
+      <div class="stat">
+        <div class="stat-lbl">Capital deepening</div>
+        <div class="stat-num">≈ 60%</div>
+        <div class="stat-cap">Tools, equipment, and software per worker did the heavy lifting.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">Human effort</div>
+        <div class="stat-num">≈ 12%</div>
+        <div class="stat-cap">Hours worked changed little. The lever was the workplace, not the worker.</div>
+      </div>
+    </div>
+
+    <div class="comp-foot">
+      Sources: BLS Multifactor Productivity (1948&ndash;2005); OECD Productivity Statistics. <em>Decompositions vary by methodology, country, and time period; the figures shown represent the upper-bound capital contribution range in the U.S. post-war literature.</em>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ====== BEAT 2 ====== -->
+  <section class="beat" id="beat-2" data-screen-label="02 Beat 2 — The model breaks" aria-labelledby="b2-title">
+    <div class="beat-head">
+      <div class="b-mark"><span class="num">Beat 02</span>The model breaks<br>2005 — 2024</div>
+      <h2 id="b2-title">Then the model broke in three places.</h2>
+    </div>
+
+    <div class="beat-body">
+      <div class="b-aside">Three engines<br>Three failures</div>
+      <div class="b-prose">
+        <p>Each of the engines that produced 75 years of gains has stalled or reversed. The breaks were not simultaneous; they unfolded across two decades and have compounded sharply since 2020. Capital deepening slowed first in 2005. Manager engagement weakened through the late 2010s and has dropped 9 points since 2022. AI began increasing cognitive demand from 2024 onward. The lines that used to climb together now diverge.</p>
+      </div>
+    </div>
+
+    <!-- engines -->
+    <div class="engines">
+
+      <!-- engine 1 -->
+      <article class="engine">
+        <div class="e-id">
+          <span class="e-num">Engine 01</span>
+          Capital deepening
+          <div class="e-name">slowed since 2005</div>
+        </div>
+        <div class="e-prose">
+          <p>Capital contribution to productivity growth has dropped from roughly <strong>60% (1970&ndash;2005)</strong> to <strong>under 20% (2010&ndash;2025)</strong>. The big infrastructure waves are behind us. Each marginal dollar of capital buys less marginal output than it did a generation ago.</p>
+          <p>The post-2008 recovery was capital-light by design. Fewer factories, more software. Software depreciates faster than steel.</p>
+        </div>
+        <div class="e-viz">
+          <svg class="viz" viewBox="0 0 280 140" role="img" aria-label="Capital deepening trajectory: high through 1970-2005, low after 2010.">
+            <line class="vbase" x1="20" y1="120" x2="260" y2="120"></line>
+            <path class="vline" d="M 20 60 C 80 50, 120 48, 150 50"></path>
+            <path class="vline" d="M 150 50 C 180 90, 210 105, 260 110"></path>
+            <text class="vlabel" x="20" y="136">1970</text>
+            <text class="vlabel" x="150" y="136" text-anchor="middle">2005</text>
+            <text class="vlabel" x="260" y="136" text-anchor="end">2025</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- engine 2 — AI cognitive load -->
+      <article class="engine">
+        <div class="e-id">
+          <span class="e-num">Engine 02</span>
+          The AI dividend
+          <div class="e-name">inverted, cognitive load ↑</div>
+        </div>
+        <div class="e-prose">
+          <p>AI is now increasing cognitive demand rather than reducing it. Whether AI infrastructure costs eventually fall (as historical precedent suggests) or continue rising as demand outpaces efficiency gains (as Jevons Paradox in current AI economics suggests), the human-side cost is real now. Companies are paying for AI in two ways: in capex that is consuming operating cash flow and in cognitive load on workers that is depleting their capacity to deliver. Neither cost is being tracked or managed in any meaningful way. The capex appears on the cash flow statement; the cognitive load does not appear on any dashboard. Both costs are real, both are growing, neither is being seen for what it is.</p>
+          <p>AI was supposed to reduce cognitive demand. The 2025 data shows the opposite. <strong>Heavy AI users report higher cognitive effort, not lower.</strong> Three structural mechanisms compound:</p>
+          <ul class="mech-list">
+            <li>
+              <span class="mlbl">M.01</span>
+              <span class="mtxt"><em>Recovery breaks vanish.</em> AI eliminates the natural pauses that used to exist between cognitive tasks. Drafting, reviewing, deciding are now collapsed into a continuous evaluative loop.</span>
+            </li>
+            <li>
+              <span class="mlbl">M.02</span>
+              <span class="mtxt"><em>Decisions multiply.</em> Every AI output requires accept, reject, or revise under uncertainty. The human becomes a judge of probabilistic content, all day, with no calibration.</span>
+            </li>
+            <li>
+              <span class="mlbl">M.03</span>
+              <span class="mtxt"><em>Expectations rise to consume the savings.</em> Organisations using AI typically respond by raising output expectations, which consumes the time AI saves and often exceeds it.</span>
+            </li>
+          </ul>
+          <p>Microsoft Research (Jan 2025) found heavy AI users report higher cognitive effort. UC Berkeley&rsquo;s longitudinal study found <strong>67% of workers who adopted AI tools in 2025 worked more hours, not fewer</strong>, by year-end. Deloitte&rsquo;s 2025 Workforce Intelligence Report identified mental fatigue and cognitive strain as the leading predictors of burnout, surpassing workload volume for the first time.</p>
+        </div>
+        <div class="e-viz">
+          <svg class="viz" viewBox="0 0 280 140" role="img" aria-label="AI dividend inverted: expected fall, actual rise in cognitive load.">
+            <line class="vbase" x1="20" y1="120" x2="260" y2="120"></line>
+            <path class="vline" d="M 20 70 C 80 80, 140 100, 200 110" stroke-dasharray="3 4"></path>
+            <path class="vline alert" d="M 20 70 C 80 60, 140 38, 260 22"></path>
+            <text class="vlabel" x="20" y="136">2022</text>
+            <text class="vlabel alert" x="260" y="136" text-anchor="end">cognitive load ↑</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- engine 3 — engagement -->
+      <article class="engine">
+        <div class="e-id">
+          <span class="e-num">Engine 03</span>
+          Engagement
+          <div class="e-name">declining since 2020</div>
+        </div>
+        <div class="e-prose">
+          <p>Gallup&rsquo;s 2026 State of the Global Workplace report shows global engagement at <strong>20%</strong>, the lowest level measured since 2020. Manager engagement has dropped <strong>9 points since 2022</strong>. The historical &ldquo;manager engagement premium,&rdquo; the gap between manager and individual-contributor engagement that used to subsidise team morale, has effectively closed.</p>
+          <p>The retention layer is camouflaging the problem. MetLife 2026: 56% of employees stay out of necessity, only 18% out of genuine commitment.</p>
+        </div>
+        <div class="e-viz">
+          <svg class="viz" viewBox="0 0 280 140" role="img" aria-label="Engagement, 2014 to 2026: rise through 2020, then decline.">
+            <line class="vbase" x1="20" y1="120" x2="260" y2="120"></line>
+            <path class="vline" d="M 20 80 C 80 55, 130 30, 180 25"></path>
+            <path class="vline alert" d="M 180 25 C 215 45, 245 85, 260 100"></path>
+            <text class="vlabel" x="20" y="136">2014</text>
+            <text class="vlabel alert" x="260" y="136" text-anchor="end">2026 ↓</text>
+          </svg>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ====== BEAT 3 — INVERSION ====== -->
+  <section class="beat" id="beat-3" data-screen-label="03 Beat 3 — The inversion" aria-labelledby="b3-title">
+    <div class="beat-head">
+      <div class="b-mark"><span class="num">Beat 03</span>The inversion<br>now</div>
+      <h2 id="b3-title">For the first time in three generations, productivity now depends on <em>the human</em>.</h2>
+    </div>
+
+    <div class="beat-body">
+      <div class="b-aside">The composition flips<br>Old stack vs. new stack</div>
+      <div class="b-prose">
+        <p>The composition of growth has flipped. The factor that used to be a small residual is now the residual that matters most, and the only one still moving. Capital is exhausted. Technology is producing cognitive load instead of relief. What is left is the person standing in the workplace.</p>
+      </div>
+    </div>
+
+    <div class="composition">
+      <div class="comp-col">
+        <div class="comp-era"><span class="em">1948 — 2005</span>The old stack</div>
+        <div class="comp-title">Capital and technology carried the growth.</div>
+        <div class="comp-bar" role="img" aria-label="Old stack composition: 60% capital, 28% technology, 12% human.">
+          <div class="seg capital" style="width: 60%;">60</div>
+          <div class="seg tech" style="width: 28%;">28</div>
+          <div class="seg human" style="width: 12%;">12</div>
+        </div>
+        <ul class="comp-legend">
+          <li><span class="swatch capital"></span><span>Capital deepening</span><span class="pct">60%</span></li>
+          <li><span class="swatch tech"></span><span>Technology &amp; processes</span><span class="pct">28%</span></li>
+          <li class="human"><span class="swatch human"></span><span>Human factor</span><span class="pct">12%</span></li>
+        </ul>
+      </div>
+
+      <div class="comp-col">
+        <div class="comp-era"><span class="em">2025 →</span>The new stack</div>
+        <div class="comp-title">The human carries what is left of the curve.</div>
+        <div class="comp-bar" role="img" aria-label="New stack composition: 14% capital, 22% technology, 64% human.">
+          <div class="seg capital" style="width: 14%;">14</div>
+          <div class="seg tech" style="width: 22%;">22</div>
+          <div class="seg human" style="width: 64%;">64</div>
+        </div>
+        <ul class="comp-legend">
+          <li><span class="swatch capital"></span><span>Capital deepening</span><span class="pct">14%</span></li>
+          <li><span class="swatch tech"></span><span>Technology &amp; processes</span><span class="pct">22%</span></li>
+          <li class="human"><span class="swatch human"></span><span>Human factor</span><span class="pct">64%</span></li>
+        </ul>
+      </div>
+
+      <div class="comp-foot">
+        Source: BLS Multifactor Productivity, OECD Productivity Statistics, Clover ERA analysis. The 2025 → composition is current cohort data extrapolated to the productivity-decomposition framework. <em>Illustrative rather than precise; the underlying literature reports ranges, not point estimates.</em>
+      </div>
+    </div>
+
+    <div class="beat-close">
+      <div class="bc-line lead">The worker rode the curve. The curve was built elsewhere.</div>
+      <div class="bc-line">The lever is no longer the workplace. It is the person standing in it.</div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ====== BEAT 4 — DEPLETION ====== -->
+  <section class="beat" id="beat-4" data-screen-label="04 Beat 4 — The depletion" aria-labelledby="b4-title">
+    <div class="beat-head">
+      <div class="b-mark"><span class="num">Beat 04</span>The depletion<br>the close</div>
+      <h2 id="b4-title">…and <em>the human</em> is depleted.</h2>
+    </div>
+
+    <div class="beat-body">
+      <div class="b-aside">The bill, named</div>
+      <div class="b-prose">
+        <p>The median company in our cohort loses twenty million dollars a year to the depletion of the people growth now depends on. The bill is no longer abstract. It already lands every quarter, it just isn&rsquo;t named.</p>
+        <p>As the cohort grows toward the Q2&nbsp;2026 publication, the median has held steady. New companies confirm the pattern rather than dilute it. We call the whole thing <strong>Silent Degradation</strong>.</p>
+      </div>
+    </div>
+
+    <div class="depletion">
+      <div class="dlbl">Median annual loss · cohort to date</div>
+      <p class="dnum">$20M</p>
+      <p class="dcap">
+        Range $8M to $65M across our growing Q1&ndash;Q2 2026 cohort.
+        <span class="live">As of Apr&nbsp;28,&nbsp;2026 · n=11</span>
+      </p>
+      <div class="comp-foot">
+        Cost calculated across six layers using research-backed multipliers and company-specific inputs. <em>Full methodology in The Silent Degradation Index, Q2&nbsp;2026.</em>
+      </div>
+    </div>
+
+    <!-- cost split -->
+    <div class="cost-split">
+      <div class="cost-bar-wrap">
+        <div class="cost-bar-lbl">Cost layer split · cohort total</div>
+        <div class="cost-bar" role="img" aria-label="Cost layer split: 47% voluntary departures, 53% other layers.">
+          <div class="seg-vol">47</div>
+          <div class="seg-rest">53</div>
+        </div>
+        <div class="cost-bar-key">
+          <div>
+            <div class="k-lbl">47% — what is tracked</div>
+            <div class="k-name">Regrettable Attrition.</div>
+          </div>
+          <div>
+            <div class="k-lbl">53% — what is not</div>
+            <div class="k-name">Disengagement Tax. Manager Drag. Promotion Risk. Innovation Suppression. Customer Impact.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cost-prose">
+        <p>Less than half of that cost is voluntary departures. The rest is what depletion looks like before someone leaves: <em>disengagement, manager drag, promotion risk, innovation suppression, customer impact.</em></p>
+        <p><strong>The cost layers leaders haven&rsquo;t been tracking are larger than the one they have.</strong> The dashboards are looking in the right place but at the wrong layer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Closing CTA ====== -->
+  <section class="closing-cta" data-screen-label="05 Continue reading">
+    <div class="mono ec-eyebrow">Continue reading</div>
+    <h3>Two paths from here, and one publication on the way.</h3>
+
+    <ul class="cta-list">
+      <li>
+        <a href="How It Works.html">
+          <div>
+            <div class="cl-title">How we measure what dashboards do not see.</div>
+          </div>
+          <div class="cl-host">/how-it-works<span class="arrow">›</span></div>
+        </a>
+      </li>
+      <li>
+        <a href="MGI Landing.html">
+          <div>
+            <div class="cl-title">Or take the diagnostic. <em>The Manager Gap Index.</em></div>
+          </div>
+          <div class="cl-host">mgi.cloverera.com<span class="arrow">›</span></div>
+        </a>
+      </li>
+    </ul>
+
+    <p class="pub-footnote">
+      The full cohort data and methodology will publish in <a href="Index Teaser.html">The Silent Degradation Index, Q2&nbsp;2026 →</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="page-footer" data-screen-label="Page footer">
+  <div class="colophon">
+    <em>The Productivity Inversion</em>. A four-beat argument.
+    <div class="draft">Draft 02 · Fig. 1 of 4 · Apr 2026</div>
+  </div>
+  <div class="links">
+    <a href="index.html">Clover ERA</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology &amp; Evidence</a>
+    <a href="About.html">About / Founders</a>
+    <a href="Books.html">Books</a>
+    <a href="MGI Landing.html">Manager Gap Index</a>
+    <a href="Index Teaser.html">The Index, Q2 2026</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+  </div>
+</footer>
+
+</body>
+</html>

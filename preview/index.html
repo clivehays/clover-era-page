@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Clover ERA — Silent Degradation Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Silent Degradation Index measures the gap between what managers see and what their teams report anonymously. The median company in our growing cohort loses $20M a year to depletion their dashboards do not show.">
+<meta property="og:title" content="Clover ERA — Silent Degradation Detection">
+<meta property="og:description" content="The Silent Degradation Index measures the gap between what managers see and what their teams report anonymously.">
+
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&amp;family=Inter+Tight:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+    z-index: 0;
+  }
+  a{ color: inherit; }
+
+  .mono{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .serif{ font-family: "Source Serif 4", Georgia, serif; font-feature-settings: "onum" 1; }
+
+  .ed-link{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--ink); padding-bottom: 2px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .ed-link:hover{ color: var(--accent-body); border-bottom-color: var(--accent-body); }
+  .ed-link .arrow{ display: inline-block; margin-left: 6px; transition: transform 160ms ease; }
+  .ed-link:hover .arrow{ transform: translateX(3px); }
+
+  /* masthead --------------------------------------------------------- */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 19px;
+    letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .wm-logo{
+    display: block;
+    width: 26px; height: 26px;
+    flex: none;
+  }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display:flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  nav.primary a:hover{ color: var(--ink); }
+  nav.primary a.cta{
+    color: var(--accent-body);
+    border-bottom: 1px solid var(--accent-body);
+    padding-bottom: 2px;
+  }
+
+  main{
+    position: relative; z-index: 1;
+    max-width: 1180px; margin: 0 auto;
+    padding: 0 56px;
+  }
+  .section-rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* ---------- Section 1 — Hero ---------- */
+  section.hero{
+    padding: 72px 0 96px;
+    max-width: 1100px;
+  }
+  .hero-grid{
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 84px;
+    align-items: start;
+  }
+  .hero .left{ max-width: 600px; }
+  .hero .eyebrow{ margin-bottom: 36px; }
+  h1.hero-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(40px, 5.6vw, 68px);
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  h1.hero-title em{
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .hero .sub{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 19px; line-height: 1.5;
+    color: var(--ink-2);
+    margin: 32px 0 0;
+    max-width: 560px;
+    text-wrap: pretty;
+  }
+  .hero .cta-row{
+    margin-top: 48px;
+    display: flex; align-items: baseline; gap: 18px;
+    flex-wrap: wrap;
+  }
+  .hero .cta-row .ed-link{ font-size: 19px; }
+  .hero .cta-row .cta-host{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em;
+    color: var(--ink-mute); text-transform: lowercase;
+  }
+
+  /* clover diagram --------------------------------------------------- */
+  .clover-figure{
+    margin: 0;
+    display: flex; flex-direction: column; align-items: stretch;
+    padding-top: 62px;
+  }
+  .clover-anno{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500;
+    color: var(--ink-mute);
+    margin: 0 auto 24px;
+    line-height: 1.6;
+    max-width: 380px;
+    text-align: center;
+    text-wrap: pretty;
+  }
+  .clover-anno em{ color: var(--accent-body); font-style: normal; }
+  .clover-svg{
+    display: block; width: 100%; height: auto;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .clover-svg .guide{ fill: none; stroke: var(--rule); stroke-width: 0.6; stroke-dasharray: 1.5 3; }
+  .clover-svg .axis{ stroke: var(--rule); stroke-width: 0.6; }
+  .clover-svg .petal{
+    fill: rgba(35, 32, 28, 0.07);
+    stroke: var(--ink);
+    stroke-width: 1.1;
+    stroke-linejoin: round;
+  }
+  .clover-svg .petal.missing{
+    fill: rgba(33, 150, 243, 0.28);
+    stroke: var(--accent-body);
+    stroke-width: 1.2;
+  }
+  .clover-svg .center-dot{ fill: var(--ink); }
+  .clover-svg .dim-label{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic;
+    font-size: 17px;
+    fill: var(--ink);
+  }
+  .clover-svg .dim-label.missing{ fill: var(--accent-body); }
+
+  /* ---------- Section 2 — Validation stack ---------- */
+  section.evidence{
+    padding: 96px 0 104px;
+    max-width: 880px;
+  }
+  .evidence .eyebrow{ margin-bottom: 28px; }
+  .evidence h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 28px; line-height: 1.2;
+    letter-spacing: -0.01em; color: var(--ink);
+    margin: 0 0 56px; max-width: 720px;
+    text-wrap: pretty;
+  }
+  .citations{
+    list-style: none; margin: 0; padding: 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .citations li{
+    display: grid;
+    grid-template-columns: 200px 1fr 80px;
+    gap: 28px; align-items: baseline;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .citations .src{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); font-weight: 500;
+  }
+  .citations .finding{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.5;
+    color: var(--ink-2); font-weight: 400;
+    text-wrap: pretty;
+  }
+  .citations .year{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.14em;
+    color: var(--ink-mute); text-align: right;
+  }
+  .evidence .subsection{ margin-top: 40px; }
+  .evidence .subsection:first-of-type{ margin-top: 28px; }
+  .evidence .sub-eyebrow{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.20em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+    margin: 0 0 14px;
+  }
+  .evidence .sub-eyebrow .mark{ color: var(--ink); margin-right: 10px; }
+  .evidence .closing{
+    margin-top: 36px;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 17px; line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 36px 0 0; max-width: 640px;
+  }
+
+  /* ---------- Section 3 — Cohort number ---------- */
+  section.cohort{ padding: 50px 0; }
+  .cohort .eyebrow{ margin-bottom: 56px; }
+  .cohort .number{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(120px, 18vw, 220px);
+    line-height: 0.9; letter-spacing: -0.04em;
+    color: var(--accent); margin: 0;
+    font-feature-settings: "lnum" 1;
+  }
+  .cohort .caption{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.45;
+    color: var(--ink); font-weight: 400;
+    margin: 28px 0 0; max-width: 560px;
+    text-wrap: pretty;
+  }
+  .cohort .caption .live{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.16em;
+    color: var(--ink-mute); text-transform: uppercase;
+    display: inline-block; margin-left: 4px;
+  }
+  .cohort .method{
+    margin-top: 22px;
+  }
+  .cohort .method a{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); text-decoration: none;
+    border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .cohort .method a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+  .cohort .layer-split{
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule-soft);
+    max-width: 640px;
+  }
+  .cohort .layer-split .lbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .cohort .layer-split p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; line-height: 1.55;
+    color: var(--ink); font-weight: 400;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .cohort .layer-split p strong{
+    color: var(--accent-body);
+    font-weight: 500;
+    font-feature-settings: "lnum" 1;
+  }
+  .cohort .founder-credit{
+    margin-top: 32px;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 13px; line-height: 1.55;
+    color: var(--ink-mute); font-weight: 400;
+    max-width: 640px;
+  }
+  .cohort .founder-credit em{ font-style: italic; }
+  .cohort .founder-credit a{
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .cohort .founder-credit a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ---------- Section 4 — How we measure ---------- */
+  section.methodology{
+    padding: 50px 0;
+    max-width: 880px;
+  }
+  .methodology .eyebrow{ margin-bottom: 28px; }
+  .methodology h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 28px; line-height: 1.2;
+    letter-spacing: -0.01em; color: var(--ink);
+    margin: 0 0 32px; max-width: 720px;
+    text-wrap: pretty;
+  }
+  .methodology .lede{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 17px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 48px;
+    max-width: 620px;
+    text-wrap: pretty;
+  }
+  .methodology .lede strong{
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .dimension-block{
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 36px; align-items: start;
+    padding: 32px 0 36px;
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .dim-letter{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 88px;
+    line-height: 0.9; letter-spacing: -0.04em;
+    color: var(--accent);
+  }
+  .dim-name{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 24px; line-height: 1.2;
+    color: var(--ink); margin-bottom: 14px;
+  }
+  .dim-q{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.5;
+    color: var(--ink-2); font-weight: 400;
+    margin: 0 0 14px; text-wrap: pretty;
+  }
+  .dim-drop{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.5;
+    color: var(--ink-2); font-weight: 300;
+    margin: 0; text-wrap: pretty;
+  }
+  .dim-drop em{ font-style: italic; color: var(--ink); font-weight: 400; }
+  .platform-others{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 15px; line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 28px 0 36px; max-width: 640px;
+    text-wrap: pretty;
+  }
+  .platform-link{ margin: 0; }
+  .platform-link .ed-link{ font-size: 17px; }
+
+  /* ---------- Section 5 — Continue reading ---------- */
+  section.reading-list{
+    padding: 50px 0;
+  }
+  .reading-list .eyebrow{ margin-bottom: 56px; }
+  .reading-grid{
+    display: grid; gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .reading-grid a.r-item{
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 48px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    text-decoration: none;
+    color: var(--ink);
+    align-items: baseline;
+    transition: color 120ms ease;
+  }
+  .reading-grid a.r-item:hover .r-title{ color: var(--accent-body); }
+  .reading-grid a.r-item:hover .r-host{ color: var(--accent-body); }
+  .reading-grid a.r-item:hover .r-host .r-arrow{ transform: translateX(4px); }
+  .r-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.008em;
+    color: var(--ink);
+    margin-bottom: 10px;
+    transition: color 120ms ease;
+    text-wrap: pretty;
+  }
+  .r-desc{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 540px;
+    text-wrap: pretty;
+  }
+  .r-host{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    text-transform: lowercase;
+    text-align: right;
+    transition: color 120ms ease;
+    align-self: center;
+  }
+  .r-host .r-arrow{
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 160ms ease;
+  }
+
+  /* ---------- footer ---------- */
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule);
+    margin: 16px auto 0;
+    padding: 36px 56px 48px;
+    max-width: 1180px;
+    display: grid; grid-template-columns: 2fr 3fr;
+    gap: 48px; align-items: start;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 13px;
+    color: var(--ink-mute); line-height: 1.5; max-width: 320px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  /* responsive ------------------------------------------------------- */
+  @media (max-width: 980px){
+    .hero-grid{ grid-template-columns: 1fr; gap: 56px; }
+    .clover-svg{ max-width: 380px; }
+  }
+  @media (max-width: 720px){
+    .masthead{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    nav.primary{ gap: 18px; }
+    main{ padding: 0 28px; }
+    section.hero{ padding: 48px 0 64px; }
+    section.evidence, section.methodology{ padding: 64px 0 72px; }
+    section.cohort{ padding: 80px 0 80px; }
+    section.reading-list{ padding: 64px 0 80px; }
+    .citations li{ grid-template-columns: 1fr; gap: 6px; padding: 18px 0; }
+    .citations .year{ text-align: left; }
+    .dimension-block{ grid-template-columns: 1fr; gap: 14px; }
+    .reading-grid a.r-item{ grid-template-columns: 1fr; gap: 8px; padding: 24px 0; }
+    .r-host{ text-align: left; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px; }
+    footer .links{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead" data-screen-label="Masthead">
+  <a class="wordmark" href="index.html"><img class="wm-logo" src="assets/clover-era-logo.png" alt="" /><span class="wm-text">Clover ERA</span><span class="dot">.</span></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="Index Teaser.html">The Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology</a>
+    <a href="About.html">About</a>
+    <a href="MGI Landing.html" class="cta">Take the MGI →</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ========== Section 1 — Hero ========== -->
+  <section class="hero" data-screen-label="01 Hero" aria-labelledby="hero-title">
+    <div class="hero-grid">
+      <div class="left">
+        <div class="mono eyebrow">Silent Degradation Detection</div>
+        <h1 class="hero-title" id="hero-title">
+          For 75 years, productivity belonged to the&nbsp;machine.<br />Now it belongs<br />to <em>the&nbsp;human</em>.
+        </h1>
+        <p class="sub">
+          The human is depleted. Across a growing cohort of mid-market companies, the cost of that depletion runs into eight figures.
+        </p>
+        <div class="cta-row">
+          <a class="ed-link" href="MGI Landing.html">Take the 10-minute Manager Gap Index<span class="arrow">›</span></a>
+          <span class="cta-host">mgi.cloverera.com</span>
+        </div>
+      </div>
+
+      <figure class="clover-figure" aria-label="The CLOVER framework — Vulnerability missing">
+        <div class="clover-anno">A healthy clover is large and symmetric. <em>Vulnerability</em> is the dimension most often missing.</div>
+        <svg class="clover-svg" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Six-petal CLOVER measurement diagram with Vulnerability scored low">
+          <!-- guide ring + axis lines (faint, like a polar chart) -->
+          <circle class="guide" cx="260" cy="260" r="180"></circle>
+          <circle class="guide" cx="260" cy="260" r="120"></circle>
+          <!-- six radial axes at 30°, 90°, 150°, 210°, 270°, 330° (between petals) -->
+          <g class="axis">
+            <line x1="260" y1="260" x2="350" y2="104"></line>   <!-- 30°  upper-right axis -->
+            <line x1="260" y1="260" x2="440" y2="260"></line>   <!-- 90°  right -->
+            <line x1="260" y1="260" x2="350" y2="416"></line>   <!-- 150° lower-right -->
+            <line x1="260" y1="260" x2="170" y2="416"></line>   <!-- 210° lower-left -->
+            <line x1="260" y1="260" x2="80" y2="260"></line>   <!-- 270° left -->
+            <line x1="260" y1="260" x2="170" y2="104"></line>   <!-- 330° upper-left -->
+          </g>
+
+          <!-- ============================================================ -->
+          <!-- Petals: leaf-shaped, drawn from origin (0,0) tip pointing UP. -->
+          <!-- Path is a pointed leaf: from (0,0) curve out to width then    -->
+          <!-- back in to a sharp tip at (0,-len), then mirror.              -->
+          <!-- petal length encodes the dimension score.                    -->
+          <!-- We define each petal as a <use> of a parameterised path so   -->
+          <!-- length differences read as measurement variance.             -->
+          <!-- ============================================================ -->
+
+          <defs>
+            <!-- canonical leaf shape: tip at (0,-1), max width 0.42 at y=-0.5, base at (0,0) -->
+            <!-- we scale it per-petal with transform="rotate(θ 260 260) translate(260 260) scale(sx,sy)" -->
+            <symbol id="leaf" overflow="visible">
+              <path d="M 0 0
+                       C 38 -20, 60 -75, 0 -180
+                       C -60 -75, -38 -20, 0 0 Z"></path>
+            </symbol>
+          </defs>
+
+          <!-- Petal scores (1.00 = full radius 180):
+               Communication 0.95, Learning 0.90, Opportunity 0.85,
+               Reflection 0.92, Enablement 0.88,
+               Vulnerability 0.32 (the missing one) -->
+
+          <!-- Petal scores: each petal length = team's score on that dimension.
+               width scales with length so smaller leaves stay leaf-shaped, not stretched. -->
+          <!-- Communication 0.95 — top (0°), strongest -->
+          <use href="#leaf" class="petal" transform="rotate(0 260 260) translate(260 260) scale(0.97 0.95)"></use>
+          <!-- Learning 0.78 — upper right (60°) -->
+          <use href="#leaf" class="petal" transform="rotate(60 260 260) translate(260 260) scale(0.86 0.78)"></use>
+          <!-- Opportunity 0.62 — lower right (120°) -->
+          <use href="#leaf" class="petal" transform="rotate(120 260 260) translate(260 260) scale(0.76 0.62)"></use>
+          <!-- Vulnerability 0.30 — bottom (180°), the missing dimension -->
+          <use href="#leaf" class="petal missing" transform="rotate(180 260 260) translate(260 260) scale(0.55 0.30)"></use>
+          <!-- Reflection 0.88 — lower left (240°) -->
+          <use href="#leaf" class="petal" transform="rotate(240 260 260) translate(260 260) scale(0.92 0.88)"></use>
+          <!-- Enablement 0.70 — upper left (300°) -->
+          <use href="#leaf" class="petal" transform="rotate(300 260 260) translate(260 260) scale(0.82 0.70)"></use>
+
+          <!-- center dot -->
+          <circle class="center-dot" cx="260" cy="260" r="3.5"></circle>
+
+          <!-- Italic serif labels, placed past each petal tip at r≈208 -->
+          <!-- Communication: 0°   → (260, 260-208) = (260, 52) -->
+          <text class="dim-label" x="260" y="46" text-anchor="middle">Communication</text>
+          <!-- Learning: 60°       → (260+180, 260-104) = (440, 156) -->
+          <text class="dim-label" x="450" y="160" text-anchor="middle">Learning</text>
+          <!-- Opportunity: 120°   → (260+180, 260+104) = (440, 364) -->
+          <text class="dim-label" x="448" y="368" text-anchor="middle">Opportunity</text>
+          <!-- Vulnerability: 180° (missing — italic blue) → (260, 260+208) = (260, 468) -->
+          <text class="dim-label missing" x="260" y="478" text-anchor="middle">Vulnerability</text>
+          <!-- Reflection: 240°    → (260-180, 260+104) = (80, 364) -->
+          <text class="dim-label" x="72" y="368" text-anchor="middle">Reflection</text>
+          <!-- Enablement: 300°    → (260-180, 260-104) = (80, 156) -->
+          <text class="dim-label" x="72" y="160" text-anchor="middle">Enablement</text>
+        </svg>
+      </figure>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 2 — Validation stack (expanded) ========== -->
+  <section class="evidence" id="evidence" data-screen-label="02 Evidence" aria-labelledby="evidence-title">
+    <div class="mono eyebrow">The Evidence</div>
+    <h2 id="evidence-title">Eight independent sources have named pieces of the same phenomenon.</h2>
+
+    <div class="subsection">
+      <p class="sub-eyebrow"><span class="mark">A</span>The AI cognitive load shift</p>
+      <ol class="citations">
+        <li>
+          <span class="src">Microsoft Research</span>
+          <span class="finding">AI use shifts knowledge work from generation to evaluation. Heavy users report higher cognitive effort, not lower.</span>
+          <span class="year">2025</span>
+        </li>
+        <li>
+          <span class="src">UC Berkeley Labor Center</span>
+          <span class="finding">67% of workers who adopted AI tools in 2025 reported working more hours, not fewer, by the end of the year.</span>
+          <span class="year">2025</span>
+        </li>
+        <li>
+          <span class="src">Deloitte</span>
+          <span class="finding">Mental fatigue and cognitive strain have surpassed workload volume as the leading predictors of burnout.</span>
+          <span class="year">2025</span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="subsection">
+      <p class="sub-eyebrow"><span class="mark">B</span>The engagement and depletion phenomenon</p>
+      <ol class="citations">
+        <li>
+          <span class="src">MetLife</span>
+          <span class="finding">56% of employees stay out of necessity, not commitment. Only 18% stay because they truly want to.</span>
+          <span class="year">2026</span>
+        </li>
+        <li>
+          <span class="src">Gallup</span>
+          <span class="finding">Manager engagement dropped 9 points since 2022. Global engagement at 20%, the lowest since 2020.</span>
+          <span class="year">2026</span>
+        </li>
+        <li>
+          <span class="src">ActivTrak</span>
+          <span class="finding">Behavioural data across 163,638 employees shows disengagement risk now exceeds burnout risk for the first time.</span>
+          <span class="year">2026</span>
+        </li>
+        <li>
+          <span class="src">Eagle Hill Consulting</span>
+          <span class="finding">71% of middle managers report burnout, the highest of any job level.</span>
+          <span class="year">2025</span>
+        </li>
+        <li>
+          <span class="src">McKinsey Quarterly</span>
+          <span class="finding">The median S&amp;P 500 company loses $228 million to $355 million annually to disengagement and attrition.</span>
+          <span class="year">2023</span>
+        </li>
+      </ol>
+    </div>
+
+    <p class="closing">The market has named this in pieces. We call the whole thing Silent Degradation.</p>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 3 — Cohort number ========== -->
+  <section class="cohort" data-screen-label="03 Cohort number" aria-labelledby="cohort-num">
+    <div class="mono eyebrow">The Measurement</div>
+    <p class="number serif" id="cohort-num">$20M</p>
+    <p class="caption">
+      Median annual cost of Silent Degradation across our growing Q1–Q2&nbsp;2026 cohort. Range $8M to $65M. <span class="live">As of Apr&nbsp;28,&nbsp;2026 · n=11</span>
+    </p>
+    <p class="method"><a href="Evidence.html#methodology">Read the full methodology in The Silent Degradation Index, Q2&nbsp;2026 →</a></p>
+
+    <div class="layer-split">
+      <div class="lbl">Cost layer split</div>
+      <p>Across the cohort, <strong>47%</strong> of total cost comes from voluntary departures. The other <strong>53%</strong> comes from five layers most companies do not measure: disengagement, manager drag, promotion risk, innovation suppression, and customer impact.</p>
+    </div>
+
+    <p class="founder-credit">
+      Methodology by Clive and Neil Hays, authors of <em><a href="books/the-trillion-dollar-problem.html">The Trillion Dollar Problem</a></em> (2024) and <em><a href="books/already-gone.html">Already Gone</a></em> (2026).
+    </p>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 4 — How we measure ========== -->
+  <section class="methodology" id="methodology-section" data-screen-label="04 Methodology" aria-labelledby="methodology-title">
+    <div class="mono eyebrow">The Measurement Method</div>
+    <h2 id="methodology-title">How we measure what dashboards do not see.</h2>
+
+    <p class="lede">Managers and team members answer the same six questions about the same workplace dimensions. The Manager Gap Index measures the gap between the two views. <strong>Across the cohort, the average gap is 70%.</strong> Most managers see less than a third of what their teams are actually experiencing.</p>
+
+    <div class="dimension-block">
+      <div class="dim-letter">V</div>
+      <div class="dim-content">
+        <div class="dim-name">Vulnerability</div>
+        <p class="dim-q">Can people be honest without risk? When something is wrong, do they say it or hide it?</p>
+        <p class="dim-drop"><em>When it drops:</em> You get a team that says “everything's fine” in every meeting while building resentment underneath. The resignation comes out of nowhere because nobody felt safe flagging the problem.</p>
+      </div>
+    </div>
+
+    <p class="platform-others">Five other dimensions: Communication, Learning, Opportunity, Enablement, Reflection. Each one a measurable signal that maps to retention, performance, and growth. Each one with its own “when it drops” pattern.</p>
+
+    <p class="platform-link"><a class="ed-link" href="How It Works.html">Read the full methodology<span class="arrow">›</span></a></p>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 5 — Continue reading ========== -->
+  <section class="reading-list" data-screen-label="05 Continue reading" aria-labelledby="reading-eyebrow">
+    <div class="mono eyebrow" id="reading-eyebrow">Continue Reading</div>
+    <div class="reading-grid">
+
+      <a class="r-item" href="MGI Landing.html">
+        <div>
+          <div class="r-title">The Manager Gap Index</div>
+          <div class="r-desc">A free 10-minute diagnostic. Six dimensions, scored against the cohort.</div>
+        </div>
+        <div class="r-host">mgi.cloverera.com<span class="r-arrow">›</span></div>
+      </a>
+
+      <a class="r-item" href="The Productivity Inversion.html">
+        <div>
+          <div class="r-title">The Productivity Inversion</div>
+          <div class="r-desc">The full four-beat thesis. How productivity stopped coming from capital and started depending on the human.</div>
+        </div>
+        <div class="r-host">/thesis<span class="r-arrow">›</span></div>
+      </a>
+
+      <a class="r-item" href="Index Teaser.html">
+        <div>
+          <div class="r-title">The Silent Degradation Index, Q2 2026</div>
+          <div class="r-desc">Live cohort findings. Currently 11 companies. Full publication June 2026.</div>
+        </div>
+        <div class="r-host">silentdegradation.com<span class="r-arrow">›</span></div>
+      </a>
+
+      <a class="r-item" href="Evidence.html">
+        <div>
+          <div class="r-title">The Methodology</div>
+          <div class="r-desc">Every claim, every source, every limitation acknowledged. The primary research and the cohort methodology in detail.</div>
+        </div>
+        <div class="r-host">/evidence<span class="r-arrow">›</span></div>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="page-footer" data-screen-label="Page footer">
+  <div class="colophon">
+    Clover ERA, 2026.<br>
+    Silent Degradation detection for the post-machine economy.
+  </div>
+  <div class="links">
+    <a href="Index Teaser.html">The Silent Degradation Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology and Evidence</a>
+    <a href="About.html">About / Founders</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="https://alreadygone.substack.com">Already Gone Weekly</a>
+    <a href="Books.html">Books</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+    <a href="/privacy">Privacy / Terms</a>
+  </div>
+</footer>
+
+</body></html>

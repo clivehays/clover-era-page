@@ -1,0 +1,1487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Profit Per Employee Diagnostic — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Profit per employee is the most honest number on your P&L. Enter one year of inputs, then answer the four exposure groups. The output is a paragraph, not a score." />
+
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+    --warn: #B8410E;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:""; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none; mix-blend-mode: multiply; opacity: 0.7; z-index: 0;
+  }
+  a{ color: inherit; }
+
+  .mono{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-weight: 400; font-size: 19px;
+    letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display:flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  nav.primary a:hover{ color: var(--ink); }
+  nav.primary a.cta{
+    color: var(--accent-body);
+    border-bottom: 1px solid var(--accent-body);
+    padding-bottom: 2px;
+  }
+
+  main{ position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 56px; }
+  .section-rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* ---------- hero ---------- */
+  section.hero{
+    padding: 88px 0 64px;
+  }
+  .hero .eyebrow{ margin-bottom: 28px; }
+  h1.hero-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(36px, 5.0vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  h1.hero-title em{ font-style: italic; color: var(--accent-body); font-weight: 400; }
+  .hero-sub{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 19px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 28px 0 0;
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+
+  /* ---------- step / card ---------- */
+  section.step{
+    padding: 56px 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  section.step:first-of-type{ border-top: 0; padding-top: 24px; }
+  .step .step-eyebrow{ margin-bottom: 20px; }
+  .step h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: clamp(28px, 3.4vw, 36px);
+    line-height: 1.1; letter-spacing: -0.018em;
+    margin: 0 0 12px; text-wrap: pretty;
+  }
+  .step h2 em{ font-style: italic; color: var(--accent-body); }
+  .step .step-sub{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 17px; line-height: 1.55;
+    color: var(--ink-2); margin: 0 0 32px; max-width: 640px;
+  }
+
+  /* stages */
+  .stage{ display: none; }
+  .stage.visible{ display: block; }
+
+  /* ---------- forms / inputs ---------- */
+  .input-group{ margin-bottom: 22px; max-width: 600px; }
+  .input-group > label{
+    display: block;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; line-height: 1.4;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .input-group label .tooltip{
+    display: inline-block;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--ink-mute);
+    color: var(--ink-mute);
+    text-align: center; line-height: 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; font-style: italic;
+    margin-left: 6px; cursor: help;
+  }
+  .input-group label .tooltip:hover,
+  .input-group label .tooltip:focus{
+    color: var(--ink); border-color: var(--ink); outline: none;
+  }
+  .input-wrapper{
+    position: relative;
+    display: flex; align-items: stretch;
+  }
+  .input-wrapper.no-prefix .input-prefix{ display: none; }
+  .input-prefix{
+    display: inline-flex; align-items: center;
+    padding: 0 12px;
+    border: 1px solid var(--ink); border-right: 0;
+    background: var(--paper-2);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px; color: var(--ink-mute);
+  }
+  .input-suffix{
+    position: absolute; right: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px; color: var(--ink-mute);
+    pointer-events: none;
+  }
+  .input-wrapper input{
+    flex: 1;
+    padding: 14px 16px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-size: 16px;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+    width: 100%;
+  }
+  .input-wrapper input:focus{
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--accent-body);
+    border-color: var(--accent-body);
+  }
+  .input-wrapper input.error{ border-color: var(--warn); }
+  .industry-select{
+    width: 100%; max-width: 440px;
+    padding: 14px 16px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236F6A60' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+  .industry-select:focus{
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--accent-body);
+    border-color: var(--accent-body);
+  }
+  .industry-other-wrap{ display: none; margin-top: 10px; max-width: 440px; }
+  .industry-other-wrap.visible{ display: block; }
+
+  /* ---------- denominator radios (cards) ---------- */
+  .denom-block{ margin-bottom: 26px; }
+  .denom-label{
+    display: block;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; color: var(--ink); margin-bottom: 12px;
+  }
+  .denom-options{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    max-width: 600px;
+  }
+  .denom-option{
+    display: flex; align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .denom-option:hover{ border-color: var(--ink-mute); }
+  .denom-option input[type="radio"]{
+    margin-top: 4px;
+    appearance: none; -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    flex: 0 0 16px;
+    cursor: pointer;
+    position: relative;
+    background: var(--paper);
+  }
+  .denom-option input[type="radio"]:checked{
+    border-color: var(--accent-body);
+  }
+  .denom-option input[type="radio"]:checked::after{
+    content: ""; position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--accent-body);
+  }
+  .denom-option:has(input:checked){
+    border-color: var(--ink); background: rgba(33,150,243,0.05);
+  }
+  .denom-option-title{
+    display: block;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; line-height: 1.35;
+    color: var(--ink); font-style: italic;
+  }
+  .denom-option-desc{
+    display: block;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 14px; line-height: 1.5;
+    color: var(--ink-mute); margin-top: 4px;
+  }
+
+  /* ---------- buttons ---------- */
+  .btn-row{ margin-top: 28px; }
+  .btn-primary, .btn{
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 10px;
+    min-width: 240px;
+    padding: 18px 30px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.005em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .btn-primary .chev, .btn .chev{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 22px; line-height: 1;
+    transition: transform 160ms ease;
+  }
+  .btn-primary:hover, .btn:hover{ background: var(--accent-body); border-color: var(--accent-body); }
+  .btn-primary:hover .chev, .btn:hover .chev{ transform: translateX(4px); }
+  .form-error{
+    margin-top: 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--warn);
+    min-height: 1.5em;
+  }
+
+  /* ---------- number card ---------- */
+  .number-card{
+    padding: 36px 0 36px;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule-soft);
+    margin: 0 0 48px;
+  }
+  .number-label{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .number-figure{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(64px, 9vw, 104px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--accent-body);
+    font-feature-settings: "lnum" 1;
+    margin-bottom: 32px;
+  }
+  .projection-block{
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 28px;
+    max-width: 640px;
+  }
+  .projection-label{
+    display: block;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.4;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .projection-subtitle{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 15px; line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 0 0 14px;
+    text-wrap: pretty;
+  }
+
+  /* ---------- exposure groups ---------- */
+  .exposure-group{
+    padding: 32px 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .exposure-group:first-of-type{ border-top: 1px solid var(--ink); padding-top: 32px; }
+  .group-eyebrow{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 8px;
+  }
+  .group-heading{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 22px; line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 24px;
+  }
+  .question{
+    margin-bottom: 28px;
+    max-width: 720px;
+  }
+  .question:last-child{ margin-bottom: 0; }
+  .question-text{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .question-text label{ display: block; }
+
+  /* scale 1-5 */
+  .scale-row{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    max-width: 480px;
+  }
+  .scale-option{
+    cursor: pointer;
+    user-select: none;
+  }
+  .scale-option input{
+    appearance: none; -webkit-appearance: none;
+    position: absolute;
+    opacity: 0;
+  }
+  .scale-option-body{
+    display: block;
+    text-align: center;
+    padding: 14px 0;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px; color: var(--ink);
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+  }
+  .scale-option:hover .scale-option-body{ border-color: var(--ink-mute); }
+  .scale-option input:checked + .scale-option-body{
+    border-color: var(--accent-body);
+    background: var(--accent-body);
+    color: var(--paper);
+  }
+  .scale-option input:focus-visible + .scale-option-body{
+    box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent);
+  }
+  .scale-anchors{
+    display: flex; justify-content: space-between;
+    margin-top: 8px;
+    max-width: 480px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* check-list */
+  .check-list{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    max-width: 640px;
+  }
+  .check-option{
+    display: flex; align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .check-option:hover{ border-color: var(--ink-mute); }
+  .check-option input[type="checkbox"]{
+    appearance: none; -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border: 1px solid var(--ink);
+    flex: 0 0 16px;
+    cursor: pointer;
+    background: var(--paper);
+    position: relative;
+  }
+  .check-option input[type="checkbox"]:checked{
+    border-color: var(--accent-body);
+    background: var(--accent-body);
+  }
+  .check-option input[type="checkbox"]:checked::after{
+    content: "✓"; position: absolute;
+    inset: 0; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--paper); font-size: 13px; line-height: 1;
+  }
+  .check-option:has(input:checked){
+    border-color: var(--ink); background: rgba(33,150,243,0.05);
+  }
+  .check-option-text{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; line-height: 1.4;
+    color: var(--ink);
+  }
+
+  /* yes/no/not-sure */
+  .ynm-row{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ynm-option{ cursor: pointer; user-select: none; }
+  .ynm-option input{
+    appearance: none; -webkit-appearance: none;
+    position: absolute;
+    opacity: 0;
+  }
+  .ynm-option-body{
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; color: var(--ink);
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+  }
+  .ynm-option:hover .ynm-option-body{ border-color: var(--ink-mute); }
+  .ynm-option input:checked + .ynm-option-body{
+    border-color: var(--accent-body);
+    background: var(--accent-body);
+    color: var(--paper);
+  }
+
+  /* free text */
+  .free-text{
+    width: 100%; max-width: 640px;
+    padding: 12px 14px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+  }
+  .free-text:focus{
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--accent-body);
+    border-color: var(--accent-body);
+  }
+  .char-count{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; color: var(--ink-mute);
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+  }
+  .optional-note{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-left: 8px;
+  }
+
+  /* ---------- output stage ---------- */
+  section.output{
+    padding: 64px 0 48px;
+    border-top: 1px solid var(--ink);
+    margin-top: 56px;
+  }
+  .output-heading{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.1; letter-spacing: -0.018em;
+    margin: 0 0 32px; text-wrap: pretty;
+  }
+  .output-figure{
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 32px;
+  }
+  .output-amount{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 84px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--accent-body);
+    font-feature-settings: "lnum" 1;
+  }
+  .output-denom{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 17px;
+    color: var(--ink-mute);
+  }
+
+  /* trajectory chart */
+  .trajectory-chart-wrap{
+    margin: 0 0 36px;
+    padding: 0;
+  }
+  .chart-svg{
+    display: block;
+    width: 100%; height: auto;
+  }
+  .chart-svg .chart-gridline{
+    stroke: var(--rule-soft); stroke-width: 0.6; stroke-dasharray: 1.5 3;
+  }
+  .chart-svg .chart-axis-line{
+    stroke: var(--ink); stroke-width: 1.0;
+  }
+  .chart-svg .chart-axis-label{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.04em;
+    fill: var(--ink-mute);
+  }
+  .chart-svg .chart-axis-title{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    fill: var(--ink-mute);
+  }
+  .chart-svg .chart-line-baseline{
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .chart-svg .chart-line-improved{
+    fill: none;
+    stroke: var(--accent-body);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+  }
+  .chart-svg .chart-endpoint-label{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 12px;
+  }
+  .chart-svg .chart-endpoint-label.baseline{ fill: var(--ink); }
+  .chart-svg .chart-endpoint-label.improved{ fill: var(--accent-body); }
+  .chart-svg .chart-gap-bracket{
+    stroke: var(--accent-body); stroke-width: 1; fill: none;
+  }
+  .chart-svg .chart-gap-label{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 14px; fill: var(--accent-body);
+  }
+  .chart-svg .chart-gap-sublabel{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.06em;
+    fill: var(--ink-mute);
+  }
+  .chart-mobile-legend{
+    display: none;
+    gap: 18px; margin-top: 14px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--ink-mute);
+  }
+  .chart-mobile-legend .chart-legend-swatch{
+    display: inline-block;
+    width: 14px; height: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .chart-mobile-legend .chart-legend-baseline .chart-legend-swatch{ background: var(--ink); }
+  .chart-mobile-legend .chart-legend-improved .chart-legend-swatch{ background: var(--accent-body); }
+  .chart-caption{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 14px; line-height: 1.5;
+    color: var(--ink-mute);
+    margin: 18px 0 0;
+    max-width: 720px;
+  }
+
+  .diagnostic-sentence{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 19px; line-height: 1.55;
+    color: var(--ink);
+    margin: 36px 0 28px;
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+  .output-question{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 22px; line-height: 1.35;
+    color: var(--accent-body);
+    margin: 28px 0;
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+  .chart-footer{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.06em; line-height: 1.65;
+    color: var(--ink-mute);
+    margin: 40px 0 0;
+    max-width: 720px;
+  }
+  .chart-footer em{ color: var(--ink-2); font-style: italic; }
+
+  /* ---------- handoff CTA card ---------- */
+  .handoff-card{
+    margin: 56px 0 24px;
+    padding: 48px 56px;
+    background: var(--ink);
+    color: var(--paper);
+    max-width: 880px;
+  }
+  .handoff-card p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 18px; line-height: 1.55;
+    color: var(--paper);
+    margin: 0 0 18px;
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+  .handoff-card p:last-of-type{ margin-bottom: 24px; }
+  .handoff-card .btn{
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+  }
+  .handoff-card .btn:hover{
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+
+  .tool-footer{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.06em; line-height: 1.7;
+    color: var(--ink-mute);
+    margin: 24px 0 0;
+    max-width: 720px;
+  }
+
+  /* ---------- footer ---------- */
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule);
+    margin: 56px auto 0;
+    padding: 36px 56px 48px;
+    max-width: 1180px;
+    display: grid; grid-template-columns: 2fr 3fr;
+    gap: 48px; align-items: start;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 13px; line-height: 1.5;
+    color: var(--ink-mute); max-width: 360px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 720px){
+    .masthead{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    nav.primary{ gap: 18px; }
+    main{ padding: 0 28px; }
+    section.hero{ padding: 56px 0 40px; }
+    section.step{ padding: 40px 0; }
+    section.output{ padding: 48px 0 36px; margin-top: 36px; }
+    .number-card{ padding: 28px 0; margin-bottom: 36px; }
+    .handoff-card{ padding: 36px 28px; }
+    .scale-row{ grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .scale-option-body{ padding: 12px 0; }
+    .ynm-row{ flex-direction: column; }
+    .ynm-option-body{ display: block; text-align: center; padding: 14px; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px; }
+    footer .links{ grid-template-columns: 1fr; }
+    .btn-primary, .btn{ width: 100%; min-width: 0; padding: 16px 20px; }
+  }
+  @media (max-width: 640px){
+    .chart-svg .chart-endpoint-label,
+    .chart-svg .chart-gap-bracket,
+    .chart-svg .chart-gap-label,
+    .chart-svg .chart-gap-sublabel{ display: none; }
+    .chart-mobile-legend{ display: flex; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <a class="wordmark" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="Index Teaser.html">The Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology</a>
+    <a href="About.html">About</a>
+    <a href="MGI Landing.html" class="cta">Take the MGI →</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="mono eyebrow">Profit Per Employee · Diagnostic</div>
+    <h1 class="hero-title">You've pulled every mechanical lever. <em>What moves this number now?</em></h1>
+    <p class="hero-sub">Profit per employee is the most honest number on your P&amp;L. Enter one year of inputs, then answer the four exposure groups. The output is a paragraph, not a score.</p>
+  </section>
+
+  <!-- Stage 1: Your number -->
+  <section class="step">
+    <div class="mono step-eyebrow">Step 1</div>
+    <h2>Your number.</h2>
+    <p class="step-sub">Most recent completed fiscal year.</p>
+
+    <form id="ppeForm" novalidate>
+      <div class="input-group">
+        <label for="industry">Your industry</label>
+        <select id="industry" name="industry" class="industry-select">
+          <option value="">Select an industry</option>
+          <option value="technology">Technology / Software</option>
+          <option value="financial">Financial services</option>
+          <option value="professional">Professional services</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="manufacturing">Manufacturing</option>
+          <option value="retail">Retail &amp; e-commerce</option>
+          <option value="hospitality">Hospitality &amp; travel</option>
+          <option value="construction">Construction &amp; engineering</option>
+          <option value="energy">Energy &amp; utilities</option>
+          <option value="media">Media &amp; entertainment</option>
+          <option value="logistics">Logistics &amp; transportation</option>
+          <option value="education">Education</option>
+          <option value="real_estate">Real estate</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="industry-other-wrap" id="industryOtherWrap">
+          <div class="input-wrapper no-prefix">
+            <input type="text" id="industryOther" name="industryOther" autocomplete="off" placeholder="Specify your industry" maxlength="80" aria-label="Specify your industry">
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="revenue">Annual revenue</label>
+        <div class="input-wrapper">
+          <span class="input-prefix">$</span>
+          <input type="text" inputmode="numeric" autocomplete="off" id="revenue" name="revenue" data-allow-neg="0">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="profit">
+          Profit
+          <span class="tooltip" tabindex="0" title="GAAP net income, or operating profit if you prefer. Your choice." aria-label="GAAP net income, or operating profit if you prefer. Your choice.">i</span>
+        </label>
+        <div class="input-wrapper">
+          <span class="input-prefix">$</span>
+          <input type="text" inputmode="numeric" autocomplete="off" id="profit" name="profit" data-allow-neg="1">
+        </div>
+      </div>
+
+      <div class="denom-block">
+        <label class="denom-label" id="denomGroupLabel">Type of Employees for Calculation</label>
+        <div class="denom-options" role="radiogroup" aria-labelledby="denomGroupLabel">
+          <label class="denom-option">
+            <input type="radio" name="denom" value="direct" data-short="employee" data-output-label="Direct employees only" checked>
+            <span class="denom-option-body">
+              <span class="denom-option-title">Direct employees only</span>
+              <span class="denom-option-desc">People on your payroll. Full-time only.</span>
+            </span>
+          </label>
+          <label class="denom-option">
+            <input type="radio" name="denom" value="fte_pt" data-short="FTE" data-output-label="FTEs including part-time">
+            <span class="denom-option-body">
+              <span class="denom-option-title">FTEs including part-time</span>
+              <span class="denom-option-desc">Direct employees plus part-time, pro-rated.</span>
+            </span>
+          </label>
+          <label class="denom-option">
+            <input type="radio" name="denom" value="fte_contract" data-short="FTE including contractors" data-output-label="FTEs including contractors and outsourced labor">
+            <span class="denom-option-body">
+              <span class="denom-option-title">FTEs including contractors and outsourced labor</span>
+              <span class="denom-option-desc">All people doing the work, not all on payroll.</span>
+            </span>
+          </label>
+          <label class="denom-option">
+            <input type="radio" name="denom" value="lce" data-short="labor-cost-equivalent headcount" data-output-label="Total labor-cost-equivalent headcount">
+            <span class="denom-option-body">
+              <span class="denom-option-title">Total labor-cost-equivalent headcount</span>
+              <span class="denom-option-desc">Total people-cost normalised to a headcount figure.</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="denomValue">Number of Employees</label>
+        <div class="input-wrapper no-prefix">
+          <input type="text" inputmode="numeric" autocomplete="off" id="denomValue" name="denomValue" data-allow-neg="0">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="btn-primary" id="calculateBtn">Calculate <span class="chev">›</span></button>
+      </div>
+      <div class="form-error" id="calcError" role="alert" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <!-- Stage 2: Number + exposure -->
+  <section class="step stage" id="stageNumber">
+    <div class="number-card">
+      <div class="number-label" id="numberLabel"></div>
+      <div class="number-figure" id="numberFigure"></div>
+
+      <div class="projection-block">
+        <label for="projectedPpe" class="projection-label">Where do you expect this figure to be in 24 months at your current trajectory?</label>
+        <p class="projection-subtitle">Assuming you don't significantly change your approach to managing the workforce. Most users either accept the prefilled default for steady state, or enter a higher figure if they expect revenue growth to outpace headcount growth.</p>
+        <div class="input-wrapper" style="max-width: 320px;">
+          <span class="input-prefix">$</span>
+          <input type="text" inputmode="numeric" autocomplete="off" id="projectedPpe" name="projectedPpe" data-allow-neg="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="mono step-eyebrow">Step 2</div>
+    <h2>Exposure.</h2>
+    <p class="step-sub">Four groups. Ninety seconds.</p>
+
+    <form id="exposureForm" novalidate>
+
+      <!-- Group 1: Drift -->
+      <div class="exposure-group">
+        <div class="group-eyebrow">Group 01</div>
+        <h3 class="group-heading">Drift exposure</h3>
+
+        <div class="question">
+          <div class="question-text" id="q11Text">If labor costs rise at inflation and your revenue growth matches last year's, how confident are you that your profit per employee will hold steady in 24 months?</div>
+          <div class="scale-row" role="radiogroup" aria-labelledby="q11Text">
+            <label class="scale-option"><input type="radio" name="q11" value="1" aria-label="1 Not confident"><span class="scale-option-body">1</span></label>
+            <label class="scale-option"><input type="radio" name="q11" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+            <label class="scale-option"><input type="radio" name="q11" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+            <label class="scale-option"><input type="radio" name="q11" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+            <label class="scale-option"><input type="radio" name="q11" value="5" aria-label="5 Very confident"><span class="scale-option-body">5</span></label>
+          </div>
+          <div class="scale-anchors"><span>Not confident</span><span>Very confident</span></div>
+        </div>
+
+        <div class="question">
+          <div class="question-text"><label for="q12">Of your current workforce, what percentage are in roles where output per person has not improved in three years?</label></div>
+          <div class="input-wrapper" style="max-width: 200px;">
+            <input type="number" id="q12" name="q12" min="0" max="100" step="1">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group 2: Competitive -->
+      <div class="exposure-group">
+        <div class="group-eyebrow">Group 02</div>
+        <h3 class="group-heading">Competitive exposure</h3>
+
+        <div class="question">
+          <div class="question-text">Which of these would put meaningful pressure on your profit per employee in the next 24 months?</div>
+          <div class="check-list" id="q21Group">
+            <label class="check-option"><input type="checkbox" name="q21" value="competitor_low_labor" data-exclusive="0"><span class="check-option-text">A direct competitor with materially lower labor costs</span></label>
+            <label class="check-option"><input type="checkbox" name="q21" value="ai_entrant" data-exclusive="0"><span class="check-option-text">A new entrant rebuilding your model with AI and fewer people</span></label>
+            <label class="check-option"><input type="checkbox" name="q21" value="customer_consolidation" data-exclusive="0"><span class="check-option-text">Customer consolidation shifting pricing power away from you</span></label>
+            <label class="check-option"><input type="checkbox" name="q21" value="regulatory" data-exclusive="0"><span class="check-option-text">Regulatory changes increasing compliance headcount</span></label>
+            <label class="check-option"><input type="checkbox" name="q21" value="none" data-exclusive="1"><span class="check-option-text">None of these feel urgent</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-text" id="q22Text">If a competitor's profit per employee is 40% higher than yours, how quickly does that translate into pricing pressure?</div>
+          <div class="scale-row" role="radiogroup" aria-labelledby="q22Text">
+            <label class="scale-option"><input type="radio" name="q22" value="1" aria-label="1 Already happening"><span class="scale-option-body">1</span></label>
+            <label class="scale-option"><input type="radio" name="q22" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+            <label class="scale-option"><input type="radio" name="q22" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+            <label class="scale-option"><input type="radio" name="q22" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+            <label class="scale-option"><input type="radio" name="q22" value="5" aria-label="5 No visible impact"><span class="scale-option-body">5</span></label>
+          </div>
+          <div class="scale-anchors"><span>Already happening</span><span>No visible impact</span></div>
+        </div>
+      </div>
+
+      <!-- Group 3: Execution -->
+      <div class="exposure-group">
+        <div class="group-eyebrow">Group 03</div>
+        <h3 class="group-heading">Execution exposure</h3>
+
+        <div class="question">
+          <div class="question-text">In the last 24 months, which of these levers have you already pulled?</div>
+          <div class="check-list" id="q31Group">
+            <label class="check-option"><input type="checkbox" name="q31" value="headcount" data-exclusive="0"><span class="check-option-text">Headcount reduction</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="pricing" data-exclusive="0"><span class="check-option-text">Pricing increases</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="offshore" data-exclusive="0"><span class="check-option-text">Offshoring or nearshoring</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="automation" data-exclusive="0"><span class="check-option-text">Automation or AI deployment</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="process" data-exclusive="0"><span class="check-option-text">Process redesign</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="span" data-exclusive="0"><span class="check-option-text">Span-of-control changes (flatter structure)</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="vendor" data-exclusive="0"><span class="check-option-text">Vendor or cost-base renegotiation</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="mix" data-exclusive="0"><span class="check-option-text">Product or customer mix shift</span></label>
+            <label class="check-option"><input type="checkbox" name="q31" value="none" data-exclusive="1"><span class="check-option-text">None of the above</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-text" id="q32Text">Of the levers you've pulled, how much more do you realistically think is available from the same playbook?</div>
+          <div class="scale-row" role="radiogroup" aria-labelledby="q32Text">
+            <label class="scale-option"><input type="radio" name="q32" value="1" aria-label="1 Fully exhausted"><span class="scale-option-body">1</span></label>
+            <label class="scale-option"><input type="radio" name="q32" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+            <label class="scale-option"><input type="radio" name="q32" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+            <label class="scale-option"><input type="radio" name="q32" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+            <label class="scale-option"><input type="radio" name="q32" value="5" aria-label="5 Plenty left"><span class="scale-option-body">5</span></label>
+          </div>
+          <div class="scale-anchors"><span>Fully exhausted</span><span>Plenty left</span></div>
+        </div>
+      </div>
+
+      <!-- Group 4: Human -->
+      <div class="exposure-group">
+        <div class="group-eyebrow">Group 04</div>
+        <h3 class="group-heading">Human exposure</h3>
+
+        <div class="question">
+          <div class="question-text">Do you know, today, which of your managers are actively enabling their teams and which are actively blocking them?</div>
+          <div class="ynm-row" role="radiogroup" aria-label="Yes No or Not sure">
+            <label class="ynm-option"><input type="radio" name="q41" value="yes"><span class="ynm-option-body">Yes</span></label>
+            <label class="ynm-option"><input type="radio" name="q41" value="no"><span class="ynm-option-body">No</span></label>
+            <label class="ynm-option"><input type="radio" name="q41" value="not_sure"><span class="ynm-option-body">Not sure</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-text" id="q42Text">How confident are you that you could name your five worst managers by impact on team output?</div>
+          <div class="scale-row" role="radiogroup" aria-labelledby="q42Text">
+            <label class="scale-option"><input type="radio" name="q42" value="1" aria-label="1 Not confident"><span class="scale-option-body">1</span></label>
+            <label class="scale-option"><input type="radio" name="q42" value="2" aria-label="2"><span class="scale-option-body">2</span></label>
+            <label class="scale-option"><input type="radio" name="q42" value="3" aria-label="3"><span class="scale-option-body">3</span></label>
+            <label class="scale-option"><input type="radio" name="q42" value="4" aria-label="4"><span class="scale-option-body">4</span></label>
+            <label class="scale-option"><input type="radio" name="q42" value="5" aria-label="5 Very confident"><span class="scale-option-body">5</span></label>
+          </div>
+          <div class="scale-anchors"><span>Not confident</span><span>Very confident</span></div>
+        </div>
+
+        <div class="question">
+          <div class="question-text"><label for="q43">If 30% of your workforce is sitting under a manager who suppresses their output, what would that cost you annually?<span class="optional-note">Optional</span></label></div>
+          <textarea id="q43" name="q43" class="free-text" maxlength="300" placeholder="Your figure or estimate"></textarea>
+          <div class="char-count"><span id="q43Count">0</span> / 300</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="btn-primary" id="exposureBtn">See your exposure <span class="chev">›</span></button>
+      </div>
+      <div class="form-error" id="exposureError" role="alert" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <!-- Stage 3: Output -->
+  <section class="output stage" id="stageOutput">
+    <h2 class="output-heading">Where this number goes.</h2>
+
+    <div class="output-figure">
+      <span class="output-amount" id="ppeAmountText"></span>
+      <span class="output-denom" id="ppeDenomText"></span>
+    </div>
+
+    <div class="trajectory-chart-wrap">
+      <svg id="trajectoryChart" class="chart-svg" viewBox="0 0 880 420" role="img" aria-labelledby="chartTitle chartDesc" preserveAspectRatio="xMidYMid meet">
+        <title id="chartTitle">Profit-per-employee trajectory chart</title>
+        <desc id="chartDesc"></desc>
+      </svg>
+      <div class="chart-mobile-legend" aria-hidden="true">
+        <span class="chart-legend-baseline"><span class="chart-legend-swatch"></span>Current path</span>
+        <span class="chart-legend-improved"><span class="chart-legend-swatch"></span>With the lever addressed</span>
+      </div>
+      <p class="chart-caption">Current path based on your projected trajectory. Improved path adds the productive capacity Bain's research suggests is recoverable when organisational drag is addressed.</p>
+    </div>
+
+    <p class="diagnostic-sentence" id="diagnosticSentence" aria-live="polite"></p>
+
+    <p class="output-question">What are you doing to influence this number sustainably, and how would you know if it was working?</p>
+
+    <p class="chart-footer">Current path is your projected 24-month trajectory. Improved path adds the 20-25% productive capacity that Bain has documented is recoverable when organisational drag is addressed (Mankins and Garton, <em>Time, Talent, Energy</em>, 2017). This tool applies a conservative 15% recovery ceiling, moderated by your stated visibility into manager effectiveness. The five-year total extrapolates the year-2 run-rate forward at a constant level, with no further compounding past month 24.</p>
+
+    <div class="handoff-card">
+      <p>Most executives cannot answer that question with data. They can answer it with instinct.</p>
+      <p>The Manager Gap Index is the measurement system that turns instinct into a quarterly trend line, six to twelve months ahead of where it shows up in the financials. It measures the one lever you have left.</p>
+      <a href="MGI Assessment.html" class="btn">Measure the Manager Gap <span class="chev">›</span></a>
+    </div>
+
+    <p class="tool-footer">This tool draws on research from Bain (Mankins and Garton, 2017), McKinsey Quarterly (Bryan and Joyce, 2007), and Gallup's State of the American Manager. The profit-per-employee metric itself was established by McKinsey as a better proxy for returns on intangibles than ROIC.</p>
+  </section>
+
+</main>
+
+<footer class="page-footer">
+  <div class="colophon">
+    <em>Profit Per Employee Diagnostic</em>. A two-step exposure analysis with a 24-month trajectory chart.
+  </div>
+  <div class="links">
+    <a href="index.html">Clover ERA</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology &amp; Evidence</a>
+    <a href="About.html">About / Founders</a>
+    <a href="Books.html">Books</a>
+    <a href="MGI Landing.html">Manager Gap Index</a>
+    <a href="Index Teaser.html">The Silent Degradation Index</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+    <a href="/privacy">Privacy / Terms</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // ---------- Numeric formatting (verbatim from production) ----------
+  function formatNumeric(raw, allowNeg) {
+    var negative = false;
+    if (allowNeg && raw.indexOf('-') !== -1) negative = true;
+    var digits = raw.replace(/[^0-9]/g, '');
+    if (!digits) return negative ? '-' : '';
+    digits = digits.replace(/^0+(?=\d)/, '');
+    var withCommas = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return (negative ? '-' : '') + withCommas;
+  }
+  function parseNumeric(formatted) {
+    if (!formatted && formatted !== 0) return NaN;
+    var clean = String(formatted).replace(/,/g, '');
+    if (clean === '-' || clean === '') return NaN;
+    var n = parseFloat(clean);
+    return isNaN(n) ? NaN : n;
+  }
+  function formatCurrency(n) {
+    var rounded = Math.round(n);
+    var abs = Math.abs(rounded);
+    var s = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return (rounded < 0 ? '-$' : '$') + s;
+  }
+
+  // Wire formatting on financial inputs
+  var fmtInputs = document.querySelectorAll('input[type="text"][data-allow-neg]');
+  for (var i = 0; i < fmtInputs.length; i++) {
+    (function (input) {
+      var allowNeg = input.getAttribute('data-allow-neg') === '1';
+      input.addEventListener('input', function () {
+        var oldVal = input.value;
+        var caretFromEnd = oldVal.length - (input.selectionStart || 0);
+        var formatted = formatNumeric(oldVal, allowNeg);
+        input.value = formatted;
+        input.classList.remove('error');
+        var newCaret = Math.max(0, formatted.length - caretFromEnd);
+        try { input.setSelectionRange(newCaret, newCaret); } catch (e) {}
+      });
+    })(fmtInputs[i]);
+  }
+
+  // Industry "Other" reveal
+  var industrySelect = document.getElementById('industry');
+  var industryOtherWrap = document.getElementById('industryOtherWrap');
+  industrySelect.addEventListener('change', function () {
+    if (industrySelect.value === 'other') industryOtherWrap.classList.add('visible');
+    else { industryOtherWrap.classList.remove('visible'); document.getElementById('industryOther').value = ''; }
+  });
+
+  // ---------- Step 1: Calculate ----------
+  var calcError = document.getElementById('calcError');
+  var stageNumber = document.getElementById('stageNumber');
+  var stageOutput = document.getElementById('stageOutput');
+
+  var calculatedPpe = null, chosenDenomShort = null, chosenDenomLabel = null,
+      chosenDenomType = null, chosenRevenue = null, chosenProfit = null, chosenDenomValue = null;
+
+  document.getElementById('ppeForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    calcError.textContent = '';
+
+    var revenueEl = document.getElementById('revenue');
+    var profitEl = document.getElementById('profit');
+    var denomValueEl = document.getElementById('denomValue');
+    var denomChecked = document.querySelector('input[name="denom"]:checked');
+
+    var revenue = parseNumeric(revenueEl.value);
+    var profit = parseNumeric(profitEl.value);
+    var denomValue = parseNumeric(denomValueEl.value);
+
+    var hasError = false;
+    var firstBad = null;
+
+    if (isNaN(revenue))                       { revenueEl.classList.add('error');    hasError = true; firstBad = firstBad || revenueEl; }
+    if (isNaN(profit))                        { profitEl.classList.add('error');     hasError = true; firstBad = firstBad || profitEl; }
+    if (isNaN(denomValue) || denomValue <= 0) { denomValueEl.classList.add('error'); hasError = true; firstBad = firstBad || denomValueEl; }
+
+    if (!denomChecked) {
+      hasError = true;
+      calcError.textContent = 'Pick a denominator. Then fill all three numbers.';
+      if (!firstBad) firstBad = document.querySelector('input[name="denom"]');
+    }
+
+    if (hasError) {
+      if (!calcError.textContent) calcError.textContent = 'Fill all three numbers. Denominator must be greater than zero.';
+      if (firstBad && firstBad.focus) firstBad.focus();
+      return;
+    }
+
+    calculatedPpe = profit / denomValue;
+    chosenDenomShort = denomChecked.getAttribute('data-short');
+    chosenDenomLabel = denomChecked.getAttribute('data-output-label');
+    chosenDenomType = denomChecked.value;
+    chosenRevenue = revenue;
+    chosenProfit = profit;
+    chosenDenomValue = denomValue;
+
+    document.getElementById('numberLabel').textContent = 'Profit per ' + chosenDenomShort;
+    document.getElementById('numberFigure').textContent = formatCurrency(calculatedPpe);
+
+    var projectedInput = document.getElementById('projectedPpe');
+    projectedInput.value = formatNumeric(String(Math.round(calculatedPpe)), true);
+    projectedInput.classList.remove('error');
+
+    stageNumber.classList.add('visible');
+    setTimeout(function () {
+      document.getElementById('numberLabel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  });
+
+  // ---------- Exclusive checkbox handling ----------
+  function wireExclusiveGroup(groupId) {
+    var group = document.getElementById(groupId);
+    if (!group) return;
+    var boxes = group.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < boxes.length; i++) {
+      boxes[i].addEventListener('change', function (e) {
+        var changed = e.target;
+        if (changed.checked && changed.getAttribute('data-exclusive') === '1') {
+          for (var j = 0; j < boxes.length; j++) if (boxes[j] !== changed) boxes[j].checked = false;
+        } else if (changed.checked && changed.getAttribute('data-exclusive') === '0') {
+          for (var k = 0; k < boxes.length; k++) if (boxes[k].getAttribute('data-exclusive') === '1') boxes[k].checked = false;
+        }
+      });
+    }
+  }
+  wireExclusiveGroup('q21Group');
+  wireExclusiveGroup('q31Group');
+
+  var q43 = document.getElementById('q43');
+  var q43Count = document.getElementById('q43Count');
+  q43.addEventListener('input', function () { q43Count.textContent = q43.value.length; });
+
+  // ---------- Step 2: See your exposure ----------
+  var exposureError = document.getElementById('exposureError');
+
+  document.getElementById('exposureForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    exposureError.textContent = '';
+
+    var q11 = getRadio('q11');
+    var q12Raw = document.getElementById('q12').value;
+    var q12 = q12Raw === '' ? NaN : parseInt(q12Raw, 10);
+    var q21 = getCheckedValues('q21');
+    var q22 = getRadio('q22');
+    var q31 = getCheckedValues('q31');
+    var q32 = getRadio('q32');
+    var q41 = getRadio('q41');
+    var q42 = getRadio('q42');
+
+    var projectedEl = document.getElementById('projectedPpe');
+    var projectedPpe = parseNumeric(projectedEl.value);
+
+    var missing = [];
+    if (q11 === null) missing.push('Group 1 confidence rating');
+    if (isNaN(q12) || q12 < 0 || q12 > 100) missing.push('Group 1 percentage (0 to 100)');
+    if (q21.length === 0) missing.push('Group 2 pressure sources');
+    if (q22 === null) missing.push('Group 2 pricing-pressure rating');
+    if (q31.length === 0) missing.push('Group 3 levers pulled');
+    if (q32 === null) missing.push('Group 3 runway rating');
+    if (q41 === null) missing.push('Group 4 manager visibility');
+    if (q42 === null) missing.push('Group 4 worst-managers confidence');
+
+    if (isNaN(projectedPpe)) {
+      projectedEl.classList.add('error');
+      exposureError.textContent = 'Enter your projected 24-month profit per ' + chosenDenomShort + ' (you can accept the prefilled default or override it).';
+      projectedEl.focus();
+      return;
+    } else {
+      projectedEl.classList.remove('error');
+    }
+
+    if (missing.length > 0) {
+      exposureError.textContent = 'Answer all required questions. Missing: ' + missing.join(', ') + '.';
+      return;
+    }
+
+    var inputs = {
+      ppe: calculatedPpe,
+      projectedPpe: projectedPpe,
+      denomShort: chosenDenomShort,
+      denomValue: chosenDenomValue,
+      q11: q11, q12: q12,
+      q21: q21, q22: q22,
+      q31: q31, q32: q32,
+      q41: q41, q42: q42
+    };
+
+    stageOutput.classList.add('visible');
+    void stageOutput.offsetWidth;
+
+    renderOutput(inputs);
+
+    setTimeout(function () {
+      document.querySelector('.output-heading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  });
+
+  // Re-render chart on resize so the SVG scales gracefully
+  var resizeRaf = null;
+  window.addEventListener('resize', function () {
+    if (!stageOutput.classList.contains('visible')) return;
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(function () {
+      var inputs = lastInputs; if (inputs) renderOutput(inputs);
+    });
+  });
+
+  var lastInputs = null;
+
+  function renderOutput(inputs) {
+    lastInputs = inputs;
+    document.getElementById('ppeAmountText').textContent = formatCurrency(inputs.ppe);
+    document.getElementById('ppeDenomText').textContent  = 'per ' + inputs.denomShort;
+
+    var trajectory = computeTrajectory(inputs);
+    buildChart(inputs, trajectory);
+
+    document.getElementById('diagnosticSentence').textContent =
+      diagnosticSentence(trajectory.measurementState, trajectory.dollarGap, trajectory.cumulative5yr);
+
+    document.getElementById('chartDesc').textContent =
+      'Line chart showing two projected trajectories of profit per ' + inputs.denomShort +
+      ' over 24 months. Current path projects ' + formatCurrency(trajectory.baselineEnd) +
+      ' per ' + inputs.denomShort + ' at month 24. Path with manager effectiveness addressed projects ' +
+      formatCurrency(trajectory.improvedEnd) + ' per ' + inputs.denomShort +
+      ' at month 24. The gap is ' + formatGap(trajectory.dollarGap) + ' per year.';
+  }
+
+  function computeTrajectory(inputs) {
+    var baselineEnd = inputs.projectedPpe;
+    var measurementState = getMeasurementState(inputs);
+    var bainRecoveryCeiling = 0.15;
+    var dragRecoveryMultiplier =
+      measurementState === 'unmeasured' ? 1.0 :
+      measurementState === 'partial'    ? 0.5 :
+                                          0.2;
+    var effectiveRecovery = bainRecoveryCeiling * dragRecoveryMultiplier;
+    var improvedEnd = baselineEnd + effectiveRecovery * Math.abs(baselineEnd);
+    var dollarGap = (improvedEnd - baselineEnd) * (inputs.denomValue || 0);
+    var cumulative5yr = dollarGap * 4;
+    return {
+      startPpe: inputs.ppe,
+      baselineEnd: baselineEnd,
+      improvedEnd: improvedEnd,
+      dollarGap: dollarGap,
+      cumulative5yr: cumulative5yr,
+      measurementState: measurementState
+    };
+  }
+
+  function getMeasurementState(d) {
+    if (d.q41 === 'yes' && d.q42 >= 4) return 'measured';
+    if (d.q41 === 'yes' && d.q42 <= 3) return 'partial';
+    if (d.q41 === 'not_sure') return 'partial';
+    return 'unmeasured';
+  }
+
+  function diagnosticSentence(measurementState, dollarGap, cumulative5yr) {
+    var gapText = formatGap(dollarGap);
+    var cumText = formatGap(cumulative5yr);
+    if (measurementState === 'unmeasured') {
+      return 'The gap at 24 months is approximately ' + gapText + ' per year. Over five years, that totals approximately ' + cumText + '. Closing it requires addressing the variable you don’t currently measure: which of your managers are enabling your teams and which are blocking them.';
+    }
+    if (measurementState === 'partial') {
+      return 'The gap at 24 months is approximately ' + gapText + ' per year. Over five years, that totals approximately ' + cumText + '. Partial visibility into manager effectiveness captures part of the improved trajectory. Systematic measurement captures the rest.';
+    }
+    return 'The gap at 24 months is approximately ' + gapText + ' per year. Over five years, that totals approximately ' + cumText + '. You report that you measure manager effectiveness, which positions you to capture most of the improved trajectory. The question is whether that measurement is systematic enough to maintain.';
+  }
+
+  function formatGap(n) {
+    var abs = Math.abs(n);
+    var sign = n < 0 ? '-' : '';
+    if (abs < 1000) return sign + '$0';
+    if (abs < 100000) return sign + '$' + Math.round(abs / 1000) + 'K';
+    if (abs < 1000000) return sign + '$' + (Math.round(abs / 10000) * 10) + 'K';
+    var m = Math.round(abs / 100000) / 10;
+    return sign + '$' + m.toFixed(1).replace(/\.0$/, '') + 'M';
+  }
+
+  function formatAxisCurrency(n) {
+    var abs = Math.abs(n);
+    var sign = n < 0 ? '-' : '';
+    if (abs >= 1000000) return sign + '$' + (abs / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (abs >= 1000)    return sign + '$' + Math.round(abs / 1000) + 'K';
+    return sign + '$' + Math.round(abs);
+  }
+
+  function chooseIncrement(range) {
+    if (range <= 0) return 1;
+    var rough = range / 4;
+    var magnitude = Math.pow(10, Math.floor(Math.log10(rough)));
+    var fraction = rough / magnitude;
+    var nice = fraction < 1.5 ? 1 : fraction < 3 ? 2 : fraction < 7 ? 5 : 10;
+    return nice * magnitude;
+  }
+
+  function buildYAxis(values) {
+    var dataMin = Math.min.apply(null, values);
+    var dataMax = Math.max.apply(null, values);
+    if (dataMin === dataMax) {
+      var pad = Math.max(Math.abs(dataMin) * 0.1, 1);
+      dataMin -= pad; dataMax += pad;
+    }
+    var range = dataMax - dataMin;
+    var slack = range * 0.18;
+    var increment = chooseIncrement(range + slack * 2);
+    var axisMin = Math.floor((dataMin - slack) / increment) * increment;
+    var axisMax = Math.ceil((dataMax + slack) / increment) * increment;
+    var ticks = [];
+    for (var v = axisMin; v <= axisMax + 0.0001 && ticks.length < 12; v += increment) ticks.push(v);
+    return { min: axisMin, max: axisMax, ticks: ticks };
+  }
+
+  function svgEl(tag, attrs, content) {
+    var node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    if (attrs) for (var k in attrs) if (attrs.hasOwnProperty(k)) node.setAttribute(k, attrs[k]);
+    if (content !== undefined && content !== null) node.textContent = String(content);
+    return node;
+  }
+
+  function buildChart(inputs, t) {
+    var svg = document.getElementById('trajectoryChart');
+    var wrap = svg.parentElement;
+
+    var W = Math.max(280, Math.min(wrap.clientWidth || 800, 880));
+    var H = Math.round(W * 0.52);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
+    var preserve = [];
+    for (var i = svg.childNodes.length - 1; i >= 0; i--) {
+      var n = svg.childNodes[i];
+      if (n.nodeType === 1 && (n.tagName === 'title' || n.tagName === 'desc')) preserve.unshift(n);
+      svg.removeChild(n);
+    }
+    preserve.forEach(function (p) { svg.appendChild(p); });
+
+    var isNarrow = W < 640;
+    var padL = isNarrow ? 48 : 60;
+    var padR = isNarrow ? 24 : 250;
+    var padT = isNarrow ? 18 : 28;
+    var padB = isNarrow ? 44 : 58;
+    var plotW = W - padL - padR;
+    var plotH = H - padT - padB;
+
+    var yAxis = buildYAxis([t.startPpe, t.baselineEnd, t.improvedEnd]);
+
+    function xAt(months) { return padL + (months / 24) * plotW; }
+    function yAt(value)  { return padT + plotH - ((value - yAxis.min) / (yAxis.max - yAxis.min)) * plotH; }
+
+    yAxis.ticks.forEach(function (v) {
+      var y = yAt(v);
+      svg.appendChild(svgEl('line', { 'class': 'chart-gridline', x1: padL, x2: padL + plotW, y1: y, y2: y }));
+      svg.appendChild(svgEl('text', { 'class': 'chart-axis-label', x: padL - 10, y: y + 4, 'text-anchor': 'end' }, formatAxisCurrency(v)));
+    });
+
+    svg.appendChild(svgEl('line', { 'class': 'chart-axis-line', x1: padL, x2: padL + plotW, y1: padT + plotH, y2: padT + plotH }));
+
+    [0, 6, 12, 18, 24].forEach(function (m) {
+      svg.appendChild(svgEl('text', { 'class': 'chart-axis-label', x: xAt(m), y: padT + plotH + 20, 'text-anchor': 'middle' }, String(m)));
+    });
+
+    svg.appendChild(svgEl('text', { 'class': 'chart-axis-title', x: padL + plotW / 2, y: padT + plotH + 45, 'text-anchor': 'middle' }, 'Months from today'));
+
+    svg.appendChild(svgEl('text', {
+      'class': 'chart-axis-title', x: 0, y: 0,
+      transform: 'translate(' + (padL - 50) + ' ' + (padT + plotH / 2) + ') rotate(-90)',
+      'text-anchor': 'middle'
+    }, 'Profit per ' + inputs.denomShort + ' ($)'));
+
+    var x0 = xAt(0); var y0 = yAt(t.startPpe); var xEnd = xAt(24);
+    var yBaseEnd = yAt(t.baselineEnd); var yImpEnd = yAt(t.improvedEnd);
+    var cpX = x0 + 0.55 * (xEnd - x0); var easeY = 0.30;
+
+    var baselinePath = 'M ' + x0 + ' ' + y0 + ' Q ' + cpX + ' ' + (y0 + easeY * (yBaseEnd - y0)) + ' ' + xEnd + ' ' + yBaseEnd;
+    var improvedPath = 'M ' + x0 + ' ' + y0 + ' Q ' + cpX + ' ' + (y0 + easeY * (yImpEnd - y0))  + ' ' + xEnd + ' ' + yImpEnd;
+
+    svg.appendChild(svgEl('path', { 'class': 'chart-line-baseline', d: baselinePath }));
+    svg.appendChild(svgEl('path', { 'class': 'chart-line-improved', d: improvedPath }));
+
+    svg.appendChild(svgEl('text', { 'class': 'chart-endpoint-label improved', x: xEnd + 8, y: yImpEnd + 4, 'text-anchor': 'start' }, 'With the lever addressed'));
+    svg.appendChild(svgEl('text', { 'class': 'chart-endpoint-label baseline', x: xEnd + 8, y: yBaseEnd + 4, 'text-anchor': 'start' }, 'Current path'));
+
+    var bracketX = xEnd + 158;
+    svg.appendChild(svgEl('line', { 'class': 'chart-gap-bracket', x1: bracketX, x2: bracketX, y1: yImpEnd, y2: yBaseEnd }));
+    svg.appendChild(svgEl('line', { 'class': 'chart-gap-bracket', x1: bracketX - 4, x2: bracketX + 4, y1: yImpEnd, y2: yImpEnd }));
+    svg.appendChild(svgEl('line', { 'class': 'chart-gap-bracket', x1: bracketX - 4, x2: bracketX + 4, y1: yBaseEnd, y2: yBaseEnd }));
+
+    var midY = (yImpEnd + yBaseEnd) / 2;
+    svg.appendChild(svgEl('text', { 'class': 'chart-gap-label', x: bracketX + 8, y: midY - 2, 'text-anchor': 'start' }, formatGap(t.dollarGap) + ' / year'));
+    svg.appendChild(svgEl('text', { 'class': 'chart-gap-sublabel', x: bracketX + 8, y: midY + 14, 'text-anchor': 'start' }, 'at month 24'));
+  }
+
+  function getRadio(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? parseInt(el.value, 10) || el.value : null;
+  }
+  function getCheckedValues(name) {
+    var els = document.querySelectorAll('input[name="' + name + '"]:checked');
+    var out = [];
+    for (var i = 0; i < els.length; i++) out.push(els[i].value);
+    return out;
+  }
+})();
+</script>
+</body>
+</html>

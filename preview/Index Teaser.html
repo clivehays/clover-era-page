@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>The Silent Degradation Index Q2 2026 — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="A live cohort snapshot. Findings from the Manager Gap Index, updating weekly through the Q2 2026 publication in June. Companies completing the MGI between now and launch appear in the published Index." />
+<template id="__bundler_thumbnail" data-bg-color="#F1ECE3">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="1200" height="800" fill="#F1ECE3"/>
+    <text x="600" y="180" font-family="Source Serif 4, Georgia, serif" font-size="32" fill="#6F6A60" text-anchor="middle" letter-spacing="6">THE SILENT DEGRADATION INDEX</text>
+    <text x="600" y="240" font-family="JetBrains Mono, monospace" font-size="20" fill="#6F6A60" text-anchor="middle" letter-spacing="4">Q2 2026 EDITION</text>
+    <text x="600" y="430" font-family="Source Serif 4, Georgia, serif" font-style="italic" font-size="64" fill="#17161A" text-anchor="middle">What managers can't see,</text>
+    <text x="600" y="510" font-family="Source Serif 4, Georgia, serif" font-style="italic" font-size="64" fill="#17161A" text-anchor="middle">what their teams already know.</text>
+    <text x="600" y="640" font-family="Source Serif 4, Georgia, serif" font-size="180" font-weight="300" fill="#2196F3" text-anchor="middle">$20M</text>
+  </svg>
+</template>
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:""; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none; mix-blend-mode: multiply; opacity: 0.7; z-index: 0;
+  }
+  a{ color: inherit; }
+
+  /* nav */
+  .topnav{
+    position: relative; z-index: 2;
+    max-width: 1080px; margin: 0 auto;
+    padding: 22px 56px 16px;
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--rule);
+  }
+  .topnav .wm{
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 17px; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .topnav .wm .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .topnav .wm .dot{ color: var(--accent); }
+  .topnav nav{
+    display:flex; gap: 26px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .topnav nav a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  .topnav nav a:hover{ color: var(--ink); }
+  .topnav nav a.cta{ color: var(--accent-body); border-bottom: 1px solid var(--accent-body); padding-bottom: 2px; }
+
+  main.page{
+    position: relative; z-index: 1;
+    max-width: 1080px; margin: 0 auto;
+    padding: 40px 56px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 12px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .masthead .left span{ margin-right: 18px; }
+  .masthead .left b{ font-weight: 600; color: var(--ink); }
+  .deck-title{
+    font-family: "Source Serif 4", serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 32px 0 14px;
+  }
+  h1.title{
+    font-family: "Source Serif 4", serif;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    margin: 0 0 18px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  h1.title em{ font-style: italic; }
+  .standfirst{
+    font-family: "Source Serif 4", serif;
+    font-size: 19px; line-height: 1.5;
+    color: var(--ink-2); max-width: 640px;
+    margin: 0 0 8px; font-weight: 300;
+  }
+
+  /* ---------- arc ---------- */
+  .arc-wrap{
+    margin: 36px 0 8px;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: 18px 0 8px;
+    position: relative;
+  }
+  .arc-wrap .axis-label{
+    position: absolute;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute);
+  }
+  .arc-wrap .axis-label.l{ left: 0; top: 22px; }
+  .arc-wrap .axis-label.r{ right: 0; top: 22px; text-align: right; }
+  .arc-svg{ display:block; width:100%; height: auto; margin-top: 8px; }
+  .beat-markers{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 6px;
+    padding-top: 8px;
+  }
+  .beat-markers > div{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mute);
+    border-top: 1px solid var(--rule);
+    padding-top: 8px;
+  }
+  .beat-markers b{
+    display: block; margin-top: 4px;
+    font-family: "Source Serif 4", serif;
+    font-style: italic; font-weight: 400;
+    font-size: 13px; letter-spacing: 0;
+    text-transform: none; color: var(--ink);
+  }
+  .beat-markers .bad b{ color: var(--accent); }
+
+  /* ---------- beats ---------- */
+  .beats{
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    column-gap: 28px;
+    margin-top: 8px;
+  }
+  .beat-meta{
+    grid-column: 1; padding-top: 26px;
+    border-top: 1px solid var(--ink);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mute);
+  }
+  .beat-meta .num{
+    display:block;
+    font-family: "Source Serif 4", serif;
+    font-size: 44px; font-weight: 300;
+    color: var(--ink); letter-spacing: -0.02em;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .beat-body{
+    grid-column: 2; padding: 24px 0 36px;
+    border-top: 1px solid var(--ink);
+  }
+  .beat-headline{
+    font-family: "Source Serif 4", serif;
+    font-weight: 400; font-size: 34px;
+    line-height: 1.08; letter-spacing: -0.015em;
+    margin: 0 0 14px; text-wrap: balance;
+    max-width: 760px;
+  }
+  .beat-headline em{ font-style: italic; }
+  .beat-headline em.acc{ color: var(--accent); }
+  .beat-body p{
+    font-family: "Source Serif 4", serif;
+    font-size: 17px; line-height: 1.55;
+    color: var(--ink-2); margin: 0 0 16px;
+    max-width: 620px; font-weight: 300;
+  }
+  .fig-cap{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-mute);
+    margin-top: 8px;
+  }
+
+  /* Beat 1 — cohort composition bars */
+  .cohort-comp{
+    margin-top: 14px;
+    padding: 16px 0 0;
+    border-top: 1px dashed var(--rule);
+  }
+  .comp-row{
+    display: grid;
+    grid-template-columns: 200px 1fr 60px;
+    gap: 16px; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .comp-row .lbl{
+    font-family: "Source Serif 4", serif;
+    font-size: 15px; color: var(--ink);
+  }
+  .comp-row .lbl b{
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mute);
+    font-weight: 500; margin-bottom: 2px;
+  }
+  .comp-row .bar{
+    height: 14px; background: var(--paper-2);
+    border: 1px solid var(--rule);
+    position: relative;
+  }
+  .comp-row .bar > span{
+    display: block; height: 100%;
+    background: var(--ink-2);
+  }
+  .comp-row .ct{
+    text-align: right;
+    font-family: "Source Serif 4", serif;
+    font-size: 18px; color: var(--ink);
+  }
+  .comp-row .ct small{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px; color: var(--ink-mute);
+    display: block; letter-spacing: 0.1em;
+  }
+  .median-anno{
+    margin-top: 10px;
+    font-family: "Source Serif 4", serif;
+    font-style: italic; font-size: 14px;
+    color: var(--accent-body);
+  }
+
+  /* Beat 2 — range + score dots */
+  .b2-grid{
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--rule);
+  }
+  .b2-cell .lab{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-mute);
+    margin-bottom: 12px;
+  }
+  .b2-cell svg{ display: block; width: 100%; height: auto; }
+
+  /* Beat 3 — action gap diagram */
+  .action-gap{
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--rule);
+  }
+  .action-gap svg{ display:block; width: 100%; height: auto; max-width: 720px; }
+
+  /* Beat 4 — stacked cost bar */
+  .cost-stack{
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--rule);
+  }
+  .cost-bar{
+    display: flex;
+    height: 44px;
+    border: 1px solid var(--ink);
+    overflow: hidden;
+  }
+  .cost-bar .seg{
+    display:flex; align-items: center; justify-content: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.12em;
+    color: var(--paper);
+    text-transform: uppercase;
+  }
+  .cost-bar .seg.a{ background: var(--ink); flex: 47; }
+  .cost-bar .seg.b{ background: #5e554a; flex: 14; }
+  .cost-bar .seg.c{ background: #8a7f6e; flex: 12; color: var(--ink); }
+  .cost-bar .seg.d{ background: #a89d8b; flex: 11; color: var(--ink); }
+  .cost-bar .seg.e{ background: #b8ad9a; flex: 9; color: var(--ink); }
+  .cost-bar .seg.f{ background: #c7bda9; flex: 7; color: var(--ink); }
+  .cost-legend{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+    margin-top: 14px;
+    font-family: "Source Serif 4", serif;
+    font-size: 14px; color: var(--ink-2);
+  }
+  .cost-legend .it{ display: flex; align-items: center; gap: 10px; }
+  .cost-legend .sw{ width: 10px; height: 10px; flex: none; border: 1px solid var(--ink); }
+  .cost-legend em{ font-style: italic; }
+  .cost-legend .pct{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; color: var(--ink-mute);
+    margin-left: auto; letter-spacing: 0.08em;
+  }
+
+  /* closing line after beats */
+  .post-beats{
+    margin-top: 8px;
+    padding: 24px 0 0;
+    border-top: 1px solid var(--ink);
+    font-family: "Source Serif 4", serif;
+    font-style: italic;
+    font-size: 18px; line-height: 1.5;
+    color: var(--ink-mute);
+    max-width: 720px;
+  }
+
+  /* ---------- cohort note ---------- */
+  section.cohort-note{
+    margin-top: 64px;
+    padding: 28px 0 0;
+    border-top: 1px solid var(--rule);
+    max-width: 720px;
+  }
+  .cohort-note .eb{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .cohort-note p{
+    font-family: "Source Serif 4", serif;
+    font-size: 17px; line-height: 1.55;
+    color: var(--ink-2); margin: 0 0 12px; font-weight: 300;
+  }
+  .cohort-note .closing{
+    font-style: italic; font-size: 16px; color: var(--ink-mute);
+    margin-top: 14px;
+  }
+  .cohort-note .closing a{
+    color: var(--accent-body); border-bottom: 1px solid var(--accent-body);
+    padding-bottom: 1px; text-decoration: none;
+  }
+
+  /* ---------- email + MGI section, side by side ---------- */
+  .twin{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    margin-top: 72px;
+    padding-top: 36px;
+    border-top: 1px solid var(--ink);
+  }
+  .twin .eb{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .twin h2{
+    font-family: "Source Serif 4", serif;
+    font-weight: 400; font-size: 28px;
+    line-height: 1.2; letter-spacing: -0.01em;
+    margin: 0 0 16px;
+  }
+  .twin p{
+    font-family: "Source Serif 4", serif;
+    font-weight: 300; font-size: 16px;
+    line-height: 1.55; color: var(--ink-2);
+    margin: 0 0 22px; max-width: 480px;
+  }
+  .twin p .acc-num{ color: var(--accent-body); font-style: italic; font-weight: 400; }
+  /* email form */
+  form.notify{ display: flex; gap: 0; align-items: stretch; max-width: 460px; }
+  form.notify input[type="email"]{
+    flex: 1;
+    border: 0;
+    border-bottom: 1px solid var(--ink);
+    background: transparent;
+    padding: 10px 0;
+    font-family: "Source Serif 4", serif;
+    font-size: 17px; color: var(--ink);
+    outline: none;
+  }
+  form.notify input[type="email"]:focus{ border-bottom-color: var(--accent-body); }
+  form.notify button{
+    border: 0;
+    background: transparent;
+    border-bottom: 1px solid var(--ink);
+    padding: 10px 0 10px 18px;
+    font-family: "Source Serif 4", serif;
+    font-size: 17px; color: var(--ink);
+    cursor: pointer; white-space: nowrap;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  form.notify button:hover{ color: var(--accent-body); border-bottom-color: var(--accent-body); }
+  .privacy{
+    margin-top: 12px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.04em;
+    color: var(--ink-mute); line-height: 1.5;
+    max-width: 460px;
+  }
+  /* MGI link */
+  .mgi-link{
+    font-family: "Source Serif 4", serif;
+    font-size: 18px; color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .mgi-link:hover{ color: var(--accent-body); border-bottom-color: var(--accent-body); }
+  .mgi-link .arrow{ display: inline-block; margin: 0 8px; }
+  .mgi-link .host{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    color: var(--ink-mute); text-transform: lowercase;
+    border: 0; padding: 0;
+  }
+
+  /* footer */
+  .credit{
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-family: "Source Serif 4", serif;
+    font-size: 14px; line-height: 1.55;
+    color: var(--ink-mute); max-width: 760px;
+    font-weight: 300;
+  }
+  .credit em{ font-style: italic; }
+  .credit a{
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none; padding-bottom: 1px;
+  }
+  .credit a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+  .citation{
+    margin-top: 18px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--ink-mute);
+  }
+
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule); margin-top: 0;
+    padding: 36px 56px 48px;
+    max-width: 1080px; margin-left: auto; margin-right: auto;
+    display: grid; grid-template-columns: 2fr 3fr; gap: 48px;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", serif; font-style: italic;
+    font-size: 13px; color: var(--ink-mute); line-height: 1.5;
+    max-width: 320px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 32px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  @media (max-width: 900px){
+    .topnav{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    .topnav nav{ gap: 16px; flex-wrap: wrap; }
+    main.page{ padding: 28px 28px 64px; }
+    h1.title{ font-size: 44px; }
+    .beats{ grid-template-columns: 1fr; column-gap: 0; }
+    .beat-meta{ border-top: 1px solid var(--ink); padding-top: 14px; }
+    .beat-meta .num{ font-size: 32px; display: inline-block; margin-right: 10px; }
+    .beat-body{ border-top: 0; padding-top: 6px; }
+    .beat-headline{ font-size: 26px; }
+    .comp-row{ grid-template-columns: 1fr 1fr 50px; gap: 10px; }
+    .b2-grid{ grid-template-columns: 1fr; gap: 28px; }
+    .cost-legend{ grid-template-columns: 1fr; }
+    .twin{ grid-template-columns: 1fr; gap: 40px; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px 28px 40px; gap: 28px; }
+  }
+  @media (max-width: 520px){
+    main.page{ padding: 24px 20px 56px; }
+    h1.title{ font-size: 36px; }
+    .beat-headline{ font-size: 22px; }
+    .beat-markers{ grid-template-columns: 1fr 1fr; }
+    .comp-row .lbl{ font-size: 13px; }
+    footer .links{ grid-template-columns: 1fr; }
+  }
+
+  /* dynamic / live-snapshot variables */
+  var.dyn{
+    font-style: inherit;
+    color: var(--accent-body);
+    font-feature-settings: "tnum" 1;
+  }
+  .masthead var.dyn{ color: var(--accent-body); }
+  .beat-headline var.dyn.acc{ color: var(--accent); font-style: italic; }
+  .beat-headline var.dyn.italic{ font-style: italic; color: inherit; }
+
+  /* variables list */
+  section.variables{
+    margin-top: 72px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    max-width: 820px;
+  }
+  .variables .eb{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .variables h3{
+    font-family: "Source Serif 4", serif;
+    font-weight: 400; font-size: 22px;
+    line-height: 1.25; letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+  .variables p.lead{
+    font-family: "Source Serif 4", serif;
+    font-weight: 300; font-size: 15px;
+    line-height: 1.5; color: var(--ink-mute);
+    max-width: 620px; margin: 0 0 22px;
+  }
+  table.vars{
+    width: 100%; border-collapse: collapse;
+    font-family: "Source Serif 4", serif;
+    font-size: 14px; color: var(--ink-2);
+  }
+  table.vars th, table.vars td{
+    text-align: left;
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: baseline;
+  }
+  table.vars th{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-mute);
+    font-weight: 500;
+    border-bottom: 1px solid var(--ink);
+  }
+  table.vars td.var{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--ink); text-transform: uppercase;
+    width: 240px;
+  }
+  table.vars td.val{ color: var(--accent-body); width: 180px; font-style: italic; }
+  table.vars td.freq{ color: var(--ink-mute); }
+  .variables .impl{
+    margin-top: 18px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px; letter-spacing: 0.06em;
+    color: var(--ink-mute);
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav" data-screen-label="Top nav">
+  <a class="wm" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <nav>
+    <a href="How It Works.html">How It Works</a>
+    <a href="About.html">About</a>
+    <a href="MGI Landing.html" class="cta">Take the MGI →</a>
+  </nav>
+</header>
+
+<main class="page">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead" data-screen-label="01 Masthead">
+    <div class="left">
+      <span><b>The Silent Degradation Index</b></span>
+      <span>Q2 2026 Edition · Launching June 2026</span>
+      <span>Cohort snapshot · As of <var class="dyn" data-var="DATE">April 28, 2026</var> · n=<var class="dyn" data-var="CURRENT_NUMBER">11</var></span>
+    </div>
+    <div class="right">Fig. 1 of 4 · 7-min read · Last updated <var class="dyn" data-var="DATE">Apr 28, 2026</var></div>
+  </header>
+
+  <div class="deck-title">A four-beat preview of the Q2 2026 Index · Live cohort snapshot</div>
+  <h1 class="title">What managers can't see, what their teams <em>already know</em>.</h1>
+  <p class="standfirst">First findings from the Manager Gap Index cohort, to date. <var class="dyn" data-var="CURRENT_NUMBER_WORD">Eleven</var> companies. Six dimensions. The cost number their dashboards weren't reporting.</p>
+
+  <!-- ARC -->
+  <section class="arc-wrap" aria-label="Cohort growth timeline">
+    <span class="axis-label l">Cohort size, growing weekly</span>
+    <span class="axis-label r">Q1 2026 → publication June 2026</span>
+    <svg class="arc-svg" viewBox="0 0 1080 180" preserveAspectRatio="none" role="img" aria-hidden="true">
+      <defs>
+        <pattern id="gridT" width="60" height="40" patternUnits="userSpaceOnUse">
+          <path d="M60 0 L0 0 0 40" fill="none" stroke="#C9C2B4" stroke-width="0.5" opacity="0.5"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="40" width="1080" height="120" fill="url(#gridT)"/>
+      <line x1="0" y1="160" x2="1080" y2="160" stroke="#17161A" stroke-width="1"/>
+
+      <!-- Q1 cohort baseline → today (solid, growth curve) -->
+      <path d="M 30 140 C 140 134, 240 124, 360 110" fill="none" stroke="#17161A" stroke-width="2"/>
+      <!-- today → publication (dashed projection) -->
+      <path d="M 360 110 C 470 100, 580 88, 720 76" fill="none" stroke="#17161A" stroke-width="2" stroke-dasharray="3 5"/>
+      <!-- post-publication (lighter, forward look) -->
+      <path d="M 720 76 C 840 76, 940 78, 1020 84" fill="none" stroke="#C9C2B4" stroke-width="1.6"/>
+
+      <!-- Q1 baseline marker -->
+      <line x1="30" y1="40" x2="30" y2="160" stroke="#C9C2B4" stroke-dasharray="3 3"/>
+      <circle cx="30" cy="140" r="3.5" fill="#17161A"/>
+      <text x="38" y="54" font-family="JetBrains Mono, monospace" font-size="10" fill="#6F6A60" letter-spacing="0.5">Q1 COHORT · n=11</text>
+
+      <!-- TODAY: current cohort position (accent, biggest) -->
+      <line x1="360" y1="40" x2="360" y2="160" stroke="#2196F3" stroke-dasharray="2 3"/>
+      <circle cx="360" cy="110" r="6" fill="#2196F3"/>
+      <circle cx="360" cy="110" r="11" fill="none" stroke="#2196F3" stroke-width="1" opacity="0.4"/>
+      <text x="368" y="54" font-family="JetBrains Mono, monospace" font-size="10" fill="#2196F3" letter-spacing="0.5">TODAY · n=11 · APR 28</text>
+
+      <!-- Publication endpoint -->
+      <line x1="720" y1="40" x2="720" y2="160" stroke="#C9C2B4" stroke-dasharray="3 3"/>
+      <circle cx="720" cy="76" r="4" fill="#17161A"/>
+      <text x="728" y="54" font-family="JetBrains Mono, monospace" font-size="10" fill="#6F6A60" letter-spacing="0.5">Q2 INDEX PUBLISHED · JUN 2026</text>
+
+      <!-- Q3 forward marker -->
+      <line x1="960" y1="40" x2="960" y2="160" stroke="#C9C2B4" stroke-dasharray="3 3"/>
+      <text x="968" y="54" font-family="JetBrains Mono, monospace" font-size="10" fill="#9A9285" letter-spacing="0.5">Q3 COHORT · TARGET n=30</text>
+    </svg>
+    <div class="beat-markers">
+      <div><span>Beat 1</span><b>What we measured</b></div>
+      <div class="bad"><span>Beat 2</span><b>What we found</b></div>
+      <div><span>Beat 3</span><b>The action gap</b></div>
+      <div><span>Beat 4</span><b>Why it matters</b></div>
+    </div>
+  </section>
+
+  <!-- ============ BEAT 1 ============ -->
+  <section class="beats" data-screen-label="02 Beat 1">
+    <div class="beat-meta">
+      <span class="num">01</span>
+      What we measured
+    </div>
+    <div class="beat-body">
+      <h2 class="beat-headline">Companies in the cohort, scored on the gap between manager perception and team reality.</h2>
+      <p>The Manager Gap Index is a 10-minute assessment that scores managers on six dimensions and calculates the dollar cost of the gap their team is experiencing. The cohort to date includes <var class="dyn" data-var="CURRENT_NUMBER">11</var> companies assessed since Q1 2026. Companies span 300 to 1,200 employees across four sectors. Median company size: 540 employees. Each company received their own report and approved its inclusion in the cohort dataset before publication.</p>
+
+      <div class="cohort-comp">
+        <div class="comp-row">
+          <span class="lbl"><b>Sector 01</b>Technology services</span>
+          <span class="bar"><span style="width:100%"></span></span>
+          <span class="ct">4<small>cos.</small></span>
+        </div>
+        <div class="comp-row">
+          <span class="lbl"><b>Sector 02</b>Professional services</span>
+          <span class="bar"><span style="width:75%"></span></span>
+          <span class="ct">3<small>cos.</small></span>
+        </div>
+        <div class="comp-row">
+          <span class="lbl"><b>Sector 03</b>Financial services</span>
+          <span class="bar"><span style="width:50%"></span></span>
+          <span class="ct">2<small>cos.</small></span>
+        </div>
+        <div class="comp-row">
+          <span class="lbl"><b>Sector 04</b>Industrial</span>
+          <span class="bar"><span style="width:50%"></span></span>
+          <span class="ct">2<small>cos.</small></span>
+        </div>
+        <div class="median-anno">Median company size · 540 employees · range 300–1,200.</div>
+        <div class="fig-cap">Cohort composition · As of <var class="dyn" data-var="DATE">Apr 28, 2026</var> · n=<var class="dyn" data-var="CURRENT_NUMBER">11</var></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BEAT 2 ============ -->
+  <section class="beats" data-screen-label="03 Beat 2">
+    <div class="beat-meta">
+      <span class="num">02</span>
+      What we found
+    </div>
+    <div class="beat-body">
+      <h2 class="beat-headline">The median company loses <em class="acc">$<var class="dyn acc" data-var="CURRENT_MEDIAN">20</var> million</em> a year. Their managers are blind to <em><var class="dyn italic" data-var="CURRENT_GAP_PCT">70</var>%</em> of what their teams are experiencing.</h2>
+      <p>Across the cohort to date, the median annual cost of Silent Degradation is $<var class="dyn" data-var="CURRENT_MEDIAN">20</var>M. The range runs from $<var class="dyn" data-var="CURRENT_MIN">8</var>M for a small retail business to $<var class="dyn" data-var="CURRENT_MAX">65</var>M for a healthcare organisation. The average MGI score is <var class="dyn" data-var="CURRENT_AVERAGE">28</var> out of 100; no company has scored above <var class="dyn" data-var="CURRENT_CEILING">45</var>. Most CEOs predict their company will score 60+. The gap between expectation and reality is the most consistent finding in the dataset.</p>
+
+      <div class="b2-grid">
+        <div class="b2-cell">
+          <div class="lab">Annual Silent Degradation cost · range</div>
+          <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="20" y1="55" x2="380" y2="55" stroke="#C9C2B4" stroke-width="1"/>
+            <!-- range bar -->
+            <rect x="50" y="48" width="285" height="14" fill="#E8E2D6" stroke="#17161A" stroke-width="1"/>
+            <!-- median marker -->
+            <line x1="120" y1="38" x2="120" y2="72" stroke="#2196F3" stroke-width="2"/>
+            <circle cx="120" cy="55" r="4" fill="#2196F3"/>
+            <text x="120" y="32" font-family="Source Serif 4, serif" font-style="italic" font-size="13" fill="#2196F3" text-anchor="middle">median $20M</text>
+            <!-- range labels -->
+            <text x="50" y="82" font-family="JetBrains Mono, monospace" font-size="9" fill="#6F6A60" text-anchor="middle">$8M</text>
+            <text x="335" y="82" font-family="JetBrains Mono, monospace" font-size="9" fill="#6F6A60" text-anchor="middle">$65M</text>
+          </svg>
+          <div class="fig-cap">Median annual cost · As of <var class="dyn" data-var="DATE">Apr 28, 2026</var> · n=<var class="dyn" data-var="CURRENT_NUMBER">11</var> · range $<var class="dyn" data-var="CURRENT_MIN">8</var>M–$<var class="dyn" data-var="CURRENT_MAX">65</var>M</div>
+        </div>
+        <div class="b2-cell">
+          <div class="lab">MGI score distribution · 0–100</div>
+          <svg viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="20" y1="55" x2="380" y2="55" stroke="#17161A" stroke-width="1"/>
+            <!-- 11 dots, max at 45 -->
+            <g fill="#17161A">
+              <circle cx="92" cy="55" r="4"/>
+              <circle cx="98" cy="55" r="4"/>
+              <circle cx="108" cy="55" r="4"/>
+              <circle cx="118" cy="55" r="4"/>
+              <circle cx="124" cy="55" r="4"/>
+              <circle cx="130" cy="55" r="4"/>
+              <circle cx="138" cy="55" r="4"/>
+              <circle cx="146" cy="55" r="4"/>
+              <circle cx="158" cy="55" r="4"/>
+              <circle cx="172" cy="55" r="4"/>
+              <circle cx="200" cy="55" r="4"/>
+            </g>
+            <!-- average 28 marker -->
+            <line x1="124" y1="38" x2="124" y2="72" stroke="#2196F3" stroke-width="2"/>
+            <text x="124" y="32" font-family="Source Serif 4, serif" font-style="italic" font-size="13" fill="#2196F3" text-anchor="middle">avg 28</text>
+            <!-- scale ticks -->
+            <text x="20" y="82" font-family="JetBrains Mono, monospace" font-size="9" fill="#6F6A60" text-anchor="middle">0</text>
+            <text x="200" y="82" font-family="JetBrains Mono, monospace" font-size="9" fill="#6F6A60" text-anchor="middle">50</text>
+            <text x="380" y="82" font-family="JetBrains Mono, monospace" font-size="9" fill="#6F6A60" text-anchor="middle">100</text>
+            <line x1="200" y1="50" x2="200" y2="60" stroke="#6F6A60" stroke-width="0.6"/>
+          </svg>
+          <div class="fig-cap">MGI score distribution · As of <var class="dyn" data-var="DATE">Apr 28, 2026</var> · n=<var class="dyn" data-var="CURRENT_NUMBER">11</var> · average <var class="dyn" data-var="CURRENT_AVERAGE">28</var>/100 · max <var class="dyn" data-var="CURRENT_CEILING">45</var></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BEAT 3 ============ -->
+  <section class="beats" data-screen-label="04 Beat 3">
+    <div class="beat-meta">
+      <span class="num">03</span>
+      The action gap
+    </div>
+    <div class="beat-body">
+      <h2 class="beat-headline"><var class="dyn italic" data-var="CURRENT_FRACTION">Six in eleven</var> could see the signals but had <em>no mechanism to act</em>.</h2>
+      <p>The Action sub-score measures whether managers respond to detected signals. <var class="dyn" data-var="CURRENT_FRACTION">Six</var> companies in the cohort to date scored zero out of twenty. They had visibility into team-level patterns. They had no structured way to translate visibility into intervention within the same week. When asked what they did when they noticed a team-level signal, managers in these companies described patterns of waiting, escalating, or normalising. None described acting.</p>
+
+      <div class="action-gap">
+        <svg viewBox="0 0 720 200" aria-hidden="true">
+          <!-- start node -->
+          <text x="20" y="100" font-family="Source Serif 4, serif" font-style="italic" font-size="15" fill="#17161A">Manager detects signal</text>
+          <line x1="180" y1="96" x2="240" y2="96" stroke="#17161A" stroke-width="1"/>
+          <!-- branch point -->
+          <circle cx="244" cy="96" r="4" fill="#17161A"/>
+          <!-- branches -->
+          <line x1="244" y1="96" x2="320" y2="40" stroke="#C9C2B4" stroke-width="1"/>
+          <line x1="244" y1="96" x2="320" y2="96" stroke="#2196F3" stroke-width="2"/>
+          <line x1="244" y1="96" x2="320" y2="156" stroke="#C9C2B4" stroke-width="1"/>
+
+          <!-- Branch 3: acts within the week (top, 2 of 11) -->
+          <text x="330" y="34" font-family="Source Serif 4, serif" font-size="14" fill="#17161A">Acts within the week</text>
+          <text x="330" y="50" font-family="JetBrains Mono, monospace" font-size="10" fill="#6F6A60" letter-spacing="0.1em">2 OF 11</text>
+
+          <!-- Branch 1: waits (middle, accent) -->
+          <text x="330" y="92" font-family="Source Serif 4, serif" font-style="italic" font-size="16" fill="#2196F3">Waits for next conversation</text>
+          <text x="330" y="108" font-family="JetBrains Mono, monospace" font-size="10" fill="#2196F3" letter-spacing="0.1em" data-dyn="CURRENT_FRACTION_UPPER">6 OF 11 · DEFINES THE GAP</text>
+
+          <!-- Branch 2: escalates (bottom) -->
+          <text x="330" y="150" font-family="Source Serif 4, serif" font-size="14" fill="#17161A">Escalates upward</text>
+          <text x="330" y="166" font-family="JetBrains Mono, monospace" font-size="10" fill="#6F6A60" letter-spacing="0.1em">3 OF 11</text>
+
+          <!-- soft connecting line -->
+          <line x1="20" y1="190" x2="700" y2="190" stroke="#C9C2B4" stroke-width="0.6"/>
+        </svg>
+        <div class="fig-cap">What managers do when they see a team-level signal · As of <var class="dyn" data-var="DATE">Apr 28, 2026</var> · n=<var class="dyn" data-var="CURRENT_NUMBER">11</var></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BEAT 4 ============ -->
+  <section class="beats" data-screen-label="05 Beat 4">
+    <div class="beat-meta">
+      <span class="num">04</span>
+      Why it matters
+    </div>
+    <div class="beat-body">
+      <h2 class="beat-headline"><em><var class="dyn italic" data-var="CURRENT_TURNOVER_WORD">Forty-seven</var> percent</em> of the cost is turnover. The other <em><var class="dyn italic" data-var="CURRENT_OTHER_WORD">fifty-three</var> percent</em> is what's hiding.</h2>
+      <p>Across the cohort to date, <var class="dyn" data-var="CURRENT_TURNOVER_PCT">47</var>% of total Silent Degradation cost comes from Regrettable Attrition. The remaining <var class="dyn" data-var="CURRENT_OTHER_PCT">53</var>% comes from five other layers combined: Disengagement Tax, Manager Drag, Promotion Risk, Innovation Suppression, and Customer Impact. Companies measuring only turnover are measuring less than half the problem. The cost layers leaders haven't been tracking are larger than the one they have.</p>
+
+      <div class="cost-stack">
+        <div class="cost-bar" role="img" aria-label="Cost layer breakdown across the median cohort company">
+          <span class="seg a"><var class="dyn" data-var="CURRENT_TURNOVER_PCT" style="color:inherit;font-style:normal">47</var>%</span>
+          <span class="seg b">14</span>
+          <span class="seg c">12</span>
+          <span class="seg d">11</span>
+          <span class="seg e">9</span>
+          <span class="seg f">7</span>
+        </div>
+        <div class="cost-legend">
+          <div class="it"><span class="sw" style="background:#17161A"></span><em>Regrettable Attrition</em><span class="pct"><var class="dyn" data-var="CURRENT_TURNOVER_PCT" style="color:inherit;font-style:normal">47</var>%</span></div>
+          <div class="it"><span class="sw" style="background:#5e554a"></span><em>Disengagement Tax</em><span class="pct">14%</span></div>
+          <div class="it"><span class="sw" style="background:#8a7f6e"></span><em>Manager Drag</em><span class="pct">12%</span></div>
+          <div class="it"><span class="sw" style="background:#a89d8b"></span><em>Promotion Risk</em><span class="pct">11%</span></div>
+          <div class="it"><span class="sw" style="background:#b8ad9a"></span><em>Innovation Suppression</em><span class="pct">9%</span></div>
+          <div class="it"><span class="sw" style="background:#c7bda9"></span><em>Customer Impact</em><span class="pct">7%</span></div>
+        </div>
+        <div class="fig-cap">Cost layer breakdown · As of <var class="dyn" data-var="DATE">Apr 28, 2026</var> · n=<var class="dyn" data-var="CURRENT_NUMBER">11</var> · median company</div>
+      </div>
+    </div>
+  </section>
+
+  <p class="post-beats">The full publication includes findings by company size and sector, methodology in detail, and implications for leaders. Publishing June 2026.</p>
+
+  <!-- ============ COHORT NOTE ============ -->
+  <section class="cohort-note" data-screen-label="06 Cohort note">
+    <div class="eb">The cohort is growing</div>
+    <p>The Q1 2026 cohort included 11 companies. As of <var class="dyn" data-var="DATE">April 28, 2026</var>, the cohort stands at <var class="dyn" data-var="CURRENT_NUMBER">11</var>. Companies completing the Manager Gap Index between now and June 2026 will appear in the published Q2 Index. The cohort target for Q3 2026 is 30 companies, with explicit goals for sector and size diversification. None pay to be included.</p>
+    <p class="closing">Companies interested in participating can request the assessment at <a href="MGI Landing.html">silentdegradation.com/participate</a>.</p>
+  </section>
+
+  <!-- ============ TWIN: Email + MGI ============ -->
+  <section class="twin" data-screen-label="07 Notify and MGI">
+    <div class="twin-cell">
+      <div class="eb">Notify me when it publishes</div>
+      <h2>Get the full publication on launch day.</h2>
+      <p>Email subscribers receive the Index 24 hours before public release. No marketing emails. No promotional content. Just the publication, on launch day, with a direct download link. You'll see periodic updates as the cohort grows past the current <var class="dyn" data-var="CURRENT_NUMBER">11</var>.</p>
+      <form class="notify" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Saved ✓';">
+        <input type="email" required placeholder="your@email.com" aria-label="Email address" />
+        <button type="submit">Notify me on launch ›</button>
+      </form>
+      <p class="privacy">Your email is used only to send the Index on launch day and occasional snapshot updates. Unsubscribe with one click. We never sell or share email addresses.</p>
+    </div>
+    <div class="twin-cell">
+      <div class="eb">Or: see your own number. Join the cohort.</div>
+      <h2>Don't wait for the publication. Take the assessment.</h2>
+      <p>The Manager Gap Index assessment runs in 10 minutes. You get your score, your six-dimension breakdown, and your annual cost number across the same six layers we use in the Index. Average first-time score: <span class="acc-num"><var class="dyn" data-var="CURRENT_AVERAGE" style="color:inherit;font-style:inherit">28</var> out of 100</span>. Companies completing the assessment between now and June 2026 will appear in the published Index.</p>
+      <a class="mgi-link" href="MGI Landing.html">Take the Manager Gap Index<span class="arrow">›</span><span class="host">mgi.cloverera.com</span></a>
+    </div>
+  </section>
+
+  <!-- ============ VARIABLES (designer + dev reference) ============ -->
+  <section class="variables" data-screen-label="08 Variables list">
+    <div class="eb">The variables list · single source of truth</div>
+    <h3>Every dynamic value on this page, with current values and update cadence.</h3>
+    <p class="lead">The teaser is a live snapshot. The values below are the day-one ship values. Implementation recommendation: manual CMS fields edited weekly by Clive and Neil. Layout has been tested at extreme cohort sizes (e.g. "Sixteen in twenty-seven") to ensure typography holds.</p>
+    <table class="vars">
+      <thead>
+        <tr><th>Variable</th><th>Current value</th><th>Update frequency</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="var">DATE</td><td class="val">April 28, 2026</td><td class="freq">Weekly</td></tr>
+        <tr><td class="var">CURRENT_NUMBER</td><td class="val">11</td><td class="freq">When new company joins</td></tr>
+        <tr><td class="var">CURRENT_NUMBER_WORD</td><td class="val">Eleven</td><td class="freq">When new company joins</td></tr>
+        <tr><td class="var">CURRENT_MEDIAN</td><td class="val">$20M</td><td class="freq">When cohort recalculates</td></tr>
+        <tr><td class="var">CURRENT_MIN</td><td class="val">$8M</td><td class="freq">When new low or high enters</td></tr>
+        <tr><td class="var">CURRENT_MAX</td><td class="val">$65M</td><td class="freq">When new low or high enters</td></tr>
+        <tr><td class="var">CURRENT_AVERAGE_COST</td><td class="val">$48M</td><td class="freq">When cohort recalculates</td></tr>
+        <tr><td class="var">CURRENT_AVERAGE</td><td class="val">28 (out of 100)</td><td class="freq">When cohort recalculates</td></tr>
+        <tr><td class="var">CURRENT_CEILING</td><td class="val">45</td><td class="freq">When new high enters</td></tr>
+        <tr><td class="var">CURRENT_GAP_PCT</td><td class="val">70%</td><td class="freq">When cohort recalculates</td></tr>
+        <tr><td class="var">CURRENT_FRACTION</td><td class="val">Six in eleven</td><td class="freq">When new company joins</td></tr>
+        <tr><td class="var">CURRENT_TURNOVER_PCT</td><td class="val">47%</td><td class="freq">When cohort recalculates</td></tr>
+        <tr><td class="var">CURRENT_OTHER_PCT</td><td class="val">53%</td><td class="freq">When cohort recalculates</td></tr>
+        <tr><td class="var">CURRENT_TURNOVER_WORD</td><td class="val">Forty-seven</td><td class="freq">When cohort recalculates</td></tr>
+        <tr><td class="var">CURRENT_OTHER_WORD</td><td class="val">Fifty-three</td><td class="freq">When cohort recalculates</td></tr>
+      </tbody>
+    </table>
+    <p class="impl">Implementation · manual CMS recommended for the launch period. Open Graph image uses durable language: “Live cohort snapshot. Updates weekly.” Every <code>&lt;var class="dyn"&gt;</code> tag in the markup is a substitution point.</p>
+  </section>
+
+  <!-- ============ CREDIT ============ -->
+  <section class="credit" data-screen-label="08 Credit">
+    <p>The Silent Degradation Index is published by Clover ERA. Co-founders Clive and Neil Hays. Authors of <em><a href="books/the-trillion-dollar-problem.html">The Trillion Dollar Problem</a></em> (2024) and <em><a href="books/already-gone.html">Already Gone</a></em> (2025).</p>
+    <p class="citation">Suggested citation: The Silent Degradation Index Q2 2026 (Preview). Clover ERA. silentdegradation.com.</p>
+  </section>
+
+</main>
+
+<footer class="page-footer" data-screen-label="Page footer">
+  <div class="colophon">
+    The Silent Degradation Index, Q2 2026.<br/>
+    Published by Clover ERA.
+  </div>
+  <div class="links">
+    <a href="index.html">Clover ERA</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="MGI Landing.html">Manager Gap Index</a>
+    <a href="About.html">About / Founders</a>
+    <a href="Books.html">Books</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+    <a href="/privacy">Privacy / Terms</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Evidence and Methodology — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Every claim, every source, every limitation acknowledged. The primary research behind the Silent Degradation thesis, the cohort methodology, and the eight external validators.">
+<meta property="og:title" content="Evidence and Methodology — Clover ERA">
+<meta property="og:description" content="Every claim. Every source. Every limitation acknowledged.">
+
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+    z-index: 0;
+  }
+  a{ color: inherit; }
+
+  /* shared primitives ---------------------------------------------------- */
+  .mono{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .serif{ font-family: "Source Serif 4", Georgia, serif; font-feature-settings: "onum" 1; }
+
+  .ed-link{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .ed-link:hover{ color: var(--accent-body); border-bottom-color: var(--accent-body); }
+
+  /* masthead ------------------------------------------------------------- */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 19px;
+    letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display:flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{
+    color: var(--ink-mute); text-decoration: none;
+    transition: color 120ms ease;
+  }
+  nav.primary a:hover{ color: var(--ink); }
+
+  /* container ------------------------------------------------------------ */
+  main{
+    position: relative; z-index: 1;
+    max-width: 1180px; margin: 0 auto;
+    padding: 0 56px;
+  }
+  .section-rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* hero ----------------------------------------------------------------- */
+  section.evidence-hero{
+    padding: 96px 0 64px;
+    max-width: 880px;
+  }
+  .evidence-hero .eyebrow{ margin-bottom: 28px; }
+  .evidence-hero h1{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(38px, 5.4vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin: 0 0 28px;
+    text-wrap: pretty;
+  }
+  .evidence-hero p.lede{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin: 0;
+    max-width: 720px;
+  }
+
+  /* table of contents ---------------------------------------------------- */
+  section.toc{
+    padding: 32px 0 96px;
+    max-width: 880px;
+  }
+  .toc-list{
+    list-style: none; margin: 0; padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .toc-list li{
+    display: grid;
+    grid-template-columns: 56px 1fr 16px;
+    gap: 24px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .toc-list a{
+    display: contents;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .toc-list .toc-num{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.18em; color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .toc-list .toc-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 19px;
+    line-height: 1.35;
+    color: var(--ink);
+    font-weight: 400;
+    transition: color 120ms ease;
+  }
+  .toc-list .toc-arrow{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 18px;
+    color: var(--ink-mute);
+    transition: transform 160ms ease, color 120ms ease;
+  }
+  .toc-list a:hover .toc-title{ color: var(--accent-body); }
+  .toc-list a:hover .toc-arrow{ color: var(--accent-body); transform: translateX(4px); }
+
+  /* generic section header pattern --------------------------------------- */
+  section.doc{
+    padding: 88px 0 96px;
+    max-width: 880px;
+    scroll-margin-top: 24px;
+  }
+  section.doc.wide{ max-width: 1080px; }
+  section.doc .section-eyebrow{
+    margin-bottom: 22px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  section.doc > h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.18;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 0 0 56px;
+    max-width: 760px;
+    text-wrap: pretty;
+  }
+
+  /* serif body / claim primitives ---------------------------------------- */
+  .body-p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 18px;
+    max-width: 680px;
+    text-wrap: pretty;
+  }
+  .body-p strong{ font-weight: 500; color: var(--ink); }
+  .body-p em{ font-style: italic; }
+
+  /* labelled blocks (claim / mechanism / limitations etc) ---------------- */
+  .ed-block{
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 32px;
+    padding: 22px 0;
+    border-top: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .ed-block:last-child{ border-bottom: 1px solid var(--rule-soft); }
+  .ed-block .lbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+    padding-top: 4px;
+  }
+  .ed-block .body{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .ed-block .body p{ margin: 0 0 14px; }
+  .ed-block .body p:last-child{ margin: 0; }
+  .ed-block .body em{ font-style: italic; color: var(--ink); }
+  .ed-block .body strong{ font-weight: 500; color: var(--ink); }
+
+  /* pull-quote (claim restated) ------------------------------------------ */
+  .pull-quote{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+    max-width: 640px;
+  }
+
+  /* sources list inside ed-block ----------------------------------------- */
+  .src-list{ list-style: none; margin: 6px 0 0; padding: 0; }
+  .src-list li{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--ink-mute);
+    line-height: 1.55;
+    padding: 4px 0;
+    text-wrap: pretty;
+  }
+  .src-list a{
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .src-list a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* subsection header ---------------------------------------------------- */
+  .sub-head{
+    margin: 64px 0 18px;
+    padding-top: 28px;
+    border-top: 1px solid var(--ink);
+  }
+  .sub-head:first-of-type{ margin-top: 24px; }
+  .sub-head .sub-num{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent-body); font-weight: 500;
+    display: block; margin-bottom: 10px;
+  }
+  .sub-head h3{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: -0.008em;
+    color: var(--ink);
+    margin: 0;
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+
+  .sub-claim-head{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.35;
+    color: var(--ink);
+    margin: 28px 0 16px;
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+
+  /* validator block ------------------------------------------------------ */
+  .validator{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 36px;
+    padding: 36px 0 40px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .validator:last-of-type{ border-bottom: 1px solid var(--rule-soft); }
+  .validator .v-head{
+    position: sticky; top: 24px;
+    align-self: start;
+  }
+  .validator .v-num{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; color: var(--ink-mute);
+    font-weight: 500; margin-bottom: 8px;
+  }
+  .validator .v-name{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.008em;
+    color: var(--ink);
+    margin: 0 0 8px;
+    text-wrap: pretty;
+  }
+  .validator .v-date{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.16em; color: var(--ink-mute);
+  }
+  .validator .v-rows{
+    display: grid; gap: 18px;
+  }
+  .validator .v-row{ display: grid; grid-template-columns: 130px 1fr; gap: 24px; align-items: baseline; }
+  .validator .v-row .v-lbl{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500; padding-top: 3px;
+  }
+  .validator .v-row .v-val{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 16px; line-height: 1.55;
+    color: var(--ink-2); text-wrap: pretty;
+  }
+  .validator .v-row .v-val em{ font-style: italic; color: var(--ink); }
+  .validator blockquote.v-quote{
+    margin: 0; padding: 0;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 17px; line-height: 1.5;
+    color: var(--ink); text-wrap: pretty;
+    max-width: 620px;
+  }
+  .validator blockquote.v-quote cite{
+    display: block;
+    margin-top: 8px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-style: normal; font-size: 10px; letter-spacing: 0.16em;
+    color: var(--ink-mute); text-transform: uppercase;
+  }
+  .validator a.src{
+    color: var(--ink-mute); text-decoration: none;
+    border-bottom: 1px solid var(--rule); padding-bottom: 1px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    transition: color 120ms ease, border-color 120ms ease;
+    word-break: break-all;
+  }
+  .validator a.src:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* methodology subsection list ----------------------------------------- */
+  .method-toc{
+    list-style: none; margin: 0 0 56px; padding: 0;
+    display: grid; gap: 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .method-toc li{
+    display: grid; grid-template-columns: 56px 1fr;
+    gap: 24px; padding: 16px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .method-toc .m-num{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.16em; color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .method-toc .m-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.4; color: var(--ink); font-weight: 400;
+  }
+
+  /* objection block ------------------------------------------------------ */
+  .objection{
+    padding: 36px 0 40px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .objection:last-of-type{ border-bottom: 1px solid var(--rule-soft); }
+  .objection .o-num{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; color: var(--ink-mute);
+    font-weight: 500; margin-bottom: 12px;
+  }
+  .objection .o-claim{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400; font-size: 22px; line-height: 1.35;
+    color: var(--ink); margin: 0 0 24px;
+    max-width: 720px; text-wrap: pretty;
+  }
+  .objection .o-claim::before{ content: "\201C"; color: var(--ink-mute); margin-right: 2px; }
+  .objection .o-claim::after{ content: "\201D"; color: var(--ink-mute); margin-left: 2px; }
+
+  /* limitations stream --------------------------------------------------- */
+  .limitations p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 22px;
+    max-width: 720px;
+    text-wrap: pretty;
+    padding-left: 18px;
+    border-left: 1px solid var(--rule);
+  }
+  .limitations p:last-child{ margin-bottom: 0; }
+
+  /* bibliography --------------------------------------------------------- */
+  .bib-group{ margin: 0 0 48px; }
+  .bib-group h3{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); font-weight: 500;
+    margin: 0 0 18px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .bib-list{ list-style: none; margin: 0; padding: 0; }
+  .bib-list li{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    text-wrap: pretty;
+  }
+  .bib-list li em{ font-style: italic; }
+  .bib-list li .bib-org{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink); font-weight: 500;
+    margin-right: 8px;
+  }
+  .bib-list li a{
+    color: var(--ink-mute);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    word-break: break-all;
+  }
+  .bib-list li a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* version log ---------------------------------------------------------- */
+  .version-list{
+    list-style: none; margin: 0; padding: 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .version-list li{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 32px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .version-list .v-when{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); font-weight: 500;
+  }
+  .version-list .v-what{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; font-weight: 300; line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  /* footer --------------------------------------------------------------- */
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule);
+    margin: 16px auto 0;
+    padding: 36px 56px 48px;
+    max-width: 1180px;
+    display: grid; grid-template-columns: 2fr 3fr;
+    gap: 48px; align-items: start;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-size: 13px;
+    color: var(--ink-mute); line-height: 1.5; max-width: 320px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  /* responsive ----------------------------------------------------------- */
+  @media (max-width: 900px){
+    .masthead{ padding: 18px 28px 14px; }
+    nav.primary{ gap: 18px; }
+    main{ padding: 0 28px; }
+    section.evidence-hero{ padding: 64px 0 40px; }
+    section.doc{ padding: 64px 0 72px; }
+    .ed-block{ grid-template-columns: 1fr; gap: 12px; padding: 22px 0; }
+    .ed-block .lbl{ padding-top: 0; }
+    .validator{ grid-template-columns: 1fr; gap: 20px; padding: 28px 0 32px; }
+    .validator .v-head{ position: static; }
+    .validator .v-row{ grid-template-columns: 1fr; gap: 6px; }
+    .toc-list li{ grid-template-columns: 44px 1fr 16px; gap: 16px; }
+    .version-list li{ grid-template-columns: 1fr; gap: 6px; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px; }
+  }
+
+  /* print ---------------------------------------------------------------- */
+  @media print{
+    body::before{ display: none; }
+    .masthead, footer.page-footer{ display: none; }
+    main{ max-width: 100%; padding: 0; }
+    section.doc{ break-inside: avoid; padding: 24pt 0; }
+    .validator, .objection{ break-inside: avoid; }
+    a.src, .bib-list li a{ color: #000; border-bottom: none; }
+    body{ background: #fff; color: #000; font-size: 11pt; }
+    .body-p, .ed-block .body, .validator .v-row .v-val{ color: #000; }
+  }
+
+  html{ scroll-behavior: smooth; }
+</style>
+</head>
+
+<body>
+
+<header class="masthead" data-screen-label="Masthead">
+  <a class="wordmark" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="Index Teaser.html">The Index</a>
+    <a href="About.html" class="nav-hide-sm">About</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ========== Section 1 — Hero ========== -->
+  <section class="evidence-hero" data-screen-label="01 Hero" aria-labelledby="evidence-hero-title">
+    <div class="mono eyebrow">The Evidence</div>
+    <h1 id="evidence-hero-title">Every claim. Every source. Every limitation acknowledged.</h1>
+    <p class="lede">
+      The Silent Degradation thesis rests on research. This page documents the primary sources behind every load-bearing claim, the methodology behind the Manager Gap Index cohort, and the limitations we acknowledge openly. Skeptical readers should start here.
+    </p>
+  </section>
+
+  <!-- Table of contents -->
+  <section class="toc" aria-label="Contents">
+    <ol class="toc-list">
+      <li><a href="#thesis"><span class="toc-num">02</span><span class="toc-title">The Four-Move Thesis Defended</span><span class="toc-arrow">›</span></a></li>
+      <li><a href="#validators"><span class="toc-num">03</span><span class="toc-title">The Eight External Validators</span><span class="toc-arrow">›</span></a></li>
+      <li><a href="#methodology"><span class="toc-num">04</span><span class="toc-title">The Cohort Methodology</span><span class="toc-arrow">›</span></a></li>
+      <li><a href="#objections"><span class="toc-num">05</span><span class="toc-title">Objection Defenses</span><span class="toc-arrow">›</span></a></li>
+      <li><a href="#limitations"><span class="toc-num">06</span><span class="toc-title">Acknowledged Limitations</span><span class="toc-arrow">›</span></a></li>
+      <li><a href="#bibliography"><span class="toc-num">07</span><span class="toc-title">Citations and Bibliography</span><span class="toc-arrow">›</span></a></li>
+      <li><a href="#updates"><span class="toc-num">08</span><span class="toc-title">Updates and Version History</span><span class="toc-arrow">›</span></a></li>
+    </ol>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 2 — Four-Move Thesis ========== -->
+  <section class="doc" id="thesis" data-screen-label="02 Thesis" aria-labelledby="thesis-title">
+    <div class="section-eyebrow">02 — The Four-Move Thesis Defended</div>
+    <h2 id="thesis-title">The structural argument behind Silent Degradation, with primary sources.</h2>
+
+    <!-- Move 1 -->
+    <div class="sub-head">
+      <span class="sub-num">Move 01 of 04</span>
+      <h3>Capital and technology drove fifty years of productivity.</h3>
+    </div>
+
+    <p class="pull-quote">For fifty years, productivity gains came from capital and technology. Workers got more productive each hour because the tools around them got better, not because they worked harder.</p>
+
+    <div class="ed-block">
+      <div class="lbl">Primary research</div>
+      <div class="body">
+        <p>The decomposition of post-war productivity growth into capital deepening, total factor productivity, and labour quality contributions is uncontroversial in macroeconomics. Standard references: the OECD Productivity Statistics database, the U.S. Bureau of Labor Statistics Multifactor Productivity series, and the Penn World Tables.</p>
+        <p>Across OECD countries between 1970 and 2005, capital deepening contributed 0.8 to 1.2 percentage points annually to labour productivity growth. Total factor productivity contributed an additional 0.7 to 1.0 points. Labour quality improvements contributed 0.2 to 0.4 points.</p>
+        <p>The U.S. Bureau of Labor Statistics has documented that between 1973 and 2014, labour productivity in the nonfarm business sector grew at 1.7&nbsp;percent per year, with capital deepening accounting for approximately 60&nbsp;percent of that growth.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Mechanism</div>
+      <div class="body">
+        <p>Workers were the platform on which the productivity gains were deployed. The same human, with better machines and better software, produced more output per hour. The cognitive demand on the worker was approximately constant; what changed was the leverage their hour created.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Limitations</div>
+      <div class="body">
+        <p>The exact percentages of the decomposition vary by methodology, country, and time period. The "fifty years" framing is rhetorical; the productivity context spans roughly 1948 to 2005 with significant variation. The Solow growth model that underlies these decompositions has known limitations, particularly around treatment of human capital and intangible investment.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Sources</div>
+      <div class="body">
+        <ul class="src-list">
+          <li>OECD Productivity Statistics. <a href="https://www.oecd.org/sdd/productivity-stats/" rel="noopener">oecd.org/sdd/productivity-stats</a></li>
+          <li>U.S. BLS Multifactor Productivity. <a href="https://www.bls.gov/productivity/" rel="noopener">bls.gov/productivity</a></li>
+          <li>Penn World Tables. <a href="https://www.rug.nl/ggdc/productivity/pwt/" rel="noopener">rug.nl/ggdc/productivity/pwt</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Move 2 -->
+    <div class="sub-head">
+      <span class="sub-num">Move 02 of 04</span>
+      <h3>That model has broken since 2005.</h3>
+    </div>
+
+    <p class="pull-quote">Capital deepening has slowed since 2005. AI is now increasing cognitive demand rather than reducing it. The discretionary effort that used to be quietly available has collapsed.</p>
+
+    <p class="body-p">This claim has three sub-claims, each with its own evidence base.</p>
+
+    <h4 class="sub-claim-head">2.2a — Capital deepening has slowed since 2005.</h4>
+
+    <div class="ed-block">
+      <div class="lbl">Primary research</div>
+      <div class="body">
+        <p>The U.S. Bureau of Labor Statistics has documented the productivity slowdown extensively. The post-2004 productivity growth rate of 1.4&nbsp;percent per year (through 2014) was 30&nbsp;percent below the 1948 to 1973 average. The most recent BLS analyses (2023 to 2025) have continued to show weak capital deepening contributions to overall productivity.</p>
+        <p>The OECD has published multiple studies documenting that across nearly every OECD country, productivity growth slowed sharply after 2005. The cumulative cost of the U.S. productivity slowdown from 2005 to 2018 has been estimated at $10.9&nbsp;trillion in lost output.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Sources</div>
+      <div class="body">
+        <ul class="src-list">
+          <li>BLS productivity slowdown analysis. <a href="https://www.bls.gov/opub/mlr/2018/article/optimism-and-pessimism-on-productivity-growth.htm" rel="noopener">bls.gov/opub/mlr/2018</a></li>
+          <li>OECD Compendium of Productivity Indicators (annual).</li>
+          <li>The Productivity Slowdown. Federal Reserve Bank of San Francisco conference, 2017 and subsequent updates.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="sub-claim-head">2.2b — AI is increasing cognitive demand rather than reducing it.</h4>
+
+    <p class="body-p">This sub-claim is the one most likely to be challenged in a sales conversation. It deserves the most detailed defense.</p>
+
+    <div class="ed-block">
+      <div class="lbl">Primary research</div>
+      <div class="body">
+        <p><strong>Microsoft Research, January 2025.</strong> "The Impact of Generative AI on Critical Thinking" (Lee et&nbsp;al., 2025), based on a survey of 319 knowledge workers, found that AI use shifts cognitive work from generation to evaluation. Heavy AI users showed reduced critical thinking engagement during routine tasks, but the cognitive work for non-routine tasks was reported as more demanding when AI was involved. Workers expended more effort applying critical thinking with AI than they would performing the same tasks without it.</p>
+        <p><strong>Harvard Business Review, February 2026.</strong> Eight months of research inside a 200-person U.S. tech firm found that AI tool adoption was correlated with increased work intensity rather than decreased workload. Employees using AI tools did not work less; output expectations rose to consume the time savings.</p>
+        <p><strong>UC Berkeley Labor Center, 2025.</strong> A longitudinal study tracked workers who adopted AI tools through 2025. 67&nbsp;percent of adopters reported working more hours, not fewer, by the end of the year. This is the single most cited finding in the AI cognitive load literature because it is longitudinal and specifically isolates the adopter population.</p>
+        <p><strong>Deloitte, 2025 Workforce Intelligence Report.</strong> Mental fatigue and cognitive strain have surpassed workload volume as the leading predictors of burnout. This is a methodological shift; previously workload volume was the primary predictor, and the change indicates that the nature of work has shifted toward higher cognitive demand independent of hours worked.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Mechanism</div>
+      <div class="body">
+        <p>Three structural mechanisms explain why AI increases cognitive load rather than decreasing it.</p>
+        <p><em>Elimination of cognitive recovery breaks.</em> Pre-AI knowledge work contained natural cognitive breaks: waiting for reports to compile, manually formatting documents, searching through documents for specific data points. These tasks were not intellectually demanding and served as built-in recovery periods. AI eliminates these breaks. When every task that used to take twenty minutes now takes twenty seconds, the worker moves immediately to the next cognitively demanding task. The result is an uninterrupted stream of high-intensity cognitive work with no natural recovery time.</p>
+        <p><em>Multiplication of decisions.</em> AI multiplies decisions rather than eliminating them. Every output requires an accept, reject, or revise decision under uncertainty. Pre-AI, decisions were embedded in the writing process. Post-AI, the worker generates outputs faster but must still evaluate, edit, validate, and approve each one. The cognitive load shifts from generation to evaluation, which is often more draining for sustained periods.</p>
+        <p><em>Rising expectation curve.</em> Marketing departments using AI content generation have been expected to produce 3.2x more content pieces per month compared to pre-AI baselines (Content Marketing Institute, 2025). As AI makes individual tasks faster, the volume of expected output rises to consume the time savings. The worker is now responsible for managing 3x the output with no proportional increase in cognitive bandwidth.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Sources</div>
+      <div class="body">
+        <ul class="src-list">
+          <li>Lee, M., et&nbsp;al. (2025). The Impact of Generative AI on Critical Thinking. Microsoft Research. <a href="https://www.microsoft.com/en-us/research/publication/the-impact-of-generative-ai-on-critical-thinking-self-reported-reductions-in-cognitive-effort-and-confidence-effects-from-a-survey-of-knowledge-workers/" rel="noopener">microsoft.com/research</a></li>
+          <li>Harvard Business Review (2026). 200-person tech firm AI adoption study.</li>
+          <li>UC Berkeley Labor Center (2025). AI Adoption Longitudinal Study.</li>
+          <li>Deloitte (2025). Workforce Intelligence Report.</li>
+          <li>Content Marketing Institute (2025). AI Content Production Benchmarks.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 class="sub-claim-head">2.2c — Discretionary effort has collapsed.</h4>
+
+    <div class="ed-block">
+      <div class="lbl">Primary research</div>
+      <div class="body">
+        <p><strong>Gallup, State of the Global Workplace 2026.</strong> Global engagement is at 20&nbsp;percent, the lowest measured level since 2020. Manager engagement dropped 9 percentage points between 2022 and 2025, with a 5-point drop between 2024 and 2025 alone. The historical "manager engagement premium" between manager engagement and individual contributor engagement has effectively closed.</p>
+        <p><strong>ActivTrak, State of the Workplace 2026.</strong> Behavioral data from 163,638 employees across 1,111 companies. Disengagement risk now exceeds burnout risk for the first time on record. Focus efficiency dropped to 60&nbsp;percent.</p>
+        <p><strong>Perceptyx longitudinal motivation data.</strong> Drawing on 20 million employee survey responses, Perceptyx has documented intrinsic motivation collapse over a multi-year window.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Sources</div>
+      <div class="body">
+        <ul class="src-list">
+          <li>Gallup. State of the Global Workplace 2026. <a href="https://www.gallup.com/workplace/state-of-the-global-workplace-report.aspx" rel="noopener">gallup.com</a></li>
+          <li>ActivTrak. State of the Workplace 2026.</li>
+          <li>Perceptyx workforce research archives.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Mechanism, Move 2</div>
+      <div class="body">
+        <p>If capital deepening has slowed (worker hours less leveraged by capital), AI is increasing cognitive demand (worker hours more cognitively expensive), and discretionary effort has collapsed (workers withholding the extra effort that used to absorb new demands), then the productivity model that worked from 1948 to 2005 has structurally broken. The three sub-claims combine into a coherent argument about why productivity now depends on the human in a way it did not for fifty years.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Limitations</div>
+      <div class="body">
+        <p>The three sub-claims are individually well-supported, but the integration into a single thesis is our framing rather than a published academic finding. Other framings of the same data are possible.</p>
+        <p>The capital deepening slowdown is empirically established; the cause is contested. The AI cognitive load research is recent (2025 to 2026) and may be subject to revision as longer-term studies emerge. The discretionary effort collapse is well-documented but the causal relationship to AI is correlational, not proven. We treat the integration as the strongest available framing of the available evidence rather than as a proven causal model.</p>
+      </div>
+    </div>
+
+    <!-- Move 3 -->
+    <div class="sub-head">
+      <span class="sub-num">Move 03 of 04</span>
+      <h3>For the first time in two generations, productivity depends on the human.</h3>
+    </div>
+
+    <p class="pull-quote">For the first time in two generations, productivity now depends on the human.</p>
+
+    <div class="ed-block">
+      <div class="lbl">Logical derivation</div>
+      <div class="body">
+        <p>This is the inferential move in the thesis. It is logically derived from Move 2 rather than directly cited from research.</p>
+        <p>If capital can no longer multiply hours (Move 2.2a), AI is consuming rather than freeing cognitive bandwidth (Move 2.2b), and discretionary effort is no longer quietly available (Move 2.2c), then the only remaining lever for productivity gains is human capacity itself.</p>
+        <p>This is a logical claim, not an empirical one. A skeptical reader can challenge the framing without needing to dispute the underlying data.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Defense</div>
+      <div class="body">
+        <p>The claim is defensible because the alternatives have been structurally weakened. Capital deepening has slowed in nearly every OECD country. AI investment has not produced the expected productivity gains; Gallup's Q1 2026 data shows 89&nbsp;percent of executives report no productivity impact from AI in the past three years. If the traditional productivity multipliers are not working, the human capacity is the remaining variable.</p>
+        <p>The phrase "for the first time in two generations" is rhetorical anchoring rather than precise dating. The post-WW2 productivity model has held for approximately 60 to 75 years depending on dating. "Two generations" is the conversational equivalent.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Limitations</div>
+      <div class="body">
+        <p>This is the move most vulnerable to the "AI will eventually deliver productivity gains" objection. The current data shows AI has not delivered, but five years of underdelivery is not the same as permanent failure. The thesis describes the present moment, not the long-term trajectory.</p>
+      </div>
+    </div>
+
+    <!-- Move 4 -->
+    <div class="sub-head">
+      <span class="sub-num">Move 04 of 04</span>
+      <h3>The human is depleted.</h3>
+    </div>
+
+    <p class="pull-quote">The human is depleted. The median company in our cohort loses $20 million a year to it.</p>
+
+    <div class="ed-block">
+      <div class="lbl">Primary research</div>
+      <div class="body">
+        <p>The depletion claim is supported by the engagement collapse data (Gallup 2026), the burnout data (Eagle Hill 2025: 71&nbsp;percent middle manager burnout), the false-retention data (MetLife 2026: 56&nbsp;percent staying out of necessity), and the disengagement-exceeds-burnout finding (ActivTrak 2026). The cohort data is Clover ERA's unique contribution, documented in detail in section&nbsp;04 below.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Mechanism</div>
+      <div class="body">
+        <p>The combination of higher cognitive demand (Move 2.2b) and reduced discretionary effort (Move 2.2c) produces depletion that is observable at the company level through perception gap measurement. Managers self-report higher capability than their teams report experiencing; that gap is the proxy measurement for depletion the dashboards don't catch.</p>
+      </div>
+    </div>
+
+    <div class="ed-block">
+      <div class="lbl">Limitations</div>
+      <div class="body">
+        <p>The cohort sample size is small (n=11 as of Q1 2026, growing toward Q2 publication). Single-company variance is high; the median $20M is more reliable than any individual company estimate. The cohort represents companies in the 300 to 1,200 employee range across four sectors; findings may not generalize to smaller or larger companies, or to sectors not represented in the cohort.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 3 — Eight External Validators ========== -->
+  <section class="doc wide" id="validators" data-screen-label="03 Validators" aria-labelledby="validators-title">
+    <div class="section-eyebrow">03 — The Eight External Validators</div>
+    <h2 id="validators-title">Eight independent research firms have named pieces of the same phenomenon.</h2>
+
+    <!-- 1 MetLife -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 01</div>
+        <h3 class="v-name">MetLife 2026 Employee Benefit Trends Study</h3>
+        <div class="v-date">Published Feb 18, 2026</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">Two quantitative studies conducted October 2025, surveying 2,480 HR decision-makers and 2,541 full-time employees across U.S. organisations.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">56&nbsp;percent of employees stay out of necessity, not commitment. Only 18&nbsp;percent stay because they truly want to. Financial confidence at lowest level since 2012.</div></div>
+        <div class="v-row"><div class="v-lbl">Anchor quote</div><div class="v-val"><blockquote class="v-quote">As employees cling to their jobs for security, retention alone can give employers a false sense of stability, even as wellbeing, engagement, and productivity quietly erode.<cite>Todd Katz, Head of U.S. Group Benefits, MetLife</cite></blockquote></div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val"><a class="src" href="https://www.metlife.com/about-us/newsroom/2026/february/job-hugging-is-undermining-workplace-outcomes-new-metlife-study/" rel="noopener">metlife.com/newsroom/2026/february</a></div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>The strongest single external validator.</em> A reputable insurance company with 5,000+ respondents has publicly stated that retention metrics are masking the very phenomenon the Manager Gap Index detects.</div></div>
+      </div>
+    </article>
+
+    <!-- 2 Gallup -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 02</div>
+        <h3 class="v-name">Gallup State of the Global Workplace 2026</h3>
+        <div class="v-date">Published Apr 2026</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">Annual survey of employees across 140+ countries, drawing on millions of survey responses.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">Global engagement at 20&nbsp;percent, lowest since 2020. Manager engagement dropped 9 points since 2022, including a 5-point drop between 2024 and 2025. Estimated $10&nbsp;trillion in lost productivity globally in 2025, equivalent to 9&nbsp;percent of GDP. 89&nbsp;percent of executives report no productivity impact from AI in past three years.</div></div>
+        <div class="v-row"><div class="v-lbl">Anchor quote</div><div class="v-val"><blockquote class="v-quote">Businesses are investing heavily in AI, but the results are not showing up in the bottom line. Gallup's data points to an answer the corporate world has largely ignored: the manager.<cite>Jon Clifton, CEO, Gallup</cite></blockquote></div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val"><a class="src" href="https://www.gallup.com/workplace/state-of-the-global-workplace-report.aspx" rel="noopener">gallup.com/workplace/state-of-the-global-workplace-report</a></div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>The macro economic anchor.</em> Gallup's $10T number is the most-cited statistic in workforce productivity discourse. The manager-as-variable framing aligns directly with the Manager Gap Index thesis.</div></div>
+      </div>
+    </article>
+
+    <!-- 3 ActivTrak -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 03</div>
+        <h3 class="v-name">ActivTrak 2026 State of the Workplace</h3>
+        <div class="v-date">Published Mar 2026</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">Behavioral data from 163,638 employees across 1,111 companies, drawing on actual computer usage patterns rather than self-reported surveys.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">Disengagement risk exceeds burnout risk for the first time. Focus efficiency at 60&nbsp;percent. 35&nbsp;percent of workers show pattern-based indicators of withdrawn effort.</div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val"><a class="src" href="https://www.activtrak.com/state-of-the-workplace" rel="noopener">activtrak.com/state-of-the-workplace</a></div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>The behavioral evidence layer.</em> Where MetLife provides survey data and Gallup provides macro estimates, ActivTrak provides actual behavioral patterns from worker activity. The disengagement-exceeds-burnout finding directly mirrors the Silent Degradation thesis: people are still showing up but withdrawing.</div></div>
+      </div>
+    </article>
+
+    <!-- 4 McKinsey -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 04</div>
+        <h3 class="v-name">McKinsey Quarterly</h3>
+        <div class="v-date">Multiple publications, 2023&ndash;2025</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">McKinsey Quarterly has published multiple analyses estimating the cost of disengagement and attrition for the median S&amp;P 500 company.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">$228 million to $355 million annually for the median S&amp;P 500 company. Cited in ActivTrak 2026 and other downstream sources as the upper-bound estimate for company-level cost of workforce disengagement.</div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val">McKinsey Quarterly archives. Specific articles cited in the Manager Gap Index methodology (section&nbsp;04 below).</div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>The authoritative consultancy estimate.</em> McKinsey's range provides the comparison anchor for the Clover ERA cohort data ($20M median for mid-market companies).</div></div>
+      </div>
+    </article>
+
+    <!-- 5 Talent LMS -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 05</div>
+        <h3 class="v-name">Talent LMS 2025 Workplace Skills Report</h3>
+        <div class="v-date">Published 2025</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">Survey of more than 1,000 U.S. employees.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">More than 50&nbsp;percent of employees show signs of "quiet cracking", a precise term Talent LMS coined for sustained low engagement without active disengagement signals.</div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val">Talent LMS research archives.</div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>One of the earliest published terms for the phenomenon</em>, predating MetLife's "false retention" framing. Documents the prevalence at majority-of-workforce levels.</div></div>
+      </div>
+    </article>
+
+    <!-- 6 Korn Ferry / Aflac / ResumeBuilder -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 06</div>
+        <h3 class="v-name">Korn Ferry / Aflac / ResumeBuilder</h3>
+        <div class="v-date">Job-hugging research, 2025</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">Multiple surveys conducted independently by each organisation, with consistent findings across the three.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">The "job hugging" pattern (employees staying in roles out of fear rather than commitment) increased from 45&nbsp;percent in early 2025 to 57&nbsp;percent in late 2025. The pattern is more pronounced in mid-career workers.</div></div>
+        <div class="v-row"><div class="v-lbl">Anchor quote</div><div class="v-val"><blockquote class="v-quote">Being a job hugger means you're feeling anxious, insecure, more likely to stay but also more likely to want to leave. You often see a self-protective response: nothing to see here, I'm doing a good job, I'm not leaving.<cite>Erin Eatough, PhD, Chief Science Officer, Fractional Insights</cite></blockquote></div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val">Korn Ferry research archives. Aflac WorkForces Report, 15th annual edition. ResumeBuilder workforce survey series.</div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>Names the specific behavioral pattern that managers misread.</em> The self-protective response is exactly what the Manager Gap Index detects as perception gap.</div></div>
+      </div>
+    </article>
+
+    <!-- 7 Eagle Hill -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 07</div>
+        <h3 class="v-name">Eagle Hill 2025 Workforce Burnout Survey</h3>
+        <div class="v-date">Published 2025</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">National survey of U.S. workers across job levels and sectors.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">71&nbsp;percent of middle managers report burnout, the highest of any job level. 51&nbsp;percent of total U.S. workforce reports burnout. Generation Z reports the highest rates ever recorded.</div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val">Eagle Hill Consulting research archives.</div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>The middle-manager finding is critical.</em> The 71&nbsp;percent burnout rate among middle managers means the people responsible for detecting and acting on team-level signals are themselves the most depleted. This explains the action gap finding in the cohort data.</div></div>
+      </div>
+    </article>
+
+    <!-- 8 Perceptyx -->
+    <article class="validator">
+      <div class="v-head">
+        <div class="v-num">Validator 08</div>
+        <h3 class="v-name">Perceptyx longitudinal motivation data</h3>
+        <div class="v-date">Multi-year window, ongoing</div>
+      </div>
+      <div class="v-rows">
+        <div class="v-row"><div class="v-lbl">Methodology</div><div class="v-val">20 million employee survey responses across multi-year window. Perceptyx's research division publishes ongoing analyses.</div></div>
+        <div class="v-row"><div class="v-lbl">Key findings</div><div class="v-val">Intrinsic motivation has shown sustained decline across knowledge worker populations since 2022. The decline is sharper in roles with high AI exposure than in roles without.</div></div>
+        <div class="v-row"><div class="v-lbl">Source</div><div class="v-val">Perceptyx research archives.</div></div>
+        <div class="v-row"><div class="v-lbl">Why it matters</div><div class="v-val"><em>The longest-running longitudinal evidence base.</em> Where other validators offer point-in-time snapshots, Perceptyx demonstrates the trend trajectory.</div></div>
+      </div>
+    </article>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 4 — Cohort Methodology ========== -->
+  <section class="doc" id="methodology" data-screen-label="04 Methodology" aria-labelledby="methodology-title">
+    <div class="section-eyebrow">04 — The Cohort Methodology</div>
+    <h2 id="methodology-title">How the Manager Gap Index measures what dashboards can't see.</h2>
+
+    <ol class="method-toc">
+      <li><span class="m-num">4.1</span><span class="m-title">What the Index measures</span></li>
+      <li><span class="m-num">4.2</span><span class="m-title">The cohort composition</span></li>
+      <li><span class="m-num">4.3</span><span class="m-title">The cost calculation across six layers</span></li>
+      <li><span class="m-num">4.4</span><span class="m-title">What the methodology does <em>not</em> do</span></li>
+      <li><span class="m-num">4.5</span><span class="m-title">Data handling and cohort confidentiality</span></li>
+      <li><span class="m-num">4.6</span><span class="m-title">The action gap measurement</span></li>
+    </ol>
+
+    <div class="sub-head"><span class="sub-num">4.1</span><h3>What the Index measures.</h3></div>
+    <p class="body-p">The Manager Gap Index measures the perception gap between what managers self-report about team capability and what their teams report anonymously about the same dimensions. The gap is scored across six CLOVER dimensions (Communication, Learning, Opportunity, Vulnerability, Enablement, Reflection) and produces a single MGI score and a six-layer cost estimate.</p>
+    <p class="body-p">The Index is deliberately not an engagement survey. Engagement scores capture worker self-report. The MGI captures the gap between manager and team self-report on the same prompts. That gap is the proxy for depletion the dashboards don't catch.</p>
+
+    <div class="sub-head"><span class="sub-num">4.2</span><h3>The cohort composition.</h3></div>
+    <p class="body-p">The Q1 2026 cohort is eleven companies in the 300 to 1,200 employee range, across four sectors: B2B SaaS, professional services, consumer products, and industrial. Companies provided their data voluntarily, received their own MGI report, and approved cohort inclusion before any aggregate publication.</p>
+    <p class="body-p">All cohort data is anonymised and aggregated. No company names appear in any Clover ERA publication. Sample sizes below n=3 in any segment cut are not reported.</p>
+
+    <div class="sub-head"><span class="sub-num">4.3</span><h3>The cost calculation across six layers.</h3></div>
+    <p class="body-p">The cost estimate aggregates six research-backed layers: Regrettable Attrition, Disengagement Tax, Manager Drag, Promotion Risk, Innovation Suppression, and Customer Impact. Each layer applies a research-backed multiplier to a company-specific input (headcount, average compensation, manager span, etc.) and produces a dollar contribution to the total.</p>
+    <p class="body-p">Full multipliers and source citations are documented in the Q2 2026 Silent Degradation Index. Each multiplier has its own confidence interval; the aggregate cost is directionally correct rather than precise.</p>
+
+    <div class="sub-head"><span class="sub-num">4.4</span><h3>What the methodology does <em>not</em> do.</h3></div>
+    <p class="body-p">Most research methodology sections bury limitations. This one foregrounds them.</p>
+    <div class="ed-block">
+      <div class="lbl">Not a clinical diagnostic</div>
+      <div class="body"><p>The Manager Gap Index is a structured assessment that produces a score and a cost estimate based on documented research multipliers. It does not predict individual outcomes for specific people on specific teams.</p></div>
+    </div>
+    <div class="ed-block">
+      <div class="lbl">Not accounting precision</div>
+      <div class="body"><p>The cost calculation is an estimate. The six cost layers use research-backed multipliers, but each multiplier has its own confidence interval. Companies should treat the cost number as directionally correct rather than as accounting precision.</p></div>
+    </div>
+    <div class="ed-block">
+      <div class="lbl">Cohort range</div>
+      <div class="body"><p>The cohort represents companies in the 300 to 1,200 employee range across four sectors; findings may not generalize beyond this range. Sample sizes below n=3 in any segment cut are not reported.</p></div>
+    </div>
+    <div class="ed-block">
+      <div class="lbl">Not causation</div>
+      <div class="body"><p>A high MGI score correlates with the patterns described in the cohort findings, but the causal pathway from manager perception gap to financial outcome is correlational rather than proven.</p></div>
+    </div>
+
+    <div class="sub-head"><span class="sub-num">4.5</span><h3>Data handling and cohort confidentiality.</h3></div>
+    <p class="body-p">All survey responses are anonymised at intake. Manager and team data are linked at the team level only, never at the individual level. Cohort aggregation requires a minimum n=3 per segment cut. No company names, individual names, or identifying details appear in any cohort-level publication.</p>
+
+    <div class="sub-head"><span class="sub-num">4.6</span><h3>The action gap measurement.</h3></div>
+    <p class="body-p">In addition to the perception gap, the Index measures the action gap: the proportion of managers who can see a falling team-level signal and do not intervene within two weeks. The action gap is the operational consequence of the perception gap. Both metrics are reported separately in every Index edition.</p>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 5 — Objection Defenses ========== -->
+  <section class="doc" id="objections" data-screen-label="05 Objections" aria-labelledby="objections-title">
+    <div class="section-eyebrow">05 — Objection Defenses</div>
+    <h2 id="objections-title">The strongest challenges to the thesis, and how the data responds.</h2>
+
+    <article class="objection">
+      <div class="o-num">Objection 01</div>
+      <p class="o-claim">AI will eventually deliver productivity gains. The current cognitive load research describes a transitional moment, not a structural shift.</p>
+      <div class="ed-block"><div class="lbl">What the data supports</div><div class="body"><p>This is the strongest objection to Move 2 of the thesis. The current data (Microsoft 2025, UC Berkeley 2025, HBR 2026, Deloitte 2025) describes 2025 to 2026. We do not have data for 2028 or 2030. AI adoption through 2026 has been correlated with increased cognitive load rather than decreased load. Three structural mechanisms (recovery break elimination, decision multiplication, rising expectations) explain why this is the case.</p></div></div>
+      <div class="ed-block"><div class="lbl">What it does not</div><div class="body"><p>The data does not support a strong claim that AI will permanently increase cognitive demand. New AI integration patterns, better tool design, and human adaptation could change the picture in coming years.</p></div></div>
+      <div class="ed-block"><div class="lbl">Honest position</div><div class="body"><p>The thesis describes the present moment. Companies making capital allocation decisions today should plan for the present-moment data rather than for hypothetical future improvements. If AI does eventually reduce cognitive load, that is good news for the future. The cost of Silent Degradation is happening now.</p></div></div>
+    </article>
+
+    <article class="objection">
+      <div class="o-num">Objection 02</div>
+      <p class="o-claim">Engagement scores have been declining for years. Why is Silent Degradation different?</p>
+      <div class="ed-block"><div class="lbl">What the data supports</div><div class="body"><p>Engagement scores measure something different from what the Manager Gap Index measures. Engagement scores capture worker self-report; the MGI captures the gap between manager self-assessment and team self-report.</p><p>The distinction matters because survey self-selection bias is significant. The most depleted workers are the least likely to complete surveys honestly. Engagement scores can look healthy at companies where the perception gap is severe. The Q1 2026 cohort included companies with above-average engagement scores and 70&nbsp;percent perception gaps.</p></div></div>
+      <div class="ed-block"><div class="lbl">Honest position</div><div class="body"><p>Silent Degradation is a broader phenomenon than engagement decline. Engagement is one component; the others are the action gap (visibility without intervention), the cost layer split (turnover is less than half of total cost), and the manager capability collapse (the manager engagement premium has closed).</p></div></div>
+    </article>
+
+    <article class="objection">
+      <div class="o-num">Objection 03</div>
+      <p class="o-claim">The cohort sample is too small to support strong claims.</p>
+      <div class="ed-block"><div class="lbl">Honest position</div><div class="body"><p>This is a fair objection. n=11 is small. The Index acknowledges this directly. The cohort findings are not presented as definitive sector-wide truths. They are presented as the best available evidence of what perception gap measurement reveals at the company level for mid-market companies in the 300 to 1,200 employee range.</p><p>The Q1 cohort is a starting point. The Q2 publication will include all companies assessed during Q2 2026, with a target of 30+ companies. The Q3 cohort target is larger still. The Index series is designed to grow toward statistical reliability; the Q1 publication is the first data point in a longitudinal research series.</p><p>For comparison: many widely-cited workforce studies (including some of the validators in section&nbsp;03) report findings from samples of 300 to 500 employees. The MGI cohort is smaller in company count but larger in depth-of-measurement per company.</p></div></div>
+    </article>
+
+    <article class="objection">
+      <div class="o-num">Objection 04</div>
+      <p class="o-claim">The four-move thesis is a marketing construct, not academic research.</p>
+      <div class="ed-block"><div class="lbl">Honest position</div><div class="body"><p>Correct. The four-move thesis is a framing, not a peer-reviewed finding. Each individual move within the thesis is supported by primary research. The integration of the four moves into a single argument is Clover ERA's construct.</p><p>This is a feature rather than a bug. Academic research produces findings; integrators produce frameworks. The thesis is positioned as the strongest available framing of the available evidence rather than as a proven causal model. A CFO or analyst can dispute the framing without disputing the underlying data.</p></div></div>
+    </article>
+
+    <article class="objection">
+      <div class="o-num">Objection 05</div>
+      <p class="o-claim">You're a vendor selling a product. Of course your research supports your thesis.</p>
+      <div class="ed-block"><div class="lbl">Response 01 of 03</div><div class="body"><p>The research published by Clover ERA is methodologically transparent. The cohort sample size, the cost calculation multipliers, and the data handling protocols are documented openly. A skeptical reader can examine the methodology and disagree with the conclusions.</p></div></div>
+      <div class="ed-block"><div class="lbl">Response 02 of 03</div><div class="body"><p>The eight external validators in section&nbsp;03 are not Clover ERA's research. MetLife, Gallup, ActivTrak, Eagle Hill, and the others are independent organisations with no commercial relationship to Clover ERA. Their findings predate and validate the Silent Degradation thesis.</p></div></div>
+      <div class="ed-block"><div class="lbl">Response 03 of 03</div><div class="body"><p>The cohort data is anonymised and aggregated. No company names appear in any Clover ERA publication. The cohort companies provided their data voluntarily, received their own MGI report, and approved inclusion before any publication. Vendors with stronger commercial motivations would typically demand named testimonials and case studies; the absence of those in Clover ERA's research is itself a credibility marker.</p></div></div>
+      <div class="ed-block"><div class="lbl">Honest position</div><div class="body"><p>This is vendor-published research, and readers should weight it accordingly. The methodology transparency, the external validator network, and the absence of cherry-picked testimonials are the available counterweights.</p></div></div>
+    </article>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 6 — Acknowledged Limitations ========== -->
+  <section class="doc" id="limitations" data-screen-label="06 Limitations" aria-labelledby="limitations-title">
+    <div class="section-eyebrow">06 — Acknowledged Limitations</div>
+    <h2 id="limitations-title">What we don't know, and what we don't claim.</h2>
+
+    <div class="limitations">
+      <p>The cohort sample is small (n=11 as of Q1 2026). Single-company variance is high. The median is more reliable than any individual estimate.</p>
+      <p>The cost calculation is an estimate using research-backed multipliers, not accounting precision. Each multiplier has its own confidence interval.</p>
+      <p>The cohort represents mid-market companies in the 300 to 1,200 employee range across four sectors. Findings may not generalize beyond this range.</p>
+      <p>The four-move thesis is a framing, not a peer-reviewed finding. The integration of the four moves into a single argument is Clover ERA's construct, defensible but not proven.</p>
+      <p>The AI cognitive load research is recent (2025 to 2026). Long-term trajectory is uncertain.</p>
+      <p>Causation is not established. A high MGI score correlates with the patterns described, but causal pathways are correlational rather than proven.</p>
+      <p>The "fifty years" framing in the thesis is rhetorical. The post-WW2 productivity model held for approximately 60 to 75 years depending on dating.</p>
+      <p>External validators (MetLife, Gallup, ActivTrak, and others) are independent of Clover ERA. The Silent Degradation framing is our integration, not a published academic finding.</p>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 7 — Bibliography ========== -->
+  <section class="doc" id="bibliography" data-screen-label="07 Bibliography" aria-labelledby="bibliography-title">
+    <div class="section-eyebrow">07 — Citations and Bibliography</div>
+    <h2 id="bibliography-title">Every source cited on this page, in full.</h2>
+
+    <div class="bib-group">
+      <h3>Productivity decomposition and the post-2005 slowdown</h3>
+      <ul class="bib-list">
+        <li><span class="bib-org">OECD</span> <em>Productivity Statistics</em>. OECD Publishing. <a href="https://www.oecd.org/sdd/productivity-stats/" rel="noopener">oecd.org/sdd/productivity-stats</a></li>
+        <li><span class="bib-org">U.S. Bureau of Labor Statistics</span> <em>Multifactor Productivity</em>. <a href="https://www.bls.gov/productivity/" rel="noopener">bls.gov/productivity</a></li>
+        <li><span class="bib-org">U.S. BLS</span> Optimism and Pessimism on Productivity Growth. <em>Monthly Labor Review</em>, 2018. <a href="https://www.bls.gov/opub/mlr/2018/article/optimism-and-pessimism-on-productivity-growth.htm" rel="noopener">bls.gov/opub/mlr/2018</a></li>
+        <li><span class="bib-org">Penn World Tables</span> <em>Productivity decomposition database</em>. <a href="https://www.rug.nl/ggdc/productivity/pwt/" rel="noopener">rug.nl/ggdc/productivity/pwt</a></li>
+        <li><span class="bib-org">FRBSF</span> <em>The Productivity Slowdown: A Conference</em>. Federal Reserve Bank of San Francisco, 2017 and subsequent updates.</li>
+      </ul>
+    </div>
+
+    <div class="bib-group">
+      <h3>AI and cognitive load</h3>
+      <ul class="bib-list">
+        <li><span class="bib-org">Microsoft Research</span> Lee, M., et&nbsp;al. (2025). <em>The Impact of Generative AI on Critical Thinking: Self-Reported Reductions in Cognitive Effort and Confidence Effects from a Survey of Knowledge Workers</em>. January 2025. <a href="https://www.microsoft.com/en-us/research/publication/the-impact-of-generative-ai-on-critical-thinking-self-reported-reductions-in-cognitive-effort-and-confidence-effects-from-a-survey-of-knowledge-workers/" rel="noopener">microsoft.com/research</a></li>
+        <li><span class="bib-org">Harvard Business Review</span> (2026, February). <em>200-person tech firm AI adoption study</em>.</li>
+        <li><span class="bib-org">UC Berkeley Labor Center</span> (2025). <em>AI Adoption Longitudinal Study</em>.</li>
+        <li><span class="bib-org">Deloitte</span> (2025). <em>Workforce Intelligence Report</em>.</li>
+        <li><span class="bib-org">Content Marketing Institute</span> (2025). <em>AI Content Production Benchmarks</em>.</li>
+      </ul>
+    </div>
+
+    <div class="bib-group">
+      <h3>Engagement and the workforce phenomenon</h3>
+      <ul class="bib-list">
+        <li><span class="bib-org">MetLife</span> (2026, February). <em>Employee Benefit Trends Study 2026</em>. <a href="https://www.metlife.com/about-us/newsroom/2026/february/job-hugging-is-undermining-workplace-outcomes-new-metlife-study/" rel="noopener">metlife.com/newsroom</a></li>
+        <li><span class="bib-org">Gallup</span> (2026). <em>State of the Global Workplace Report 2026</em>. <a href="https://www.gallup.com/workplace/state-of-the-global-workplace-report.aspx" rel="noopener">gallup.com</a></li>
+        <li><span class="bib-org">ActivTrak</span> (2026, March). <em>State of the Workplace 2026</em>.</li>
+        <li><span class="bib-org">Talent LMS</span> (2025). <em>Workplace Skills Report 2025</em>.</li>
+        <li><span class="bib-org">Eagle Hill Consulting</span> (2025). <em>Workforce Burnout Survey</em>.</li>
+        <li><span class="bib-org">Korn Ferry, Aflac, ResumeBuilder</span> (2025). <em>Job Hugging Research Series</em>.</li>
+        <li><span class="bib-org">Perceptyx</span> (multiple years). <em>Longitudinal Employee Survey Data</em>.</li>
+        <li><span class="bib-org">McKinsey Quarterly</span> (2023&ndash;2025). Multiple analyses on disengagement and attrition costs at the median S&amp;P 500 company.</li>
+      </ul>
+    </div>
+
+    <div class="bib-group">
+      <h3>Cost calculation methodology</h3>
+      <ul class="bib-list">
+        <li>Multiple sources cited in the Cost Calculation subsection (4.3 above). Full methodology with multipliers documented in the Q2 2026 <em>Silent Degradation Index</em>, available at <a href="Index Teaser.html" rel="noopener">silentdegradation.com/q2-2026</a>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 8 — Updates ========== -->
+  <section class="doc" id="updates" data-screen-label="08 Updates" aria-labelledby="updates-title">
+    <div class="section-eyebrow">08 — Updates and Version History</div>
+    <h2 id="updates-title">When this page was last updated, and what changed.</h2>
+
+    <ul class="version-list">
+      <li><span class="v-when">Apr 28, 2026</span><span class="v-what">Initial publication of the evidence page.</span></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="page-footer" data-screen-label="Page footer">
+  <div class="colophon">
+    Clover ERA, 2026.<br>
+    Silent Degradation detection for the post-machine economy.
+  </div>
+  <div class="links">
+    <a href="Index Teaser.html">The Silent Degradation Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="Evidence.html">Methodology</a>
+    <a href="About.html">About / Founders</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="https://alreadygone.substack.com">Already Gone Weekly</a>
+    <a href="Books.html">Books</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+    <a href="/privacy">Privacy / Terms</a>
+  </div>
+</footer>
+
+</body>
+</html>

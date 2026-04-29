@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>How It Works — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="The Manager Gap Index is the entry point. This is what the Clover ERA platform does after. One question per day, six CLOVER dimensions, bi-weekly reports, and the Action Hub that routes specific micro-actions to specific managers." />
+<template id="__bundler_thumbnail" data-bg-color="#F1ECE3">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="1200" height="800" fill="#F1ECE3"/>
+    <text x="600" y="240" font-family="Source Serif 4, Georgia, serif" font-size="36" fill="#6F6A60" text-anchor="middle" letter-spacing="6">HOW IT WORKS</text>
+    <g font-family="Source Serif 4, Georgia, serif" font-weight="300" font-size="180" fill="#2196F3" letter-spacing="-6">
+      <text x="200" y="540">C</text>
+      <text x="370" y="540">L</text>
+      <text x="520" y="540">O</text>
+      <text x="700" y="540">V</text>
+      <text x="860" y="540">E</text>
+      <text x="1010" y="540">R</text>
+    </g>
+    <text x="600" y="640" font-family="Source Serif 4, Georgia, serif" font-style="italic" font-size="28" fill="#17161A" text-anchor="middle">Six dimensions. One platform.</text>
+  </svg>
+</template>
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:""; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none; mix-blend-mode: multiply; opacity: 0.7; z-index: 0;
+  }
+  a{ color: inherit; }
+
+  .mono{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .ed-link{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--ink); padding-bottom: 2px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .ed-link:hover{ color: var(--accent-body); border-bottom-color: var(--accent-body); }
+  .ed-link .arrow{ display: inline-block; margin-left: 6px; transition: transform 160ms ease; }
+  .ed-link:hover .arrow{ transform: translateX(3px); }
+
+  /* masthead */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 19px; letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display:flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  nav.primary a:hover{ color: var(--ink); }
+  nav.primary a.current{ color: var(--ink); border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
+  nav.primary a.cta{ color: var(--accent-body); border-bottom: 1px solid var(--accent-body); padding-bottom: 2px; }
+
+  main{ position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 56px; }
+  .section-rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* hero */
+  section.hero{ padding: 96px 0 104px; }
+  .hero .eyebrow{ margin-bottom: 32px; }
+  h1.hero-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: clamp(36px, 5.4vw, 56px);
+    line-height: 1.05; letter-spacing: -0.02em;
+    margin: 0; text-wrap: pretty;
+  }
+  h1.hero-title em{ font-style: italic; color: var(--accent); }
+  .hero .sub{
+    font-family: "Source Serif 4", Georgia, serif; font-weight: 300;
+    font-size: 19px; line-height: 1.5; color: var(--ink-2);
+    margin: 28px 0 0; text-wrap: pretty;
+  }
+  .hero .sub em{ font-style: italic; color: var(--ink); }
+
+  /* generic section */
+  section.block{ padding: 88px 0 96px; }
+  .block .eyebrow{ margin-bottom: 28px; }
+  .block h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 32px; line-height: 1.15;
+    letter-spacing: -0.015em; margin: 0 0 32px;
+    text-wrap: pretty;
+  }
+  .block .body{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 17px; line-height: 1.6;
+    color: var(--ink-2); text-wrap: pretty;
+  }
+  /* Daily check-in keeps narrow body inside the 2-col layout */
+  .with-image .body{ max-width: 620px; }
+  .block .body p{ margin: 0 0 18px; }
+  .block .body p:last-child{ margin-bottom: 0; }
+
+  /* two-col with image placeholder */
+  .with-image{
+    display: grid; grid-template-columns: 1.2fr 1fr;
+    gap: 64px; align-items: start;
+  }
+  .with-image .copy h2{ margin-bottom: 24px; }
+  .mockup{
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .mockup-frame.phone{
+    display: flex; justify-content: center; align-items: flex-start;
+  }
+  .phone-device{
+    position: relative;
+    max-width: 230px;
+    width: 100%;
+    background: var(--ink);
+    border-radius: 38px;
+    padding: 10px 9px;
+    box-shadow:
+      0 0 0 1px rgba(23,22,26,0.6),
+      inset 0 0 0 1px rgba(255,255,255,0.06),
+      0 18px 36px rgba(23,22,26,0.10);
+  }
+  .phone-device::before{
+    content: "";
+    position: absolute;
+    top: 18px; left: 50%; transform: translateX(-50%);
+    width: 64px; height: 5px;
+    background: rgba(255,255,255,0.14);
+    border-radius: 4px;
+    z-index: 2;
+  }
+  .phone-device .mockup{
+    display: block; width: 100%; height: auto;
+    border-radius: 28px;
+    background: #fff;
+  }
+  /* desktop monitor mockup for the bi-weekly report screenshot */
+  .desktop-device{
+    margin: 56px 0 0;
+    background: var(--ink);
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(23,22,26,0.5),
+      0 24px 48px rgba(23,22,26,0.10);
+  }
+  .desktop-chrome{
+    background: #2B2926;
+    padding: 11px 16px;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .desktop-chrome .dot{
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: inline-block;
+  }
+  .desktop-screen{
+    background: #fff;
+  }
+  .desktop-screen .mockup{
+    display: block; width: 100%; height: auto;
+  }
+
+  /* dimensions */
+  section.dimensions{ padding: 96px 0 104px; }
+  .dimensions h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 32px; line-height: 1.15;
+    letter-spacing: -0.015em; margin: 0 0 18px; text-wrap: pretty;
+  }
+  .dimensions .lead{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 18px; line-height: 1.55;
+    color: var(--ink-2); margin: 0 0 56px;
+  }
+  .dim-list{ list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--rule-soft); }
+  .dim-list > li{
+    display: grid; grid-template-columns: 110px 1fr;
+    gap: 36px; align-items: start;
+    padding: 36px 0 40px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .dim-letter{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 88px; line-height: 0.9;
+    letter-spacing: -0.04em; color: var(--accent);
+  }
+  .dim-name{
+    font-family: "Source Serif 4", Georgia, serif; font-weight: 400;
+    font-size: 24px; line-height: 1.2; color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .dim-q{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.5; color: var(--ink-2);
+    margin: 0 0 14px; text-wrap: pretty;
+  }
+  .dim-drop{
+    font-family: "Source Serif 4", Georgia, serif; font-weight: 300;
+    font-size: 17px; line-height: 1.5; color: var(--ink-2);
+    margin: 0; max-width: 620px; text-wrap: pretty;
+  }
+  .dim-drop em{ font-style: italic; color: var(--ink); font-weight: 400; }
+
+  .dimensions .closer{
+    font-family: "Source Serif 4", Georgia, serif; font-weight: 300;
+    font-size: 17px; line-height: 1.6; color: var(--ink-2);
+    margin: 36px 0 0; text-wrap: pretty;
+  }
+  .dimensions .framework-link{
+    margin-top: 28px;
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 16px; color: var(--ink-mute);
+  }
+  .dimensions .framework-link a{
+    font-style: italic; color: var(--ink-mute);
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none; padding-bottom: 1px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .dimensions .framework-link a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* role-based */
+  section.roles{ padding: 96px 0 96px; }
+  .roles h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 32px; line-height: 1.15;
+    letter-spacing: -0.015em; margin: 0 0 56px; max-width: 720px;
+  }
+  .roles-grid{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  }
+  .role-col{ border-top: 1px solid var(--ink); padding-top: 26px; }
+  .role-col h3{
+    font-family: "Source Serif 4", Georgia, serif; font-weight: 400;
+    font-size: 22px; line-height: 1.2; margin: 0 0 16px;
+  }
+  .role-col p{
+    font-family: "Source Serif 4", Georgia, serif; font-weight: 300;
+    font-size: 16px; line-height: 1.55; color: var(--ink-2);
+    margin: 0; text-wrap: pretty;
+  }
+  .roles .anonymity{
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 16px; color: var(--ink-mute);
+    margin: 36px 0 0; max-width: 720px; text-wrap: pretty;
+  }
+  .roles .ent-pricing{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 16px; color: var(--ink-2);
+    margin: 18px 0 0;
+  }
+  .roles .ent-pricing a{
+    border-bottom: 1px solid var(--ink); text-decoration: none; padding-bottom: 1px;
+  }
+
+  /* closing CTA */
+  section.cta-close{
+    padding: 88px 0 96px;
+    border-top: 1px solid var(--ink);
+  }
+  .cta-close .eyebrow{ margin-bottom: 28px; }
+  .cta-close h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: clamp(30px, 4vw, 40px);
+    line-height: 1.1; letter-spacing: -0.02em;
+    margin: 0 0 24px; text-wrap: pretty;
+  }
+  .cta-close .body{
+    font-family: "Source Serif 4", Georgia, serif; font-weight: 300;
+    font-size: 17px; line-height: 1.6; color: var(--ink-2);
+    margin: 0 0 36px;
+  }
+  .cta-close .ed-link{ font-size: 19px; }
+  .cta-close .pricing{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-mute); margin-top: 32px; line-height: 1.6;
+  }
+  .cta-close .pricing .scale{
+    display: block; margin-top: 6px; font-style: normal; color: var(--ink-mute);
+    text-transform: none; letter-spacing: 0.04em;
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 14px;
+  }
+
+  /* footer */
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule); margin-top: 16px;
+    padding: 36px 56px 48px;
+    max-width: 1180px; margin-left: auto; margin-right: auto;
+    display: grid; grid-template-columns: 2fr 3fr; gap: 48px;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 13px; color: var(--ink-mute); line-height: 1.5;
+    max-width: 320px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  /* responsive */
+  @media (max-width: 900px){
+    .masthead{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    nav.primary{ gap: 18px; flex-wrap: wrap; }
+    main{ padding: 0 28px; }
+    section.hero{ padding: 64px 0 80px; }
+    h1.hero-title{ font-size: 36px; }
+    section.block{ padding: 64px 0 72px; }
+    .block h2{ font-size: 26px; }
+    .with-image{ grid-template-columns: 1fr; gap: 36px; }
+    section.dimensions{ padding: 72px 0 80px; }
+    .dimensions h2{ font-size: 26px; }
+    .dim-list > li{ grid-template-columns: 1fr; gap: 14px; padding: 28px 0 32px; }
+    .dim-letter{ font-size: 56px; }
+    section.roles{ padding: 72px 0 72px; }
+    .roles h2{ font-size: 26px; margin-bottom: 36px; }
+    .roles-grid{ grid-template-columns: 1fr; gap: 40px; }
+    section.cta-close{ padding: 64px 0 72px; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px 28px 40px; gap: 28px; }
+  }
+  @media (max-width: 520px){
+    .masthead{ padding: 14px 20px 12px; }
+    nav.primary{ font-size: 9.5px; gap: 14px; }
+    nav.primary .nav-hide-sm{ display: none; }
+    main{ padding: 0 20px; }
+    h1.hero-title{ font-size: 32px; }
+    footer.page-footer{ padding: 24px 20px 36px; }
+    footer .links{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead" data-screen-label="Masthead">
+  <a class="wordmark" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="Index Teaser.html">The Index</a>
+    <a href="#" class="current nav-hide-sm">How It Works</a>
+    <a href="About.html" class="nav-hide-sm">About</a>
+    <a href="mailto:contact@cloverera.com" class="nav-hide-sm">Contact</a>
+    <a href="MGI Landing.html" class="cta">Take the MGI →</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ========== Section 1 — Hero ========== -->
+  <section class="hero" data-screen-label="01 Hero" aria-labelledby="hero-title">
+    <div class="mono eyebrow">The Platform</div>
+    <h1 class="hero-title" id="hero-title">
+      The Manager Gap Index is the entry point. This is what the platform does <em>after</em>.
+    </h1>
+    <p class="sub">
+      The MGI tells you where your perception gap is biggest. The platform measures the gap continuously, identifies what's driving it inside each team, and routes specific actions to specific managers. Not engagement scores. <em>The cost of the gap</em>, and the small adjustments that close it.
+    </p>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 2 — Daily check-in ========== -->
+  <section class="block" data-screen-label="02 Daily check-in">
+    <div class="with-image">
+      <div class="copy">
+        <div class="mono eyebrow">The Daily Check-In</div>
+        <h2>One question. 30 seconds. Completely anonymous.</h2>
+        <div class="body">
+          <p>Each person on your team gets one question per day through the app. It takes less than 30 seconds. No names attached. No way to trace who said what.</p>
+          <p>That's the point. People are honest when there's no risk. The signals they'd never bring up in a 1-on-1 surface immediately when there's no consequence attached.</p>
+          <p>Within a week, you start seeing patterns. Within two weeks, you know exactly where your team's perception is diverging from yours. The gap shows up before anyone resigns, before performance drops, before the dashboards catch on.</p>
+        </div>
+      </div>
+      <div class="mockup-frame phone">
+        <div class="phone-device">
+          <img class="mockup" src="images/app-checkin.png" alt="Clover ERA daily check-in on mobile" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 3 — Six CLOVER dimensions ========== -->
+  <section class="dimensions" data-screen-label="03 Six dimensions" aria-labelledby="dim-title">
+    <div class="mono eyebrow" style="margin-bottom:28px;">Six Dimensions</div>
+    <h2 id="dim-title">The six things that determine whether someone stays engaged or starts to degrade.</h2>
+    <p class="lead">Every check-in maps to one of six CLOVER dimensions. Each one is a measurable signal that maps to retention, performance, and discretionary effort.</p>
+
+    <ol class="dim-list">
+      <li>
+        <div class="dim-letter">C</div>
+        <div>
+          <div class="dim-name">Communication</div>
+          <p class="dim-q">Is information flowing in both directions? Does your team feel heard when they raise something?</p>
+          <p class="dim-drop"><em>When it drops:</em> Your team has stopped telling you what's going wrong. Problems build in silence until someone resigns and lists "communication" in the exit interview.</p>
+        </div>
+      </li>
+      <li>
+        <div class="dim-letter">L</div>
+        <div>
+          <div class="dim-name">Learning</div>
+          <p class="dim-q">Are people growing? Do they feel like they're developing new skills or just repeating the same work?</p>
+          <p class="dim-drop"><em>When it drops:</em> People feel stuck. The ones with options start exploring them. The ones without options disengage in place.</p>
+        </div>
+      </li>
+      <li>
+        <div class="dim-letter">O</div>
+        <div>
+          <div class="dim-name">Opportunity</div>
+          <p class="dim-q">Can people see a future here? Is there somewhere to go, or does the path ahead look flat?</p>
+          <p class="dim-drop"><em>When it drops:</em> Your best people start browsing job boards. Not because they hate the job. They can't see what's next.</p>
+        </div>
+      </li>
+      <li>
+        <div class="dim-letter">V</div>
+        <div>
+          <div class="dim-name">Vulnerability</div>
+          <p class="dim-q">Can people be honest without risk? When something's wrong, do they say it or hide it?</p>
+          <p class="dim-drop"><em>When it drops:</em> You get a team that says "everything's fine" in every meeting while building resentment underneath. The resignation comes out of nowhere because nobody felt safe flagging the problem.</p>
+        </div>
+      </li>
+      <li>
+        <div class="dim-letter">E</div>
+        <div>
+          <div class="dim-name">Enablement</div>
+          <p class="dim-q">Do people have what they need to do their job well? Are blockers being removed or ignored?</p>
+          <p class="dim-drop"><em>When it drops:</em> Frustration builds. Good people start feeling like they're fighting the system instead of doing their work. Productivity falls before anyone leaves.</p>
+        </div>
+      </li>
+      <li>
+        <div class="dim-letter">R</div>
+        <div>
+          <div class="dim-name">Reflection</div>
+          <p class="dim-q">Do people feel recognized? Is their contribution visible to the people who matter?</p>
+          <p class="dim-drop"><em>When it drops:</em> People start to feel invisible. The work doesn't change, but the energy behind it does. Discretionary effort disappears first. Then the person follows.</p>
+        </div>
+      </li>
+    </ol>
+
+    <p class="closer">These aren't abstract concepts. They show up in your bi-weekly report as specific scores. When communication drops on your team, you'll see it within two weeks, not two quarters. The Action Hub gives you specific things to do about it that fit into your working day. Small adjustments. Not another initiative. Not another meeting.</p>
+
+    <p class="framework-link">Want the full science? <a href="/clover-framework">Read about the CLOVER Framework →</a></p>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 4 — Bi-weekly report ========== -->
+  <section class="block" data-screen-label="04 Bi-weekly report">
+    <div class="mono eyebrow">Your Report</div>
+    <h2>Every two weeks, you get a clear picture.</h2>
+    <div class="body">
+      <p>Not a 40-page deck. A clear summary of where your team feels strong, where confidence is dropping, and where the perception gap between you and your team has widened. With specific actions you can take that week.</p>
+      <p>Small things. Practical things. The kind of thing you can do between meetings without adding another system to manage.</p>
+      <p>A two-point drop in how someone rates communication isn't a crisis. It's a signal. The report tells you what to do about it before it becomes one.</p>
+    </div>
+    <figure class="desktop-device" aria-label="Clover ERA bi-weekly manager dashboard">
+      <div class="desktop-chrome" aria-hidden="true">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <div class="desktop-screen">
+        <img class="mockup" src="images/dashboard-biweekly.png" alt="Clover ERA bi-weekly manager dashboard showing CLOVER dimension scores, top themes, and recommended actions" loading="lazy" />
+      </div>
+    </figure>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 5 — Action Hub ========== -->
+  <section class="block" data-screen-label="05 Action Hub">
+    <div class="mono eyebrow">The Action Hub</div>
+    <h2>The dashboard shows you patterns. The Action Hub shows you what to do about them.</h2>
+    <div class="body">
+      <p>Micro-actions and mini-actions that fit into your working day. A five-minute conversation. A quick message to the team. A project reassignment that takes ten minutes but prevents three months of frustration.</p>
+      <p>You don't need to become a different manager. You just need visibility into what's actually happening, and a clear next step to take.</p>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 6 — Role-based access ========== -->
+  <section class="roles" data-screen-label="06 Roles">
+    <div class="mono eyebrow" style="margin-bottom:28px;">Who Sees What</div>
+    <h2>What you see depends on your role.</h2>
+    <div class="roles-grid">
+      <div class="role-col">
+        <h3>Team Leads and Managers</h3>
+        <p>You see your team's data and your actions. Six CLOVER dimension scores. Trends over time. The perception gap between your assessment and your team's anonymous responses. Specific micro-actions tailored to what your team is telling you this week.</p>
+      </div>
+      <div class="role-col">
+        <h3>Senior Leaders</h3>
+        <p>You see team-level patterns across departments. Which teams are showing the largest perception gaps. Which managers are blind to their team's reality. Where intervention could close the gap before it shows up in retention or performance metrics.</p>
+      </div>
+    </div>
+    <p class="anonymity">Never individual names. Never individual scores. Team-level only. The perception gap is a measurement, not surveillance.</p>
+    <p class="ent-pricing">Deploying across multiple teams? <a href="mailto:contact@cloverera.com">Talk to us about enterprise pricing.</a></p>
+  </section>
+
+  <!-- ========== Closing CTA ========== -->
+  <section class="cta-close" data-screen-label="07 Closing CTA">
+    <div class="mono eyebrow">See What Your Team Isn't Telling You</div>
+    <h2>The Manager Gap Index measures it in 10&nbsp;minutes.</h2>
+    <p class="body">Most teams see actionable data within two weeks. Setup takes less than five minutes. Your team's responses are completely anonymous.</p>
+    <a class="ed-link" href="MGI Landing.html">Take the Manager Gap Index<span class="arrow">›</span></a>
+    <div class="pricing">
+      $24K pilot. $48K department tier. $96K enterprise tier.
+      <span class="scale">Pricing scales with cohort participation, not seat count.</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="page-footer" data-screen-label="Page footer">
+  <div class="colophon">
+    Clover ERA, 2026.<br/>
+    Silent Degradation detection for the post-machine economy.
+  </div>
+  <div class="links">
+    <a href="Index Teaser.html">The Silent Degradation Index</a>
+    <a href="#">How It Works</a>
+    <a href="/methodology">Methodology</a>
+    <a href="About.html">About / Founders</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="https://alreadygone.substack.com">Already Gone Weekly</a>
+    <a href="Books.html">Books</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+    <a href="/privacy">Privacy / Terms</a>
+  </div>
+</footer>
+
+</body>
+</html>

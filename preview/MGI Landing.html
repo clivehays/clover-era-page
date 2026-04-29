@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Manager Gap Index — Clover ERA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Measure your Silent Degradation cost in 10 minutes. Six dimensions, scored against the 11-company cohort. Average first-time score: 28 out of 100. Free." />
+<template id="__bundler_thumbnail" data-bg-color="#F1ECE3">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="1200" height="800" fill="#F1ECE3"/>
+    <text x="600" y="220" font-family="Source Serif 4, Georgia, serif" font-size="36" fill="#6F6A60" text-anchor="middle" letter-spacing="6">MANAGER GAP INDEX</text>
+    <text x="600" y="430" font-family="Source Serif 4, Georgia, serif" font-style="italic" font-size="84" fill="#17161A" text-anchor="middle">What's your</text>
+    <text x="600" y="540" font-family="Source Serif 4, Georgia, serif" font-style="italic" font-size="84" fill="#17161A" text-anchor="middle">Silent Degradation cost?</text>
+    <rect x="430" y="620" width="340" height="64" fill="#17161A"/>
+    <text x="600" y="662" font-family="Inter Tight, sans-serif" font-size="22" font-weight="500" fill="#F1ECE3" text-anchor="middle">Begin the assessment ›</text>
+  </svg>
+</template>
+<link rel="icon" type="image/png" href="assets/clover-era-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper: #F1ECE3;
+    --paper-2: #E8E2D6;
+    --ink: #17161A;
+    --ink-2: #2B2926;
+    --ink-mute: #6F6A60;
+    --rule: #C9C2B4;
+    --rule-soft: #D9D3C5;
+    --accent: #2196F3;
+    --accent-body: #2196F3;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; background: var(--paper); color: var(--ink); }
+  body{
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:""; position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.018) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none; mix-blend-mode: multiply; opacity: 0.7; z-index: 0;
+  }
+  a{ color: inherit; }
+
+  .mono{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+
+  /* masthead */
+  .masthead{
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    padding: 22px 56px 18px;
+    display:flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .wordmark{
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 19px; letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .wordmark .mark{ width: 26px; height: 26px; display: inline-block; flex: 0 0 26px; }
+  .wordmark .dot{ color: var(--accent); }
+  nav.primary{
+    display:flex; align-items: baseline; gap: 30px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  nav.primary a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  nav.primary a:hover{ color: var(--ink); }
+
+  main{ position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 56px; }
+  .section-rule{ border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* ---------- Section 1: Hero ---------- */
+  section.hero{
+    padding: 104px 0 120px;
+    max-width: 760px;
+  }
+  .hero .eyebrow{ margin-bottom: 36px; }
+  h1.hero-title{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(40px, 6.4vw, 66px);
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  h1.hero-title em{ font-style: italic; }
+  .hero .sub{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin: 28px 0 0;
+    max-width: 620px;
+    text-wrap: pretty;
+  }
+  .hero .sub .accent-num{ color: var(--accent-body); font-weight: 400; }
+
+  /* CTA — solid button (deliberate exception) */
+  .cta-row{ margin-top: 40px; }
+  .btn-primary{
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 10px;
+    min-width: 300px;
+    padding: 20px 32px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: 0.005em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+  }
+  .btn-primary .chev{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+    transition: transform 160ms ease;
+  }
+  .btn-primary:hover{ background: var(--accent-body); border-color: var(--accent-body); }
+  .btn-primary:hover .chev{ transform: translateX(4px); }
+  .btn-primary:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .friction{
+    margin-top: 14px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+  }
+  .friction .sep{ opacity: 0.5; padding: 0 8px; }
+
+  /* ---------- Section 2: Dimensions ---------- */
+  section.dimensions{
+    padding: 88px 0 96px;
+    max-width: 880px;
+  }
+  .dimensions .eyebrow{ margin-bottom: 28px; }
+  .dimensions h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 28px; line-height: 1.2;
+    letter-spacing: -0.01em; margin: 0 0 22px; max-width: 720px;
+    text-wrap: pretty;
+  }
+  .dimensions .lead{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300; font-size: 17px; line-height: 1.55;
+    color: var(--ink-2); margin: 0 0 48px; max-width: 620px;
+    text-wrap: pretty;
+  }
+  .dim-rows{
+    list-style: none; padding: 0; margin: 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .dim-rows li{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 28px;
+    align-items: baseline;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .dim-rows li.placeholder{ opacity: 0.55; }
+  .dim-rows .name{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); font-weight: 500;
+  }
+  .dim-rows .q{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.5; color: var(--ink-2);
+    font-weight: 400; text-wrap: pretty;
+  }
+  .dim-rows li.placeholder .q em{
+    font-style: italic; color: var(--ink-mute);
+  }
+  .dimensions .closing{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 15px; line-height: 1.55;
+    color: var(--ink-mute);
+    margin: 32px 0 0; max-width: 640px;
+  }
+  .dimensions .closing em{ font-style: italic; }
+
+  /* ---------- Section 3: What you get ---------- */
+  section.result{
+    padding: 88px 0 96px;
+    max-width: 800px;
+  }
+  .result .eyebrow{ margin-bottom: 28px; }
+  .result h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 28px; line-height: 1.2;
+    letter-spacing: -0.01em; margin: 0 0 40px; max-width: 720px;
+  }
+  .deliverables{
+    list-style: none; padding: 0; margin: 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .deliverables li{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px; line-height: 1.55;
+    color: var(--ink-2); font-weight: 400;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    text-wrap: pretty;
+  }
+  .deliverables em{
+    font-style: italic; color: var(--ink); font-weight: 400;
+  }
+
+  /* ---------- Section 4: FAQ + closing CTA ---------- */
+  section.faq{
+    padding: 88px 0 64px;
+    max-width: 800px;
+  }
+  .faq .eyebrow{ margin-bottom: 36px; }
+  .faq-list{
+    list-style: none; padding: 0; margin: 0;
+  }
+  .faq-list li{
+    padding: 24px 0 28px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .faq-list li:last-child{ border-bottom: 1px solid var(--rule-soft); }
+  .faq-list .q{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 0 0 12px;
+    font-weight: 400;
+  }
+  .faq-list .a{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0; max-width: 640px;
+    text-wrap: pretty;
+  }
+  .faq-list .a a{
+    color: var(--ink-2);
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none; padding-bottom: 1px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .faq-list .a a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+
+  section.closing-cta{
+    padding: 64px 0 96px;
+    max-width: 760px;
+  }
+  .closing-cta h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(28px, 4vw, 36px);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0 0 32px;
+    text-wrap: pretty;
+  }
+  .closing-cta h2 em{ font-style: italic; }
+
+  /* ---------- Credibility footer + page footer ---------- */
+  section.credibility{
+    padding: 56px 0 56px;
+    border-top: 1px solid var(--rule);
+  }
+  .credibility p{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-mute);
+    margin: 0;
+    max-width: 760px;
+  }
+  .credibility a{
+    color: var(--ink-mute); text-decoration: none;
+    border-bottom: 1px solid var(--rule); padding-bottom: 1px;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .credibility a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
+  .credibility em{ font-style: italic; }
+
+  footer.page-footer{
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--rule); margin-top: 0;
+    padding: 36px 56px 48px;
+    max-width: 1180px; margin-left: auto; margin-right: auto;
+    display: grid; grid-template-columns: 2fr 3fr; gap: 48px;
+  }
+  footer .colophon{
+    font-family: "Source Serif 4", Georgia, serif; font-style: italic;
+    font-size: 13px; color: var(--ink-mute); line-height: 1.5;
+    max-width: 320px;
+  }
+  footer .links{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 32px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  footer .links a{ color: var(--ink-mute); text-decoration: none; transition: color 120ms ease; }
+  footer .links a:hover{ color: var(--ink); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px){
+    .masthead{ padding: 18px 28px 14px; flex-wrap: wrap; gap: 12px; }
+    nav.primary{ gap: 18px; flex-wrap: wrap; }
+    main{ padding: 0 28px; }
+    section.hero{ padding: 64px 0 80px; }
+    h1.hero-title{ font-size: 40px; }
+    .hero .sub{ font-size: 17.5px; }
+    .btn-primary{ width: 100%; min-width: 0; padding: 18px 24px; }
+    .friction .sep{ display: inline; }
+    section.dimensions{ padding: 64px 0 72px; }
+    .dimensions h2{ font-size: 23px; }
+    .dim-rows li{ grid-template-columns: 1fr; gap: 6px; padding: 18px 0; }
+    section.result{ padding: 64px 0 72px; }
+    .result h2{ font-size: 23px; margin-bottom: 28px; }
+    section.faq{ padding: 64px 0 48px; }
+    .faq-list .q{ font-size: 18px; }
+    section.closing-cta{ padding: 48px 0 72px; }
+    footer.page-footer{ grid-template-columns: 1fr; padding: 28px 28px 40px; gap: 28px; }
+  }
+  @media (max-width: 520px){
+    .masthead{ padding: 14px 20px 12px; }
+    nav.primary{ font-size: 9.5px; gap: 14px; }
+    main{ padding: 0 20px; }
+    h1.hero-title{ font-size: 38px; }
+    .friction{ font-size: 11px; }
+    .friction .sep{ padding: 0 5px; }
+    footer.page-footer{ padding: 24px 20px 36px; }
+    footer .links{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead" data-screen-label="Masthead">
+  <a class="wordmark" href="index.html"><img class="mark" src="assets/clover-era-logo.png" alt="">Clover ERA<span class="dot">.</span></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="How It Works.html">How It Works</a>
+    <a href="About.html">About</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ========== Section 1 — Hero ========== -->
+  <section class="hero" data-screen-label="01 Hero" aria-labelledby="hero-title">
+    <div class="mono eyebrow">The Manager Gap Index</div>
+    <h1 class="hero-title" id="hero-title">
+      What's your <em>Silent Degradation</em> cost?
+    </h1>
+    <p class="sub">
+      The Manager Gap Index measures the gap between what your managers think is happening and what your teams report anonymously. You get a score from 0 to 100 and a dollar figure across six cost layers. Average first-time score: <span class="accent-num">28</span>.
+    </p>
+    <div class="cta-row">
+      <a class="btn-primary" href="MGI Assessment.html" data-mgi-cta="hero" aria-label="Begin the Manager Gap Index assessment">
+        Begin the assessment <span class="chev" aria-hidden="true">›</span>
+      </a>
+      <p class="friction">10&nbsp;minutes.<span class="sep">·</span>No signup required to start.<span class="sep">·</span>Anonymous if you want.</p>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 2 — What it measures ========== -->
+  <section class="dimensions" data-screen-label="02 Dimensions" aria-labelledby="dim-title">
+    <div class="mono eyebrow">Six Dimensions</div>
+    <h2 id="dim-title">Six measurable signals. Each scored out of 20.</h2>
+    <p class="lead">Most assessments give you one number that tells you nothing. The MGI gives you six. Each dimension surfaces a specific kind of blindness or capability. You see exactly where the gap is, not just that it exists.</p>
+
+    <ol class="dim-rows">
+      <li>
+        <span class="name">Visibility</span>
+        <span class="q">Can you see what's actually happening on your teams?</span>
+      </li>
+      <li>
+        <span class="name">Action</span>
+        <span class="q">Do you respond to what you see, or watch it happen?</span>
+      </li>
+      <li>
+        <span class="name">Accountability</span>
+        <span class="q">Are managers held to a standard, or rated on activity?</span>
+      </li>
+      <li>
+        <span class="name">Cost Exposure</span>
+        <span class="q">Do you know what the gap is costing you, or are you guessing?</span>
+      </li>
+      <li class="placeholder">
+        <span class="name">Dimension 5</span>
+        <span class="q"><em>To confirm with Clive — placeholder pending framework reconciliation.</em></span>
+      </li>
+      <li class="placeholder">
+        <span class="name">Dimension 6</span>
+        <span class="q"><em>To confirm with Clive — placeholder pending framework reconciliation.</em></span>
+      </li>
+    </ol>
+
+    <p class="closing">The assessment scores each dimension out of 20. Average first-time totals across the cohort: 28 out of 100.</p>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 3 — What you get ========== -->
+  <section class="result" data-screen-label="03 What you get" aria-labelledby="result-title">
+    <div class="mono eyebrow">What You Get</div>
+    <h2 id="result-title">A score, a number, and a comparison.</h2>
+    <ul class="deliverables">
+      <li>Your MGI score from 0 to 100, with the six dimension breakdowns.</li>
+      <li>Your annual Silent Degradation cost calculated across six layers: <em>Regrettable Attrition</em>, <em>Disengagement Tax</em>, <em>Manager Drag</em>, <em>Promotion Risk</em>, <em>Innovation Suppression</em>, and <em>Customer Impact</em>.</li>
+      <li>Your position against the 11-company cohort. Where you sit. What companies in your range typically face. What action would close the gap.</li>
+    </ul>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ========== Section 4 — FAQ ========== -->
+  <section class="faq" data-screen-label="04 About the assessment" aria-labelledby="faq-title">
+    <div class="mono eyebrow" id="faq-title">About the Assessment</div>
+    <ul class="faq-list">
+      <li>
+        <p class="q">How long does it take?</p>
+        <p class="a">10 minutes if you focus. The questions are calibrated to surface real signals, not to test you. There's no right answer, and you can't game it without knowing what we're measuring.</p>
+      </li>
+      <li>
+        <p class="q">Who sees the data?</p>
+        <p class="a">You. The assessment is designed for the manager taking it. If you're commissioning the assessment for a team or organisation, the team-level data is anonymous and aggregated; individuals are never identified. The full data policy is at <a href="/privacy">/privacy</a>.</p>
+      </li>
+      <li>
+        <p class="q">What does it cost?</p>
+        <p class="a">The assessment is free. Pricing for the platform that runs continuously after the assessment starts at $24K for a 90-day pilot. Most companies who complete the assessment book a 15-minute conversation to discuss what their score means in context.</p>
+      </li>
+      <li>
+        <p class="q">What happens after?</p>
+        <p class="a">You get your score and report immediately. You can stop there if you want, or talk to us about what the platform does next. We don't follow up aggressively; the report does most of the persuading on its own.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ========== Closing CTA ========== -->
+  <section class="closing-cta" data-screen-label="05 Closing CTA" id="begin">
+    <h2>Ready? Begin the Manager Gap Index.</h2>
+    <a class="btn-primary" href="MGI Assessment.html" data-mgi-cta="closing" aria-label="Begin the Manager Gap Index assessment">
+      Begin the assessment <span class="chev" aria-hidden="true">›</span>
+    </a>
+    <p class="friction">10&nbsp;minutes.<span class="sep">·</span>No signup required to start.<span class="sep">·</span>Anonymous if you want.</p>
+  </section>
+
+  <!-- ========== Credibility footer ========== -->
+  <section class="credibility" data-screen-label="06 Credibility" id="about">
+    <p>
+      Co-founders Clive and Neil Hays. Authors of <em><a href="books/the-trillion-dollar-problem.html">The Trillion Dollar Problem</a></em> (2024) and <em><a href="books/already-gone.html">Already Gone</a></em> (2025). The Silent Degradation Index publishes Q2&nbsp;2026 at <a href="Index Teaser.html">silentdegradation.com</a>.
+    </p>
+  </section>
+
+</main>
+
+<footer class="page-footer" data-screen-label="Page footer">
+  <div class="colophon">
+    Clover ERA, 2026.<br/>
+    Silent Degradation detection for the post-machine economy.
+  </div>
+  <div class="links">
+    <a href="Index Teaser.html">The Silent Degradation Index</a>
+    <a href="How It Works.html">How It Works</a>
+    <a href="/methodology">Methodology</a>
+    <a href="About.html">About / Founders</a>
+    <a href="The Productivity Inversion.html">The Productivity Inversion</a>
+    <a href="https://alreadygone.substack.com">Already Gone Weekly</a>
+    <a href="Books.html">Books</a>
+    <a href="mailto:contact@cloverera.com">contact@cloverera.com</a>
+    <a href="/privacy">Privacy / Terms</a>
+  </div>
+</footer>
+
+<script>
+  // Conversion event hook — wire this to your analytics layer.
+  document.querySelectorAll('[data-mgi-cta]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      var loc = el.getAttribute('data-mgi-cta');
+      // analytics.track('mgi_begin_clicked', { location: loc });
+      if (window.console) console.log('[mgi] begin clicked:', loc);
+    });
+  });
+</script>
+
+</body>
+</html>
