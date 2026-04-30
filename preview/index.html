@@ -161,18 +161,40 @@
     max-width: 560px;
     text-wrap: pretty;
   }
-  .hero .cta-row{
-    margin-top: 48px;
-    display: flex; align-items: baseline; gap: 18px;
+  /* shared CTA box — used in hero + the Question section.
+     Editorial register; not a SaaS button. */
+  .cta-row{
+    display: inline-flex; align-items: baseline; gap: 14px;
     flex-wrap: wrap;
+    padding: 18px 22px;
+    max-width: 100%;
+    background: var(--paper-2);
+    border: 1px solid rgba(23, 22, 26, 0.30);
+    transition: background 160ms ease;
   }
-  .hero .cta-row .ed-link{ font-size: 19px; }
-  .hero .cta-row .cta-host{
+  .cta-row:hover{ background: var(--rule-soft); }
+  .cta-row .ed-link{ font-size: 19px; }
+  .cta-row .cta-host{
     font-weight: 600;
     font-family: "JetBrains Mono", ui-monospace, monospace;
     font-size: 10.5px; letter-spacing: 0.16em;
     color: var(--ink-mute); text-transform: lowercase;
   }
+  .hero .cta-row{ margin-top: 48px; }
+  .question .cta-row{ margin-top: 0; }
+  /* Platform-cta: same box, but a longer body sentence above its own line link */
+  .cta-row.platform-cta{
+    display: block;
+  }
+  .cta-row.platform-cta .cta-text{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 19px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 16px;
+    text-wrap: pretty;
+  }
+  .cta-row.platform-cta strong{ color: var(--ink); font-weight: 500; }
+  .methodology .cta-row{ margin: 8px 0 40px; }
 
   /* clover diagram --------------------------------------------------- */
   .clover-figure{
@@ -355,7 +377,29 @@
   }
   .cohort .founder-credit a:hover{ color: var(--ink); border-bottom-color: var(--ink); }
 
-  /* ---------- Section 4 — How we measure ---------- */
+  /* ---------- Section 4 — The Question ---------- */
+  section.question{
+    padding: 50px 0;
+    max-width: 880px;
+  }
+  .question .eyebrow{ margin-bottom: 28px; }
+  .question h2{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 500; font-size: 28px; line-height: 1.2;
+    letter-spacing: -0.01em; color: var(--ink);
+    margin: 0 0 32px; max-width: 720px;
+    text-wrap: pretty;
+  }
+  .question .lede{
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 400; font-size: 17px; line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 36px;
+    max-width: 620px;
+    text-wrap: pretty;
+  }
+
+  /* ---------- Section 5 — How we measure ---------- */
   section.methodology{
     padding: 50px 0;
     max-width: 880px;
@@ -446,6 +490,12 @@
   .reading-grid a.r-item:hover .r-title{ color: var(--accent-body); }
   .reading-grid a.r-item:hover .r-host{ color: var(--accent-body); }
   .reading-grid a.r-item:hover .r-host .r-arrow{ transform: translateX(4px); }
+  .r-kind{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 600;
+    margin-bottom: 10px;
+  }
   .r-title{
     font-family: "Source Serif 4", Georgia, serif;
     font-weight: 500;
@@ -769,12 +819,32 @@
 
   <hr class="section-rule">
 
-  <!-- ========== Section 4 — How we measure ========== -->
+  <!-- ========== Section 4 — The Question ========== -->
+  <section class="question" data-screen-label="04 The Question" aria-labelledby="question-title">
+    <div class="mono eyebrow">The Question</div>
+    <h2 id="question-title">If the cohort range applies to you, you can measure your own.</h2>
+    <p class="lede">The diagnostic that produced these findings is freely available. Ten minutes. Six questions on the same six dimensions managers and team members answer differently. The output is your company's gap, scored against the cohort, with a paragraph that names which dimensions are exposed.</p>
+    <div class="cta-row">
+      <a class="ed-link" href="MGI Landing.html">Take the 10-minute Manager Gap Index<span class="arrow">›</span></a>
+      <span class="cta-host">mgi.cloverera.com</span>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ========== Section 5 — How we measure ========== -->
   <section class="methodology" id="methodology-section" data-screen-label="04 Methodology" aria-labelledby="methodology-title">
     <div class="mono eyebrow">The Measurement Method</div>
     <h2 id="methodology-title">How we measure what dashboards do not see.</h2>
 
-    <p class="lede">Managers and team members answer the same six questions about the same workplace dimensions. The Manager Gap Index measures the gap between the two views. <strong>Across the cohort, the average gap is 70%.</strong> Most managers see less than a third of what their teams are actually experiencing.</p>
+    <p class="lede">Managers and team members answer the same six questions about the same workplace dimensions. The methodology measures the gap between the two views. <strong>Across the cohort, the average gap is 70%.</strong> Most managers see less than a third of what their teams are actually experiencing.</p>
+
+    <p class="lede">The Manager Gap Index is the free 10-minute diagnostic that produces this snapshot.</p>
+
+    <div class="cta-row platform-cta">
+      <p class="cta-text"><strong>Clover ERA</strong> is the platform that tracks the gap over time, surfaces team-level patterns weekly, and helps managers close the gap on specific dimensions before the cost lands.</p>
+      <a class="ed-link" href="How It Works.html">How Clover ERA works<span class="arrow">›</span></a>
+    </div>
 
     <div class="dimension-block">
       <div class="dim-letter">V</div>
@@ -785,7 +855,7 @@
       </div>
     </div>
 
-    <p class="platform-others">Five other dimensions: Communication, Learning, Opportunity, Enablement, Reflection. Each one a measurable signal that maps to retention, performance, and growth. Each one with its own “when it drops” pattern.</p>
+    <p class="platform-others">Five other dimensions: Communication, Learning, Opportunity, Enablement, Reflection. Each one a measurable signal that maps to retention, performance, and growth. Each one with its own “when it drops” pattern. <strong>Clover ERA</strong> tracks all six dimensions across the cohort and within each customer's teams, weekly, surfacing the dimension that needs attention before the cost lands.</p>
 
     <p class="platform-link"><a class="ed-link" href="How It Works.html">Read the full methodology<span class="arrow">›</span></a></p>
   </section>
@@ -793,12 +863,13 @@
   <hr class="section-rule">
 
   <!-- ========== Section 5 — Continue reading ========== -->
-  <section class="reading-list" data-screen-label="05 Continue reading" aria-labelledby="reading-eyebrow">
-    <div class="mono eyebrow" id="reading-eyebrow">Continue Reading</div>
+  <section class="reading-list" data-screen-label="06 Continue reading" aria-labelledby="reading-eyebrow">
+    <div class="mono eyebrow" id="reading-eyebrow">Continue Reading or Take the Diagnostic</div>
     <div class="reading-grid">
 
       <a class="r-item" href="MGI Landing.html">
         <div>
+          <div class="r-kind">Take the Diagnostic</div>
           <div class="r-title">The Manager Gap Index</div>
           <div class="r-desc">A free 10-minute diagnostic. Six dimensions, scored against the cohort.</div>
         </div>
@@ -807,6 +878,7 @@
 
       <a class="r-item" href="The Productivity Inversion.html">
         <div>
+          <div class="r-kind">Go Deeper</div>
           <div class="r-title">The Productivity Inversion</div>
           <div class="r-desc">The full four-beat thesis. How productivity stopped coming from capital and started depending on the human.</div>
         </div>
@@ -815,6 +887,7 @@
 
       <a class="r-item" href="Index Teaser.html">
         <div>
+          <div class="r-kind">Go Deeper</div>
           <div class="r-title">The Silent Degradation Index, Q2 2026</div>
           <div class="r-desc">Live cohort findings. Currently 11 companies. Full publication June 2026.</div>
         </div>
@@ -823,6 +896,7 @@
 
       <a class="r-item" href="Evidence.html">
         <div>
+          <div class="r-kind">Go Deeper</div>
           <div class="r-title">The Methodology</div>
           <div class="r-desc">Every claim, every source, every limitation acknowledged. The primary research and the cohort methodology in detail.</div>
         </div>
