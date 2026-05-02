@@ -261,15 +261,54 @@
   }
   .citations li{
     display: grid;
-    grid-template-columns: 200px 1fr 80px;
-    gap: 28px; align-items: baseline;
+    grid-template-columns: 220px 1fr 80px;
+    gap: 28px; align-items: flex-start;
     padding: 22px 0;
     border-bottom: 1px solid var(--rule-soft);
   }
   .citations .src{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
     font-family: "JetBrains Mono", ui-monospace, monospace;
     font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
     color: var(--ink); font-weight: 600;
+    line-height: 1.45;
+  }
+  .citations .src-mark{
+    flex: 0 0 30px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    background: var(--paper-2);
+    border: 1px solid rgba(23, 22, 26, 0.18);
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic; font-weight: 400;
+    font-size: 14px; letter-spacing: 0;
+    color: var(--ink);
+    text-transform: none;
+  }
+  /* Logo variant: real mark, no chip background, grayscale filter for monochrome editorial */
+  .citations .src-mark.src-logo{
+    background: transparent;
+    border: 0;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 30px;
+    max-width: 96px;
+    padding: 0 2px;
+  }
+  .citations .src-mark.src-logo img{
+    display: block;
+    height: 24px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    /* No filter — supplied images are already monochrome-calibrated */
+  }
+  .citations .src-name{
+    padding-top: 7px;
+    flex: 1 1 auto;
   }
   .citations .finding{
     font-family: "Source Serif 4", Georgia, serif;
@@ -745,17 +784,17 @@
       <p class="sub-eyebrow"><span class="mark">A</span>The AI cognitive load shift</p>
       <ol class="citations">
         <li>
-          <span class="src">Microsoft Research</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">MR</span><span class="src-name">Microsoft Research</span></span>
           <span class="finding">AI use shifts knowledge work from generation to evaluation. Heavy users report higher cognitive effort, not lower.</span>
           <span class="year">2025</span>
         </li>
         <li>
-          <span class="src">UC Berkeley Labor Center</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">UC</span><span class="src-name">UC Berkeley Labor Center</span></span>
           <span class="finding">67% of workers who adopted AI tools in 2025 reported working more hours, not fewer, by the end of the year.</span>
           <span class="year">2025</span>
         </li>
         <li>
-          <span class="src">Deloitte</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">DT</span><span class="src-name">Deloitte</span></span>
           <span class="finding">Mental fatigue and cognitive strain have surpassed workload volume as the leading predictors of burnout.</span>
           <span class="year">2025</span>
         </li>
@@ -766,27 +805,27 @@
       <p class="sub-eyebrow"><span class="mark">B</span>The engagement and depletion phenomenon</p>
       <ol class="citations">
         <li>
-          <span class="src">MetLife</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">ML</span><span class="src-name">MetLife</span></span>
           <span class="finding">56% of employees stay out of necessity, not commitment. Only 18% stay because they truly want to.</span>
           <span class="year">2026</span>
         </li>
         <li>
-          <span class="src">Gallup</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">GA</span><span class="src-name">Gallup</span></span>
           <span class="finding">Manager engagement dropped 9 points since 2022. Global engagement at 20%, the lowest since 2020.</span>
           <span class="year">2026</span>
         </li>
         <li>
-          <span class="src">ActivTrak</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">AT</span><span class="src-name">ActivTrak</span></span>
           <span class="finding">Behavioural data across 163,638 employees shows disengagement risk now exceeds burnout risk for the first time.</span>
           <span class="year">2026</span>
         </li>
         <li>
-          <span class="src">Eagle Hill Consulting</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">EH</span><span class="src-name">Eagle Hill Consulting</span></span>
           <span class="finding">71% of middle managers report burnout, the highest of any job level.</span>
           <span class="year">2025</span>
         </li>
         <li>
-          <span class="src">McKinsey Quarterly</span>
+          <span class="src"><span class="src-mark" aria-hidden="true">MQ</span><span class="src-name">McKinsey Quarterly</span></span>
           <span class="finding">The median S&amp;P 500 company loses $228 million to $355 million annually to disengagement and attrition.</span>
           <span class="year">2023</span>
         </li>
