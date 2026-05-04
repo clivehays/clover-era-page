@@ -63,9 +63,58 @@
     else if (mq.addListener) mq.addListener(onMq);
   }
 
+  // === The Work dropdown: tap-to-toggle on touch, hover handled in CSS
+  function initDropdowns() {
+    var toggles = document.querySelectorAll('.nav-dropdown-toggle');
+    if (!toggles.length) return;
+
+    for (var i = 0; i < toggles.length; i++) {
+      (function (toggle) {
+        var dropdown = toggle.closest('.nav-dropdown');
+
+        toggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var expanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        });
+
+        // Keyboard: Enter/Space toggle, Escape closes, ArrowDown opens & focuses first item
+        toggle.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.focus();
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            toggle.setAttribute('aria-expanded', 'true');
+            var firstItem = dropdown && dropdown.querySelector('.nav-dropdown-menu a');
+            if (firstItem) firstItem.focus();
+          }
+        });
+
+        // Close on click outside
+        document.addEventListener('click', function (e) {
+          if (!dropdown.contains(e.target)) {
+            toggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      })(toggles[i]);
+    }
+
+    // Escape on any menu item closes the dropdown
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      var openToggles = document.querySelectorAll('.nav-dropdown-toggle[aria-expanded="true"]');
+      for (var i = 0; i < openToggles.length; i++) {
+        openToggles[i].setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  function bootstrap() { init(); initDropdowns(); }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', bootstrap);
   } else {
-    init();
+    bootstrap();
   }
 })();

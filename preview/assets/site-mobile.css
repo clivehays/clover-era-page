@@ -1,10 +1,94 @@
 /* =============================================================
-   Clover ERA — shared mobile chrome
-   Hamburger nav + mobile-specific overrides shared across pages.
-   Covers two masthead variants:
+   Clover ERA — shared mobile chrome + global nav
+   Hamburger nav + The Work dropdown + mobile-specific overrides
+   shared across pages. Covers two masthead variants:
      1. <header class="masthead"> + <nav class="primary"> (most pages)
      2. <header class="topnav">   + <nav>                (Index Teaser)
    ============================================================= */
+
+/* === The Work dropdown (desktop) ============================ */
+.nav-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+}
+.nav-dropdown-toggle {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: var(--ink-mute, #6F6A60);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  transition: color 120ms ease;
+}
+.nav-dropdown-toggle:hover,
+.nav-dropdown:hover .nav-dropdown-toggle,
+.nav-dropdown-toggle[aria-expanded="true"] {
+  color: var(--ink, #17161A);
+}
+.nav-dropdown-toggle .nav-chev {
+  display: inline-block;
+  font-size: 0.95em;
+  margin-left: 2px;
+  transform: rotate(90deg);
+  transform-origin: center;
+  transition: transform 160ms ease;
+}
+.nav-dropdown:hover .nav-dropdown-toggle .nav-chev,
+.nav-dropdown-toggle[aria-expanded="true"] .nav-chev {
+  transform: rotate(270deg);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: -16px;
+  margin-top: 14px;
+  background: var(--paper, #F1ECE3);
+  border: 1px solid var(--rule, #C9C2B4);
+  box-shadow: 0 8px 28px rgba(23, 22, 26, 0.12);
+  min-width: 280px;
+  padding: 8px 0;
+  display: none;
+  z-index: 50;
+}
+/* Hover-bridge: invisible padding above the menu so cursor doesn't
+   leave the hover-zone when crossing the gap to the dropdown */
+.nav-dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -14px; left: 0; right: 0;
+  height: 14px;
+}
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown-toggle[aria-expanded="true"] + .nav-dropdown-menu {
+  display: block;
+}
+.nav-dropdown-menu a {
+  display: block;
+  padding: 12px 22px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute, #6F6A60);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 120ms ease, background 120ms ease;
+}
+.nav-dropdown-menu a:hover,
+.nav-dropdown-menu a:focus-visible {
+  color: var(--ink, #17161A);
+  background: rgba(33, 150, 243, 0.06);
+  outline: none;
+}
 
 /* hamburger hidden on desktop */
 .hamburger {
@@ -100,6 +184,63 @@
   nav.primary a.current {
     margin-top: 0;
     padding-top: 14px;
+  }
+
+  /* === Dropdown collapses to inline list within the drawer ====== */
+  .nav-dropdown {
+    display: block;
+    width: 100%;
+  }
+  .nav-dropdown-toggle {
+    width: 100%;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule-soft, #D9D3C5);
+    font-size: 12px !important;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute, #6F6A60);
+    text-align: left;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+  }
+  .nav-dropdown-toggle .nav-chev {
+    transform: rotate(90deg);
+    margin-left: auto;
+  }
+  .nav-dropdown-toggle[aria-expanded="true"] .nav-chev {
+    transform: rotate(270deg);
+  }
+  /* Disable the desktop hover-open behaviour on touch */
+  .nav-dropdown:hover .nav-dropdown-menu {
+    display: none;
+  }
+  .nav-dropdown-menu {
+    position: static;
+    display: none;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .nav-dropdown-menu::before { display: none; }
+  .nav-dropdown-toggle[aria-expanded="true"] + .nav-dropdown-menu {
+    display: block;
+  }
+  .nav-dropdown-menu a {
+    width: 100%;
+    padding: 12px 0 12px 18px;
+    border-bottom: 1px solid var(--rule-soft, #D9D3C5);
+    font-size: 11px !important;
+    letter-spacing: 0.16em;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    white-space: normal;
   }
 
   /* --- masthead variant 2: Index Teaser .topnav --- */
