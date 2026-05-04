@@ -56,7 +56,12 @@
   .hamburger[aria-expanded="false"] .hamburger-close { display: none; }
 
   /* --- masthead variant 1: .masthead + nav.primary --- */
-  .masthead { position: relative; align-items: center; }
+  /* z-index: auto on the masthead is critical: pages set z-index: 2 on
+     the masthead which creates a stacking context that traps nav.primary
+     at root layer 2. The nav-backdrop (z-index: 99 on body) then paints
+     on top of the drawer, intercepting taps. Resetting to auto here lets
+     nav.primary's z-index: 100 win at root level over the backdrop. */
+  .masthead { position: relative; align-items: center; z-index: auto; }
   .masthead .wordmark { flex: 1 1 auto; min-width: 0; }
 
   nav.primary {
@@ -98,7 +103,7 @@
   }
 
   /* --- masthead variant 2: Index Teaser .topnav --- */
-  .topnav { position: relative; align-items: center; }
+  .topnav { position: relative; align-items: center; z-index: auto; }
   .topnav .wm { flex: 1 1 auto; min-width: 0; }
   .topnav nav {
     position: fixed;
