@@ -110,7 +110,68 @@
     });
   }
 
-  function bootstrap() { init(); initDropdowns(); }
+  // === Cookie consent banner ===
+  // Shows on first visit; respects DNT/GPC by defaulting analytics off.
+  // Settings page (Cookies.html) reads/writes the same localStorage key.
+  function initCookieBanner() {
+    // Skip on the Cookies page itself — it has its own settings UI
+    if (location.pathname.indexOf('Cookies.html') !== -1 ||
+        location.pathname.indexOf('/cookies') !== -1) return;
+
+    var stored = null;
+    try { stored = localStorage.getItem('ce_consent'); } catch (e) {}
+    if (stored) return; // user has already chosen
+
+    // Default analytics off if DNT or GPC signal is set
+    var dnt = (navigator.doNotTrack === '1' || window.doNotTrack === '1' ||
+               navigator.doNotTrack === 'yes' ||
+               (navigator.globalPrivacyControl === true));
+
+    var banner = document.createElement('div');
+    banner.className = 'ce-cookie-banner';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-modal', 'false');
+    banner.setAttribute('aria-label', 'Cookie consent');
+
+    banner.innerHTML =
+      '<p class="ce-banner-eyebrow">Cookies</p>' +
+      '<h3>We use a small number of cookies.</h3>' +
+      '<p>Strictly necessary cookies keep the site working. We also use functional and privacy-respecting analytics cookies — you can accept, reject the optional ones, or <a href="Cookies.html">manage preferences</a>.</p>' +
+      '<div class="ce-banner-actions">' +
+        '<button type="button" class="primary" data-action="accept">Accept all</button>' +
+        '<button type="button" data-action="reject">Reject optional</button>' +
+        '<a class="ce-banner-link" href="Cookies.html">Manage preferences</a>' +
+      '</div>';
+
+    document.body.appendChild(banner);
+    // Defer the visible class so the banner can transition in
+    requestAnimationFrame(function () { banner.classList.add('visible'); });
+
+    function persist(prefs) {
+      try {
+        localStorage.setItem('ce_consent', JSON.stringify(prefs));
+      } catch (e) {}
+    }
+    function dismiss() {
+      banner.classList.remove('visible');
+      setTimeout(function () { banner.parentNode && banner.parentNode.removeChild(banner); }, 220);
+    }
+
+    banner.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      var action = btn.getAttribute('data-action');
+      if (action === 'accept') {
+        persist({ necessary: true, functional: true, analytics: !dnt, ts: new Date().toISOString() });
+        dismiss();
+      } else if (action === 'reject') {
+        persist({ necessary: true, functional: false, analytics: false, ts: new Date().toISOString() });
+        dismiss();
+      }
+    });
+  }
+
+  function bootstrap() { init(); initDropdowns(); initCookieBanner(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bootstrap);
